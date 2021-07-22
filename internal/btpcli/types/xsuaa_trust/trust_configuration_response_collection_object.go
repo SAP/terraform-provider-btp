@@ -1,0 +1,3 @@
+package xsuaa_trust
+
+type TrustConfigurationResponseCollectionObject []TrustConfigurationResponseObject

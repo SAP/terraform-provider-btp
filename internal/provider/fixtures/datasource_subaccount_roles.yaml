@@ -1,0 +1,1073 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - a42758ad-c769-85a8-bbaf-70a980cdc9e7
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:51 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 4958f0c2-c0cb-46bc-6ed2-89138aa3c92e
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 972.11254ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - e232b12e-602b-b33b-a422-e2a9c3e86ba5
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:27:52 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - d3e6520d-00b9-4773-705c-e6349e717073
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 189.204169ms
+    - id: 2
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+            X-Correlationid:
+                - e232b12e-602b-b33b-a422-e2a9c3e86ba5
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"roleTemplateName":"Cloud_Connector_Administrator","roleTemplateAppId":"connectivity!b10","name":"Cloud Connector Administrator","attributeList":[],"description":"Operate the data transmission tunnels used by the Cloud connector","scopes":[{"description":"Operate the data transmission tunnels used by the Cloud connector","name":"connectivity!b10.manageSCCTunnels"},{"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","name":"connectivity!b10.readSCCTunnels"}],"isReadOnly":true,"appName":"connectivity"},{"roleTemplateName":"Cloud_Connector_Auditor","roleTemplateAppId":"connectivity!b10","name":"Cloud Connector Auditor","attributeList":[],"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","scopes":[{"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","name":"connectivity!b10.readSCCTunnels"}],"isReadOnly":true,"appName":"connectivity"},{"roleTemplateName":"Destination_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Administrator","attributeList":[],"description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Manage subaccount trust","name":"destination-xsappname!b9.manageSubaccountTrust"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Manage certificates on subaccount level","name":"destination-xsappname!b9.subaccount.manageCertificate"},{"description":"Manage destinations on subaccount level","name":"destination-xsappname!b9.subaccount.manageDestination"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Administrator_Instance","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Administrator Instance","attributeList":[],"description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service on instance Level","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Administrator","attributeList":[],"description":"Manage destination certificates","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Manage certificates on subaccount level","name":"destination-xsappname!b9.subaccount.manageCertificate"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Instance_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Instance Administrator","attributeList":[],"description":"Manage destination certificates on instance level","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Instance_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Instance Viewer","attributeList":[],"description":"View destination certificates on instance level","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Viewer","attributeList":[],"description":"View destination certificates","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Administrator","attributeList":[],"description":"Manage destination configurations","scopes":[{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Manage destinations on subaccount level","name":"destination-xsappname!b9.subaccount.manageDestination"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Instance_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Instance Administrator","attributeList":[],"description":"Manage destination configurations on instance level","scopes":[{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Instance_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Instance Viewer","attributeList":[],"description":"View destination configurations on instance level","scopes":[{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Viewer","attributeList":[],"description":"View destination configurations","scopes":[{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Subaccount_Trust_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Subaccount Trust Administrator","attributeList":[],"description":"Manage signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Manage subaccount trust","name":"destination-xsappname!b9.manageSubaccountTrust"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Subaccount_Trust_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Subaccount Trust Viewer","attributeList":[],"description":"View signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Viewer","attributeList":[],"description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Viewer_Instance","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Viewer Instance","attributeList":[],"description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service on instance level","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Subaccount_Admin","roleTemplateAppId":"cis-local!b2","name":"Subaccount Admin","attributeList":[],"description":"Role for subaccount members with read-write authorizations for core commercialization operations, such as viewing subaccount entitlements, and creating and deleting environment instances.","scopes":[{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Subscribe or unsubscribe to a multitenant application in a subaccount","name":"cis-local!b2.subaccount.application.subscription.update"},{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Create environment instance entity","name":"cis-local!b2.subaccount.environment.create"},{"description":"Delete environment instance entity","name":"cis-local!b2.subaccount.environment.delete"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-local","appDescription":"Management of your environments and subscriptions to multitenant applications."},{"roleTemplateName":"Subaccount_Service_Administrator","roleTemplateAppId":"service-manager!b3","name":"Subaccount Service Administrator","attributeList":[],"description":"Administrative access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to manage Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.manage"},{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to manage platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.manage"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to create or delete service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.manage"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to provision, update and delete service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.manage"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Service_Auditor","roleTemplateAppId":"service-manager!b3","name":"Subaccount Service Auditor","attributeList":[],"description":"Read-only access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Viewer","roleTemplateAppId":"cis-local!b2","name":"Subaccount Viewer","attributeList":[],"description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results.","scopes":[{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-local","appDescription":"Management of your environments and subscriptions to multitenant applications."},{"roleTemplateName":"Subaccount_Service_Admin","roleTemplateAppId":"service-manager!b3","name":"Subaccount_Service_Admin","attributeList":[],"description":"Administrative access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to manage Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.manage"},{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to manage platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.manage"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to create or delete service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.manage"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to provision, update and delete service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.manage"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Service_Viewer","roleTemplateAppId":"service-manager!b3","name":"Subaccount_Service_Viewer","attributeList":[],"description":"Read-only access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"xsuaa_admin","roleTemplateAppId":"xsuaa!t1","name":"User and Role Administrator","attributeList":[],"description":"Manage authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Write permission for XS roles and role collections","name":"xs_authorization.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Change Identity Providers","name":"xs_idp.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Write permission for XS users","name":"xs_user.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."},{"roleTemplateName":"xsuaa_auditor","roleTemplateAppId":"xsuaa!t1","name":"User and Role Auditor","attributeList":[],"description":"Read-only access for authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:52 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 1f8d7588-7c0f-453e-6f5a-dd9cfd4b85fd
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 148.476244ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - e459ff17-873c-783e-c2a8-5b1ac0ce8e9b
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:53 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 1b224b64-6190-4111-5db0-926fbfb007db
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 427.513816ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 4a62cfc4-9ff2-a01b-bf85-2e0e6ac44056
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:27:53 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 62a7b647-1705-4040-708d-1ab5ac098e17
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 167.065464ms
+    - id: 5
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+            X-Correlationid:
+                - 4a62cfc4-9ff2-a01b-bf85-2e0e6ac44056
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"roleTemplateName":"Cloud_Connector_Administrator","roleTemplateAppId":"connectivity!b10","name":"Cloud Connector Administrator","attributeList":[],"description":"Operate the data transmission tunnels used by the Cloud connector","scopes":[{"description":"Operate the data transmission tunnels used by the Cloud connector","name":"connectivity!b10.manageSCCTunnels"},{"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","name":"connectivity!b10.readSCCTunnels"}],"isReadOnly":true,"appName":"connectivity"},{"roleTemplateName":"Cloud_Connector_Auditor","roleTemplateAppId":"connectivity!b10","name":"Cloud Connector Auditor","attributeList":[],"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","scopes":[{"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","name":"connectivity!b10.readSCCTunnels"}],"isReadOnly":true,"appName":"connectivity"},{"roleTemplateName":"Destination_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Administrator","attributeList":[],"description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Manage subaccount trust","name":"destination-xsappname!b9.manageSubaccountTrust"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Manage certificates on subaccount level","name":"destination-xsappname!b9.subaccount.manageCertificate"},{"description":"Manage destinations on subaccount level","name":"destination-xsappname!b9.subaccount.manageDestination"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Administrator_Instance","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Administrator Instance","attributeList":[],"description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service on instance Level","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Administrator","attributeList":[],"description":"Manage destination certificates","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Manage certificates on subaccount level","name":"destination-xsappname!b9.subaccount.manageCertificate"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Instance_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Instance Administrator","attributeList":[],"description":"Manage destination certificates on instance level","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Instance_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Instance Viewer","attributeList":[],"description":"View destination certificates on instance level","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Viewer","attributeList":[],"description":"View destination certificates","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Administrator","attributeList":[],"description":"Manage destination configurations","scopes":[{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Manage destinations on subaccount level","name":"destination-xsappname!b9.subaccount.manageDestination"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Instance_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Instance Administrator","attributeList":[],"description":"Manage destination configurations on instance level","scopes":[{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Instance_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Instance Viewer","attributeList":[],"description":"View destination configurations on instance level","scopes":[{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Viewer","attributeList":[],"description":"View destination configurations","scopes":[{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Subaccount_Trust_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Subaccount Trust Administrator","attributeList":[],"description":"Manage signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Manage subaccount trust","name":"destination-xsappname!b9.manageSubaccountTrust"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Subaccount_Trust_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Subaccount Trust Viewer","attributeList":[],"description":"View signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Viewer","attributeList":[],"description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Viewer_Instance","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Viewer Instance","attributeList":[],"description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service on instance level","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Subaccount_Admin","roleTemplateAppId":"cis-local!b2","name":"Subaccount Admin","attributeList":[],"description":"Role for subaccount members with read-write authorizations for core commercialization operations, such as viewing subaccount entitlements, and creating and deleting environment instances.","scopes":[{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Subscribe or unsubscribe to a multitenant application in a subaccount","name":"cis-local!b2.subaccount.application.subscription.update"},{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Create environment instance entity","name":"cis-local!b2.subaccount.environment.create"},{"description":"Delete environment instance entity","name":"cis-local!b2.subaccount.environment.delete"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-local","appDescription":"Management of your environments and subscriptions to multitenant applications."},{"roleTemplateName":"Subaccount_Service_Administrator","roleTemplateAppId":"service-manager!b3","name":"Subaccount Service Administrator","attributeList":[],"description":"Administrative access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to manage Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.manage"},{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to manage platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.manage"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to create or delete service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.manage"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to provision, update and delete service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.manage"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Service_Auditor","roleTemplateAppId":"service-manager!b3","name":"Subaccount Service Auditor","attributeList":[],"description":"Read-only access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Viewer","roleTemplateAppId":"cis-local!b2","name":"Subaccount Viewer","attributeList":[],"description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results.","scopes":[{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-local","appDescription":"Management of your environments and subscriptions to multitenant applications."},{"roleTemplateName":"Subaccount_Service_Admin","roleTemplateAppId":"service-manager!b3","name":"Subaccount_Service_Admin","attributeList":[],"description":"Administrative access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to manage Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.manage"},{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to manage platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.manage"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to create or delete service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.manage"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to provision, update and delete service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.manage"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Service_Viewer","roleTemplateAppId":"service-manager!b3","name":"Subaccount_Service_Viewer","attributeList":[],"description":"Read-only access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"xsuaa_admin","roleTemplateAppId":"xsuaa!t1","name":"User and Role Administrator","attributeList":[],"description":"Manage authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Write permission for XS roles and role collections","name":"xs_authorization.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Change Identity Providers","name":"xs_idp.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Write permission for XS users","name":"xs_user.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."},{"roleTemplateName":"xsuaa_auditor","roleTemplateAppId":"xsuaa!t1","name":"User and Role Auditor","attributeList":[],"description":"Read-only access for authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:54 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 116a48bb-0c10-4966-727d-44bc95b2c118
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 122.741574ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - ca254595-808a-5bf4-a688-907d7551138c
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:55 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 12231c2b-e615-4aae-78bf-b4c353e2a53a
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 343.721157ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 1b914d7f-c2b1-9dee-3a1b-0c2e332932de
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:27:55 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - b29475f2-68eb-4b58-6470-9901dac00074
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 155.900457ms
+    - id: 8
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+            X-Correlationid:
+                - 1b914d7f-c2b1-9dee-3a1b-0c2e332932de
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"roleTemplateName":"Cloud_Connector_Administrator","roleTemplateAppId":"connectivity!b10","name":"Cloud Connector Administrator","attributeList":[],"description":"Operate the data transmission tunnels used by the Cloud connector","scopes":[{"description":"Operate the data transmission tunnels used by the Cloud connector","name":"connectivity!b10.manageSCCTunnels"},{"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","name":"connectivity!b10.readSCCTunnels"}],"isReadOnly":true,"appName":"connectivity"},{"roleTemplateName":"Cloud_Connector_Auditor","roleTemplateAppId":"connectivity!b10","name":"Cloud Connector Auditor","attributeList":[],"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","scopes":[{"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","name":"connectivity!b10.readSCCTunnels"}],"isReadOnly":true,"appName":"connectivity"},{"roleTemplateName":"Destination_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Administrator","attributeList":[],"description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Manage subaccount trust","name":"destination-xsappname!b9.manageSubaccountTrust"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Manage certificates on subaccount level","name":"destination-xsappname!b9.subaccount.manageCertificate"},{"description":"Manage destinations on subaccount level","name":"destination-xsappname!b9.subaccount.manageDestination"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Administrator_Instance","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Administrator Instance","attributeList":[],"description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service on instance Level","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Administrator","attributeList":[],"description":"Manage destination certificates","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Manage certificates on subaccount level","name":"destination-xsappname!b9.subaccount.manageCertificate"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Instance_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Instance Administrator","attributeList":[],"description":"Manage destination certificates on instance level","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Instance_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Instance Viewer","attributeList":[],"description":"View destination certificates on instance level","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Viewer","attributeList":[],"description":"View destination certificates","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Administrator","attributeList":[],"description":"Manage destination configurations","scopes":[{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Manage destinations on subaccount level","name":"destination-xsappname!b9.subaccount.manageDestination"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Instance_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Instance Administrator","attributeList":[],"description":"Manage destination configurations on instance level","scopes":[{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Instance_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Instance Viewer","attributeList":[],"description":"View destination configurations on instance level","scopes":[{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Viewer","attributeList":[],"description":"View destination configurations","scopes":[{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Subaccount_Trust_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Subaccount Trust Administrator","attributeList":[],"description":"Manage signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Manage subaccount trust","name":"destination-xsappname!b9.manageSubaccountTrust"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Subaccount_Trust_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Subaccount Trust Viewer","attributeList":[],"description":"View signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Viewer","attributeList":[],"description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Viewer_Instance","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Viewer Instance","attributeList":[],"description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service on instance level","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Subaccount_Admin","roleTemplateAppId":"cis-local!b2","name":"Subaccount Admin","attributeList":[],"description":"Role for subaccount members with read-write authorizations for core commercialization operations, such as viewing subaccount entitlements, and creating and deleting environment instances.","scopes":[{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Subscribe or unsubscribe to a multitenant application in a subaccount","name":"cis-local!b2.subaccount.application.subscription.update"},{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Create environment instance entity","name":"cis-local!b2.subaccount.environment.create"},{"description":"Delete environment instance entity","name":"cis-local!b2.subaccount.environment.delete"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-local","appDescription":"Management of your environments and subscriptions to multitenant applications."},{"roleTemplateName":"Subaccount_Service_Administrator","roleTemplateAppId":"service-manager!b3","name":"Subaccount Service Administrator","attributeList":[],"description":"Administrative access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to manage Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.manage"},{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to manage platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.manage"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to create or delete service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.manage"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to provision, update and delete service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.manage"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Service_Auditor","roleTemplateAppId":"service-manager!b3","name":"Subaccount Service Auditor","attributeList":[],"description":"Read-only access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Viewer","roleTemplateAppId":"cis-local!b2","name":"Subaccount Viewer","attributeList":[],"description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results.","scopes":[{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-local","appDescription":"Management of your environments and subscriptions to multitenant applications."},{"roleTemplateName":"Subaccount_Service_Admin","roleTemplateAppId":"service-manager!b3","name":"Subaccount_Service_Admin","attributeList":[],"description":"Administrative access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to manage Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.manage"},{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to manage platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.manage"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to create or delete service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.manage"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to provision, update and delete service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.manage"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Service_Viewer","roleTemplateAppId":"service-manager!b3","name":"Subaccount_Service_Viewer","attributeList":[],"description":"Read-only access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"xsuaa_admin","roleTemplateAppId":"xsuaa!t1","name":"User and Role Administrator","attributeList":[],"description":"Manage authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Write permission for XS roles and role collections","name":"xs_authorization.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Change Identity Providers","name":"xs_idp.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Write permission for XS users","name":"xs_user.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."},{"roleTemplateName":"xsuaa_auditor","roleTemplateAppId":"xsuaa!t1","name":"User and Role Auditor","attributeList":[],"description":"Read-only access for authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:56 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 6883f487-7eee-48ea-6fcb-171c3f01f20b
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 148.910462ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - b1dd21fe-a209-93e0-d557-6b5bf64697b5
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:56 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 8a3b8eb8-e114-4141-46c3-1f9af78dae5f
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 331.236783ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 4a01703c-38b3-62eb-6389-bdad355cb13d
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:27:57 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - ed119baf-f995-48b1-55c6-a82e6ad78011
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 162.997499ms
+    - id: 11
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+            X-Correlationid:
+                - 4a01703c-38b3-62eb-6389-bdad355cb13d
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"roleTemplateName":"Cloud_Connector_Administrator","roleTemplateAppId":"connectivity!b10","name":"Cloud Connector Administrator","attributeList":[],"description":"Operate the data transmission tunnels used by the Cloud connector","scopes":[{"description":"Operate the data transmission tunnels used by the Cloud connector","name":"connectivity!b10.manageSCCTunnels"},{"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","name":"connectivity!b10.readSCCTunnels"}],"isReadOnly":true,"appName":"connectivity"},{"roleTemplateName":"Cloud_Connector_Auditor","roleTemplateAppId":"connectivity!b10","name":"Cloud Connector Auditor","attributeList":[],"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","scopes":[{"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","name":"connectivity!b10.readSCCTunnels"}],"isReadOnly":true,"appName":"connectivity"},{"roleTemplateName":"Destination_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Administrator","attributeList":[],"description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Manage subaccount trust","name":"destination-xsappname!b9.manageSubaccountTrust"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Manage certificates on subaccount level","name":"destination-xsappname!b9.subaccount.manageCertificate"},{"description":"Manage destinations on subaccount level","name":"destination-xsappname!b9.subaccount.manageDestination"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Administrator_Instance","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Administrator Instance","attributeList":[],"description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service on instance Level","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Administrator","attributeList":[],"description":"Manage destination certificates","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Manage certificates on subaccount level","name":"destination-xsappname!b9.subaccount.manageCertificate"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Instance_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Instance Administrator","attributeList":[],"description":"Manage destination certificates on instance level","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Instance_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Instance Viewer","attributeList":[],"description":"View destination certificates on instance level","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Viewer","attributeList":[],"description":"View destination certificates","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Administrator","attributeList":[],"description":"Manage destination configurations","scopes":[{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Manage destinations on subaccount level","name":"destination-xsappname!b9.subaccount.manageDestination"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Instance_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Instance Administrator","attributeList":[],"description":"Manage destination configurations on instance level","scopes":[{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Instance_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Instance Viewer","attributeList":[],"description":"View destination configurations on instance level","scopes":[{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Viewer","attributeList":[],"description":"View destination configurations","scopes":[{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Subaccount_Trust_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Subaccount Trust Administrator","attributeList":[],"description":"Manage signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Manage subaccount trust","name":"destination-xsappname!b9.manageSubaccountTrust"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Subaccount_Trust_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Subaccount Trust Viewer","attributeList":[],"description":"View signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Viewer","attributeList":[],"description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Viewer_Instance","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Viewer Instance","attributeList":[],"description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service on instance level","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Subaccount_Admin","roleTemplateAppId":"cis-local!b2","name":"Subaccount Admin","attributeList":[],"description":"Role for subaccount members with read-write authorizations for core commercialization operations, such as viewing subaccount entitlements, and creating and deleting environment instances.","scopes":[{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Subscribe or unsubscribe to a multitenant application in a subaccount","name":"cis-local!b2.subaccount.application.subscription.update"},{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Create environment instance entity","name":"cis-local!b2.subaccount.environment.create"},{"description":"Delete environment instance entity","name":"cis-local!b2.subaccount.environment.delete"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-local","appDescription":"Management of your environments and subscriptions to multitenant applications."},{"roleTemplateName":"Subaccount_Service_Administrator","roleTemplateAppId":"service-manager!b3","name":"Subaccount Service Administrator","attributeList":[],"description":"Administrative access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to manage Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.manage"},{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to manage platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.manage"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to create or delete service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.manage"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to provision, update and delete service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.manage"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Service_Auditor","roleTemplateAppId":"service-manager!b3","name":"Subaccount Service Auditor","attributeList":[],"description":"Read-only access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Viewer","roleTemplateAppId":"cis-local!b2","name":"Subaccount Viewer","attributeList":[],"description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results.","scopes":[{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-local","appDescription":"Management of your environments and subscriptions to multitenant applications."},{"roleTemplateName":"Subaccount_Service_Admin","roleTemplateAppId":"service-manager!b3","name":"Subaccount_Service_Admin","attributeList":[],"description":"Administrative access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to manage Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.manage"},{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to manage platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.manage"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to create or delete service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.manage"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to provision, update and delete service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.manage"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Service_Viewer","roleTemplateAppId":"service-manager!b3","name":"Subaccount_Service_Viewer","attributeList":[],"description":"Read-only access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"xsuaa_admin","roleTemplateAppId":"xsuaa!t1","name":"User and Role Administrator","attributeList":[],"description":"Manage authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Write permission for XS roles and role collections","name":"xs_authorization.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Change Identity Providers","name":"xs_idp.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Write permission for XS users","name":"xs_user.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."},{"roleTemplateName":"xsuaa_auditor","roleTemplateAppId":"xsuaa!t1","name":"User and Role Auditor","attributeList":[],"description":"Read-only access for authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:57 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 6c8c2199-16c1-42f8-52e1-6420b2274ae5
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 125.176234ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 445b03a3-dc24-5340-f700-b02a393b915a
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:58 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 057c5ec4-029b-43a5-6a8f-c4cdbeb77898
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 322.579285ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 5a7561c8-9153-e983-a348-31f8a05126b0
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:27:58 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 9db076dd-02a6-444f-71e1-ff185c3354c1
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 166.165384ms
+    - id: 14
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+            X-Correlationid:
+                - 5a7561c8-9153-e983-a348-31f8a05126b0
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"roleTemplateName":"Cloud_Connector_Administrator","roleTemplateAppId":"connectivity!b10","name":"Cloud Connector Administrator","attributeList":[],"description":"Operate the data transmission tunnels used by the Cloud connector","scopes":[{"description":"Operate the data transmission tunnels used by the Cloud connector","name":"connectivity!b10.manageSCCTunnels"},{"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","name":"connectivity!b10.readSCCTunnels"}],"isReadOnly":true,"appName":"connectivity"},{"roleTemplateName":"Cloud_Connector_Auditor","roleTemplateAppId":"connectivity!b10","name":"Cloud Connector Auditor","attributeList":[],"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","scopes":[{"description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems","name":"connectivity!b10.readSCCTunnels"}],"isReadOnly":true,"appName":"connectivity"},{"roleTemplateName":"Destination_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Administrator","attributeList":[],"description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Manage subaccount trust","name":"destination-xsappname!b9.manageSubaccountTrust"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Manage certificates on subaccount level","name":"destination-xsappname!b9.subaccount.manageCertificate"},{"description":"Manage destinations on subaccount level","name":"destination-xsappname!b9.subaccount.manageDestination"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Administrator_Instance","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Administrator Instance","attributeList":[],"description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service on instance Level","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Administrator","attributeList":[],"description":"Manage destination certificates","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Manage certificates on subaccount level","name":"destination-xsappname!b9.subaccount.manageCertificate"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Instance_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Instance Administrator","attributeList":[],"description":"Manage destination certificates on instance level","scopes":[{"description":"Manage certificates on instance level","name":"destination-xsappname!b9.instance.manageCertificate"},{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Instance_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Instance Viewer","attributeList":[],"description":"View destination certificates on instance level","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Certificate_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Certificate Viewer","attributeList":[],"description":"View destination certificates","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Administrator","attributeList":[],"description":"Manage destination configurations","scopes":[{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Manage destinations on subaccount level","name":"destination-xsappname!b9.subaccount.manageDestination"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Instance_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Instance Administrator","attributeList":[],"description":"Manage destination configurations on instance level","scopes":[{"description":"Manage destinations on instance level","name":"destination-xsappname!b9.instance.manageDestination"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Instance_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Instance Viewer","attributeList":[],"description":"View destination configurations on instance level","scopes":[{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Configuration_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Configuration Viewer","attributeList":[],"description":"View destination configurations","scopes":[{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Subaccount_Trust_Administrator","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Subaccount Trust Administrator","attributeList":[],"description":"Manage signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Manage subaccount trust","name":"destination-xsappname!b9.manageSubaccountTrust"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Subaccount_Trust_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Subaccount Trust Viewer","attributeList":[],"description":"View signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Viewer","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Viewer","attributeList":[],"description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Read subaccount trust","name":"destination-xsappname!b9.readSubaccountTrust"},{"description":"Read certificates on subaccount level","name":"destination-xsappname!b9.subaccount.readCertificate"},{"description":"Read destinations on subaccount level","name":"destination-xsappname!b9.subaccount.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Destination_Viewer_Instance","roleTemplateAppId":"destination-xsappname!b9","name":"Destination Viewer Instance","attributeList":[],"description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service on instance level","scopes":[{"description":"Read certificates on instance level","name":"destination-xsappname!b9.instance.readCertificate"},{"description":"Read destinations on instance level","name":"destination-xsappname!b9.instance.readDestination"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"destination-xsappname","appDescription":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service."},{"roleTemplateName":"Subaccount_Admin","roleTemplateAppId":"cis-local!b2","name":"Subaccount Admin","attributeList":[],"description":"Role for subaccount members with read-write authorizations for core commercialization operations, such as viewing subaccount entitlements, and creating and deleting environment instances.","scopes":[{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Subscribe or unsubscribe to a multitenant application in a subaccount","name":"cis-local!b2.subaccount.application.subscription.update"},{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Create environment instance entity","name":"cis-local!b2.subaccount.environment.create"},{"description":"Delete environment instance entity","name":"cis-local!b2.subaccount.environment.delete"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-local","appDescription":"Management of your environments and subscriptions to multitenant applications."},{"roleTemplateName":"Subaccount_Service_Administrator","roleTemplateAppId":"service-manager!b3","name":"Subaccount Service Administrator","attributeList":[],"description":"Administrative access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to manage Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.manage"},{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to manage platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.manage"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to create or delete service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.manage"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to provision, update and delete service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.manage"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Service_Auditor","roleTemplateAppId":"service-manager!b3","name":"Subaccount Service Auditor","attributeList":[],"description":"Read-only access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Viewer","roleTemplateAppId":"cis-local!b2","name":"Subaccount Viewer","attributeList":[],"description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results.","scopes":[{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-local","appDescription":"Management of your environments and subscriptions to multitenant applications."},{"roleTemplateName":"Subaccount_Service_Admin","roleTemplateAppId":"service-manager!b3","name":"Subaccount_Service_Admin","attributeList":[],"description":"Administrative access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to manage Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.manage"},{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to manage platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.manage"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to create or delete service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.manage"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to provision, update and delete service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.manage"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"Subaccount_Service_Viewer","roleTemplateAppId":"service-manager!b3","name":"Subaccount_Service_Viewer","attributeList":[],"description":"Read-only access to service brokers and environments on a subaccount level.","scopes":[{"description":"Permission to read Service Brokers only on a subaccount level","name":"service-manager!b3.subaccount.broker.read"},{"description":"Permission to read platforms only on a subaccount level","name":"service-manager!b3.subaccount.platform.read"},{"description":"Permission to read service bindings only on a subaccount level","name":"service-manager!b3.subaccount.service_binding.read"},{"description":"Permission to read service instances only on a subaccount level","name":"service-manager!b3.subaccount.service_instance.read"},{"description":"Permission to read Service Offerings only on a subaccount level","name":"service-manager!b3.subaccount.service_offering.read"},{"description":"Permission to read Plans only on a subaccount level","name":"service-manager!b3.subaccount.service_plan.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"service-manager","appDescription":"Service Manager"},{"roleTemplateName":"xsuaa_admin","roleTemplateAppId":"xsuaa!t1","name":"User and Role Administrator","attributeList":[],"description":"Manage authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Write permission for XS roles and role collections","name":"xs_authorization.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Change Identity Providers","name":"xs_idp.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Write permission for XS users","name":"xs_user.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."},{"roleTemplateName":"xsuaa_auditor","roleTemplateAppId":"xsuaa!t1","name":"User and Role Auditor","attributeList":[],"description":"Read-only access for authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t1","cis-central!b2","cis-local!b2","sapcloudalm!b32816","spc-integration!t1"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:59 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 8205b9d3-c6b8-408f-5b68-a32833d60d72
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 164.205674ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - bd3539d9-420f-80d9-b1e9-961b8ad6c972
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:00 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 5365242a-074d-4a46-5fad-32e154cc8b4d
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 436.901584ms
