@@ -1,0 +1,43 @@
+name: Periodic Link Checker
+
+on:
+  schedule:
+    - cron: "30 0 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  link-checker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+      - name: Link Checker
+        id: lychee
+        uses: lycheeverse/lychee-action@v1.7.0
+        with:
+          args: --verbose --no-progress --max-concurrency 2 --exclude-mail --exclude-loopback './**/*.md'
+          output: ./lychee/out.md
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Find existing issue
+        id: find_issue
+        uses: micalevisk/last-issue-action@v2
+        if: ${{ steps.lychee.outputs.exit_code }} != 0
+        with:
+          state: open
+          labels: |
+            broken link
+            automated issue
+      - name: Create or update issue for broken links
+        uses: peter-evans/create-issue-from-file@v4
+        if: ${{ steps.lychee.outputs.exit_code }} != 0
+        with:
+          title: Link Checker Report
+          # If issue number is empty a new issue gets created
+          issue-number: ${{ steps.find_issue.outputs.issue-number }}
+          content-filepath: ./lychee/out.md
+          labels: broken link, automated issue
