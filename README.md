@@ -1,32 +1,31 @@
-# SAP Repository Template
+# Terraform provider for SAP BTP
 
-Default templates for SAP open source repositories, including LICENSE, .reuse/dep5, Code of Conduct, etc... All repositories on github.com/SAP will be created based on this template.
-
-## To-Do
-
-In case you are the maintainer of a new SAP open source project, these are the steps to do with the template files:
-
-- Check if the default license (Apache 2.0) also applies to your project. A license change should only be required in exceptional cases. If this is the case, please change the [license file](LICENSE).
-- Enter the correct metadata for the REUSE tool. See our [wiki page](https://wiki.wdf.sap.corp/wiki/display/ospodocs/Using+the+Reuse+Tool+of+FSFE+for+Copyright+and+License+Information) for details how to do it. You can find an initial .reuse/dep5 file to build on. Please replace the parts inside the single angle quotation marks < > by the specific information for your repository and be sure to run the REUSE tool to validate that the metadata is correct.
-- Adjust the contribution guidelines (e.g. add coding style guidelines, pull request checklists, different license if needed etc.)
-- Add information about your project to this README (name, description, requirements etc). Especially take care for the <your-project> placeholders - those ones need to be replaced with your project name. See the sections below the horizontal line and [our guidelines on our wiki page](https://wiki.wdf.sap.corp/wiki/display/ospodocs/Guidelines+for+README.md+file) what is required and recommended.
-- Remove all content in this README above and including the horizontal line ;)
-
-***
-
-# Our new open source project
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/terraform-provider-btp)](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp)
+![Golang](https://img.shields.io/badge/Go-1.20-informational)
 
 ## About this project
 
-*Insert a short description of your project here...*
+The Terraform provider for SAP BTP allows the management of resources on the [SAP Business Technology Platform](https://www.sap.com/products/technology-platform.html) via [Terraform](https://terraform.io/).
 
-## Requirements and Setup
+You find the detailed information about the [provider](https://registry.terraform.io/browse/providers) in the official [documentation](https://registry.terraform.io/browse/providers) in the [Terraform registry](https://registry.terraform.io/).
 
-*Insert a short description what is required to get your project running...*
+You find usage example in the [examples folder](./examples/) of this repository.  
+
+## Developing & Contributing to the Provider
+
+The [DEVELOPER.md](./DEVELOPER.md) file is a basic outline on how to build and develop the provider.
 
 ## Support, Feedback, Contributing
 
-This project is open to feature requests/suggestions, bug reports etc. via [GitHub issues](https://github.com/SAP/<your-project>/issues). Contribution and feedback are encouraged and always welcome. For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
+❓ - If you have a *question* you can ask it here in [GitHub Discussione](https://github.com/SAP/terraform-provider-btp/discussions/) or in the [SAP Community](https://answers.sap.com/questions/ask.html).
+
+🐞 - If you find a bug, feel free to create a [bug report](https://github.com/SAP/terraform-provider-btp/issues/new?assignees=&labels=bug&template=bug-report.yml&title=%5BBUG%5D+%3Ctitle%3E).
+
+💡 - If you have an idea for improvement or a feature request, please open a [feature-request](https://github.com/SAP/terraform-provider-btp/issues/new?assignees=&labels=enhancement&template=feature-request.yml&title=%5BFEATURE+REQUEST%5D+%3Ctitle%3E).
+
+For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
+
+**Please note:** We take Terraform's security and our users' trust very seriously. If you believe you have found a security issue in the Terraform provider for SAP BTP, please responsibly disclose it by using the *private reporting of vulnerabilities* in this repository.
 
 ## Code of Conduct
 
@@ -34,4 +33,4 @@ We as members, contributors, and leaders pledge to make participation in our com
 
 ## Licensing
 
-Copyright (20xx-)20xx SAP SE or an SAP affiliate company and <your-project> contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/<your-project>).
+Copyright 2023 SAP SE or an SAP affiliate company and `terraform-provider-btp` contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp).
