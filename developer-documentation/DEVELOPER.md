@@ -64,7 +64,7 @@ Windows users can let [chocolatey](https://chocolatey.org/) take over the instal
 choco install git golang golangci-lint make terraform
 ```
 
-### Clone the Repository
+### Cloning of the Repository
 
 The last step is then to clone the repository on your machine via:
 
@@ -72,7 +72,9 @@ The last step is then to clone the repository on your machine via:
 git clone https://github.com/SAP/terraform-provider-btp.git
 ```
 
-## Configuration of the Terraform CLI
+Navigate into the directory of the cloned repository.
+
+### Configuration of the Terraform CLI
 
 Next you need to setup local development overrides in the Terraform CLI according to [this documentation](https://developer.hashicorp.com/terraform/plugin/debugging#terraform-cli-development-overrides). Once in place, Terraform will only consider local development builds for this provider. The configuration should look similar to this:
 
@@ -91,9 +93,9 @@ Please keep in mind that the [configuration file](https://developer.hashicorp.co
 * Mac/Linux/WSL: `~/.terraformrc`
 * Windows: `%APPDATA%/terraform.rc`
 
-## Install the provider
+## Install the Terraform provider for SAP BTP locally
 
-If not yet done, navigate into the directory of the cloned repository. Run the following command to build and install the provider:
+Run the following command to build and install the provider:
 
 ```bash
 make install
