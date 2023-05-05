@@ -13,7 +13,7 @@ You find usage example in the [examples folder](./examples/) of this repository.
 
 ## Developing & Contributing to the Provider
 
-The [DEVELOPER.md](./DEVELOPER.md) file is a basic outline on how to build and develop the provider.
+The [developer documentation](./developer-documentation/DEVELOPER.md) file is a basic outline on how to build and develop the provider.
 
 ## Support, Feedback, Contributing
 
