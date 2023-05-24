@@ -1,9 +1,9 @@
-# Terraform provider for SAP BTP
+# Terraform Provider for SAP BTP
 
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/terraform-provider-btp)](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp)
 ![Golang](https://img.shields.io/badge/Go-1.20-informational)
 
-## About this project
+## About this Project
 
 The Terraform provider for SAP BTP allows the management of resources on the [SAP Business Technology Platform](https://www.sap.com/products/technology-platform.html) via [Terraform](https://terraform.io/).
 
@@ -17,11 +17,11 @@ The [developer documentation](./developer-documentation/DEVELOPER.md) file is a 
 
 ## Support, Feedback, Contributing
 
-❓ - If you have a *question* you can ask it here in [GitHub Discussione](https://github.com/SAP/terraform-provider-btp/discussions/) or in the [SAP Community](https://answers.sap.com/questions/ask.html).
+❓ - If you have a *question* you can ask it here in [GitHub Discussions](https://github.com/SAP/terraform-provider-btp/discussions/) or in the [SAP Community](https://answers.sap.com/questions/ask.html).
 
 🐞 - If you find a bug, feel free to create a [bug report](https://github.com/SAP/terraform-provider-btp/issues/new?assignees=&labels=bug&template=bug-report.yml&title=%5BBUG%5D+%3Ctitle%3E).
 
-💡 - If you have an idea for improvement or a feature request, please open a [feature-request](https://github.com/SAP/terraform-provider-btp/issues/new?assignees=&labels=enhancement&template=feature-request.yml&title=%5BFEATURE+REQUEST%5D+%3Ctitle%3E).
+💡 - If you have an idea for improvement or a feature request, please open a [feature request](https://github.com/SAP/terraform-provider-btp/issues/new?assignees=&labels=enhancement&template=feature-request.yml&title=%5BFEATURE+REQUEST%5D+%3Ctitle%3E).
 
 For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
 
