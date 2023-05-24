@@ -1,0 +1,703 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 7744782f-379c-b786-3e91-fcfc7c0966ad
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:50 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - c0b69734-41f9-4dec-7060-70a6ca588452
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 789.552332ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - d60f671d-32ff-14cc-3a6b-49784e2750b2
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"roleTemplateName":"Directory_Admin","roleTemplateAppId":"cis-central!b13","name":"Directory Admin","attributeList":[],"description":"Role for directory members with read-write authorizations for core commercialization operations, such as updating directories, setting entitlements, and creating, updating, and deleting subaccounts.","scopes":[{"description":"Delete a product from the products catalog for the current global account","name":"cis-central!b13.catalog.product.delete"},{"description":"Update a product in the products catalog for the current global account","name":"cis-central!b13.catalog.product.update"},{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Update directory entitlements","name":"cis-central!b13.directory.entitlement.update"},{"description":"Create an account directory entity","name":"cis-central!b13.global-account.account-directory.create"},{"description":"Delete an account directory entity","name":"cis-central!b13.global-account.account-directory.delete"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Update an account directory entity","name":"cis-central!b13.global-account.account-directory.update"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Update assigned entitlements to subaccount","name":"cis-central!b13.global-account.entitlement.subaccount.update"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Create subaccount entity","name":"cis-central!b13.global-account.subaccount.create"},{"description":"Delete subaccount entity","name":"cis-central!b13.global-account.subaccount.delete"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Update subaccount entity","name":"cis-central!b13.global-account.subaccount.update"},{"description":"Update global account entity","name":"cis-central!b13.global-account.update"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"Directory_Usage_Reporting_Viewer","roleTemplateAppId":"uas!b10418","name":"Directory Usage Reporting Viewer","attributeList":[],"description":"Role for directory members with read-only authorizations for core commercialization operations, such as viewing directory usage information.","scopes":[{"description":"","name":"uas!b10418.UAS.reporting.directory.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"uas"},{"roleTemplateName":"Directory_Viewer","roleTemplateAppId":"cis-central!b13","name":"Directory Viewer","attributeList":[],"description":"Role for directory members with read-only authorizations for core commercialization operations, such as viewing directories, subaccounts, entitlements, and regions.","scopes":[{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"GlobalAccount_Admin","roleTemplateAppId":"cis-central!b13","name":"Global Account Admin","attributeList":[],"description":"Role for global account members with read-write authorizations for core commercialization operations, such as updating global accounts, setting entitlements, and creating, updating, and deleting subaccounts.","scopes":[{"description":"Delete a product from the products catalog for the current global account","name":"cis-central!b13.catalog.product.delete"},{"description":"Update a product in the products catalog for the current global account","name":"cis-central!b13.catalog.product.update"},{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Update directory entitlements","name":"cis-central!b13.directory.entitlement.update"},{"description":"Get cloud management events on the central region","name":"cis-central!b13.event.read"},{"description":"Create an account directory entity","name":"cis-central!b13.global-account.account-directory.create"},{"description":"Delete an account directory entity","name":"cis-central!b13.global-account.account-directory.delete"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Update an account directory entity","name":"cis-central!b13.global-account.account-directory.update"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Update assigned entitlements to subaccount","name":"cis-central!b13.global-account.entitlement.subaccount.update"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Create subaccount entity","name":"cis-central!b13.global-account.subaccount.create"},{"description":"Delete subaccount entity","name":"cis-central!b13.global-account.subaccount.delete"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Update subaccount entity","name":"cis-central!b13.global-account.subaccount.update"},{"description":"Update global account entity","name":"cis-central!b13.global-account.update"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","roleTemplateAppId":"uas!b10418","name":"Global Account Usage Reporting Viewer","attributeList":[],"description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information.","scopes":[{"description":"","name":"uas!b10418.UAS.reporting.GA_Admin"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"uas"},{"roleTemplateName":"GlobalAccount_Viewer","roleTemplateAppId":"cis-central!b13","name":"Global Account Viewer","attributeList":[],"description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions.","scopes":[{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Get cloud management events on the central region","name":"cis-central!b13.event.read"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"Subaccount_System_Landscape_Administrator","roleTemplateAppId":"cmp!b17875","name":"Subaccount System Landscape Administrator","attributeList":[],"description":"Administrative access on subaccount level.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"GlobalAccount_System_Landscape_Administrator","roleTemplateAppId":"cmp!b17875","name":"System Landscape Administrator","attributeList":[],"description":"Administrative access to systems and scenario-related resources.","scopes":[{"description":"Read application application template","name":"cmp!b17875.application.application_template:read"},{"description":"Read application auths","name":"cmp!b17875.application.auths:read"},{"description":"Read applications","name":"cmp!b17875.application:read"},{"description":"Read application templates","name":"cmp!b17875.application_template:read"},{"description":"Register and update applications","name":"cmp!b17875.application:write"},{"description":"Read automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:read"},{"description":"Register and update automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:write"},{"description":"Read consumption bundle auths","name":"cmp!b17875.bundle.instance_auths:read"},{"description":"Read formations","name":"cmp!b17875.formation:read"},{"description":"Read formation templates","name":"cmp!b17875.formation_template:read"},{"description":"Write formations","name":"cmp!b17875.formation:write"},{"description":"Read label definitions","name":"cmp!b17875.label_definition:read"},{"description":"Register and update label definitions","name":"cmp!b17875.label_definition:write"},{"description":"Read runtimes and runtime contexts","name":"cmp!b17875.runtime:read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"GlobalAccount_System_Landscape_Viewer","roleTemplateAppId":"cmp!b17875","name":"System Landscape Viewer","attributeList":[],"description":"Viewer access to systems and scenario-related resources.","scopes":[{"description":"Read application application template","name":"cmp!b17875.application.application_template:read"},{"description":"Read application auths","name":"cmp!b17875.application.auths:read"},{"description":"Read applications","name":"cmp!b17875.application:read"},{"description":"Read application templates","name":"cmp!b17875.application_template:read"},{"description":"Read automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:read"},{"description":"Read consumption bundle auths","name":"cmp!b17875.bundle.instance_auths:read"},{"description":"Read formations","name":"cmp!b17875.formation:read"},{"description":"Read formation templates","name":"cmp!b17875.formation_template:read"},{"description":"Read label definitions","name":"cmp!b17875.label_definition:read"},{"description":"Read runtimes and runtime contexts","name":"cmp!b17875.runtime:read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"xsuaa_admin","roleTemplateAppId":"xsuaa!t2","name":"User and Role Administrator","attributeList":[],"description":"Manage authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Write permission for XS roles and role collections","name":"xs_authorization.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Change Identity Providers","name":"xs_idp.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Write permission for XS users","name":"xs_user.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."},{"roleTemplateName":"xsuaa_auditor","roleTemplateAppId":"xsuaa!t2","name":"User and Role Auditor","attributeList":[],"description":"Read-only access for authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:52 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - c6fdbddb-1ed2-41e5-53b9-527a626bc6a1
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 384.153256ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - df3b4186-6d5b-c775-91a8-a24501f41710
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:53 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 90f2f6f1-9628-47cb-4953-bf9d42aa4cc6
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 387.076414ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - c8141cf2-e767-ca37-cf71-5c6519d8d200
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"roleTemplateName":"Directory_Admin","roleTemplateAppId":"cis-central!b13","name":"Directory Admin","attributeList":[],"description":"Role for directory members with read-write authorizations for core commercialization operations, such as updating directories, setting entitlements, and creating, updating, and deleting subaccounts.","scopes":[{"description":"Delete a product from the products catalog for the current global account","name":"cis-central!b13.catalog.product.delete"},{"description":"Update a product in the products catalog for the current global account","name":"cis-central!b13.catalog.product.update"},{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Update directory entitlements","name":"cis-central!b13.directory.entitlement.update"},{"description":"Create an account directory entity","name":"cis-central!b13.global-account.account-directory.create"},{"description":"Delete an account directory entity","name":"cis-central!b13.global-account.account-directory.delete"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Update an account directory entity","name":"cis-central!b13.global-account.account-directory.update"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Update assigned entitlements to subaccount","name":"cis-central!b13.global-account.entitlement.subaccount.update"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Create subaccount entity","name":"cis-central!b13.global-account.subaccount.create"},{"description":"Delete subaccount entity","name":"cis-central!b13.global-account.subaccount.delete"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Update subaccount entity","name":"cis-central!b13.global-account.subaccount.update"},{"description":"Update global account entity","name":"cis-central!b13.global-account.update"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"Directory_Usage_Reporting_Viewer","roleTemplateAppId":"uas!b10418","name":"Directory Usage Reporting Viewer","attributeList":[],"description":"Role for directory members with read-only authorizations for core commercialization operations, such as viewing directory usage information.","scopes":[{"description":"","name":"uas!b10418.UAS.reporting.directory.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"uas"},{"roleTemplateName":"Directory_Viewer","roleTemplateAppId":"cis-central!b13","name":"Directory Viewer","attributeList":[],"description":"Role for directory members with read-only authorizations for core commercialization operations, such as viewing directories, subaccounts, entitlements, and regions.","scopes":[{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"GlobalAccount_Admin","roleTemplateAppId":"cis-central!b13","name":"Global Account Admin","attributeList":[],"description":"Role for global account members with read-write authorizations for core commercialization operations, such as updating global accounts, setting entitlements, and creating, updating, and deleting subaccounts.","scopes":[{"description":"Delete a product from the products catalog for the current global account","name":"cis-central!b13.catalog.product.delete"},{"description":"Update a product in the products catalog for the current global account","name":"cis-central!b13.catalog.product.update"},{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Update directory entitlements","name":"cis-central!b13.directory.entitlement.update"},{"description":"Get cloud management events on the central region","name":"cis-central!b13.event.read"},{"description":"Create an account directory entity","name":"cis-central!b13.global-account.account-directory.create"},{"description":"Delete an account directory entity","name":"cis-central!b13.global-account.account-directory.delete"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Update an account directory entity","name":"cis-central!b13.global-account.account-directory.update"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Update assigned entitlements to subaccount","name":"cis-central!b13.global-account.entitlement.subaccount.update"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Create subaccount entity","name":"cis-central!b13.global-account.subaccount.create"},{"description":"Delete subaccount entity","name":"cis-central!b13.global-account.subaccount.delete"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Update subaccount entity","name":"cis-central!b13.global-account.subaccount.update"},{"description":"Update global account entity","name":"cis-central!b13.global-account.update"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","roleTemplateAppId":"uas!b10418","name":"Global Account Usage Reporting Viewer","attributeList":[],"description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information.","scopes":[{"description":"","name":"uas!b10418.UAS.reporting.GA_Admin"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"uas"},{"roleTemplateName":"GlobalAccount_Viewer","roleTemplateAppId":"cis-central!b13","name":"Global Account Viewer","attributeList":[],"description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions.","scopes":[{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Get cloud management events on the central region","name":"cis-central!b13.event.read"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"Subaccount_System_Landscape_Administrator","roleTemplateAppId":"cmp!b17875","name":"Subaccount System Landscape Administrator","attributeList":[],"description":"Administrative access on subaccount level.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"GlobalAccount_System_Landscape_Administrator","roleTemplateAppId":"cmp!b17875","name":"System Landscape Administrator","attributeList":[],"description":"Administrative access to systems and scenario-related resources.","scopes":[{"description":"Read application application template","name":"cmp!b17875.application.application_template:read"},{"description":"Read application auths","name":"cmp!b17875.application.auths:read"},{"description":"Read applications","name":"cmp!b17875.application:read"},{"description":"Read application templates","name":"cmp!b17875.application_template:read"},{"description":"Register and update applications","name":"cmp!b17875.application:write"},{"description":"Read automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:read"},{"description":"Register and update automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:write"},{"description":"Read consumption bundle auths","name":"cmp!b17875.bundle.instance_auths:read"},{"description":"Read formations","name":"cmp!b17875.formation:read"},{"description":"Read formation templates","name":"cmp!b17875.formation_template:read"},{"description":"Write formations","name":"cmp!b17875.formation:write"},{"description":"Read label definitions","name":"cmp!b17875.label_definition:read"},{"description":"Register and update label definitions","name":"cmp!b17875.label_definition:write"},{"description":"Read runtimes and runtime contexts","name":"cmp!b17875.runtime:read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"GlobalAccount_System_Landscape_Viewer","roleTemplateAppId":"cmp!b17875","name":"System Landscape Viewer","attributeList":[],"description":"Viewer access to systems and scenario-related resources.","scopes":[{"description":"Read application application template","name":"cmp!b17875.application.application_template:read"},{"description":"Read application auths","name":"cmp!b17875.application.auths:read"},{"description":"Read applications","name":"cmp!b17875.application:read"},{"description":"Read application templates","name":"cmp!b17875.application_template:read"},{"description":"Read automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:read"},{"description":"Read consumption bundle auths","name":"cmp!b17875.bundle.instance_auths:read"},{"description":"Read formations","name":"cmp!b17875.formation:read"},{"description":"Read formation templates","name":"cmp!b17875.formation_template:read"},{"description":"Read label definitions","name":"cmp!b17875.label_definition:read"},{"description":"Read runtimes and runtime contexts","name":"cmp!b17875.runtime:read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"xsuaa_admin","roleTemplateAppId":"xsuaa!t2","name":"User and Role Administrator","attributeList":[],"description":"Manage authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Write permission for XS roles and role collections","name":"xs_authorization.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Change Identity Providers","name":"xs_idp.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Write permission for XS users","name":"xs_user.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."},{"roleTemplateName":"xsuaa_auditor","roleTemplateAppId":"xsuaa!t2","name":"User and Role Auditor","attributeList":[],"description":"Read-only access for authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:53 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 69900c7f-3def-4648-6db4-55b792268530
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 288.710298ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 1d7b16c0-eb5a-d961-5fa0-338ad880b31e
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:54 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 79333f17-5ad1-4e01-6ca8-a1e2456a88a7
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 363.44247ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 2890f7fa-9e7f-0236-5e33-6d745bf43efb
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"roleTemplateName":"Directory_Admin","roleTemplateAppId":"cis-central!b13","name":"Directory Admin","attributeList":[],"description":"Role for directory members with read-write authorizations for core commercialization operations, such as updating directories, setting entitlements, and creating, updating, and deleting subaccounts.","scopes":[{"description":"Delete a product from the products catalog for the current global account","name":"cis-central!b13.catalog.product.delete"},{"description":"Update a product in the products catalog for the current global account","name":"cis-central!b13.catalog.product.update"},{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Update directory entitlements","name":"cis-central!b13.directory.entitlement.update"},{"description":"Create an account directory entity","name":"cis-central!b13.global-account.account-directory.create"},{"description":"Delete an account directory entity","name":"cis-central!b13.global-account.account-directory.delete"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Update an account directory entity","name":"cis-central!b13.global-account.account-directory.update"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Update assigned entitlements to subaccount","name":"cis-central!b13.global-account.entitlement.subaccount.update"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Create subaccount entity","name":"cis-central!b13.global-account.subaccount.create"},{"description":"Delete subaccount entity","name":"cis-central!b13.global-account.subaccount.delete"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Update subaccount entity","name":"cis-central!b13.global-account.subaccount.update"},{"description":"Update global account entity","name":"cis-central!b13.global-account.update"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"Directory_Usage_Reporting_Viewer","roleTemplateAppId":"uas!b10418","name":"Directory Usage Reporting Viewer","attributeList":[],"description":"Role for directory members with read-only authorizations for core commercialization operations, such as viewing directory usage information.","scopes":[{"description":"","name":"uas!b10418.UAS.reporting.directory.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"uas"},{"roleTemplateName":"Directory_Viewer","roleTemplateAppId":"cis-central!b13","name":"Directory Viewer","attributeList":[],"description":"Role for directory members with read-only authorizations for core commercialization operations, such as viewing directories, subaccounts, entitlements, and regions.","scopes":[{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"GlobalAccount_Admin","roleTemplateAppId":"cis-central!b13","name":"Global Account Admin","attributeList":[],"description":"Role for global account members with read-write authorizations for core commercialization operations, such as updating global accounts, setting entitlements, and creating, updating, and deleting subaccounts.","scopes":[{"description":"Delete a product from the products catalog for the current global account","name":"cis-central!b13.catalog.product.delete"},{"description":"Update a product in the products catalog for the current global account","name":"cis-central!b13.catalog.product.update"},{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Update directory entitlements","name":"cis-central!b13.directory.entitlement.update"},{"description":"Get cloud management events on the central region","name":"cis-central!b13.event.read"},{"description":"Create an account directory entity","name":"cis-central!b13.global-account.account-directory.create"},{"description":"Delete an account directory entity","name":"cis-central!b13.global-account.account-directory.delete"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Update an account directory entity","name":"cis-central!b13.global-account.account-directory.update"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Update assigned entitlements to subaccount","name":"cis-central!b13.global-account.entitlement.subaccount.update"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Create subaccount entity","name":"cis-central!b13.global-account.subaccount.create"},{"description":"Delete subaccount entity","name":"cis-central!b13.global-account.subaccount.delete"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Update subaccount entity","name":"cis-central!b13.global-account.subaccount.update"},{"description":"Update global account entity","name":"cis-central!b13.global-account.update"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","roleTemplateAppId":"uas!b10418","name":"Global Account Usage Reporting Viewer","attributeList":[],"description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information.","scopes":[{"description":"","name":"uas!b10418.UAS.reporting.GA_Admin"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"uas"},{"roleTemplateName":"GlobalAccount_Viewer","roleTemplateAppId":"cis-central!b13","name":"Global Account Viewer","attributeList":[],"description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions.","scopes":[{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Get cloud management events on the central region","name":"cis-central!b13.event.read"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"Subaccount_System_Landscape_Administrator","roleTemplateAppId":"cmp!b17875","name":"Subaccount System Landscape Administrator","attributeList":[],"description":"Administrative access on subaccount level.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"GlobalAccount_System_Landscape_Administrator","roleTemplateAppId":"cmp!b17875","name":"System Landscape Administrator","attributeList":[],"description":"Administrative access to systems and scenario-related resources.","scopes":[{"description":"Read application application template","name":"cmp!b17875.application.application_template:read"},{"description":"Read application auths","name":"cmp!b17875.application.auths:read"},{"description":"Read applications","name":"cmp!b17875.application:read"},{"description":"Read application templates","name":"cmp!b17875.application_template:read"},{"description":"Register and update applications","name":"cmp!b17875.application:write"},{"description":"Read automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:read"},{"description":"Register and update automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:write"},{"description":"Read consumption bundle auths","name":"cmp!b17875.bundle.instance_auths:read"},{"description":"Read formations","name":"cmp!b17875.formation:read"},{"description":"Read formation templates","name":"cmp!b17875.formation_template:read"},{"description":"Write formations","name":"cmp!b17875.formation:write"},{"description":"Read label definitions","name":"cmp!b17875.label_definition:read"},{"description":"Register and update label definitions","name":"cmp!b17875.label_definition:write"},{"description":"Read runtimes and runtime contexts","name":"cmp!b17875.runtime:read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"GlobalAccount_System_Landscape_Viewer","roleTemplateAppId":"cmp!b17875","name":"System Landscape Viewer","attributeList":[],"description":"Viewer access to systems and scenario-related resources.","scopes":[{"description":"Read application application template","name":"cmp!b17875.application.application_template:read"},{"description":"Read application auths","name":"cmp!b17875.application.auths:read"},{"description":"Read applications","name":"cmp!b17875.application:read"},{"description":"Read application templates","name":"cmp!b17875.application_template:read"},{"description":"Read automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:read"},{"description":"Read consumption bundle auths","name":"cmp!b17875.bundle.instance_auths:read"},{"description":"Read formations","name":"cmp!b17875.formation:read"},{"description":"Read formation templates","name":"cmp!b17875.formation_template:read"},{"description":"Read label definitions","name":"cmp!b17875.label_definition:read"},{"description":"Read runtimes and runtime contexts","name":"cmp!b17875.runtime:read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"xsuaa_admin","roleTemplateAppId":"xsuaa!t2","name":"User and Role Administrator","attributeList":[],"description":"Manage authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Write permission for XS roles and role collections","name":"xs_authorization.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Change Identity Providers","name":"xs_idp.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Write permission for XS users","name":"xs_user.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."},{"roleTemplateName":"xsuaa_auditor","roleTemplateAppId":"xsuaa!t2","name":"User and Role Auditor","attributeList":[],"description":"Read-only access for authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:55 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - f8370ab6-df86-4f08-4644-6bc964760b76
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 294.461945ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - f3fddc8b-c667-85c8-6b4d-d1b2c9a95ee6
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:56 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 09b590f6-b7a0-4130-4266-d907a372a6be
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 346.824724ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 353fc924-ed43-0394-223e-9e509f82d2ad
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"roleTemplateName":"Directory_Admin","roleTemplateAppId":"cis-central!b13","name":"Directory Admin","attributeList":[],"description":"Role for directory members with read-write authorizations for core commercialization operations, such as updating directories, setting entitlements, and creating, updating, and deleting subaccounts.","scopes":[{"description":"Delete a product from the products catalog for the current global account","name":"cis-central!b13.catalog.product.delete"},{"description":"Update a product in the products catalog for the current global account","name":"cis-central!b13.catalog.product.update"},{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Update directory entitlements","name":"cis-central!b13.directory.entitlement.update"},{"description":"Create an account directory entity","name":"cis-central!b13.global-account.account-directory.create"},{"description":"Delete an account directory entity","name":"cis-central!b13.global-account.account-directory.delete"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Update an account directory entity","name":"cis-central!b13.global-account.account-directory.update"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Update assigned entitlements to subaccount","name":"cis-central!b13.global-account.entitlement.subaccount.update"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Create subaccount entity","name":"cis-central!b13.global-account.subaccount.create"},{"description":"Delete subaccount entity","name":"cis-central!b13.global-account.subaccount.delete"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Update subaccount entity","name":"cis-central!b13.global-account.subaccount.update"},{"description":"Update global account entity","name":"cis-central!b13.global-account.update"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"Directory_Usage_Reporting_Viewer","roleTemplateAppId":"uas!b10418","name":"Directory Usage Reporting Viewer","attributeList":[],"description":"Role for directory members with read-only authorizations for core commercialization operations, such as viewing directory usage information.","scopes":[{"description":"","name":"uas!b10418.UAS.reporting.directory.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"uas"},{"roleTemplateName":"Directory_Viewer","roleTemplateAppId":"cis-central!b13","name":"Directory Viewer","attributeList":[],"description":"Role for directory members with read-only authorizations for core commercialization operations, such as viewing directories, subaccounts, entitlements, and regions.","scopes":[{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"GlobalAccount_Admin","roleTemplateAppId":"cis-central!b13","name":"Global Account Admin","attributeList":[],"description":"Role for global account members with read-write authorizations for core commercialization operations, such as updating global accounts, setting entitlements, and creating, updating, and deleting subaccounts.","scopes":[{"description":"Delete a product from the products catalog for the current global account","name":"cis-central!b13.catalog.product.delete"},{"description":"Update a product in the products catalog for the current global account","name":"cis-central!b13.catalog.product.update"},{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Update directory entitlements","name":"cis-central!b13.directory.entitlement.update"},{"description":"Get cloud management events on the central region","name":"cis-central!b13.event.read"},{"description":"Create an account directory entity","name":"cis-central!b13.global-account.account-directory.create"},{"description":"Delete an account directory entity","name":"cis-central!b13.global-account.account-directory.delete"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Update an account directory entity","name":"cis-central!b13.global-account.account-directory.update"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Update assigned entitlements to subaccount","name":"cis-central!b13.global-account.entitlement.subaccount.update"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Create subaccount entity","name":"cis-central!b13.global-account.subaccount.create"},{"description":"Delete subaccount entity","name":"cis-central!b13.global-account.subaccount.delete"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Update subaccount entity","name":"cis-central!b13.global-account.subaccount.update"},{"description":"Update global account entity","name":"cis-central!b13.global-account.update"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","roleTemplateAppId":"uas!b10418","name":"Global Account Usage Reporting Viewer","attributeList":[],"description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information.","scopes":[{"description":"","name":"uas!b10418.UAS.reporting.GA_Admin"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"uas"},{"roleTemplateName":"GlobalAccount_Viewer","roleTemplateAppId":"cis-central!b13","name":"Global Account Viewer","attributeList":[],"description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions.","scopes":[{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Get cloud management events on the central region","name":"cis-central!b13.event.read"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"Subaccount_System_Landscape_Administrator","roleTemplateAppId":"cmp!b17875","name":"Subaccount System Landscape Administrator","attributeList":[],"description":"Administrative access on subaccount level.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"GlobalAccount_System_Landscape_Administrator","roleTemplateAppId":"cmp!b17875","name":"System Landscape Administrator","attributeList":[],"description":"Administrative access to systems and scenario-related resources.","scopes":[{"description":"Read application application template","name":"cmp!b17875.application.application_template:read"},{"description":"Read application auths","name":"cmp!b17875.application.auths:read"},{"description":"Read applications","name":"cmp!b17875.application:read"},{"description":"Read application templates","name":"cmp!b17875.application_template:read"},{"description":"Register and update applications","name":"cmp!b17875.application:write"},{"description":"Read automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:read"},{"description":"Register and update automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:write"},{"description":"Read consumption bundle auths","name":"cmp!b17875.bundle.instance_auths:read"},{"description":"Read formations","name":"cmp!b17875.formation:read"},{"description":"Read formation templates","name":"cmp!b17875.formation_template:read"},{"description":"Write formations","name":"cmp!b17875.formation:write"},{"description":"Read label definitions","name":"cmp!b17875.label_definition:read"},{"description":"Register and update label definitions","name":"cmp!b17875.label_definition:write"},{"description":"Read runtimes and runtime contexts","name":"cmp!b17875.runtime:read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"GlobalAccount_System_Landscape_Viewer","roleTemplateAppId":"cmp!b17875","name":"System Landscape Viewer","attributeList":[],"description":"Viewer access to systems and scenario-related resources.","scopes":[{"description":"Read application application template","name":"cmp!b17875.application.application_template:read"},{"description":"Read application auths","name":"cmp!b17875.application.auths:read"},{"description":"Read applications","name":"cmp!b17875.application:read"},{"description":"Read application templates","name":"cmp!b17875.application_template:read"},{"description":"Read automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:read"},{"description":"Read consumption bundle auths","name":"cmp!b17875.bundle.instance_auths:read"},{"description":"Read formations","name":"cmp!b17875.formation:read"},{"description":"Read formation templates","name":"cmp!b17875.formation_template:read"},{"description":"Read label definitions","name":"cmp!b17875.label_definition:read"},{"description":"Read runtimes and runtime contexts","name":"cmp!b17875.runtime:read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"xsuaa_admin","roleTemplateAppId":"xsuaa!t2","name":"User and Role Administrator","attributeList":[],"description":"Manage authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Write permission for XS roles and role collections","name":"xs_authorization.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Change Identity Providers","name":"xs_idp.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Write permission for XS users","name":"xs_user.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."},{"roleTemplateName":"xsuaa_auditor","roleTemplateAppId":"xsuaa!t2","name":"User and Role Auditor","attributeList":[],"description":"Read-only access for authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:57 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 722fffe4-f645-4050-53ad-8dcdf53c0358
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 291.036953ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 30a3777a-e1b5-00ee-7da7-a060e90ecbba
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:57 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 5680a156-9d4a-487f-5de8-2a792475b688
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 365.406959ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - cb10273e-b84b-8910-eff0-9d9a44e22da2
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"roleTemplateName":"Directory_Admin","roleTemplateAppId":"cis-central!b13","name":"Directory Admin","attributeList":[],"description":"Role for directory members with read-write authorizations for core commercialization operations, such as updating directories, setting entitlements, and creating, updating, and deleting subaccounts.","scopes":[{"description":"Delete a product from the products catalog for the current global account","name":"cis-central!b13.catalog.product.delete"},{"description":"Update a product in the products catalog for the current global account","name":"cis-central!b13.catalog.product.update"},{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Update directory entitlements","name":"cis-central!b13.directory.entitlement.update"},{"description":"Create an account directory entity","name":"cis-central!b13.global-account.account-directory.create"},{"description":"Delete an account directory entity","name":"cis-central!b13.global-account.account-directory.delete"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Update an account directory entity","name":"cis-central!b13.global-account.account-directory.update"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Update assigned entitlements to subaccount","name":"cis-central!b13.global-account.entitlement.subaccount.update"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Create subaccount entity","name":"cis-central!b13.global-account.subaccount.create"},{"description":"Delete subaccount entity","name":"cis-central!b13.global-account.subaccount.delete"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Update subaccount entity","name":"cis-central!b13.global-account.subaccount.update"},{"description":"Update global account entity","name":"cis-central!b13.global-account.update"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"Directory_Usage_Reporting_Viewer","roleTemplateAppId":"uas!b10418","name":"Directory Usage Reporting Viewer","attributeList":[],"description":"Role for directory members with read-only authorizations for core commercialization operations, such as viewing directory usage information.","scopes":[{"description":"","name":"uas!b10418.UAS.reporting.directory.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"uas"},{"roleTemplateName":"Directory_Viewer","roleTemplateAppId":"cis-central!b13","name":"Directory Viewer","attributeList":[],"description":"Role for directory members with read-only authorizations for core commercialization operations, such as viewing directories, subaccounts, entitlements, and regions.","scopes":[{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"GlobalAccount_Admin","roleTemplateAppId":"cis-central!b13","name":"Global Account Admin","attributeList":[],"description":"Role for global account members with read-write authorizations for core commercialization operations, such as updating global accounts, setting entitlements, and creating, updating, and deleting subaccounts.","scopes":[{"description":"Delete a product from the products catalog for the current global account","name":"cis-central!b13.catalog.product.delete"},{"description":"Update a product in the products catalog for the current global account","name":"cis-central!b13.catalog.product.update"},{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Update directory entitlements","name":"cis-central!b13.directory.entitlement.update"},{"description":"Get cloud management events on the central region","name":"cis-central!b13.event.read"},{"description":"Create an account directory entity","name":"cis-central!b13.global-account.account-directory.create"},{"description":"Delete an account directory entity","name":"cis-central!b13.global-account.account-directory.delete"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Update an account directory entity","name":"cis-central!b13.global-account.account-directory.update"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Update assigned entitlements to subaccount","name":"cis-central!b13.global-account.entitlement.subaccount.update"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Create subaccount entity","name":"cis-central!b13.global-account.subaccount.create"},{"description":"Delete subaccount entity","name":"cis-central!b13.global-account.subaccount.delete"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Update subaccount entity","name":"cis-central!b13.global-account.subaccount.update"},{"description":"Update global account entity","name":"cis-central!b13.global-account.update"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","roleTemplateAppId":"uas!b10418","name":"Global Account Usage Reporting Viewer","attributeList":[],"description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information.","scopes":[{"description":"","name":"uas!b10418.UAS.reporting.GA_Admin"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"uas"},{"roleTemplateName":"GlobalAccount_Viewer","roleTemplateAppId":"cis-central!b13","name":"Global Account Viewer","attributeList":[],"description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions.","scopes":[{"description":"Get directory entitlements","name":"cis-central!b13.directory.entitlement.read"},{"description":"Get cloud management events on the central region","name":"cis-central!b13.event.read"},{"description":"Get account directory entities","name":"cis-central!b13.global-account.account-directory.read"},{"description":"Get assignments of service plans and entitlement definitions","name":"cis-central!b13.global-account.entitlement.read"},{"description":"Get global account entities","name":"cis-central!b13.global-account.read"},{"description":"Get available regions","name":"cis-central!b13.global-account.region.read"},{"description":"Get subaccount entities","name":"cis-central!b13.global-account.subaccount.read"},{"description":"Get statuses for jobs","name":"cis-central!b13.job.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cis-central","appDescription":"Management of your global accounts, subaccounts, directories, and entitlements."},{"roleTemplateName":"Subaccount_System_Landscape_Administrator","roleTemplateAppId":"cmp!b17875","name":"Subaccount System Landscape Administrator","attributeList":[],"description":"Administrative access on subaccount level.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"GlobalAccount_System_Landscape_Administrator","roleTemplateAppId":"cmp!b17875","name":"System Landscape Administrator","attributeList":[],"description":"Administrative access to systems and scenario-related resources.","scopes":[{"description":"Read application application template","name":"cmp!b17875.application.application_template:read"},{"description":"Read application auths","name":"cmp!b17875.application.auths:read"},{"description":"Read applications","name":"cmp!b17875.application:read"},{"description":"Read application templates","name":"cmp!b17875.application_template:read"},{"description":"Register and update applications","name":"cmp!b17875.application:write"},{"description":"Read automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:read"},{"description":"Register and update automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:write"},{"description":"Read consumption bundle auths","name":"cmp!b17875.bundle.instance_auths:read"},{"description":"Read formations","name":"cmp!b17875.formation:read"},{"description":"Read formation templates","name":"cmp!b17875.formation_template:read"},{"description":"Write formations","name":"cmp!b17875.formation:write"},{"description":"Read label definitions","name":"cmp!b17875.label_definition:read"},{"description":"Register and update label definitions","name":"cmp!b17875.label_definition:write"},{"description":"Read runtimes and runtime contexts","name":"cmp!b17875.runtime:read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"GlobalAccount_System_Landscape_Viewer","roleTemplateAppId":"cmp!b17875","name":"System Landscape Viewer","attributeList":[],"description":"Viewer access to systems and scenario-related resources.","scopes":[{"description":"Read application application template","name":"cmp!b17875.application.application_template:read"},{"description":"Read application auths","name":"cmp!b17875.application.auths:read"},{"description":"Read applications","name":"cmp!b17875.application:read"},{"description":"Read application templates","name":"cmp!b17875.application_template:read"},{"description":"Read automatic scenario assignments","name":"cmp!b17875.automatic_scenario_assignment:read"},{"description":"Read consumption bundle auths","name":"cmp!b17875.bundle.instance_auths:read"},{"description":"Read formations","name":"cmp!b17875.formation:read"},{"description":"Read formation templates","name":"cmp!b17875.formation_template:read"},{"description":"Read label definitions","name":"cmp!b17875.label_definition:read"},{"description":"Read runtimes and runtime contexts","name":"cmp!b17875.runtime:read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true,"appName":"cmp","appDescription":"Central Management Plane"},{"roleTemplateName":"xsuaa_admin","roleTemplateAppId":"xsuaa!t2","name":"User and Role Administrator","attributeList":[],"description":"Manage authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Write permission for XS roles and role collections","name":"xs_authorization.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Change Identity Providers","name":"xs_idp.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Write permission for XS users","name":"xs_user.write","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."},{"roleTemplateName":"xsuaa_auditor","roleTemplateAppId":"xsuaa!t2","name":"User and Role Auditor","attributeList":[],"description":"Read-only access for authorizations, trusted identity providers, and users.","scopes":[{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]},{"description":"Read permission for XS roles and role collections","name":"xs_authorization.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"List Identity Providers","name":"xs_idp.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]},{"description":"Read permission for XS users","name":"xs_user.read","granted-apps":["*"],"grant-as-authority-to-apps":["cam-integration!t2","cis-central!b13","cis-local!b13","spc-integration!t2"]}],"isReadOnly":true,"appName":"xsuaa","appDescription":"Administration of authorizations, trusted identity providers, and users."}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:58 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 2cd0cd89-05d2-4887-60fa-1038d2859723
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 294.716713ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - b8c62dbb-8602-80e3-4962-cd9ddd87e357
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:27:59 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 15db006d-9e72-483a-56f0-9c379649417e
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 331.16254ms

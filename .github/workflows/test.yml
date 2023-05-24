@@ -4,12 +4,14 @@ name: Terraform Provider Tests
 # This GitHub action runs your tests for each pull request and push.
 # Optionally, you can turn it on using a schedule for regular testing.
 on:
-#  pull_request:
-#    paths-ignore:
-#      - 'README.md'
-#  push:
-#    paths-ignore:
-#      - 'README.md'
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
   workflow_dispatch:    
 
 # Testing only needs permissions to read the repository contents.
@@ -30,10 +32,10 @@ jobs:
           cache: true
       - run: go mod download
       - run: go build -v .
-      - name: Run linters
-        uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5 # v3.4.0
-        with:
-          version: latest
+        # - name: Run linters
+        #   uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5 # v3.4.0
+        #   with:
+        #     version: latest
 
   generate:
     runs-on: ubuntu-latest

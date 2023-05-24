@@ -1,0 +1,1073 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 9313732f-cb45-46ec-52b1-dfb8e5647651
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:00 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 3a10f479-0359-49d7-492a-07d44e88ec84
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 328.426931ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cis-local!b2","roleName":"Subaccount Viewer","roleTemplateName":"Subaccount_Viewer","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 6dcdb8d3-9b3a-5c7b-1dde-1a0327e3b82f
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:28:01 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?get
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 8ebd23db-b8db-45a0-628e-6c792733e94a
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 162.047779ms
+    - id: 2
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cis-local!b2","roleName":"Subaccount Viewer","roleTemplateName":"Subaccount_Viewer","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+            X-Correlationid:
+                - 6dcdb8d3-9b3a-5c7b-1dde-1a0327e3b82f
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"roleTemplateName":"Subaccount_Viewer","roleTemplateAppId":"cis-local!b2","name":"Subaccount Viewer","attributeList":[],"description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results.","scopes":[{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:01 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 2a19a2d3-a995-4f12-4590-bf1fa5bc631b
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 144.728564ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 044d2ce8-0bd3-fa8c-2b6c-40395b941918
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:02 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 552603c6-5c8e-424a-65f9-bbbe415cbd2f
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 354.504018ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cis-local!b2","roleName":"Subaccount Viewer","roleTemplateName":"Subaccount_Viewer","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 44cfcbac-972f-a9e7-cd13-777d03bf0053
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:28:02 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?get
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - dcc8174e-66db-4cba-4934-df0cfde25f17
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 254.569223ms
+    - id: 5
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cis-local!b2","roleName":"Subaccount Viewer","roleTemplateName":"Subaccount_Viewer","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+            X-Correlationid:
+                - 44cfcbac-972f-a9e7-cd13-777d03bf0053
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"roleTemplateName":"Subaccount_Viewer","roleTemplateAppId":"cis-local!b2","name":"Subaccount Viewer","attributeList":[],"description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results.","scopes":[{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:03 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - eb079251-ad37-421a-5a09-ee9613142eab
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 160.347083ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - e538a320-2874-5f25-89b9-9b4659a315be
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:04 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - d08678aa-07db-44c2-6847-388cd492876a
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 369.002969ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cis-local!b2","roleName":"Subaccount Viewer","roleTemplateName":"Subaccount_Viewer","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - e24b1645-8e69-ed54-4aa9-db679259c9e1
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:28:04 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?get
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 4da29085-af7e-4359-6960-df7d3883fc22
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 184.033879ms
+    - id: 8
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cis-local!b2","roleName":"Subaccount Viewer","roleTemplateName":"Subaccount_Viewer","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+            X-Correlationid:
+                - e24b1645-8e69-ed54-4aa9-db679259c9e1
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"roleTemplateName":"Subaccount_Viewer","roleTemplateAppId":"cis-local!b2","name":"Subaccount Viewer","attributeList":[],"description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results.","scopes":[{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:05 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 66793d01-2feb-41b7-6188-2c41064867f6
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 100.952517ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - e78bea7c-6f0d-3aac-6ae6-c3d438c079f7
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:05 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 8dc27e08-c34b-40ed-62e6-3db17f0dd170
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 377.343616ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cis-local!b2","roleName":"Subaccount Viewer","roleTemplateName":"Subaccount_Viewer","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 72b9fd28-5eef-00b1-724c-5d88db7c80cd
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:28:06 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?get
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 91102ec8-bbff-4ce6-737e-d09cc9b9d24b
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 185.401307ms
+    - id: 11
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cis-local!b2","roleName":"Subaccount Viewer","roleTemplateName":"Subaccount_Viewer","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+            X-Correlationid:
+                - 72b9fd28-5eef-00b1-724c-5d88db7c80cd
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"roleTemplateName":"Subaccount_Viewer","roleTemplateAppId":"cis-local!b2","name":"Subaccount Viewer","attributeList":[],"description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results.","scopes":[{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:06 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - a04b723e-2005-4248-4333-97d29aab4323
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 154.618607ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 5fd231a4-fdad-5a85-3740-c276e8350d73
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:07 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 8c5b7417-2cf2-4bf7-6e53-1f3db72a5280
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 358.519982ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cis-local!b2","roleName":"Subaccount Viewer","roleTemplateName":"Subaccount_Viewer","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - d2fdf4f5-84b2-7f12-d6a0-c7d76819b6b1
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:28:08 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?get
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 68d8081e-1b46-4f25-692d-a3562c73a3f6
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 168.549214ms
+    - id: 14
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cis-local!b2","roleName":"Subaccount Viewer","roleTemplateName":"Subaccount_Viewer","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+            X-Correlationid:
+                - d2fdf4f5-84b2-7f12-d6a0-c7d76819b6b1
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"roleTemplateName":"Subaccount_Viewer","roleTemplateAppId":"cis-local!b2","name":"Subaccount Viewer","attributeList":[],"description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results.","scopes":[{"description":"Get assigned entitlements for a subaccount","name":"cis-local!b2.subaccount.entitlement.read"},{"description":"Get cloud management events on the local region","name":"cis-local!b2.event.read"},{"description":"Get environment instance entities","name":"cis-local!b2.subaccount.environment.read"},{"description":"Get status of users jobs","name":"cis-local!b2.job.read"},{"description":"View all multitenant applications to which a subaccount can subscribe","name":"cis-local!b2.subaccount.application.subscription.read"},{"description":"Enable account navigation","name":"xs_account.access","granted-apps":["*"]}],"isReadOnly":true}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:08 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 60a86211-49f5-43c6-6f81-4da05fdc4f69
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 95.683424ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 1b50540f-60ab-e3ea-1ded-4aec72d82947
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:09 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 0f3e01c5-9772-426e-49f5-07bcaa217600
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 382.883892ms

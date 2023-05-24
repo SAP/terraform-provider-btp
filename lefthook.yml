@@ -1,0 +1,11 @@
+pre-commit:
+  parallel: true
+  commands:
+    gofmt:
+      glob: "*.go"
+      run: go fmt ./...
+      exclude: "vendor/*"
+    terraformfmt:
+      glob: "*.tf"
+      run: terraform fmt {staged_files}
+      exclude: "vendor/*"

@@ -1,0 +1,1073 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 0e7858d9-0317-a357-fcec-59cf481b6b3b
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:01 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - ffe2fe64-1df3-4057-7d83-9f4601ebc369
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 388.961893ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - f91f1829-9615-aee0-9fc7-7d0a8e3f3a09
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:28:01 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 7ed95d05-be03-4bb3-5730-73ff758f4d02
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 193.181474ms
+    - id: 2
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+            X-Correlationid:
+                - f91f1829-9615-aee0-9fc7-7d0a8e3f3a09
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud Connector.","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"}],"isReadOnly":true},{"name":"Connectivity and Destination Administrator","description":"Operate the data transmission tunnels used by the Cloud Connector and manage the destination configurations, certificates and subaccount trust.","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"}],"isReadOnly":true},{"name":"Destination Administrator","description":"Manage the destination configurations, certificates and subaccount trust.","roleReferences":[{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"}],"isReadOnly":true},{"name":"Subaccount Administrator","description":"Administrative access to the subaccount","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"},{"roleTemplateAppId":"cis-local!b2","roleTemplateName":"Subaccount_Admin","name":"Subaccount Admin","description":"Role for subaccount members with read-write authorizations for core commercialization operations, such as viewing subaccount entitlements, and creating and deleting environment instances."},{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Administrator","name":"Subaccount Service Administrator","description":"Administrative access to service brokers and environments on a subaccount level."},{"roleTemplateAppId":"xsuaa!t1","roleTemplateName":"xsuaa_admin","name":"User and Role Administrator","description":"Manage authorizations, trusted identity providers, and users."}],"isReadOnly":true},{"name":"Subaccount Service Administrator","description":"Administrative access to service brokers and environments on a subaccount level.","roleReferences":[{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Admin","name":"Subaccount_Service_Admin","description":"Administrative access to service brokers and environments on a subaccount level."}],"isReadOnly":true},{"name":"Subaccount Viewer","description":"Read-only access to the subaccount","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Auditor","name":"Cloud Connector Auditor","description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Viewer","name":"Destination Viewer","description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"},{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Auditor","name":"Subaccount Service Auditor","description":"Read-only access to service brokers and environments on a subaccount level."},{"roleTemplateAppId":"cis-local!b2","roleTemplateName":"Subaccount_Viewer","name":"Subaccount Viewer","description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results."},{"roleTemplateAppId":"xsuaa!t1","roleTemplateName":"xsuaa_auditor","name":"User and Role Auditor","description":"Read-only access for authorizations, trusted identity providers, and users."}],"isReadOnly":true}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:02 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 03029992-054a-4ff7-7cc8-647ff6187acc
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 123.040843ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - ec366caf-2b56-3a7c-edf9-dd96476b3b20
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:02 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - c0580131-b903-4345-67ff-df2c9f932797
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 332.963414ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 8fd314a9-80de-33ec-c91e-716ac81dce64
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:28:03 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 206f6ba3-0006-4aae-57cd-5e870de28a21
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 175.022468ms
+    - id: 5
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+            X-Correlationid:
+                - 8fd314a9-80de-33ec-c91e-716ac81dce64
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud Connector.","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"}],"isReadOnly":true},{"name":"Connectivity and Destination Administrator","description":"Operate the data transmission tunnels used by the Cloud Connector and manage the destination configurations, certificates and subaccount trust.","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"}],"isReadOnly":true},{"name":"Destination Administrator","description":"Manage the destination configurations, certificates and subaccount trust.","roleReferences":[{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"}],"isReadOnly":true},{"name":"Subaccount Administrator","description":"Administrative access to the subaccount","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"},{"roleTemplateAppId":"cis-local!b2","roleTemplateName":"Subaccount_Admin","name":"Subaccount Admin","description":"Role for subaccount members with read-write authorizations for core commercialization operations, such as viewing subaccount entitlements, and creating and deleting environment instances."},{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Administrator","name":"Subaccount Service Administrator","description":"Administrative access to service brokers and environments on a subaccount level."},{"roleTemplateAppId":"xsuaa!t1","roleTemplateName":"xsuaa_admin","name":"User and Role Administrator","description":"Manage authorizations, trusted identity providers, and users."}],"isReadOnly":true},{"name":"Subaccount Service Administrator","description":"Administrative access to service brokers and environments on a subaccount level.","roleReferences":[{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Admin","name":"Subaccount_Service_Admin","description":"Administrative access to service brokers and environments on a subaccount level."}],"isReadOnly":true},{"name":"Subaccount Viewer","description":"Read-only access to the subaccount","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Auditor","name":"Cloud Connector Auditor","description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Viewer","name":"Destination Viewer","description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"},{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Auditor","name":"Subaccount Service Auditor","description":"Read-only access to service brokers and environments on a subaccount level."},{"roleTemplateAppId":"cis-local!b2","roleTemplateName":"Subaccount_Viewer","name":"Subaccount Viewer","description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results."},{"roleTemplateAppId":"xsuaa!t1","roleTemplateName":"xsuaa_auditor","name":"User and Role Auditor","description":"Read-only access for authorizations, trusted identity providers, and users."}],"isReadOnly":true}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:03 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 61da15f4-a08f-4e7c-6d7b-f416e4ffc911
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 97.120838ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 1754c0f8-5a38-de15-ffea-f090145a5285
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:04 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 07530886-04ea-404a-6e68-a6aa98f9360b
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 360.598273ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 89d36eab-09ef-76c2-e542-d5e100155703
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:28:05 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - f976b47a-df69-490b-7541-6ba90ec665d7
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 211.304104ms
+    - id: 8
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+            X-Correlationid:
+                - 89d36eab-09ef-76c2-e542-d5e100155703
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud Connector.","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"}],"isReadOnly":true},{"name":"Connectivity and Destination Administrator","description":"Operate the data transmission tunnels used by the Cloud Connector and manage the destination configurations, certificates and subaccount trust.","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"}],"isReadOnly":true},{"name":"Destination Administrator","description":"Manage the destination configurations, certificates and subaccount trust.","roleReferences":[{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"}],"isReadOnly":true},{"name":"Subaccount Administrator","description":"Administrative access to the subaccount","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"},{"roleTemplateAppId":"cis-local!b2","roleTemplateName":"Subaccount_Admin","name":"Subaccount Admin","description":"Role for subaccount members with read-write authorizations for core commercialization operations, such as viewing subaccount entitlements, and creating and deleting environment instances."},{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Administrator","name":"Subaccount Service Administrator","description":"Administrative access to service brokers and environments on a subaccount level."},{"roleTemplateAppId":"xsuaa!t1","roleTemplateName":"xsuaa_admin","name":"User and Role Administrator","description":"Manage authorizations, trusted identity providers, and users."}],"isReadOnly":true},{"name":"Subaccount Service Administrator","description":"Administrative access to service brokers and environments on a subaccount level.","roleReferences":[{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Admin","name":"Subaccount_Service_Admin","description":"Administrative access to service brokers and environments on a subaccount level."}],"isReadOnly":true},{"name":"Subaccount Viewer","description":"Read-only access to the subaccount","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Auditor","name":"Cloud Connector Auditor","description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Viewer","name":"Destination Viewer","description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"},{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Auditor","name":"Subaccount Service Auditor","description":"Read-only access to service brokers and environments on a subaccount level."},{"roleTemplateAppId":"cis-local!b2","roleTemplateName":"Subaccount_Viewer","name":"Subaccount Viewer","description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results."},{"roleTemplateAppId":"xsuaa!t1","roleTemplateName":"xsuaa_auditor","name":"User and Role Auditor","description":"Read-only access for authorizations, trusted identity providers, and users."}],"isReadOnly":true}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:05 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 5e0b521b-4a8e-4c41-7c31-3da7dc128fb3
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 71.281587ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 655311b7-f2b3-eb97-dac8-23115fbf6381
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:05 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 8cc0b15b-dd71-464b-4243-51cf701af459
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 385.154017ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 7124593c-a490-1877-5dad-da10e08e7062
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:28:06 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - f44b236a-ee54-4547-4e95-2af99ad8ae70
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 156.54772ms
+    - id: 11
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+            X-Correlationid:
+                - 7124593c-a490-1877-5dad-da10e08e7062
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud Connector.","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"}],"isReadOnly":true},{"name":"Connectivity and Destination Administrator","description":"Operate the data transmission tunnels used by the Cloud Connector and manage the destination configurations, certificates and subaccount trust.","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"}],"isReadOnly":true},{"name":"Destination Administrator","description":"Manage the destination configurations, certificates and subaccount trust.","roleReferences":[{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"}],"isReadOnly":true},{"name":"Subaccount Administrator","description":"Administrative access to the subaccount","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"},{"roleTemplateAppId":"cis-local!b2","roleTemplateName":"Subaccount_Admin","name":"Subaccount Admin","description":"Role for subaccount members with read-write authorizations for core commercialization operations, such as viewing subaccount entitlements, and creating and deleting environment instances."},{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Administrator","name":"Subaccount Service Administrator","description":"Administrative access to service brokers and environments on a subaccount level."},{"roleTemplateAppId":"xsuaa!t1","roleTemplateName":"xsuaa_admin","name":"User and Role Administrator","description":"Manage authorizations, trusted identity providers, and users."}],"isReadOnly":true},{"name":"Subaccount Service Administrator","description":"Administrative access to service brokers and environments on a subaccount level.","roleReferences":[{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Admin","name":"Subaccount_Service_Admin","description":"Administrative access to service brokers and environments on a subaccount level."}],"isReadOnly":true},{"name":"Subaccount Viewer","description":"Read-only access to the subaccount","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Auditor","name":"Cloud Connector Auditor","description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Viewer","name":"Destination Viewer","description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"},{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Auditor","name":"Subaccount Service Auditor","description":"Read-only access to service brokers and environments on a subaccount level."},{"roleTemplateAppId":"cis-local!b2","roleTemplateName":"Subaccount_Viewer","name":"Subaccount Viewer","description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results."},{"roleTemplateAppId":"xsuaa!t1","roleTemplateName":"xsuaa_auditor","name":"User and Role Auditor","description":"Read-only access for authorizations, trusted identity providers, and users."}],"isReadOnly":true}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:06 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 17ddcae4-5447-4a5f-4ad8-dc81333fd00e
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 163.291583ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - ae1d2a41-8dde-7816-0e0d-985917fb145c
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:07 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 0f86ded8-399f-4cb3-4391-f618753874a7
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 360.216993ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 14743648-aae5-d760-02e8-eb8e24c11c26
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 24 May 2023 09:28:08 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 2bf3d934-29f7-47c2-5669-42a46322a215
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 165.985962ms
+    - id: 14
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+            X-Correlationid:
+                - 14743648-aae5-d760-02e8-eb8e24c11c26
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-acc-static-b8xxozer
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud Connector.","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"}],"isReadOnly":true},{"name":"Connectivity and Destination Administrator","description":"Operate the data transmission tunnels used by the Cloud Connector and manage the destination configurations, certificates and subaccount trust.","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"}],"isReadOnly":true},{"name":"Destination Administrator","description":"Manage the destination configurations, certificates and subaccount trust.","roleReferences":[{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"}],"isReadOnly":true},{"name":"Subaccount Administrator","description":"Administrative access to the subaccount","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Administrator","name":"Cloud Connector Administrator","description":"Operate the data transmission tunnels used by the Cloud connector"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Administrator","name":"Destination Administrator","description":"Manage destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"},{"roleTemplateAppId":"cis-local!b2","roleTemplateName":"Subaccount_Admin","name":"Subaccount Admin","description":"Role for subaccount members with read-write authorizations for core commercialization operations, such as viewing subaccount entitlements, and creating and deleting environment instances."},{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Administrator","name":"Subaccount Service Administrator","description":"Administrative access to service brokers and environments on a subaccount level."},{"roleTemplateAppId":"xsuaa!t1","roleTemplateName":"xsuaa_admin","name":"User and Role Administrator","description":"Manage authorizations, trusted identity providers, and users."}],"isReadOnly":true},{"name":"Subaccount Service Administrator","description":"Administrative access to service brokers and environments on a subaccount level.","roleReferences":[{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Admin","name":"Subaccount_Service_Admin","description":"Administrative access to service brokers and environments on a subaccount level."}],"isReadOnly":true},{"name":"Subaccount Viewer","description":"Read-only access to the subaccount","roleReferences":[{"roleTemplateAppId":"connectivity!b10","roleTemplateName":"Cloud_Connector_Auditor","name":"Cloud Connector Auditor","description":"View the data transmission tunnels used by the Cloud connector to communicate with back-end systems"},{"roleTemplateAppId":"destination-xsappname!b9","roleTemplateName":"Destination_Viewer","name":"Destination Viewer","description":"View destination configurations, certificates and signing keys for SAML assertions issued by the Destination service"},{"roleTemplateAppId":"service-manager!b3","roleTemplateName":"Subaccount_Service_Auditor","name":"Subaccount Service Auditor","description":"Read-only access to service brokers and environments on a subaccount level."},{"roleTemplateAppId":"cis-local!b2","roleTemplateName":"Subaccount_Viewer","name":"Subaccount Viewer","description":"Role for subaccount members with read-only authorizations for core commercialization operations, such as viewing subaccount entitlements, details of environment instances, and job results."},{"roleTemplateAppId":"xsuaa!t1","roleTemplateName":"xsuaa_auditor","name":"User and Role Auditor","description":"Read-only access for authorizations, trusted identity providers, and users."}],"isReadOnly":true}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:08 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - f5c8b779-93d7-485e-47f3-8b979fd231ea
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 76.687882ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 01eef036-0e10-21b7-1ce0-4d6d09d9172e
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 24 May 2023 09:28:09 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 8a585858-861d-49d5-4f1d-5505d2964d55
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 400.925925ms
