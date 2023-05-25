@@ -80,5 +80,23 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
-        run: go test -v -cover ./internal/provider/
+        run: go test -v -cover -coverprofile=cover.out -timeout=120s -parallel=4 ./...
         timeout-minutes: 10
+      - uses: actions/upload-artifact@v1
+        with:
+          name: coverage-report
+          path: cover.out
+
+            # TODO: activate once public
+            #  sonar:
+            #    needs: test
+            #    runs-on: ubuntu-latest
+            #    steps:
+            #    - uses: actions/checkout@v3
+            #    - uses: actions/download-artifact@v1
+            #      with:
+            #        name: coverage-#report
+            #    - uses: sonarsource/sonarcloud-github-action@master
+            #      env:
+            #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            #        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
