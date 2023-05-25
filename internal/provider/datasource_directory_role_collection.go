@@ -55,7 +55,7 @@ func (ds *directoryRoleCollectionDataSource) Configure(_ context.Context, req da
 
 func (ds *directoryRoleCollectionDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a specific role collection.`,
+		MarkdownDescription: `Get details about a specific directory role collection.`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",

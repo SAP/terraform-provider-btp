@@ -2,12 +2,12 @@
 page_title: "btp_globalaccount_role Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Get details about a specific role.
+  Get details about a specific global account role.
 ---
 
 # btp_globalaccount_role (Data Source)
 
-Get details about a specific role.
+Get details about a specific global account role.
 
 ## Example Usage
 

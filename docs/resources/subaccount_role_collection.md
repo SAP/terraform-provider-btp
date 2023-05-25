@@ -2,14 +2,14 @@
 page_title: "btp_subaccount_role_collection Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Create a role collection.
+  Create a role collection in a subaccount.
   Further documentation
   https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html
 ---
 
 # btp_subaccount_role_collection (Resource)
 
-Create a role collection.
+Create a role collection in a subaccount.
 
 __Further documentation__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html

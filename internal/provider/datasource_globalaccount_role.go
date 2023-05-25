@@ -55,7 +55,7 @@ func (ds *globalaccountRoleDataSource) Configure(_ context.Context, req datasour
 
 func (ds *globalaccountRoleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a specific role.`,
+		MarkdownDescription: `Get details about a specific global account role.`,
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role.",
