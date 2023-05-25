@@ -28,6 +28,7 @@ type globalaccountRoleScope struct {
 
 type globalaccountRoleDataSourceConfig struct {
 	/* INPUT */
+	Id                types.String `tfsdk:"id"`
 	Name              types.String `tfsdk:"name"`
 	RoleTemplateAppId types.String `tfsdk:"app_id"`
 	RoleTemplateName  types.String `tfsdk:"role_template_name"`
@@ -57,6 +58,11 @@ func (ds *globalaccountRoleDataSource) Schema(_ context.Context, _ datasource.Sc
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Get details about a specific global account role.`,
 		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource einstead",
+				MarkdownDescription: "The ID of the global account",
+				Computed:            true,
+			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role.",
 				Required:            true,
@@ -138,6 +144,7 @@ func (ds *globalaccountRoleDataSource) Read(ctx context.Context, req datasource.
 		return
 	}
 
+	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
 	data.Description = types.StringValue(cliRes.Description)
 	data.IsReadOnly = types.BoolValue(cliRes.IsReadOnly)
 	data.Scopes = []subaccountRoleScope{}
