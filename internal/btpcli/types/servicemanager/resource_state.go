@@ -2,12 +2,12 @@ package servicemanager
 
 const (
 	TypeCreate string = "CREATE"
-	TypeUpdate        = "UPDATE"
-	TypeDelete        = "DELETE"
+	TypeUpdate string = "UPDATE"
+	TypeDelete string = "DELETE"
 )
 
 const (
 	StateInProgress string = "in progress"
-	StateFailed            = "failed"
-	StateSucceeded         = "succeeded"
+	StateFailed     string = "failed"
+	StateSucceeded  string = "succeeded"
 )

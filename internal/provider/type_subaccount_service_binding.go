@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -33,7 +32,7 @@ func subaccountServiceBindingValueFrom(ctx context.Context, value servicemanager
 		Name:              types.StringValue(value.Name),
 		Ready:             types.BoolValue(value.Ready),
 		ServiceInstanceId: types.StringValue(value.ServiceInstanceId),
-		Credentials:       types.StringValue(fmt.Sprintf("%s", value.Credentials)),
+		Credentials:       types.StringValue(string(value.Credentials)),
 		State:             types.StringValue(value.LastOperation.State),
 		CreatedDate:       timeToValue(value.CreatedAt),
 		LastModified:      timeToValue(value.UpdatedAt),

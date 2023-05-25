@@ -12,10 +12,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	resourcehelper "github.com/hashicorp/terraform-plugin-testing/helper/resource"
-
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/servicemanager"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
@@ -181,7 +180,7 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	state.Parameters = plan.Parameters
 	resp.Diagnostics.Append(diags...)
 
-	createStateConf := &resourcehelper.StateChangeConf{
+	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{servicemanager.StateSucceeded, servicemanager.StateFailed},
 		Refresh: func() (interface{}, string, error) {
@@ -199,6 +198,9 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	}
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Creating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
+	}
 
 	state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters

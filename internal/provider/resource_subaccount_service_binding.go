@@ -14,11 +14,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	resourcehelper "github.com/hashicorp/terraform-plugin-testing/helper/resource"
-
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/servicemanager"
 	"github.com/SAP/terraform-provider-btp/internal/tfdefaults"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
@@ -168,7 +167,7 @@ func (rs *subaccountServiceBindingResource) Create(ctx context.Context, req reso
 	updatedPlan, diags := subaccountServiceBindingValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
-	createStateConf := &resourcehelper.StateChangeConf{
+	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{servicemanager.StateSucceeded, servicemanager.StateFailed},
 		Refresh: func() (interface{}, string, error) {
@@ -186,6 +185,9 @@ func (rs *subaccountServiceBindingResource) Create(ctx context.Context, req reso
 	}
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Creating Resource Service Binding (Subaccount)", fmt.Sprintf("%s", err))
+	}
 
 	updatedPlan, diags = subaccountServiceBindingValueFrom(ctx, updatedRes.(servicemanager.ServiceBindingResponseObject))
 	updatedPlan.Parameters = plan.Parameters

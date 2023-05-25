@@ -15,7 +15,7 @@ func TestDataSourceSubaccountRoleCollections(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_subaccount_role_collections")
-		defer rec.Stop()
+		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,

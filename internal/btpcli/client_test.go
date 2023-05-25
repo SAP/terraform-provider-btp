@@ -42,7 +42,7 @@ func TestV2Client_New(t *testing.T) {
 }
 
 func TestV2Client_ProtocolVersion(t *testing.T) {
-	assert.Regexp(t, regexp.MustCompile("^v\\d+\\.\\d+\\.\\d+$"), cliTargetProtocolVersion, "cliTargetProtocolVersion must be valid semver")
+	assert.Regexp(t, regexp.MustCompile(`^v\d+\.\d+\.\d+$`), cliTargetProtocolVersion, "cliTargetProtocolVersion must be valid semver")
 }
 
 func TestV2Client_Login(t *testing.T) {
@@ -199,7 +199,7 @@ func TestV2Client_Execute(t *testing.T) {
 
 			w.Header().Set(HeaderCLIBackendStatus, "200")
 			assertV2DefaultHeader(t, r, http.MethodPost)
-			assert.Equal(t, ActionGet, r.URL.RawQuery)
+			assert.Equal(t, string(ActionGet), r.URL.RawQuery)
 			fmt.Fprintf(w, "{}")
 		}))
 		defer srv.Close()

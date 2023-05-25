@@ -15,7 +15,7 @@ func TestDataSourceDirectoryRoles(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_directory_roles")
-		defer rec.Stop()
+		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -33,7 +33,7 @@ func TestDataSourceDirectoryRoles(t *testing.T) {
 	})
 	t.Run("error path - directory not security enabled", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_directory_roles.not_security_enabled")
-		defer rec.Stop()
+		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,

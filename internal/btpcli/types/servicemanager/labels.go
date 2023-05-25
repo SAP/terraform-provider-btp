@@ -10,7 +10,7 @@ type ServiceManagerLabels map[string][]string
 func (s *ServiceManagerLabels) UnmarshalJSON(data []byte) error {
 	*s = make(ServiceManagerLabels)
 
-	r := regexp.MustCompile("([a-zA-Z0-9_\\-]*)\\s*=\\s*((?:[^,;]+)(?:\\s*,\\s*(?:[^,;]+))*)")
+	r := regexp.MustCompile(`([a-zA-Z0-9_\-]*)\s*=\s*((?:[^,;]+)(?:\s*,\s*(?:[^,;]+))*)`)
 
 	matches := r.FindAllStringSubmatch(string(data), -1)
 
