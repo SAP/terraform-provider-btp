@@ -5,6 +5,10 @@ pre-commit:
       glob: "*.go"
       run: go fmt ./...
       exclude: "vendor/*"
+    golangci-lint:
+      glob: "*.go"
+      run: golangci-lint run --fix
+      exclude: "vendor/*"
     terraformfmt:
       glob: "*.tf"
       run: terraform fmt {staged_files}

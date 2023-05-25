@@ -95,6 +95,8 @@ func TestBTPCLITransport(t *testing.T) {
 			req, err := http.NewRequest(http.MethodGet, srv.URL, nil)
 			req.Header.Set(HeaderCLIRefreshToken, "token-0")
 
+			assert.NoError(t, err)
+
 			res, err := client.Do(req)
 
 			assert.NoError(t, err)

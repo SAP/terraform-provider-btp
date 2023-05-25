@@ -13,10 +13,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	resourcehelper "github.com/hashicorp/terraform-plugin-testing/helper/resource"
-
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/provisioning"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
@@ -205,7 +204,7 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	plan.Parameters = types.StringValue(parameters)
 	resp.Diagnostics.Append(diags...)
 
-	createStateConf := &resourcehelper.StateChangeConf{
+	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateCreating},
 		Target:  []string{provisioning.StateOK, provisioning.StateCreationFailed},
 		Refresh: func() (interface{}, string, error) {
@@ -223,6 +222,9 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	}
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Creating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
+	}
 
 	plan, diags = subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
 	plan.Parameters = types.StringValue(parameters)
@@ -270,7 +272,7 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 		return
 	}
 
-	deleteStateConf := &resourcehelper.StateChangeConf{
+	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateDeleting},
 		Target:  []string{"DELETED", provisioning.StateDeletionFailed},
 		Refresh: func() (interface{}, string, error) {

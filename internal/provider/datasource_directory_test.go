@@ -15,7 +15,7 @@ func TestDataSourceDirectory(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_directory")
-		defer rec.Stop()
+		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,

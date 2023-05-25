@@ -172,7 +172,7 @@ func (ds *subaccountServiceBindingsDataSource) Read(ctx context.Context, req dat
 			Name:              types.StringValue(binding.Name),
 			Ready:             types.BoolValue(binding.Ready),
 			ServiceInstanceId: types.StringValue(binding.ServiceInstanceId),
-			Credentials:       types.StringValue(fmt.Sprintf("%s", binding.Credentials)),
+			Credentials:       types.StringValue(string(binding.Credentials)),
 			CreatedDate:       timeToValue(binding.CreatedAt),
 			LastModified:      timeToValue(binding.UpdatedAt),
 		}

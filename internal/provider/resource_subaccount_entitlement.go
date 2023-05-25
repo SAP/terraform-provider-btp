@@ -12,10 +12,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
-	resourcehelper "github.com/hashicorp/terraform-plugin-testing/helper/resource"
-
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis_entitlements"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
@@ -140,7 +139,7 @@ func (rs *subaccountEntitlementResource) Create(ctx context.Context, req resourc
 	}
 
 	// wait for the entitlement to become effective
-	createStateConf := &resourcehelper.StateChangeConf{
+	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK, cis_entitlements.StateProcessingFailed},
 		Refresh: func() (interface{}, string, error) {

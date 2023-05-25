@@ -69,7 +69,7 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 
 	hookRedactTokensInHeader := func(i *cassette.Interaction) error {
 		redactTokenHeaders := func(headers map[string][]string) {
-			for key, _ := range headers {
+			for key := range headers {
 				if strings.Contains(strings.ToLower(key), "token") {
 					headers[key] = []string{"redacted"}
 				}
@@ -90,6 +90,12 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 	rec.AddHook(hookRedactTokensInHeader, recorder.BeforeSaveHook)
 
 	return rec
+}
+
+func stopQuietly(rec *recorder.Recorder) {
+	if err := rec.Stop(); err != nil {
+		panic(err)
+	}
 }
 
 func TestProvider_HasResources(t *testing.T) {

@@ -18,8 +18,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 )
 
-var stderr = os.Stderr
-
 // New .
 func New() provider.Provider {
 	return NewWithClient(http.DefaultClient)

@@ -16,10 +16,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	resourcehelper "github.com/hashicorp/terraform-plugin-testing/helper/resource"
-
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
@@ -65,7 +64,7 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a70
 				MarkdownDescription: "The display name of the directory.",
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.RegexMatches(regexp.MustCompile("^[^\\/]{1,255}$"), "must not contain '/', not be empty and not exceed 255 characters"),
+					stringvalidator.RegexMatches(regexp.MustCompile(`^[^\/]{1,255}$`), "must not contain '/', not be empty and not exceed 255 characters"),
 				},
 			},
 			"description": schema.StringAttribute{
@@ -192,7 +191,7 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 	plan, diags = directoryValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
-	createStateConf := &resourcehelper.StateChangeConf{
+	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateCreating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateCreationFailed, cis.StateCanceled},
 		Refresh: func() (interface{}, string, error) {
@@ -210,6 +209,9 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Creating Resource Directory", fmt.Sprintf("%s", err))
+	}
 
 	plan, diags = directoryValueFrom(ctx, updatedRes.(cis.DirectoryResponseObject))
 	resp.Diagnostics.Append(diags...)
@@ -255,7 +257,7 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	deleteStateConf := &resourcehelper.StateChangeConf{
+	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateDeleting, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateDeletionFailed, cis.StateCanceled, "DELETED"},
 		Refresh: func() (interface{}, string, error) {

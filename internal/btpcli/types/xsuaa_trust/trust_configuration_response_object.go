@@ -13,7 +13,7 @@ type TrustConfigurationResponseObject struct {
 	// The protocol used to establish trust with the identity provider.
 	Protocol string `json:"protocol,omitempty"`
 	// Whether the trust configuration can be modified.
-	ReadOnly bool `json"readOnly,omitempty"`
+	ReadOnly bool `json:"readOnly,omitempty"`
 	// Name of the identity provider
 	IdentityProvider string `json:"identityProvider,omitempty"`
 }

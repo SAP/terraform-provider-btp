@@ -14,11 +14,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	resourcehelper "github.com/hashicorp/terraform-plugin-testing/helper/resource"
-
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/saas_manager_service"
 	"github.com/SAP/terraform-provider-btp/internal/tfdefaults"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
@@ -216,7 +215,7 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 		return
 	}
 
-	createStateConf := &resourcehelper.StateChangeConf{
+	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{saas_manager_service.StateInProcess},
 		Target:  []string{saas_manager_service.StateSubscribed, saas_manager_service.StateSubscribeFailed},
 		Refresh: func() (interface{}, string, error) {
@@ -234,6 +233,9 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 	}
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Creating Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
+	}
 
 	updatedPlan, diags := subaccountSubscriptionValueFrom(ctx, updatedRes.(saas_manager_service.EntitledApplicationsResponseObject))
 	updatedPlan.Parameters = plan.Parameters

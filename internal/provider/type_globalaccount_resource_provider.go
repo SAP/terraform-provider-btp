@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -29,7 +28,7 @@ func globalaccountResourceProviderValueFrom(ctx context.Context, value provision
 	if value.AdditionalInfo == nil {
 		resourceProvider.Parameters = types.StringNull()
 	} else {
-		resourceProvider.Parameters = types.StringValue(fmt.Sprintf("%s", *value.AdditionalInfo))
+		resourceProvider.Parameters = types.StringValue(string(*value.AdditionalInfo))
 	}
 
 	return resourceProvider, diag.Diagnostics{}

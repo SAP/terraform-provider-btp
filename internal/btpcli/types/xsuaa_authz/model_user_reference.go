@@ -21,7 +21,7 @@ type UserReference struct {
 	Verified                   bool     `json:"verified,omitempty"`
 	LegacyVerificationBehavior bool     `json:"legacyVerificationBehavior,omitempty"`
 	PasswordChangeRequired     bool     `json:"passwordChangeRequired,omitempty"`
-	Version                    int32    `json"version,omitempty"`
+	Version                    int32    `json:"version,omitempty"`
 	Active                     bool     `json:"active,omitempty"`
 	RoleCollections            []string `json:"roleCollections,omitempty"`
 }

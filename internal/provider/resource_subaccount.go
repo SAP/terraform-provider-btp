@@ -16,10 +16,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	resourcehelper "github.com/hashicorp/terraform-plugin-testing/helper/resource"
-
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
@@ -57,7 +56,7 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a70
 				MarkdownDescription: "A descriptive name of the subaccount for customer-facing UIs.",
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.RegexMatches(regexp.MustCompile("^[^\\/]{1,255}$"), "must not contain '/', not be empty and not exceed 255 characters"),
+					stringvalidator.RegexMatches(regexp.MustCompile(`^[^\/]{1,255}$`), "must not contain '/', not be empty and not exceed 255 characters"),
 				},
 			},
 			"description": schema.StringAttribute{
@@ -184,7 +183,7 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	plan, diags = subaccountValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
-	createStateConf := &resourcehelper.StateChangeConf{
+	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateCreating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateCreationFailed, cis.StateCanceled},
 		Refresh: func() (interface{}, string, error) {
@@ -253,7 +252,7 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	deleteStateConf := &resourcehelper.StateChangeConf{
+	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateDeleting, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateDeletionFailed, cis.StateCanceled, "DELETED"},
 		Refresh: func() (interface{}, string, error) {
