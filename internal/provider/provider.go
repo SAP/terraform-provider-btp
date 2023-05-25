@@ -35,14 +35,14 @@ type btpcliProvider struct {
 // GetSchema
 func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `The Terraform Provider for SAP BTP enables you to automate the provisioning, management, and configuration of resources in the [Business Technology Platform](https://account.hana.ondemand.com/). By leveraging this provider, you can simplify and streamline the deployment and maintenance of BTP services and applications.`,
+		MarkdownDescription: `The Terraform provider for SAP BTP enables you to automate the provisioning, management, and configuration of resources on [SAP Business Technology Platform](https://account.hana.ondemand.com/). By leveraging this provider, you can simplify and streamline the deployment and maintenance of BTP services and applications.`,
 		Attributes: map[string]schema.Attribute{
 			"cli_server_url": schema.StringAttribute{
-				MarkdownDescription: "The URL of the BTP CLI API.",
+				MarkdownDescription: "The URL of the BTP CLI server (e.g. `https://cpcli.cf.eu10.hana.ondemand.com`).",
 				Optional:            true, // TODO validate URL
 			},
 			"globalaccount": schema.StringAttribute{
-				MarkdownDescription: "The subdomain of the global account you want to log in to. You should have obtained the subdomain from your operator; but you can also find it in the cockpit in the global account view or under Switch Global Account dialog.",
+				MarkdownDescription: "The subdomain of the global account you want to log in to. To be found in the cockpit, in the global account view.",
 				Required:            true, // TODO validate UUID
 			},
 			"username": schema.StringAttribute{
