@@ -103,46 +103,38 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 	client := btpcli.NewClientFacade(btpcli.NewV2ClientWithHttpClient(p.httpClient, u))
 
-	switch config.Auth.ValueString() {
-	/*case "sso":
-	err = client.LoginAtIDP(ctx)
-	break*/ // FIXME
-	default:
-		// User must provide a username to the provider
-		var username string
-		if config.Username.IsUnknown() {
-			resp.Diagnostics.AddWarning("Unable to create client", "Cannot use unknown value as client_certificate")
-			return
-		}
-
-		if config.Username.IsNull() {
-			username = os.Getenv("BTP_USERNAME")
-		} else {
-			username = config.Username.ValueString()
-		}
-
-		// User must provide a password to the provider
-		var password string
-		if config.Password.IsUnknown() {
-			resp.Diagnostics.AddWarning("Unable to create client", "Cannot use unknown value as password")
-			return
-		}
-
-		if config.Password.IsNull() {
-			password = os.Getenv("BTP_PASSWORD")
-		} else {
-			password = config.Password.ValueString()
-		}
-
-		if len(username) == 0 || len(password) == 0 {
-			resp.Diagnostics.AddError("Unable to create Client", "globalaccount, username and password must be given.")
-			return
-		}
-
-		_, err = client.Login(ctx, btpcli.NewLoginRequest(config.GlobalAccount.ValueString(), username, password))
+	// User must provide a username to the provider
+	var username string
+	if config.Username.IsUnknown() {
+		resp.Diagnostics.AddWarning("Unable to create client", "Cannot use unknown value as client_certificate")
+		return
 	}
 
-	if err != nil {
+	if config.Username.IsNull() {
+		username = os.Getenv("BTP_USERNAME")
+	} else {
+		username = config.Username.ValueString()
+	}
+
+	// User must provide a password to the provider
+	var password string
+	if config.Password.IsUnknown() {
+		resp.Diagnostics.AddWarning("Unable to create client", "Cannot use unknown value as password")
+		return
+	}
+
+	if config.Password.IsNull() {
+		password = os.Getenv("BTP_PASSWORD")
+	} else {
+		password = config.Password.ValueString()
+	}
+
+	if len(username) == 0 || len(password) == 0 {
+		resp.Diagnostics.AddError("Unable to create Client", "globalaccount, username and password must be given.")
+		return
+	}
+
+	if _, err = client.Login(ctx, btpcli.NewLoginRequest(config.GlobalAccount.ValueString(), username, password)); err != nil {
 		resp.Diagnostics.AddError("Unable to create Client", fmt.Sprintf("%s", err))
 		return
 	}
