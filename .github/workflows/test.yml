@@ -80,10 +80,38 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
-        run: go test -v -cover -coverprofile=coverage.out ./...
+        run: go test -v -cover -coverprofile=cover.out ./...
         timeout-minutes: 10
-      - name: Go Coverage Badge
-        uses: tj-actions/coverage-badge-go@v2
+      - uses: actions/upload-artifact@v2
         with:
-          filename: coverage.out
+          name: coverage-report
+          path: cover.out
 
+  coverage:
+    name: Coverage Report
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: coverage-report
+      - name: check test coverage
+         id: coverage ## this step must have id
+         uses: vladopajic/go-test-coverage@v2
+         with:
+           profile: cover.out
+           local-prefix: github.com/org/project
+           threshold-file: 80
+           threshold-package: 80
+           threshold-total: 95
+    
+      - name: make coverage badge
+        uses: action-badges/core@0.2.2
+        if: contains(github.ref, 'main')
+        with:
+          label: coverage
+          message: ${{ steps.coverage.outputs.badge-text }}
+          message-color: ${{ steps.coverage.outputs.badge-color }}
+          file-name: coverage.svg
+          badge-branch: badges 
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
