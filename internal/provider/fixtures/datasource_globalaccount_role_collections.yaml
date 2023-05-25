@@ -1,0 +1,703 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - d6409061-8fb8-0e3b-dc53-3b2f8b692fd3
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:48 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - e915e449-3660-4b87-783c-998e951951a4
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 840.471746ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 51903a07-8ad2-f219-edb5-5557a07ee1a7
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"Global Account Administrator","description":"Administrative access to the global account","roleReferences":[{"roleTemplateAppId":"cis-central!b13","roleTemplateName":"GlobalAccount_Admin","name":"Global Account Admin","description":"Role for global account members with read-write authorizations for core commercialization operations, such as updating global accounts, setting entitlements, and creating, updating, and deleting subaccounts."},{"roleTemplateAppId":"uas!b10418","roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","name":"Global Account Usage Reporting Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information."},{"roleTemplateAppId":"cmp!b17875","roleTemplateName":"GlobalAccount_System_Landscape_Administrator","name":"System Landscape Administrator","description":"Administrative access to systems and scenario-related resources."},{"roleTemplateAppId":"xsuaa!t2","roleTemplateName":"xsuaa_admin","name":"User and Role Administrator","description":"Manage authorizations, trusted identity providers, and users."}],"isReadOnly":true},{"name":"Global Account Viewer","description":"Read-only access to the global account","roleReferences":[{"roleTemplateAppId":"uas!b10418","roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","name":"Global Account Usage Reporting Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information."},{"roleTemplateAppId":"cis-central!b13","roleTemplateName":"GlobalAccount_Viewer","name":"Global Account Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions."},{"roleTemplateAppId":"cmp!b17875","roleTemplateName":"GlobalAccount_System_Landscape_Viewer","name":"System Landscape Viewer","description":"Viewer access to systems and scenario-related resources."},{"roleTemplateAppId":"xsuaa!t2","roleTemplateName":"xsuaa_auditor","name":"User and Role Auditor","description":"Read-only access for authorizations, trusted identity providers, and users."}],"isReadOnly":true}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:49 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - f2f4e0be-2b6d-47b1-4588-2e0eb3d6700f
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 387.55011ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 29e1db80-f22d-d6ef-fc7c-3fa7b35de9cd
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:50 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - c7de516e-5dde-4419-6ba2-0bc9777fc0cf
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 513.93966ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 9409cc9d-1e12-2f87-8cd6-4d9b69109073
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"Global Account Administrator","description":"Administrative access to the global account","roleReferences":[{"roleTemplateAppId":"cis-central!b13","roleTemplateName":"GlobalAccount_Admin","name":"Global Account Admin","description":"Role for global account members with read-write authorizations for core commercialization operations, such as updating global accounts, setting entitlements, and creating, updating, and deleting subaccounts."},{"roleTemplateAppId":"uas!b10418","roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","name":"Global Account Usage Reporting Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information."},{"roleTemplateAppId":"cmp!b17875","roleTemplateName":"GlobalAccount_System_Landscape_Administrator","name":"System Landscape Administrator","description":"Administrative access to systems and scenario-related resources."},{"roleTemplateAppId":"xsuaa!t2","roleTemplateName":"xsuaa_admin","name":"User and Role Administrator","description":"Manage authorizations, trusted identity providers, and users."}],"isReadOnly":true},{"name":"Global Account Viewer","description":"Read-only access to the global account","roleReferences":[{"roleTemplateAppId":"uas!b10418","roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","name":"Global Account Usage Reporting Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information."},{"roleTemplateAppId":"cis-central!b13","roleTemplateName":"GlobalAccount_Viewer","name":"Global Account Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions."},{"roleTemplateAppId":"cmp!b17875","roleTemplateName":"GlobalAccount_System_Landscape_Viewer","name":"System Landscape Viewer","description":"Viewer access to systems and scenario-related resources."},{"roleTemplateAppId":"xsuaa!t2","roleTemplateName":"xsuaa_auditor","name":"User and Role Auditor","description":"Read-only access for authorizations, trusted identity providers, and users."}],"isReadOnly":true}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:51 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 77c8ec98-b992-4f78-598b-6a55e0a01379
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 200.87735ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - edbf9735-43b3-e9ac-ee38-900710a7fe58
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:52 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 89cc1016-f845-4d04-7b4d-01f962613595
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 497.465131ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 1280dd20-2d67-a9ba-e5f3-601199b1c44d
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"Global Account Administrator","description":"Administrative access to the global account","roleReferences":[{"roleTemplateAppId":"cis-central!b13","roleTemplateName":"GlobalAccount_Admin","name":"Global Account Admin","description":"Role for global account members with read-write authorizations for core commercialization operations, such as updating global accounts, setting entitlements, and creating, updating, and deleting subaccounts."},{"roleTemplateAppId":"uas!b10418","roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","name":"Global Account Usage Reporting Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information."},{"roleTemplateAppId":"cmp!b17875","roleTemplateName":"GlobalAccount_System_Landscape_Administrator","name":"System Landscape Administrator","description":"Administrative access to systems and scenario-related resources."},{"roleTemplateAppId":"xsuaa!t2","roleTemplateName":"xsuaa_admin","name":"User and Role Administrator","description":"Manage authorizations, trusted identity providers, and users."}],"isReadOnly":true},{"name":"Global Account Viewer","description":"Read-only access to the global account","roleReferences":[{"roleTemplateAppId":"uas!b10418","roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","name":"Global Account Usage Reporting Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information."},{"roleTemplateAppId":"cis-central!b13","roleTemplateName":"GlobalAccount_Viewer","name":"Global Account Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions."},{"roleTemplateAppId":"cmp!b17875","roleTemplateName":"GlobalAccount_System_Landscape_Viewer","name":"System Landscape Viewer","description":"Viewer access to systems and scenario-related resources."},{"roleTemplateAppId":"xsuaa!t2","roleTemplateName":"xsuaa_auditor","name":"User and Role Auditor","description":"Read-only access for authorizations, trusted identity providers, and users."}],"isReadOnly":true}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:53 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 73afd506-15af-496d-540f-caab329378b0
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 213.237509ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - ce128ec4-34f2-396a-43dd-8b99343a2c10
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:53 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 5c9a4750-4459-46ac-6fb7-d12b0e41d734
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 369.194685ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - a98fa71d-7596-51d8-91d6-3321c729b2ab
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"Global Account Administrator","description":"Administrative access to the global account","roleReferences":[{"roleTemplateAppId":"cis-central!b13","roleTemplateName":"GlobalAccount_Admin","name":"Global Account Admin","description":"Role for global account members with read-write authorizations for core commercialization operations, such as updating global accounts, setting entitlements, and creating, updating, and deleting subaccounts."},{"roleTemplateAppId":"uas!b10418","roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","name":"Global Account Usage Reporting Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information."},{"roleTemplateAppId":"cmp!b17875","roleTemplateName":"GlobalAccount_System_Landscape_Administrator","name":"System Landscape Administrator","description":"Administrative access to systems and scenario-related resources."},{"roleTemplateAppId":"xsuaa!t2","roleTemplateName":"xsuaa_admin","name":"User and Role Administrator","description":"Manage authorizations, trusted identity providers, and users."}],"isReadOnly":true},{"name":"Global Account Viewer","description":"Read-only access to the global account","roleReferences":[{"roleTemplateAppId":"uas!b10418","roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","name":"Global Account Usage Reporting Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information."},{"roleTemplateAppId":"cis-central!b13","roleTemplateName":"GlobalAccount_Viewer","name":"Global Account Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions."},{"roleTemplateAppId":"cmp!b17875","roleTemplateName":"GlobalAccount_System_Landscape_Viewer","name":"System Landscape Viewer","description":"Viewer access to systems and scenario-related resources."},{"roleTemplateAppId":"xsuaa!t2","roleTemplateName":"xsuaa_auditor","name":"User and Role Auditor","description":"Read-only access for authorizations, trusted identity providers, and users."}],"isReadOnly":true}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:54 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - e97c8afc-810f-437b-6a51-8b8627a5e298
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 162.424698ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 6020e35d-5c4a-31d9-e118-8be913aeede5
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:55 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - a3ef1cc7-34df-4ec9-6dec-ec4205dcd156
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 476.973501ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 38ba4037-3071-76ac-7cfa-2e8c4fb4d9b0
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role-collection?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"Global Account Administrator","description":"Administrative access to the global account","roleReferences":[{"roleTemplateAppId":"cis-central!b13","roleTemplateName":"GlobalAccount_Admin","name":"Global Account Admin","description":"Role for global account members with read-write authorizations for core commercialization operations, such as updating global accounts, setting entitlements, and creating, updating, and deleting subaccounts."},{"roleTemplateAppId":"uas!b10418","roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","name":"Global Account Usage Reporting Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information."},{"roleTemplateAppId":"cmp!b17875","roleTemplateName":"GlobalAccount_System_Landscape_Administrator","name":"System Landscape Administrator","description":"Administrative access to systems and scenario-related resources."},{"roleTemplateAppId":"xsuaa!t2","roleTemplateName":"xsuaa_admin","name":"User and Role Administrator","description":"Manage authorizations, trusted identity providers, and users."}],"isReadOnly":true},{"name":"Global Account Viewer","description":"Read-only access to the global account","roleReferences":[{"roleTemplateAppId":"uas!b10418","roleTemplateName":"GlobalAccount_Usage_Reporting_Viewer","name":"Global Account Usage Reporting Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global account usage information."},{"roleTemplateAppId":"cis-central!b13","roleTemplateName":"GlobalAccount_Viewer","name":"Global Account Viewer","description":"Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions."},{"roleTemplateAppId":"cmp!b17875","roleTemplateName":"GlobalAccount_System_Landscape_Viewer","name":"System Landscape Viewer","description":"Viewer access to systems and scenario-related resources."},{"roleTemplateAppId":"xsuaa!t2","roleTemplateName":"xsuaa_auditor","name":"User and Role Auditor","description":"Read-only access for authorizations, trusted identity providers, and users."}],"isReadOnly":true}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:55 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 451fe28a-3239-4efa-7a37-78153e16ba9a
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 338.447692ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 115
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 986c1eb2-bb3b-a30c-4e70-cf02aa7be693
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 143
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "143"
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 25 May 2023 16:10:56 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - db81ab4b-69a3-4e2a-577d-f8b9b84daad0
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 379.734392ms
