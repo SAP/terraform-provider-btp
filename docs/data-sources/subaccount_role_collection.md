@@ -2,12 +2,12 @@
 page_title: "btp_subaccount_role_collection Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Get details about a specific role collection.
+  Get details about a specific subaccount role collection.
 ---
 
 # btp_subaccount_role_collection (Data Source)
 
-Get details about a specific role collection.
+Get details about a specific subaccount role collection.
 
 ## Example Usage
 
