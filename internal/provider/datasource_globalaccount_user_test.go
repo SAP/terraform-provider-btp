@@ -18,14 +18,14 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountUser("uut", "jane.doe@test.com", "sap.default"),
+					Config: hclProvider() + hclDatasourceGlobalaccountUser("uut", "jenny.doe@test.com", "sap.default"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "user_name", "jane.doe@int.test"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "user_name", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "origin", "sap.default"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "active", "true"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "family_name", ""),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "given_name", ""),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "id", "jane.doe@int.test"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "id", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "role_collections.#", "1"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "verified", "true"),
 					),

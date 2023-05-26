@@ -18,15 +18,15 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountUser("uut", "5381d6a4-d67f-45b1-93a0-624876f74d03", "jane.doe@test.com", "sap.default"),
+					Config: hclProvider() + hclDatasourceSubaccountUser("uut", "5381d6a4-d67f-45b1-93a0-624876f74d03", "jenny.doe@test.com", "sap.default"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "subaccount_id", "5381d6a4-d67f-45b1-93a0-624876f74d03"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "user_name", "jane.doe@int.test"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "user_name", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "origin", "sap.default"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "active", "true"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "family_name", ""),
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "given_name", ""),
-						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "id", "jane.doe@int.test"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "id", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "role_collections.#", "1"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "verified", "true"),
 					),
