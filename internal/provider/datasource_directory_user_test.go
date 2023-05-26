@@ -18,17 +18,17 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceDirectoryUser("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "jenny.doe@test.com", "sap.default"),
+					Config: hclProvider() + hclDatasourceDirectoryUser("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com", "sap.default"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "directory_id", "5357bda0-8651-4eab-a69d-12d282bc3247"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "user_name", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "origin", "sap.default"),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "active", "true"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "active", "false"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", ""),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", ""),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "id", "jenny.doe@test.com"),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "1"),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "true"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "id", ""),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "0"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "false"),
 					),
 				},
 			},
