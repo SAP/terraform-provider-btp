@@ -1,6 +1,6 @@
 # Development Setup
 
-If you want to contribute to the Terraform provider for SAP BTP, be aware of the [contribution guidelines](../CONTRIBUTING.md) available in this repository.
+If you want to contribute to the Terraform provider for SAP BTP, be aware of the [contribution guidelines](CONTRIBUTING.md) available in this repository.
 
 First you need to setup your development environment. The following sections describe the options that you have.
 
@@ -24,13 +24,13 @@ git clone https://github.com/SAP/terraform-provider-btp.git
 
 Then open the cloned repository in [Visual Studio Code](https://code.visualstudio.com/). Within Visual Studio Code, press the "Open a remote Window" button in the lower left corner:
 
-![screenshot of Visual Studio Code - Open a Remote Window](../assets/VSCode_Show_Open_Remote_Window.png)
+![screenshot of Visual Studio Code - Open a Remote Window](assets/VSCode_Show_Open_Remote_Window.png)
 
  Visual Studio Code will open the command palette. Choose the option "Reopen in Container":
 
-![screenshot of Visual Studio Code - Open a Remote Window](../assets/VSCode_Command_Palette_Reopen.png)
+![screenshot of Visual Studio Code - Open a Remote Window](assets/VSCode_Command_Palette_Reopen.png)
 
-This will trigger the start of the dev container based on the configuration defined in the [devcontainer.json](../.devcontainer/devcontainer.json) file.
+This will trigger the start of the dev container based on the configuration defined in the [devcontainer.json](.devcontainer/devcontainer.json) file.
 
 > **Note** - In the first run, the download of the container might take a while, so maybe time to grab a cup of coffee ☕.
 
