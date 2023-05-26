@@ -20,6 +20,7 @@ data "btp_globalaccount_role_collections" "all" {}
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the global account
 - `values` (Attributes List) (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>

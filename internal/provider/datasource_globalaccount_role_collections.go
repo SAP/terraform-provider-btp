@@ -33,6 +33,7 @@ type globalaccountRoleCollectionsValueConfig struct {
 
 type globalaccountRoleCollectionsDataSourceConfig struct {
 	/* OUTPUT */
+	Id     types.String                              `tfsdk:"id"`
 	Values []globalaccountRoleCollectionsValueConfig `tfsdk:"values"`
 }
 
@@ -56,6 +57,11 @@ func (ds *globalaccountRoleCollectionsDataSource) Schema(_ context.Context, _ da
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `List all role collections.`,
 		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
+				MarkdownDescription: "The ID of the global account",
+				Computed:            true,
+			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -118,6 +124,7 @@ func (ds *globalaccountRoleCollectionsDataSource) Read(ctx context.Context, req 
 		return
 	}
 
+	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
 	data.Values = []globalaccountRoleCollectionsValueConfig{}
 
 	for _, rolecollection := range cliRes {
