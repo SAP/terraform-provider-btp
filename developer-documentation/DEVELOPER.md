@@ -2,19 +2,19 @@
 
 If you want to contribute to the Terraform provider for SAP BTP, be aware of the [contribution guidelines](../CONTRIBUTING.md) available in this repository.
 
-First you need to setup your development environment. The following sections describe the options you have.
+First you need to setup your development environment. The following sections describe the options that you have.
 
 ## GitHub Codespaces
 
-**Step 1:** Open the repository in GitHub Code spaces via the button:
+**Step 1:** Open the repository in GitHub Codespaces via the button:
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=618531988)
 
-**Step 2:** There is no step 2 😎
+**Step 2:** There is no step 2 😎.
 
 ## Dev Container
 
-> **Note** - In order to use dev containers you must have a container runtime up and running on machine. For details we refer to the official documentation about [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers)
+> **Note** - In order to use dev containers you must have a container runtime up and running on machine. For details, we refer to the official documentation about [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers)
 
 First you must clone the repository:
 
@@ -22,21 +22,21 @@ First you must clone the repository:
 git clone https://github.com/SAP/terraform-provider-btp.git
 ```
 
-Then open the cloned repository in [Visual Studio Code](https://code.visualstudio.com/). Within Visual Studio Code press the "Open a remote Window" button in the lower left corner:
+Then open the cloned repository in [Visual Studio Code](https://code.visualstudio.com/). Within Visual Studio Code, press the "Open a remote Window" button in the lower left corner:
 
-![screenshot of VSCode - Open a Remote Window](../assets/VSCode_Show_Open_Remote_Window.png)
+![screenshot of Visual Studio Code - Open a Remote Window](../assets/VSCode_Show_Open_Remote_Window.png)
 
- Visual Studio Code will open the Command Pallette. Choose the option "Reopen in Container":
+ Visual Studio Code will open the command palette. Choose the option "Reopen in Container":
 
-![screenshot of VSCode - Open a Remote Window](../assets/VSCode_Command_Palette_Reopen.png)
+![screenshot of Visual Studio Code - Open a Remote Window](../assets/VSCode_Command_Palette_Reopen.png)
 
-This will trigger the start of the dev container based on the configuration defined in the [devcontainer.json](../.devcontainer/devcontainer.json) file
+This will trigger the start of the dev container based on the configuration defined in the [devcontainer.json](../.devcontainer/devcontainer.json) file.
 
 > **Note** - In the first run, the download of the container might take a while, so maybe time to grab a cup of coffee ☕.
 
 ## Local Setup
 
-Please ensure you have the following tools installed on your local machine.
+Ensure you have the following tools installed on your local machine.
 
 * [git](https://git-scm.com/)
 * [go](https://go.dev/)
@@ -46,13 +46,13 @@ Please ensure you have the following tools installed on your local machine.
 
 ### MacOS (Homebrew)
 
-If you run on MacOS you can use [homebrew](https://brew.sh/) to speed up the installation process:
+If you run on MacOS, you can use [homebrew](https://brew.sh/) to speed up the installation process:
 
 ```bash
 brew install git golang golangci-lint make terraform
 ```
 
-### Windows (chocolatey)
+### Windows (Chocolatey)
 
 Windows users can let [chocolatey](https://chocolatey.org/) take over the installation for them:
 
@@ -84,12 +84,12 @@ provider_installation {
 }
 ```
 
-Please keep in mind that the [configuration file](https://developer.hashicorp.com/terraform/cli/config/config-file) location depends on your operating system:
+Keep in mind that the [configuration file](https://developer.hashicorp.com/terraform/cli/config/config-file) location depends on your operating system:
 
 * Mac/Linux/WSL: `~/.terraformrc`
 * Windows: `%APPDATA%/terraform.rc`
 
-## Install the Terraform provider for SAP BTP locally
+## Install the Terraform Provider for SAP BTP Locally
 
 Run the following command to build and install the provider:
 
@@ -97,7 +97,7 @@ Run the following command to build and install the provider:
 make install
 ```
 
-## Verify the setup
+## Verify the Setup
 
 Next we verify that Terraform has access to your local build of the provider. Please navigate to one of the workspaces in the `examples` directory, e.g.:
 
@@ -105,10 +105,10 @@ Next we verify that Terraform has access to your local build of the provider. Pl
 cd examples/subaccount/
 ```
 
-If you are now able to validate the scripts, everything is correctly setup:
+If you are now able to validate the scripts, everything is correctly set up:
 
 ```bash
 terraform validate
 ```
 
-If you run into errors, please check that you executed the previous steps correctly. If you are still stuck, we recommend to start a new [question](https://github.com/SAP/terraform-provider-btp/discussions/categories/q-a) in the [GitHub Discussions](https://github.com/SAP/terraform-provider-btp/discussions/categories/q-a) of this repository, so that we can support you.
+In case of errors, please check first that you executed the previous steps correctly. If you are still stuck, feel free to ask for support by raising a [question](https://github.com/SAP/terraform-provider-btp/discussions/categories/q-a) in the [GitHub Discussions](https://github.com/SAP/terraform-provider-btp/discussions/categories/q-a) of this repository.
