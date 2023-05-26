@@ -31,6 +31,7 @@ data "btp_globalaccount_role" "user_role_auditor" {
 ### Read-Only
 
 - `description` (String) The description of the role.
+- `id` (String, Deprecated) The ID of the global account
 - `read_only` (Boolean) Whether the role can be modified or not.
 - `scopes` (Attributes List) Scopes available with this role. (see [below for nested schema](#nestedatt--scopes))
 
