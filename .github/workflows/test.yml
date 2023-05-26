@@ -82,7 +82,7 @@ jobs:
           TF_ACC: "1"
         run: go test -v -cover -coverprofile=cover.out -timeout=120s -parallel=4 ./...
         timeout-minutes: 10
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: cover.out
