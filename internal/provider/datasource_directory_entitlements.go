@@ -20,6 +20,7 @@ func newDirectoryEntitlementsDataSource() datasource.DataSource {
 type directoryEntitlementsDataSourceConfig struct {
 	/* INPUT */
 	DirectoryId types.String `tfsdk:"directory_id"`
+	Id          types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values types.Map `tfsdk:"values"`
 }
@@ -57,6 +58,11 @@ You must be assigned to one of these roles: global account admin, global account
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `directory_id` attribute instead",
+				MarkdownDescription: "The ID of the directory.",
+				Computed:            true,
 			},
 			"values": schema.MapNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
@@ -128,7 +134,7 @@ func (ds *directoryEntitlementsDataSource) Read(ctx context.Context, req datasou
 			}
 		}
 	}
-
+	data.Id = data.DirectoryId
 	data.Values, diags = types.MapValueFrom(ctx, types.ObjectType{AttrTypes: entitledServiceType()}, values)
 	resp.Diagnostics.Append(diags...)
 
