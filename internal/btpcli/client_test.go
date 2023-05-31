@@ -57,24 +57,49 @@ func TestV2Client_Login(t *testing.T) {
 		{
 			description:  "happy path",
 			loginRequest: NewLoginRequest("subdomain", "john.doe", "pass"),
-
 			simulation: v2SimulationConfig{
 				srvExpectBody:    `{"customIdp":"","subdomain":"subdomain","userName":"john.doe","password":"pass"}`,
 				srvReturnStatus:  http.StatusOK,
-				srvReturnContent: `{"issuer": "","user":"john.doe","mail":"john.doe@test.com","refreshToken":"abc"}`,
+				srvReturnContent: `{"issuer": "accounts.sap.com","user":"john.doe","mail":"john.doe@test.com","refreshToken":"abc"}`,
 				expectResponse: &LoginResponse{
-					IdentityProvider: "",
-					Username:         "john.doe",
-					Email:            "john.doe@test.com",
-					RefreshToken:     "abc",
+					Issuer:       "accounts.sap.com",
+					Username:     "john.doe",
+					Email:        "john.doe@test.com",
+					RefreshToken: "abc",
+				},
+				expectClientSession: &Session{
+					RefreshToken:           "abc",
+					IdentityProvider:       "",
+					GlobalAccountSubdomain: "subdomain",
+					LoggedInUser: &v2LoggedInUser{
+						Issuer:   "accounts.sap.com",
+						Username: "john.doe",
+						Email:    "john.doe@test.com",
+					},
+				},
+			},
+		},
+		{
+			description:  "happy path - with custom idp",
+			loginRequest: NewLoginRequestWithCustomIDP("my.custom.idp", "subdomain", "john.doe", "pass"),
+			simulation: v2SimulationConfig{
+				srvExpectBody:    `{"customIdp":"my.custom.idp","subdomain":"subdomain","userName":"john.doe","password":"pass"}`,
+				srvReturnStatus:  http.StatusOK,
+				srvReturnContent: `{"issuer": "customidp.accounts.ondemand.com","user":"john.doe","mail":"john.doe@test.com","refreshToken":"abc"}`,
+				expectResponse: &LoginResponse{
+					Issuer:       "customidp.accounts.ondemand.com",
+					Username:     "john.doe",
+					Email:        "john.doe@test.com",
+					RefreshToken: "abc",
 				},
 				expectClientSession: &Session{
 					RefreshToken:           "abc",
 					GlobalAccountSubdomain: "subdomain",
+					IdentityProvider:       "my.custom.idp",
 					LoggedInUser: &v2LoggedInUser{
-						IdentityProvider: "",
-						Username:         "john.doe",
-						Email:            "john.doe@test.com",
+						Issuer:   "customidp.accounts.ondemand.com",
+						Username: "john.doe",
+						Email:    "john.doe@test.com",
 					},
 				},
 			},
@@ -82,7 +107,6 @@ func TestV2Client_Login(t *testing.T) {
 		{
 			description:  "error path - wrong credentials [401]",
 			loginRequest: NewLoginRequest("subdomain", "john.doe", "this.is.wrong"),
-
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusUnauthorized,
 				expectErrorMsg:  "Login failed. Check your credentials. [Status: 401; Correlation ID: fake-correlation-id]",
@@ -91,7 +115,6 @@ func TestV2Client_Login(t *testing.T) {
 		{
 			description:  "error path - user is lacking permissions to globalaccount [403]",
 			loginRequest: NewLoginRequest("subdomain", "john.doe", "pass"),
-
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusForbidden,
 				expectErrorMsg:  "You cannot access global account 'subdomain'. Make sure you have at least read access to the global account, a directory, or a subaccount. [Status: 403; Correlation ID: fake-correlation-id]",
@@ -100,7 +123,6 @@ func TestV2Client_Login(t *testing.T) {
 		{
 			description:  "error path - global account can't be found [404]",
 			loginRequest: NewLoginRequest("subdomain", "john.doe", "pass"),
-
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusNotFound,
 				expectErrorMsg:  "Global account 'subdomain' not found. Try again and make sure to provide the global account's subdomain. [Status: 404; Correlation ID: fake-correlation-id]",
@@ -109,7 +131,6 @@ func TestV2Client_Login(t *testing.T) {
 		{
 			description:  "error path - login request times out [504]]",
 			loginRequest: NewLoginRequest("subdomain", "john.doe", "pass"),
-
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusGatewayTimeout,
 				expectErrorMsg:  "Login timed out. Please try again later. [Status: 504; Correlation ID: fake-correlation-id]",
@@ -118,7 +139,6 @@ func TestV2Client_Login(t *testing.T) {
 		{
 			description:  "error path - unexpected error",
 			loginRequest: NewLoginRequest("subdomain", "john.doe", "pass"),
-
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusTeapot,
 				expectErrorMsg:  "Received response with unexpected status [Status: 418; Correlation ID: fake-correlation-id]",
@@ -160,7 +180,6 @@ func TestV2Client_Logout(t *testing.T) {
 		{
 			description:   "error path - login request times out [504]]",
 			logoutRequest: NewLogoutRequest("subdomain"),
-
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusGatewayTimeout,
 				expectErrorMsg:  "Logout timed out. Please try again later. [Status: 504; Correlation ID: fake-correlation-id]",
@@ -169,7 +188,6 @@ func TestV2Client_Logout(t *testing.T) {
 		{
 			description:   "error path - unexpected error",
 			logoutRequest: NewLogoutRequest("subdomain"),
-
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusTeapot,
 				expectErrorMsg:  "Received response with unexpected status [Status: 418; Correlation ID: fake-correlation-id]",
@@ -225,6 +243,31 @@ func TestV2Client_Execute(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, 201, res.StatusCode)
 		assert.Equal(t, "backend/mediatype", res.ContentType)
+	})
+	t.Run("custom idp: request header `X-CPCLI-CustomIdp` must be set", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "my.custom.idp", r.Header.Get(HeaderCLICustomIDP))
+            w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 201))
+            w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
+            fmt.Fprintf(w, "{}")
+		}))
+		defer srv.Close()
+
+		srvUrl, _ := url.Parse(srv.URL)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut.session = &Session{
+			GlobalAccountSubdomain: "globalaccount-subdomain",
+			IdentityProvider:       "my.custom.idp",
+			LoggedInUser: &v2LoggedInUser{
+				Email:    "john.doe@int.test",
+				Username: "john.doe@int.test",
+				Issuer:   "customidp.accounts.ondemand.com",
+			},
+		}
+
+        _, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
+
+        assert.NoError(t, err)
 	})
 }
 
@@ -304,6 +347,7 @@ func assertV2DefaultHeader(t *testing.T, r *http.Request, expectedMethod string)
 
 	assert.Equal(t, expectedMethod, r.Method)
 	assert.NotEmpty(t, r.Header.Get(HeaderCorrelationID))
+	assert.Empty(t, r.Header.Get(HeaderCLICustomIDP))
 	assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
 	assert.Equal(t, "json", r.Header.Get(HeaderCLIFormat))
 }
@@ -316,9 +360,9 @@ func TestV2Client_GetLoggedInUser(t *testing.T) {
 	})
 	t.Run("someone logged in", func(t *testing.T) {
 		testUser := &v2LoggedInUser{
-			Email:            "john.doe@test.com",
-			Username:         "john.doe",
-			IdentityProvider: "test",
+			Email:    "john.doe@test.com",
+			Username: "john.doe",
+			Issuer:   "test",
 		}
 
 		uut := NewV2Client(nil)

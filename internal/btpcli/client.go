@@ -40,6 +40,7 @@ const (
 	HeaderCLIRefreshToken            string = "X-CPCLI-RefreshToken"
 	HeaderCLIReplacementRefreshToken string = "X-CPCLI-ReplacementRefreshtoken"
 	HeaderCLISubdomain               string = "X-CPCLI-Subdomain"
+	HeaderCLICustomIDP               string = "X-CPCLI-CustomIdp"
 	HeaderCLIBackendStatus           string = "X-CPCLI-Backend-Status"
 	HeaderCLIBackendMessage          string = "X-CPCLI-Backend-Message"
 	HeaderCLIBackendMediaType        string = "X-CPCLI-Backend-MediaType"
@@ -93,6 +94,7 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 
 		req.Header.Set(HeaderCLIRefreshToken, v2.session.RefreshToken)
 		req.Header.Set(HeaderCLISubdomain, v2.session.GlobalAccountSubdomain)
+		req.Header.Set(HeaderCLICustomIDP, v2.session.IdentityProvider)
 	}
 
 	if correlationID := ctx.Value(v2ContextKey(HeaderCorrelationID)); correlationID != nil {
@@ -164,10 +166,11 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 
 	v2.session = &Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
+		IdentityProvider:       loginReq.IdentityProvider,
 		LoggedInUser: &v2LoggedInUser{
-			Username:         loginResponse.Username,
-			Email:            loginResponse.Email,
-			IdentityProvider: loginResponse.IdentityProvider,
+			Username: loginResponse.Username,
+			Email:    loginResponse.Email,
+			Issuer:   loginResponse.Issuer,
 		},
 		RefreshToken: loginResponse.RefreshToken,
 	}

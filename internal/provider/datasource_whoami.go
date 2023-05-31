@@ -75,7 +75,7 @@ func (gen *whoamiDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 	data.ID = types.StringValue(user.Username)
 	data.Email = types.StringValue(user.Email)
-	data.Issuer = types.StringValue(user.IdentityProvider)
+	data.Issuer = types.StringValue(user.Issuer)
 
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)
