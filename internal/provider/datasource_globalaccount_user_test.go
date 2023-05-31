@@ -26,7 +26,7 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "family_name", "unknown"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "given_name", "unknown"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "id", "86535387-54aa-4282-af13-67dd50cdd13c"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "role_collections.#", "0"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "role_collections.#", "2"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "verified", "false"),
 					),
 				},
