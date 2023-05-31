@@ -1,0 +1,1073 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 1454aa2f-3a52-08be-a673-8df89df3b11e
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:46 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 984bb6c1-1c67-4c34-457a-1642cc610a90
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 727.172022ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"origin":"sap.default","subaccount":"5381d6a4-d67f-45b1-93a0-624876f74d03","userName":"jenny.doe@test.com"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 340c5c7f-50c8-142f-4e2f-88b0f40accca
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 31 May 2023 09:44:47 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/user?get
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-sa-dtsaun9p
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 3c96d6e3-9ee7-4780-5393-0324db93ad91
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 299.118135ms
+    - id: 2
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"origin":"sap.default","subaccount":"5381d6a4-d67f-45b1-93a0-624876f74d03","userName":"jenny.doe@test.com"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?get
+            X-Correlationid:
+                - 340c5c7f-50c8-142f-4e2f-88b0f40accca
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-sa-dtsaun9p
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/user?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"de350a51-fa8f-4bdf-bd75-79179b846911","username":"jenny.doe@test.com","email":"jenny.doe@test.com","givenName":"unknown","familyName":"unknown","origin":"sap.default","zoneId":"5381d6a4-d67f-45b1-93a0-624876f74d03","verified":false,"legacyVerificationBehavior":false,"passwordChangeRequired":false,"version":0,"active":true,"roleCollections":[]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:47 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=utf-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 46e22ef0-6681-4966-696c-d410f07fd92c
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 224.252289ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 3dfe5412-d0a1-2af3-3fa1-b527dd799a19
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:48 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - a53bde57-51af-472c-78c8-8e40fd5a9987
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 507.175363ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"origin":"sap.default","subaccount":"5381d6a4-d67f-45b1-93a0-624876f74d03","userName":"jenny.doe@test.com"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 97abdbe4-9b08-df0a-f673-e06c1cb59452
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 31 May 2023 09:44:49 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/user?get
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-sa-dtsaun9p
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 57e5b0fc-a3b5-4352-46af-f7be53c31b25
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 193.971626ms
+    - id: 5
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"origin":"sap.default","subaccount":"5381d6a4-d67f-45b1-93a0-624876f74d03","userName":"jenny.doe@test.com"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?get
+            X-Correlationid:
+                - 97abdbe4-9b08-df0a-f673-e06c1cb59452
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-sa-dtsaun9p
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/user?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"de350a51-fa8f-4bdf-bd75-79179b846911","username":"jenny.doe@test.com","email":"jenny.doe@test.com","givenName":"unknown","familyName":"unknown","origin":"sap.default","zoneId":"5381d6a4-d67f-45b1-93a0-624876f74d03","verified":false,"legacyVerificationBehavior":false,"passwordChangeRequired":false,"version":0,"active":true,"roleCollections":[]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:49 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=utf-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 75b1d852-5926-4f15-65cc-3804e2a7d193
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 154.013336ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - fe5eac85-ff12-b8a7-32f6-79b4f92d126b
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:50 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - a6d13b83-90cf-4610-5d73-1d08931809fd
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 457.692977ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"origin":"sap.default","subaccount":"5381d6a4-d67f-45b1-93a0-624876f74d03","userName":"jenny.doe@test.com"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 87345467-9f50-4dcd-8206-55d33738765f
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 31 May 2023 09:44:51 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/user?get
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-sa-dtsaun9p
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - e04b1a18-8fad-4951-5afd-d59b62d22851
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 200.305596ms
+    - id: 8
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"origin":"sap.default","subaccount":"5381d6a4-d67f-45b1-93a0-624876f74d03","userName":"jenny.doe@test.com"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?get
+            X-Correlationid:
+                - 87345467-9f50-4dcd-8206-55d33738765f
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-sa-dtsaun9p
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/user?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"de350a51-fa8f-4bdf-bd75-79179b846911","username":"jenny.doe@test.com","email":"jenny.doe@test.com","givenName":"unknown","familyName":"unknown","origin":"sap.default","zoneId":"5381d6a4-d67f-45b1-93a0-624876f74d03","verified":false,"legacyVerificationBehavior":false,"passwordChangeRequired":false,"version":0,"active":true,"roleCollections":[]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:51 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=utf-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - b7576892-1b90-4791-42de-a527ccf87888
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 198.337265ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - ef04f084-9453-0f86-8e84-c391bf99ae8e
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:52 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 3d07cf81-90da-4237-5c07-4fa6495a33aa
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 477.379614ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"origin":"sap.default","subaccount":"5381d6a4-d67f-45b1-93a0-624876f74d03","userName":"jenny.doe@test.com"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - cd375476-4f15-7834-7283-c3feabcb9ac7
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 31 May 2023 09:44:53 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/user?get
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-sa-dtsaun9p
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 95607160-7ea5-48c5-5904-6f591520da15
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 203.387663ms
+    - id: 11
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"origin":"sap.default","subaccount":"5381d6a4-d67f-45b1-93a0-624876f74d03","userName":"jenny.doe@test.com"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?get
+            X-Correlationid:
+                - cd375476-4f15-7834-7283-c3feabcb9ac7
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-sa-dtsaun9p
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/user?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"de350a51-fa8f-4bdf-bd75-79179b846911","username":"jenny.doe@test.com","email":"jenny.doe@test.com","givenName":"unknown","familyName":"unknown","origin":"sap.default","zoneId":"5381d6a4-d67f-45b1-93a0-624876f74d03","verified":false,"legacyVerificationBehavior":false,"passwordChangeRequired":false,"version":0,"active":true,"roleCollections":[]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:53 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=utf-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 74d848b4-0511-48cf-72ce-227a3d69620b
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 200.352375ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 8cabb25a-bc7d-43a1-3495-827d918c1da0
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:54 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 39fca421-6039-4cfa-7aa6-0b67ab9d9258
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 516.156829ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"origin":"sap.default","subaccount":"5381d6a4-d67f-45b1-93a0-624876f74d03","userName":"jenny.doe@test.com"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 92f4920f-71e3-2732-8f49-9cde9d67c396
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Wed, 31 May 2023 09:44:55 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/user?get
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-sa-dtsaun9p
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 53497192-1fd7-40c4-7606-7fd9e8d392ae
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 223.648636ms
+    - id: 14
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"origin":"sap.default","subaccount":"5381d6a4-d67f-45b1-93a0-624876f74d03","userName":"jenny.doe@test.com"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?get
+            X-Correlationid:
+                - 92f4920f-71e3-2732-8f49-9cde9d67c396
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-sa-dtsaun9p
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/user?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"de350a51-fa8f-4bdf-bd75-79179b846911","username":"jenny.doe@test.com","email":"jenny.doe@test.com","givenName":"unknown","familyName":"unknown","origin":"sap.default","zoneId":"5381d6a4-d67f-45b1-93a0-624876f74d03","verified":false,"legacyVerificationBehavior":false,"passwordChangeRequired":false,"version":0,"active":true,"roleCollections":[]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:55 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=utf-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - ca70244e-d2df-43db-5cf7-d591bf250c98
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 156.680222ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 38bfd1a4-b9f7-3985-40bc-bc479eca2df6
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 31 May 2023 09:44:56 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 962d414c-fdc9-4159-7bf4-1fefcdcd9a82
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 531.144919ms
