@@ -73,7 +73,7 @@ __Tips__
 You must be assigned to one of these roles: global account admin, global account viewer.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				DeprecationMessage:  "To be removed soon",
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
 				MarkdownDescription: "The ID of the global account.",
 				Computed:            true,
 			},

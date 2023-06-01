@@ -20,6 +20,7 @@ func newSubaccountEntitlementsDataSource() datasource.DataSource {
 type subaccountEntitlementsDataSourceConfig struct {
 	/* INPUT */
 	SubaccountId types.String `tfsdk:"subaccount_id"`
+	Id           types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values types.Map `tfsdk:"values"`
 }
@@ -50,7 +51,11 @@ To get all entitlements and quota assigned to a specific subaccount:
 __Tips__
 You must be assigned to one of these roles: subaccount admin, subaccount viewer.`,
 		Attributes: map[string]schema.Attribute{
-			"subaccount_id": schema.StringAttribute{
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the sub account.",
+				Computed:            true,
+			}, "subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
 				Validators: []validator.String{
@@ -128,6 +133,7 @@ func (ds *subaccountEntitlementsDataSource) Read(ctx context.Context, req dataso
 		}
 	}
 
+	data.Id = data.SubaccountId
 	data.Values, diags = types.MapValueFrom(ctx, types.ObjectType{AttrTypes: entitledServiceType()}, values)
 	resp.Diagnostics.Append(diags...)
 
