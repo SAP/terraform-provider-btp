@@ -18,10 +18,10 @@ func TestDataSourceSubaccountEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountEntitlements("all", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+					Config: hclProvider() + hclDatasourceSubaccountEntitlements("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.all", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.all", "values.%", "128"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "values.%", "128"),
 					),
 				},
 			},

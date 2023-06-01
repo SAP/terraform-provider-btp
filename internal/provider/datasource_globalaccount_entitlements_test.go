@@ -18,9 +18,9 @@ func TestDataSourceGlobalaccountEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountEntitlements("all"),
+					Config: hclProvider() + hclDatasourceGlobalaccountEntitlements("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements.all", "values.%", "128"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements.uut", "values.%", "128"),
 					),
 				},
 			},

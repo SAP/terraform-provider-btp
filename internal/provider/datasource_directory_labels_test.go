@@ -18,10 +18,10 @@ func TestDataSourceDirectoryLabels(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceDirectoryLabels("all", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+					Config: hclProvider() + hclDatasourceDirectoryLabels("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_directory_labels.all", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
-						resource.TestCheckResourceAttr("data.btp_directory_labels.all", "values.%", "2"),
+						resource.TestCheckResourceAttr("data.btp_directory_labels.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+						resource.TestCheckResourceAttr("data.btp_directory_labels.uut", "values.%", "2"),
 					),
 				},
 			},
