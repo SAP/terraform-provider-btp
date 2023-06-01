@@ -35,4 +35,5 @@ data "btp_globalaccount_users" "mycustomidp" {
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the global account.
 - `values` (Set of String) The list of users assigned to the global account.
