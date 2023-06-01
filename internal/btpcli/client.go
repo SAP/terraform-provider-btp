@@ -56,7 +56,8 @@ type v2Client struct {
 
 	newCorrelationID func() string
 
-	session *Session
+	session   *Session
+	UserAgent string
 }
 
 func (v2 *v2Client) initTrace(ctx context.Context) context.Context {
@@ -85,6 +86,7 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", v2.UserAgent)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set(HeaderCLIFormat, "json")
 

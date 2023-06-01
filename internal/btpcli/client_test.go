@@ -247,9 +247,9 @@ func TestV2Client_Execute(t *testing.T) {
 	t.Run("custom idp: request header `X-CPCLI-CustomIdp` must be set", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "my.custom.idp", r.Header.Get(HeaderCLICustomIDP))
-            w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 201))
-            w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
-            fmt.Fprintf(w, "{}")
+			w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 201))
+			w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
+			fmt.Fprintf(w, "{}")
 		}))
 		defer srv.Close()
 
@@ -265,9 +265,9 @@ func TestV2Client_Execute(t *testing.T) {
 			},
 		}
 
-        _, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
+		_, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
-        assert.NoError(t, err)
+		assert.NoError(t, err)
 	})
 }
 
@@ -312,6 +312,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 
 		if assert.NoError(t, err) {
 			assertV2DefaultHeader(t, r, http.MethodPost)
+			assert.Equal(t, "Terraform/x.x.x terraform-plugin-btp/y.y.y", r.Header.Get("User-Agent"))
 
 			if len(config.srvExpectBody) > 0 {
 				assert.Equal(t, config.srvExpectBody, strings.TrimSpace(string(b)))
@@ -325,6 +326,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 
 	srvUrl, _ := url.Parse(srv.URL)
 	uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+	uut.UserAgent = "Terraform/x.x.x terraform-plugin-btp/y.y.y"
 	uut.session = config.initSession
 	uut.newCorrelationID = func() string {
 		return "fake-correlation-id"
