@@ -30,6 +30,7 @@ data "btp_globalaccount_trust_configurations" "all" {}
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the global account.
 - `values` (Attributes List) Trust configurations associated with the global account. (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
