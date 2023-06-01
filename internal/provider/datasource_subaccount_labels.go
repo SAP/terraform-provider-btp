@@ -20,6 +20,7 @@ func newSubaccountLabelsDataSource() datasource.DataSource {
 type subaccountLabelsDataSourceConfig struct {
 	/* INPUT */
 	SubaccountId types.String `tfsdk:"subaccount_id"`
+	Id           types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values types.Map `tfsdk:"values"`
 }
@@ -57,6 +58,11 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a70
 					uuidvalidator.ValidUUID(),
 				},
 			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the subaccount.",
+				Computed:            true,
+			},
 			"values": schema.MapAttribute{
 				ElementType:         types.SetType{ElemType: types.StringType},
 				MarkdownDescription: "Contains the label values",
@@ -82,6 +88,7 @@ func (ds *subaccountLabelsDataSource) Read(ctx context.Context, req datasource.R
 		return
 	}
 
+	data.Id = data.SubaccountId
 	data.Values, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, cliRes.Labels)
 	resp.Diagnostics.Append(diags...)
 
