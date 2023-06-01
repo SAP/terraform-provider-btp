@@ -20,13 +20,35 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 				{
 					Config: hclProvider() + hclDatasourceSubaccountUsersDefaultIdp("defaultidp", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_user.defaultidp", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_user.defaultidp", "values.%", "2"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_users.defaultidp", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_users.defaultidp", "values.#", "3"),
 					),
 				},
 			},
 		})
 	})
+
+	/* TBD: make this code work. Currently we get the following error message: cannot unmarshal object into Go value of type []string */
+	/*
+		t.Run("happy path with custom idp", func(t *testing.T) {
+			rec := setupVCR(t, "fixtures/datasource_subaccount_users.custom_idp")
+			defer stopQuietly(rec)
+
+			resource.Test(t, resource.TestCase{
+				IsUnitTest:               true,
+				ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+				Steps: []resource.TestStep{
+					{
+						Config: hclProvider() + hclDatasourceSubaccountUsersCustomIdp("mycustomidp", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint"),
+						Check: resource.ComposeAggregateTestCheckFunc(
+							resource.TestCheckResourceAttr("data.btp_subaccount_users.mycustomidp", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+							resource.TestCheckResourceAttr("data.btp_subaccount_users.mycustomidp", "values.#", "3"),
+						),
+					},
+				},
+			})
+		})
+	*/
 
 }
 

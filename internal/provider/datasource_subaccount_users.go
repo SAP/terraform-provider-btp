@@ -55,6 +55,11 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/cc1c676
 					uuidvalidator.ValidUUID(),
 				},
 			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the sub account.",
+				Computed:            true,
+			},
 			"origin": schema.StringAttribute{
 				MarkdownDescription: "The identity provider that hosts the user. The default value is 'ldap'.",
 				Computed:            true,
@@ -89,6 +94,7 @@ func (ds *subaccountUsersDataSource) Read(ctx context.Context, req datasource.Re
 		return
 	}
 
+	data.Id = data.SubaccountId
 	data.Values, diags = types.SetValueFrom(ctx, types.StringType, cliRes)
 	resp.Diagnostics.Append(diags...)
 
