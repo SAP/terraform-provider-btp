@@ -59,6 +59,13 @@ func (f *accountsSubaccountFacade) Create(ctx context.Context, displayName strin
 	}))
 }
 
+func (f *accountsSubaccountFacade) Update(ctx context.Context, subaccountId string, displayName string) (cis.SubaccountResponseObject, *CommandResponse, error) { // TODO switch to object
+	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), map[string]string{
+		"subaccount":  subaccountId,
+		"displayName": displayName,
+	}))
+}
+
 func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId string) (cis.SubaccountResponseObject, *CommandResponse, error) {
 	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"subaccount":  subaccountId,

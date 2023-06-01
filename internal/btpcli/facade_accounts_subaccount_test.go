@@ -106,6 +106,34 @@ func TestAccountsSubaccountFacade_Create(t *testing.T) {
 	})
 }
 
+func TestAccountsSubaccountFacade_Update(t *testing.T) {
+	command := "accounts/subaccount"
+
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	displayName := "my-account"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"subaccount":  subaccountId,
+				"displayName": displayName,
+			})
+
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Accounts.Subaccount.Update(context.TODO(), subaccountId, displayName)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
 func TestAccountsSubaccountFacade_Delete(t *testing.T) {
 	command := "accounts/subaccount"
 

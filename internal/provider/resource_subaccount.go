@@ -95,6 +95,9 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a70
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"labels": schema.MapAttribute{
 				ElementType: types.SetType{
@@ -215,21 +218,26 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 }
 
 func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan subaccountType
+	var plan, state subaccountType
+
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
+
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Updating Resource Subaccount", "Update is not yet implemented.")
-
-	/* TODO: implementation of UPDATE operation
-	cliRes, err := gen.client.Execute(ctx, btpcli.Update, gen.command, plan)
+	cliRes, _, err := rs.cli.Accounts.Subaccount.Update(ctx, state.ID.ValueString(), plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Subaccount", fmt.Sprintf("%s", err))
 		return
-	}*/
+	}
+
+	plan, diags = subaccountValueFrom(ctx, cliRes)
+	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
