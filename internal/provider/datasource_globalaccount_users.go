@@ -20,6 +20,7 @@ func newGlobalaccountUsersDataSource() datasource.DataSource {
 type globalaccountUsersDataSourceConfig struct {
 	/* INPUT */
 	Origin types.String `tfsdk:"origin"`
+	Id     types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values types.Set `tfsdk:"values"`
 }
@@ -47,6 +48,11 @@ func (ds *globalaccountUsersDataSource) Schema(_ context.Context, _ datasource.S
 __Further documentation__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/cc1c676b43904066abb2a4838cbd0c37.html`,
 		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
+				MarkdownDescription: "The ID of the global account.",
+				Computed:            true,
+			},
 			"origin": schema.StringAttribute{
 				MarkdownDescription: "The identity provider that hosts the user. The default value is 'ldap'.",
 				Computed:            true,
@@ -84,6 +90,7 @@ func (ds *globalaccountUsersDataSource) Read(ctx context.Context, req datasource
 		return
 	}
 
+	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
 	data.Values, diags = types.SetValueFrom(ctx, types.StringType, cliRes)
 	resp.Diagnostics.Append(diags...)
 

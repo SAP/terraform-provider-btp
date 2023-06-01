@@ -23,6 +23,7 @@ type directoryUsersDataSourceConfig struct {
 	DirectoryId types.String `tfsdk:"directory_id"`
 	Origin      types.String `tfsdk:"origin"`
 	Values      types.Set    `tfsdk:"values"`
+	Id          types.String `tfsdk:"id"`
 }
 
 type directoryUsersDataSource struct {
@@ -54,6 +55,11 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/cc1c676
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `directory_id` attribute instead",
+				MarkdownDescription: "The ID of the directory.",
+				Computed:            true,
 			},
 			"origin": schema.StringAttribute{
 				MarkdownDescription: "The identity provider that hosts the user. The default value is 'ldap'.",
@@ -92,6 +98,7 @@ func (ds *directoryUsersDataSource) Read(ctx context.Context, req datasource.Rea
 		return
 	}
 
+	data.Id = data.DirectoryId
 	data.Values, diags = types.SetValueFrom(ctx, types.StringType, cliRes)
 	resp.Diagnostics.Append(diags...)
 
