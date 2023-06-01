@@ -7,12 +7,10 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
@@ -54,12 +52,9 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:            true,
 				Sensitive:           true,
 			},
-			"auth": schema.StringAttribute{
-				MarkdownDescription: "Select the authentication method of your choice. Can be either `sso` or `password` (default).",
+			"idp": schema.StringAttribute{
+				MarkdownDescription: "The identity provider to be used for authentication (default: `sap.default`).",
 				Optional:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("sso", "password"),
-				},
 			},
 		},
 	}
@@ -67,11 +62,11 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 
 // Provider schema struct
 type providerData struct {
-	CLIServerURL  types.String `tfsdk:"cli_server_url"`
-	GlobalAccount types.String `tfsdk:"globalaccount"`
-	Username      types.String `tfsdk:"username"`
-	Password      types.String `tfsdk:"password"`
-	Auth          types.String `tfsdk:"auth"`
+	CLIServerURL     types.String `tfsdk:"cli_server_url"`
+	GlobalAccount    types.String `tfsdk:"globalaccount"`
+	Username         types.String `tfsdk:"username"`
+	Password         types.String `tfsdk:"password"`
+	IdentityProvider types.String `tfsdk:"idp"`
 }
 
 // Metadata returns the provider type name.
@@ -134,7 +129,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	if _, err = client.Login(ctx, btpcli.NewLoginRequest(config.GlobalAccount.ValueString(), username, password)); err != nil {
+	if _, err = client.Login(ctx, btpcli.NewLoginRequestWithCustomIDP(config.IdentityProvider.ValueString(), config.GlobalAccount.ValueString(), username, password)); err != nil {
 		resp.Diagnostics.AddError("Unable to create Client", fmt.Sprintf("%s", err))
 		return
 	}

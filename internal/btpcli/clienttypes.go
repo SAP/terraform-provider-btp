@@ -28,10 +28,10 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	RefreshToken     string `json:"refreshToken"`
-	Username         string `json:"user"`
-	Email            string `json:"mail"`
-	IdentityProvider string `json:"issuer"`
+	RefreshToken string `json:"refreshToken"`
+	Username     string `json:"user"`
+	Email        string `json:"mail"`
+	Issuer       string `json:"issuer"`
 }
 
 /* Logout */

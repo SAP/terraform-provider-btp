@@ -15,7 +15,7 @@ terraform {
   required_providers {
     btp = {
       source  = "sap/btp"
-      version = "~> 0.3"
+      version = "~> 0.4"
     }
   }
 }
@@ -35,7 +35,7 @@ provider "btp" {
 
 ### Optional
 
-- `auth` (String) Select the authentication method of your choice. Can be either `sso` or `password` (default).
 - `cli_server_url` (String) The URL of the BTP CLI server (e.g. `https://cpcli.cf.eu10.hana.ondemand.com`).
+- `idp` (String) The identity provider to be used for authentication (default: `sap.default`).
 - `password` (String, Sensitive) Your password. Note that if two-factor authentication is enabled, concatenate your password, followed by the passcode, in a single string.
 - `username` (String) Your user name, usually an e-mail address.
