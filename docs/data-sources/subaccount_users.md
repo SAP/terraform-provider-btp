@@ -42,4 +42,5 @@ data "btp_subaccount_users" "mycustomidp" {
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the sub account.
 - `values` (Set of String) The list of users assigned to the subaccount.
