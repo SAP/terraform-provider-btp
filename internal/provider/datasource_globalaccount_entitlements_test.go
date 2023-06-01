@@ -7,10 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestDataSourceDirectoryEntitlements(t *testing.T) {
+func TestDataSourceGlobalaccountEntitlements(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_directory_entitlements")
+		rec := setupVCR(t, "fixtures/datasource_globalaccount_entitlements")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -18,11 +18,9 @@ func TestDataSourceDirectoryEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceDirectoryEntitlements("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+					Config: hclProvider() + hclDatasourceGlobalaccountEntitlements("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_directory_entitlements.uut", "id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
-						resource.TestCheckResourceAttr("data.btp_directory_entitlements.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
-						resource.TestCheckResourceAttr("data.btp_directory_entitlements.uut", "values.%", "2"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements.uut", "values.%", "128"),
 					),
 				},
 			},
@@ -92,10 +90,7 @@ func TestDataSourceDirectoryEntitlements(t *testing.T) {
 	*/
 }
 
-func hclDatasourceDirectoryEntitlements(resourceName string, directoryId string) string {
-	template := `
-data "btp_directory_entitlements" "%s" {
-  directory_id = "%s"
-}`
-	return fmt.Sprintf(template, resourceName, directoryId)
+func hclDatasourceGlobalaccountEntitlements(resourceName string) string {
+	template := `data "btp_globalaccount_entitlements" "%s" {}`
+	return fmt.Sprintf(template, resourceName)
 }
