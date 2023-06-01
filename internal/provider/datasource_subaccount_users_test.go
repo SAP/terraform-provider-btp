@@ -59,6 +59,7 @@ func hclDatasourceSubaccountUsersDefaultIdp(resourceName string, subaccountId st
 	return fmt.Sprintf(template, resourceName, subaccountId)
 }
 
+/*
 func hclDatasourceSubaccountUsersCustomIdp(resourceName string, subaccountId string, origin string) string {
 	template := `data "btp_subaccount_users" "%s" {
 	subaccount_id = "%s"
@@ -66,3 +67,4 @@ func hclDatasourceSubaccountUsersCustomIdp(resourceName string, subaccountId str
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId, origin)
 }
+*/
