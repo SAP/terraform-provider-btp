@@ -28,7 +28,7 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 		})
 	})
 
-	/* TBD: make this code work. Currently we get the following error message: cannot unmarshal object into Go value of type []string */
+	/* TODO: make this code work. Currently we get the following error message: cannot unmarshal object into Go value of type []string */
 	/*
 		t.Run("happy path with custom idp", func(t *testing.T) {
 			rec := setupVCR(t, "fixtures/datasource_subaccount_users.custom_idp")
