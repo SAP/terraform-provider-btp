@@ -56,6 +56,7 @@ func hclDatasourceDirectoryUsersDefaultIdp(resourceName string, directoryId stri
 	return fmt.Sprintf(template, resourceName, directoryId)
 }
 
+/*
 func hclDatasourceDirectoryUsersCustomIdp(resourceName string, directoryId string, origin string) string {
 	template := `data "btp_directory_users" "%s" {
   directory_id    = "%s"
@@ -63,3 +64,4 @@ func hclDatasourceDirectoryUsersCustomIdp(resourceName string, directoryId strin
 }`
 	return fmt.Sprintf(template, resourceName, directoryId, origin)
 }
+*/
