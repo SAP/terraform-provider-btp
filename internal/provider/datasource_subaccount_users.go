@@ -19,6 +19,7 @@ func newSubaccountUsersDataSource() datasource.DataSource {
 
 type subaccountUsersDataSourceConfig struct {
 	/* INPUT */
+	Id           types.String `tfsdk:"id"`
 	SubaccountId types.String `tfsdk:"subaccount_id"`
 	Origin       types.String `tfsdk:"origin"`
 	Values       types.Set    `tfsdk:"values"`
