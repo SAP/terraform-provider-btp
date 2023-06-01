@@ -247,9 +247,9 @@ func TestV2Client_Execute(t *testing.T) {
 	t.Run("custom idp: request header `X-CPCLI-CustomIdp` must be set", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "my.custom.idp", r.Header.Get(HeaderCLICustomIDP))
-            w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 201))
-            w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
-            fmt.Fprintf(w, "{}")
+			w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 201))
+			w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
+			fmt.Fprintf(w, "{}")
 		}))
 		defer srv.Close()
 
@@ -265,9 +265,9 @@ func TestV2Client_Execute(t *testing.T) {
 			},
 		}
 
-        _, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
+		_, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
-        assert.NoError(t, err)
+		assert.NoError(t, err)
 	})
 }
 
