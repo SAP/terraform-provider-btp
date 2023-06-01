@@ -39,6 +39,8 @@ func entitledServiceType() map[string]attr.Type {
 }
 
 type globalaccountEntitlementsDataSourceConfig struct {
+	/* INPUT */
+	Id types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values types.Map `tfsdk:"values"`
 }
@@ -70,6 +72,11 @@ To view all the resources a global account:
 __Tips__
 You must be assigned to one of these roles: global account admin, global account viewer.`,
 		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
+				MarkdownDescription: "The ID of the global account.",
+				Computed:            true,
+			},
 			"values": schema.MapNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -140,6 +147,8 @@ func (ds *globalaccountEntitlementsDataSource) Read(ctx context.Context, req dat
 			}
 		}
 	}
+
+	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
 
 	data.Values, diags = types.MapValueFrom(ctx, types.ObjectType{AttrTypes: entitledServiceType()}, values)
 	resp.Diagnostics.Append(diags...)

@@ -32,6 +32,7 @@ data "btp_globalaccount_entitlements" "all" {}
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the global account.
 - `values` (Attributes Map) (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
