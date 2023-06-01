@@ -36,4 +36,5 @@ data "btp_directory_labels" "all" {
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the directory.
 - `values` (Map of Set of String) Contains the label values

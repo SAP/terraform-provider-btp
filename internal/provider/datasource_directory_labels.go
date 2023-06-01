@@ -20,6 +20,7 @@ func newDirectoryLabelsDataSource() datasource.DataSource {
 type directoryLabelsDataSourceConfig struct {
 	/* INPUT */
 	DirectoryId types.String `tfsdk:"directory_id"`
+	Id          types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values types.Map `tfsdk:"values"`
 }
@@ -57,6 +58,11 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a70
 					uuidvalidator.ValidUUID(),
 				},
 			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `directory_id` attribute instead",
+				MarkdownDescription: "The ID of the directory.",
+				Computed:            true,
+			},
 			"values": schema.MapAttribute{
 				ElementType:         types.SetType{ElemType: types.StringType},
 				Computed:            true,
@@ -81,6 +87,8 @@ func (ds *directoryLabelsDataSource) Read(ctx context.Context, req datasource.Re
 		resp.Diagnostics.AddError("API Error Reading Resource Labels (Directory)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	data.Id = data.DirectoryId
 
 	data.Values, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, cliRes.Labels)
 	resp.Diagnostics.Append(diags...)

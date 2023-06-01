@@ -36,4 +36,5 @@ data "btp_subaccount_labels" "all" {
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the subaccount.
 - `values` (Map of Set of String) Contains the label values
