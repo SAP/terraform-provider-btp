@@ -14,12 +14,17 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 
+	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
+
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/dnaeon/go-vcr.v3/cassette"
 	"gopkg.in/dnaeon/go-vcr.v3/recorder"
 )
 
-var regexpValidRFC3999Format = regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z`)
+var (
+	regexpValidRFC3999Format = regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z`)
+	regexpValidUUID          = uuidvalidator.UuidRegexp
+)
 
 func hclProvider() string {
 	return hclProviderWithCLIServerURL("https://cpcli.cf.sap.hana.ondemand.com")

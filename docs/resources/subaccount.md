@@ -51,6 +51,7 @@ resource "btp_subaccount" "my_project_on_azure" {
 
 - `name` (String) A descriptive name of the subaccount for customer-facing UIs.
 - `region` (String) The region in which the subaccount was created.
+- `subdomain` (String) The subdomain that becomes part of the path used to access the authorization tenant of the subaccount. Must be unique within the defined region and cannot be changed after the subaccount has been created.
 
 ### Optional
 
@@ -58,7 +59,6 @@ resource "btp_subaccount" "my_project_on_azure" {
 - `description` (String) A description of the subaccount for customer-facing UIs.
 - `labels` (Map of Set of String) Set of words or phrases assigned to the subaccount.
 - `parent_id` (String) The GUID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the GUID of the global account.
-- `subdomain` (String) The subdomain that becomes part of the path used to access the authorization tenant of the subaccount. Must be unique within the defined region and cannot be changed after the subaccount has been created.
 
 ### Read-Only
 
