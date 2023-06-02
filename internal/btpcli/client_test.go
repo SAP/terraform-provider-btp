@@ -312,6 +312,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 
 		if assert.NoError(t, err) {
 			assertV2DefaultHeader(t, r, http.MethodPost)
+			assert.Equal(t, "Terraform/x.x.x terraform-plugin-btp/y.y.y", r.Header.Get("User-Agent"))
 
 			if len(config.srvExpectBody) > 0 {
 				assert.Equal(t, config.srvExpectBody, strings.TrimSpace(string(b)))
@@ -325,6 +326,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 
 	srvUrl, _ := url.Parse(srv.URL)
 	uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+	uut.UserAgent = "Terraform/x.x.x terraform-plugin-btp/y.y.y"
 	uut.session = config.initSession
 	uut.newCorrelationID = func() string {
 		return "fake-correlation-id"
