@@ -2,7 +2,10 @@ package provider
 
 import (
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -50,6 +53,28 @@ func TestDataSourceDirectoryLabels(t *testing.T) {
 				{
 					Config:      hclProvider() + `data "btp_directory_labels" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "directory_id" is required, but no definition was found`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - cli server returns error", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if strings.HasPrefix(r.URL.Path, "/login/") {
+				fmt.Fprintf(w, "{}")
+				return
+			}
+			w.WriteHeader(http.StatusNotFound)
+		}))
+		defer srv.Close()
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(srv.Client()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceDirectoryLabels("uut", "5357bda0-8651-4eab-a69d-12d282bc3247"),
+					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})
