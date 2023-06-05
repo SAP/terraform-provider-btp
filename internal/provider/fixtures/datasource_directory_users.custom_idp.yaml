@@ -1,0 +1,133 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 367a4fc4-86d9-67aa-b533-e7af1c5f71e3
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Fri, 02 Jun 2023 13:14:37 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 0d706f3f-e8d6-44b9-647a-06b2cf074dc6
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.212995907s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 93
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"directory":"05368777-4934-41e8-9f3c-6ec5f4d564b9","origin":"terraformint"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            X-Correlationid:
+                - 20bb76dd-c905-fe99-7fb3-e60ab58c468f
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/user?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"error":"Could not get user names: didn''t find idp"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Fri, 02 Jun 2023 13:14:39 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "404"
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 771c18a7-d10b-41c2-76b2-7cbed9243100
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 414.398231ms

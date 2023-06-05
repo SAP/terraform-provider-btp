@@ -18,6 +18,7 @@ func newSubaccountTrustConfigurationsDataSource() datasource.DataSource {
 }
 
 type subaccountTrustConfigurationsDataSourceConfig struct {
+	Id           types.String                          `tfsdk:"id"`
 	SubaccountId types.String                          `tfsdk:"subaccount_id"`
 	Values       []globalaccountTrustConfigurationType `tfsdk:"values"`
 }
@@ -54,6 +55,11 @@ https://help.sap.com/docs/BTP/65de2977205c403bbc107264b8eccf4b/cb1bc8f1bd5c482e8
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the subaccount.",
+				Computed:            true,
 			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
@@ -119,6 +125,7 @@ func (ds *subaccountTrustConfigurationsDataSource) Read(ctx context.Context, req
 		return
 	}
 
+	data.Id = data.SubaccountId
 	data.Values = []globalaccountTrustConfigurationType{}
 
 	for _, trustConfig := range cliRes {

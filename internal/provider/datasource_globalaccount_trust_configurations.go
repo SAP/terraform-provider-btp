@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 )
@@ -15,6 +16,7 @@ func newGlobalaccountTrustConfigurationsDataSource() datasource.DataSource {
 }
 
 type globalaccountTrustConfigurationsDataSourceConfig struct {
+	Id     types.String                          `tfsdk:"id"`
 	Values []globalaccountTrustConfigurationType `tfsdk:"values"`
 }
 
@@ -44,6 +46,11 @@ You must be viewer or administrator of the global account.
 __Further documentation__
 https://help.sap.com/docs/BTP/65de2977205c403bbc107264b8eccf4b/cb1bc8f1bd5c482e891063960d7acd78.html`,
 		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
+				MarkdownDescription: "The ID of the global account.",
+				Computed:            true,
+			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -108,6 +115,7 @@ func (ds *globalaccountTrustConfigurationsDataSource) Read(ctx context.Context, 
 		return
 	}
 
+	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
 	data.Values = []globalaccountTrustConfigurationType{}
 
 	for _, trustConfig := range cliRes {

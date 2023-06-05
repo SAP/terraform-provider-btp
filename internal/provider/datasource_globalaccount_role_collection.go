@@ -18,7 +18,6 @@ func newGlobalaccountRoleCollectionDataSource() datasource.DataSource {
 }
 
 type globalaccountRoleCollectionRoleReferences struct {
-	/* OUTPUT */
 	RoleTemplateName  types.String `tfsdk:"role_template_name"`
 	RoleTemplateAppId types.String `tfsdk:"role_template_app_id"`
 	Description       types.String `tfsdk:"description"`
@@ -26,6 +25,8 @@ type globalaccountRoleCollectionRoleReferences struct {
 }
 
 type globalaccountRoleCollectionDataSourceConfig struct {
+	Id types.String `tfsdk:"id"`
+
 	/* OUTPUT */
 	Name           types.String                                `tfsdk:"name"`
 	IsReadOnly     types.Bool                                  `tfsdk:"read_only"`
@@ -59,6 +60,11 @@ func (ds *globalaccountRoleCollectionDataSource) Schema(_ context.Context, _ dat
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
+			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
+				MarkdownDescription: "The ID of the global account.",
+				Computed:            true,
 			},
 			"read_only": schema.BoolAttribute{
 				MarkdownDescription: "Whether the role collection is readonly.",
@@ -111,6 +117,7 @@ func (ds *globalaccountRoleCollectionDataSource) Read(ctx context.Context, req d
 		return
 	}
 
+	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
 	data.Name = types.StringValue(cliRes.Name)
 	data.Description = types.StringValue(cliRes.Description)
 	data.IsReadOnly = types.BoolValue(cliRes.IsReadOnly)
