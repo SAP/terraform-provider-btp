@@ -44,6 +44,7 @@ func hclResourceSubaccountEntitlement(resourceName string, subaccountId string, 
     }`, resourceName, subaccountId, serviceName, planName)
 }
 
+/*
 func hclResourceSubaccountEntitlementWithAmount(resourceName string, subaccountId string, serviceName string, planName string, amount string) string {
 	return fmt.Sprintf(`resource "btp_subaccount_entitlement" "%s" {
         subaccount_id      = "%s"
@@ -52,3 +53,4 @@ func hclResourceSubaccountEntitlementWithAmount(resourceName string, subaccountI
         amount = %s
     }`, resourceName, subaccountId, serviceName, planName, amount)
 }
+*/
