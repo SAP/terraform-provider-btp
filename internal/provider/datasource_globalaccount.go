@@ -113,8 +113,10 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a70
 				Computed:            true,
 			},
 			"geo_access": schema.StringAttribute{
-				MarkdownDescription: "The geographic locations from where the global account can be accessed. * <b>STANDARD:</b> The global account can be accessed from any geographic location. * <b>EU_ACCESS:</b> The global account can be accessed only within locations in the EU.",
-				Computed:            true,
+				MarkdownDescription: "The geographic locations from where the global account can be accessed. Possible values are: " +
+					"\n\t - `STANDARD` The global account can be accessed from any geographic location." +
+					"\n\t - `EU_ACCESS` The global account can be accessed only within locations in the EU.",
+				Computed: true,
 			},
 			"license_type": schema.StringAttribute{
 				MarkdownDescription: "The type of license for the global account. The license type affects the scope of functions of the account. Possible values are: " +

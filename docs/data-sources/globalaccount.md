@@ -46,7 +46,9 @@ data "btp_globalaccount" "this" {}
 - `crm_tenant_id` (String) The ID of the customer tenant as registered in the CRM system.
 - `description` (String) The description of the global account.
 - `expiry_date` (String) The planned date that the global account expires. This is the same date as the Contract End Date, unless a manual adjustment has been made to the actual expiration date of the global account. Typically, this property is automatically populated only when a formal termination order is received from the CRM system. From a customer perspective, this date marks the start of the grace period, which is typically 30 days before the actual deletion of the account.
-- `geo_access` (String) The geographic locations from where the global account can be accessed. * <b>STANDARD:</b> The global account can be accessed from any geographic location. * <b>EU_ACCESS:</b> The global account can be accessed only within locations in the EU.
+- `geo_access` (String) The geographic locations from where the global account can be accessed. Possible values are: 
+	 - `STANDARD` The global account can be accessed from any geographic location.
+	 - `EU_ACCESS` The global account can be accessed only within locations in the EU.
 - `id` (String) The unique ID of the global account.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `license_type` (String) The type of license for the global account. The license type affects the scope of functions of the account. Possible values are: 
