@@ -51,5 +51,5 @@ Read-Only:
 - `schema_update` (String) The update schema of the environment broker.
 - `service_description` (String) The short description of the service.
 - `service_display_name` (String) The display name of the service.
-- `service_name` (String) Name of the service offered in the catalog of the corresponding environment broker (for example, cloudfoundry).
+- `service_name` (String) Name of the service offered in the catalog of the corresponding environment broker (for example: cloudfoundry).
 - `technical_key` (String) Technical key of the corresponding environment broker.

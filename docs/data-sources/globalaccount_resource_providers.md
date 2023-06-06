@@ -40,4 +40,4 @@ Read-Only:
 - `description` (String) The description of the resource provider.
 - `display_name` (String) Descriptive name of the resource provider.
 - `id` (String) Unique technical name of the resource provider.
-- `resource_provider` (String) Provider of the requested resource. For example: AWS, AZURE.
+- `resource_provider` (String) Provider of the requested resource. Possible values are: `AWS`, `AZURE`.

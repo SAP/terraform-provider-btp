@@ -34,7 +34,13 @@ Read-Only:
 
 - `domain` (String) The domain of the data center
 - `environment` (String) The environment that the data center supports. For example: Kubernetes, Cloud Foundry.
-- `iaas_provider` (String) The infrastructure provider for the data center. Valid values: * <b>AWS:</b> Amazon Web Services. * <b>GCP:</b> Google Cloud Platform. * <b>AZURE:</b> Microsoft Azure. * <b>SAP:</b> SAP BTP (Neo). * <b>ALI:</b> Alibaba Cloud. * <b>IBM:</b> IBM Cloud.
+- `iaas_provider` (String) The infrastructure provider for the data center. Possible values are: 
+	 - `AWS` Amazon Web Services.
+	 - `GCP` Google Cloud Platform.
+	 - `AZURE` Microsoft Azure.
+	 - `SAP` SAP BTP (Neo).
+	 - `ALI` Alibaba Cloud.
+	 - `IBM` IBM Cloud.
 - `id` (String) Technical name of the data center. Must be unique within the cloud deployment.
 - `name` (String) Descriptive name of the data center for customer-facing UIs.
 - `provisioning_service_url` (String) Provisioning service URL.

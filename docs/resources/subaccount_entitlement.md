@@ -57,7 +57,11 @@ resource "btp_subaccount_entitlement" "uas_reporting" {
 - `id` (String) The ID of the entitled service plan.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `plan_id` (String) The ID of the entitled service plan.
-- `state` (String) The current state of the entitlement.
+- `state` (String) The current state of the entitlement. Possible values are: 
+	 - `OK`
+	 - `STARTED`
+	 - `PROCESSING`
+	 - `PROCESSING_FAILED`
 
 ## Import
 

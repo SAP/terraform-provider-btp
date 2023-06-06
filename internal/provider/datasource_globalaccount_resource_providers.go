@@ -58,7 +58,7 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/e2c250d
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"resource_provider": schema.StringAttribute{
-							MarkdownDescription: "Provider of the requested resource. For example: AWS, AZURE.",
+							MarkdownDescription: "Provider of the requested resource. Possible values are: `AWS`, `AZURE`.",
 							Computed:            true,
 						},
 						"id": schema.StringAttribute{

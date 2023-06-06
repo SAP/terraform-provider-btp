@@ -94,8 +94,14 @@ You must be assigned to the global account admin or viewer role.`,
 							Computed:            true,
 						},
 						"iaas_provider": schema.StringAttribute{
-							MarkdownDescription: "The infrastructure provider for the data center. Valid values: * <b>AWS:</b> Amazon Web Services. * <b>GCP:</b> Google Cloud Platform. * <b>AZURE:</b> Microsoft Azure. * <b>SAP:</b> SAP BTP (Neo). * <b>ALI:</b> Alibaba Cloud. * <b>IBM:</b> IBM Cloud.",
-							Computed:            true,
+							MarkdownDescription: "The infrastructure provider for the data center. Possible values are: " +
+								"\n\t - `AWS` Amazon Web Services." +
+								"\n\t - `GCP` Google Cloud Platform." +
+								"\n\t - `AZURE` Microsoft Azure." +
+								"\n\t - `SAP` SAP BTP (Neo)." +
+								"\n\t - `ALI` Alibaba Cloud." +
+								"\n\t - `IBM` IBM Cloud.",
+							Computed: true,
 						},
 						"provisioning_service_url": schema.StringAttribute{
 							MarkdownDescription: "Provisioning service URL.",

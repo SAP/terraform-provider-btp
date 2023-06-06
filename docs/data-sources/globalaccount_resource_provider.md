@@ -34,7 +34,7 @@ data "btp_globalaccount_resource_provider" "by_id" {
 ### Required
 
 - `id` (String) Unique technical name of the resource provider.
-- `resource_provider` (String) Provider of the requested resource. For example: AWS, AZURE.
+- `resource_provider` (String) Provider of the requested resource. Possible values are: `AWS`, `AZURE`.
 
 ### Read-Only
 

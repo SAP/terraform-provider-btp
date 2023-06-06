@@ -56,6 +56,16 @@ Read-Only:
 - `platform_id` (String) ID of the platform for the environment instance in the corresponding service broker's catalog.
 - `service_id` (String) ID of the service for the environment instance in the corresponding service broker's catalog.
 - `service_name` (String) Name of the service for the environment instance in the corresponding service broker's catalog.
-- `state` (String) Current state of the environment instance.
+- `state` (String) Current state of the environment instance. Possible values are: 
+	 - `OK`
+	 - `CREATING`
+	 - `CREATION_FAILED`
+	 - `DELETING`
+	 - `DELETION_FAILED`
+	 - `UPDATE_FAILED`
+	 - `UPDATING`
 - `tenant_id` (String) The ID of the tenant that owns the environment instance.
-- `type` (String) The last provisioning operation on the environment instance. * Provision: Environment instance created. * Update: Environment instance changed. * Deprovision: Environment instance deleted.
+- `type` (String) The last provisioning operation on the environment instance. Possible values are: 
+	 - `Provision` Environment instance created.
+	 - `Update` Environment instance changed.
+	 - `Deprovision` Environment instance deleted.
