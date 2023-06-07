@@ -31,23 +31,59 @@ data "btp_globalaccount" "this" {}
 ### Read-Only
 
 - `commercial_model` (String) The type of the commercial contract that was signed.
-- `consumption_based` (Boolean) Whether the customer of the global account pays only for services that they actually use (consumption-based) or pay for subscribed services at a fixed cost irrespective of consumption (subscription-based). * <b>TRUE:</b> Consumption-based commercial model. * <b>FALSE:</b> Subscription-based commercial model.
-- `contract_status` (String) The status of the customer contract and its associated root global account. * <b>ACTIVE:</b> The customer contract and its associated global account is currently active. * <b>PENDING_TERMINATION:</b> A termination process has been triggered for a customer contract (the customer contract has expired, or a customer has given notification that they wish to terminate their contract), and the global account is currently in the validation period. The customer can still access their global account until the end of the validation period. * <b>SUSPENDED:</b> For enterprise accounts, specifies that the customer's global account is currently in the grace period of the termination process. Access to the global account by the customer is blocked. No data is deleted until the deletion date is reached at the end of the grace period. For trial accounts, specifies that the account is suspended, and the account owner has not yet extended the trial period.
-- `costobject_id` (String) The number or code of the cost center, internal order, or Work Breakdown Structure element that is charged for the creation and usage of the global account. The type of the cost object must be configured in costObjectType.
-- `costobject_type` (String) The type of accounting assignment object that is associated with the global account owner and used to charge for the creation and usage of the global account. Support types: COST_CENTER, INTERNAL_ORDER, WBS_ELEMENT. The number or code of the specified cost object is defined in costObjectId. For a cost object of type 'cost center', the value is also configured in costCenter for backward compatibility purposes.
+- `consumption_based` (Boolean) Whether the customer of the global account pays only for services that they actually use (consumption-based) or pay for subscribed services at a fixed cost irrespective of consumption (subscription-based).
+- `contract_status` (String) The status of the customer contract and its associated root global account. Possible values are: 
+	 - `ACTIVE` The customer contract and its associated global account is currently active.
+	 - `PENDING_TERMINATION` A termination process has been triggered for a customer contract (the customer contract has expired, or a customer has given notification that they wish to terminate their contract), and the global account is currently in the validation period. The customer can still access their global account until the end of the validation period.
+	 - `SUSPENDED` For enterprise accounts, specifies that the customer's global account is currently in the grace period of the termination process. Access to the global account by the customer is blocked. No data is deleted until the deletion date is reached at the end of the grace period. For trial accounts, specifies that the account is suspended, and the account owner has not yet extended the trial period.
+- `costobject_id` (String) The number or code of the cost center, internal order, or Work Breakdown Structure element that is charged for the creation and usage of the global account. The type of the cost object must be configured in `costobject_type`.
+- `costobject_type` (String) The type of accounting assignment object that is associated with the global account owner and used to charge for the creation and usage of the global account. The number or code of the specified cost object is defined in `costobject_id`. Possible values are: 
+	 - `COST_CENTER`
+	 - `INTERNAL_ORDER`
+	 - `WBS_ELEMENT`
 - `created_date` (String) The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `crm_customer_id` (String) The ID of the customer as registered in the CRM system.
 - `crm_tenant_id` (String) The ID of the customer tenant as registered in the CRM system.
 - `description` (String) The description of the global account.
 - `expiry_date` (String) The planned date that the global account expires. This is the same date as the Contract End Date, unless a manual adjustment has been made to the actual expiration date of the global account. Typically, this property is automatically populated only when a formal termination order is received from the CRM system. From a customer perspective, this date marks the start of the grace period, which is typically 30 days before the actual deletion of the account.
-- `geo_access` (String) The geographic locations from where the global account can be accessed. * <b>STANDARD:</b> The global account can be accessed from any geographic location. * <b>EU_ACCESS:</b> The global account can be accessed only within locations in the EU.
+- `geo_access` (String) The geographic locations from where the global account can be accessed. Possible values are: 
+	 - `STANDARD` The global account can be accessed from any geographic location.
+	 - `EU_ACCESS` The global account can be accessed only within locations in the EU.
 - `id` (String) The unique ID of the global account.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
-- `license_type` (String) The type of license for the global account. The license type affects the scope of functions of the account. * <b>DEVELOPER:</b> For internal developer global accounts on Staging or Canary landscapes. * <b>CUSTOMER:</b> For customer global accounts. * <b>PARTNER:</b> For partner global accounts. * <b>INTERNAL_DEV:</b> For internal global accounts on the Dev landscape. * <b>INTERNAL_PROD:</b> For internal global accounts on the Live landscape. * <b>TRIAL:</b> For customer trial accounts.
+- `license_type` (String) The type of license for the global account. The license type affects the scope of functions of the account. Possible values are: 
+	 - `DEVELOPER` For internal developer global accounts on Staging or Canary landscapes.
+	 - `CUSTOMER` For customer global accounts.
+	 - `PARTNER` For partner global accounts.
+	 - `INTERNAL_DEV` For internal global accounts on the Dev landscape.
+	 - `INTERNAL_PROD` For internal global accounts on the Live landscape.
+	 - `TRIAL` For customer trial accounts.
 - `name` (String) The display name of the global account.
-- `origin` (String) The origin of the account. * <b>ORDER:</b> Created by the Order Processing API or Submit Order wizard. * <b>OPERATOR:</b> Created by the Global Account wizard. * <b>REGION_SETUP:</b> Created automatically as part of the region setup.
+- `origin` (String) The origin of the account. Possible values are: 
+	 - `ORDER` Created by the Order Processing API or Submit Order wizard.
+	 - `OPERATOR` Created by the Global Account wizard.
+	 - `REGION_SETUP` Created automatically as part of the region setup.
 - `renewal_date` (String) The date that an expired contract was renewed.
 - `service_id` (String) For internal accounts, the service for which the global account was created.
-- `state` (String) The current state of the global account. * <b>STARTED:</b> CRUD operation on an entity has started. * <b>CREATING:</b> Creating entity operation is in progress. * <b>UPDATING:</b> Updating entity operation is in progress. * <b>MOVING:</b> Moving entity operation is in progress. * <b>PROCESSING:</b> A series of operations related to the entity is in progress. * <b>DELETING:</b> Deleting entity operation is in progress. * <b>OK:</b> The CRUD operation or series of operations completed successfully. * <b>PENDING REVIEW:</b> The processing operation has been stopped for reviewing and can be restarted by the operator. * <b>CANCELLED:</b> The operation or processing was canceled by the operator. * <b>CREATION_FAILED:</b> The creation operation failed, and the entity was not created or was created but cannot be used. * <b>UPDATE_FAILED:</b> The update operation failed, and the entity was not updated. * <b>PROCESSING_FAILED:</b> The processing operations failed. * <b>DELETION_FAILED:</b> The delete operation failed, and the entity was not deleted. * <b>MOVE_FAILED:</b> Entity could not be moved to a different location. * <b>MIGRATING:</b> Migrating entity from NEO to CF.
+- `state` (String) The current state of the global account. Possible values are: 
+	 - `STARTED` CRUD operation on an entity has started.
+	 - `CREATING` Creating entity operation is in progress.
+	 - `UPDATING` Updating entity operation is in progress.
+	 - `MOVING` Moving entity operation is in progress.
+	 - `PROCESSING` A series of operations related to the entity is in progress.
+	 - `DELETING` Deleting entity operation is in progress.
+	 - `OK` The CRUD operation or series of operations completed successfully.
+	 - `PENDING REVIEW` The processing operation has been stopped for reviewing and can be restarted by the operator.
+	 - `CANCELLED` The operation or processing was canceled by the operator.
+	 - `CREATION_FAILED` The creation operation failed, and the entity was not created or was created but cannot be used.
+	 - `UPDATE_FAILED` The update operation failed, and the entity was not updated.
+	 - `PROCESSING_FAILED` The processing operations failed.
+	 - `DELETION_FAILED` The delete operation failed, and the entity was not deleted.
+	 - `MOVE_FAILED` Entity could not be moved to a different location.
+	 - `MIGRATING` Migrating entity from NEO to CF.
 - `subdomain` (String) Relevant only for entities that require authorization (e.g. global account). The subdomain that becomes part of the path used to access the authorization tenant of the global account. Unique within the defined region.
-- `usage` (String) For internal accounts, the intended purpose of the global account. Possible purposes: * <b>Development:</b> For development of a service. * <b>Testing:</b> For testing development. * <b>Demo:</b> For creating demos. * <b>Production:</b> For delivering a service in a production landscape.
+- `usage` (String) For internal accounts, the intended purpose of the global account. Possible values are: 
+	 - `Development` For development of a service.
+	 - `Testing` For testing development.
+	 - `Demo` For creating demos.
+	 - `Production` For delivering a service in a production landscape.

@@ -48,4 +48,7 @@ data "btp_subaccount_service_binding" "by_name" {
 - `parameters` (String) The parameters of the service binding as a valid JSON object.
 - `ready` (Boolean) Whether the service binding is ready.
 - `service_instance_id` (String) The ID of the service instance associated with the binding.
-- `state` (String) Current state of the service binding.
+- `state` (String) Current state of the service binding. Possible values are: 
+	 `in progress`
+	 `failed`
+	 `succeeded`

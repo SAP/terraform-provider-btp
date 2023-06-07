@@ -137,12 +137,38 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a70
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "The current state of the subaccount.",
-				Computed:            true,
+				MarkdownDescription: "The current state of the subaccount. Possible values are: " + // TODO describe the values listed below
+					"\n\t - `OK`" +
+					"\n\t - `CANCELED`" +
+					"\n\t - `CREATING`" +
+					"\n\t - `CREATION_FAILED`" +
+					"\n\t - `DELETING`" +
+					"\n\t - `DELETION_FAILED`" +
+					"\n\t - `MIGRATING`" +
+					"\n\t - `MIGRATION_FAILED`" +
+					"\n\t - `MIGRATED`" +
+					"\n\t - `MOVE_FAILED`" +
+					"\n\t - `MOVE_TO_OTHER_GA_FAILED`" +
+					"\n\t - `MOVING`" +
+					"\n\t - `MOVING_TO_OTHER_GA`" +
+					"\n\t - `PENDING_REVIEW`" +
+					"\n\t - `PROCESSING`" +
+					"\n\t - `PROCESSING_FAILED`" +
+					"\n\t - `ROLLBACK_MIGRATION_PROCESSING`" +
+					"\n\t - `STARTED`" +
+					"\n\t - `SUSPENSION_FAILED`" +
+					"\n\t - `UPDATE_ACCOUNT_TYPE_FAILED`" +
+					"\n\t - `UPDATE_DIRECTORY_TYPE_FAILED`" +
+					"\n\t - `UPDATE_FAILED`" +
+					"\n\t - `UPDATING`",
+				Computed: true,
 			},
 			"usage": schema.StringAttribute{
-				MarkdownDescription: "Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. * <b>UNSET:</b> Global account or subaccount admin has not set the production-relevancy flag. Default value. * <b>NOT_USED_FOR_PRODUCTION:</b> Subaccount is not used for production purposes. * <b>USED_FOR_PRODUCTION:</b> Subaccount is used for production purposes.",
-				Computed:            true,
+				MarkdownDescription: "Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: " +
+					"\n\t- `UNSET` Global account or subaccount admin has not set the production-relevancy flag (default value)." +
+					"\n\t- `NOT_USED_FOR_PRODUCTION` Subaccount is not used for production purposes." +
+					"\n\t- `USED_FOR_PRODUCTION` Subaccount is used for production purposes.",
+				Computed: true,
 			},
 		},
 	}

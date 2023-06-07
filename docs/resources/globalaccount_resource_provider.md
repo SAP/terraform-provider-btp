@@ -65,7 +65,7 @@ resource "btp_globalaccount_resource_provider" "aws" {
 
 - `id` (String) Unique technical name of the resource provider.
 - `parameters` (String, Sensitive) Any relevant information about the resource provider that is not provided by other parameter values.
-- `resource_provider` (String) Provider of the requested resource. For example: AWS, AZURE.
+- `resource_provider` (String) Provider of the requested resource. Possible values are: `AWS`, `AZURE`.
 
 ### Read-Only
 

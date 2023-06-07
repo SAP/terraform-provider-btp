@@ -67,8 +67,34 @@ resource "btp_subaccount" "my_project_on_azure" {
 - `id` (String) The ID of the subaccount.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `parent_features` (Set of String) The features of parent entity of the subaccount.
-- `state` (String) The current state of the subaccount.
-- `usage` (String) Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. * <b>UNSET:</b> Global account or subaccount admin has not set the production-relevancy flag. Default value. * <b>NOT_USED_FOR_PRODUCTION:</b> Subaccount is not used for production purposes. * <b>USED_FOR_PRODUCTION:</b> Subaccount is used for production purposes.
+- `state` (String) The current state of the subaccount. Possible values are: 
+	 - `OK`
+	 - `CANCELED`
+	 - `CREATING`
+	 - `CREATION_FAILED`
+	 - `DELETING`
+	 - `DELETION_FAILED`
+	 - `MIGRATING`
+	 - `MIGRATION_FAILED`
+	 - `MIGRATED`
+	 - `MOVE_FAILED`
+	 - `MOVE_TO_OTHER_GA_FAILED`
+	 - `MOVING`
+	 - `MOVING_TO_OTHER_GA`
+	 - `PENDING_REVIEW`
+	 - `PROCESSING`
+	 - `PROCESSING_FAILED`
+	 - `ROLLBACK_MIGRATION_PROCESSING`
+	 - `STARTED`
+	 - `SUSPENSION_FAILED`
+	 - `UPDATE_ACCOUNT_TYPE_FAILED`
+	 - `UPDATE_DIRECTORY_TYPE_FAILED`
+	 - `UPDATE_FAILED`
+	 - `UPDATING`
+- `usage` (String) Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: 
+	- `UNSET` Global account or subaccount admin has not set the production-relevancy flag (default value).
+	- `NOT_USED_FOR_PRODUCTION` Subaccount is not used for production purposes.
+	- `USED_FOR_PRODUCTION` Subaccount is used for production purposes.
 
 ## Import
 

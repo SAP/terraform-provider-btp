@@ -48,14 +48,9 @@ func (rs *directoryResource) Schema(_ context.Context, _ resource.SchemaRequest,
 
 You can create up to 5 levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
 
-Directory features: Set the '--features' parameter to specify which features to enable for the directory. Use either the feature name or its character.
-* DEFAULT (D): (Required) All directories provide the following basic features: (i) Group and filter subaccounts for reports and filters, (ii) monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model), and (iii) assign labels to the directory for identification and reporting purposes.
-* ENTITLEMENTS (E): (Optional) Enables the assignment of a quota for services and applications to the directory from the global account quota for distribution to the directory's subaccounts and subdirectories.
-* AUTHORIZATIONS (A): (Optional) Allows you to assign users as administrators or viewers of this directory. For example, allow certain users to manage the directory's entitlements. You can enable this feature only in combination with the ENTITLEMENTS (E) feature.
-
 __Tips__
 * You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
-* A directory path in the account hierarchy can have only one directory that is enabled with the ENTITLEMENTS (E) or AUTHORIZATIONS (A) features. If such a directory exists, other directories in that path can only be enabled with the DEFAULT (D) features.
+* A directory path in the account hierarchy can have only one directory that is enabled with the ` + "`ENTITLEMENTS`" + ` or ` + "`AUTHORIZATIONS`" + ` features. If such a directory exists, other directories in that path can only be enabled with the ` + "`DEFAULT`" + ` features.
 
 __Further documentation__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html`,
@@ -108,15 +103,18 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a70
 			},
 
 			"features": schema.SetAttribute{
-				ElementType:         types.StringType,
-				MarkdownDescription: "The features that are enabled for the directory. Valid values: - DEFAULT: (Mandatory) All directories have the following basic feature enabled. (1) Group and filter subaccounts for reports and filters, (2) monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model), and (3) set custom properties and tags to the directory for identification and reporting purposes. - ENTITLEMENTS: (Optional) Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.  - AUTHORIZATIONS: (Optional) Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the ENTITLEMENTS feature. <br/><b>Valid values:</b>  [DEFAULT] [DEFAULT,ENTITLEMENTS] [DEFAULT,ENTITLEMENTS,AUTHORIZATIONS]<br/>",
-				Computed:            true,
+				ElementType: types.StringType,
+				MarkdownDescription: "The features that are enabled for the directory. Possible values are: " +
+					"\n\t - `DEFAULT` All directories have the following basic feature enabled. (1) Group and filter subaccounts for reports and filters, (2) monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model), and (3) set custom properties and tags to the directory for identification and reporting purposes." +
+					"\n\t - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory." +
+					"\n\t - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.",
+				Computed: true,
 			},
 			"labels": schema.MapAttribute{
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "Contains information about the labels assigned to a specified global account. Labels are represented in a JSON array of key-value pairs; each key has up to 10 corresponding values. This field replaces the deprecated \"customProperties\" field, which supports only single values per key.",
+				MarkdownDescription: "Contains information about the labels assigned to a specified global account. Labels are represented in a JSON array of key-value pairs; each key has up to 10 corresponding values.",
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
@@ -125,8 +123,23 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a70
 			},
 
 			"state": schema.StringAttribute{
-				MarkdownDescription: "The current state of the directory. * <b>STARTED:</b> CRUD operation on an entity has started. * <b>CREATING:</b> Creating entity operation is in progress. * <b>UPDATING:</b> Updating entity operation is in progress. * <b>MOVING:</b> Moving entity operation is in progress. * <b>PROCESSING:</b> A series of operations related to the entity is in progress. * <b>DELETING:</b> Deleting entity operation is in progress. * <b>OK:</b> The CRUD operation or series of operations completed successfully. * <b>PENDING REVIEW:</b> The processing operation has been stopped for reviewing and can be restarted by the operator. * <b>CANCELLED:</b> The operation or processing was canceled by the operator. * <b>CREATION_FAILED:</b> The creation operation failed, and the entity was not created or was created but cannot be used. * <b>UPDATE_FAILED:</b> The update operation failed, and the entity was not updated. * <b>PROCESSING_FAILED:</b> The processing operations failed. * <b>DELETION_FAILED:</b> The delete operation failed, and the entity was not deleted. * <b>MOVE_FAILED:</b> Entity could not be moved to a different location. * <b>MIGRATING:</b> Migrating entity from NEO to CF.",
-				Computed:            true,
+				MarkdownDescription: "The current state of the directory. Possible values are: " +
+					"\n\t - `OK` The CRUD operation or series of operations completed successfully." +
+					"\n\t - `STARTED` CRUD operation on an entity has started." +
+					"\n\t - `CREATING` Creating entity operation is in progress." +
+					"\n\t - `UPDATING` Updating entity operation is in progress." +
+					"\n\t - `MOVING` Moving entity operation is in progress." +
+					"\n\t - `PROCESSING` A series of operations related to the entity is in progress." +
+					"\n\t - `DELETING` Deleting entity operation is in progress." +
+					"\n\t - `PENDING REVIEW` The processing operation has been stopped for reviewing and can be restarted by the operator." +
+					"\n\t - `CANCELLED` The operation or processing was canceled by the operator." +
+					"\n\t - `CREATION_FAILED` The creation operation failed, and the entity was not created or was created but cannot be used." +
+					"\n\t - `UPDATE_FAILED` The update operation failed, and the entity was not updated." +
+					"\n\t - `PROCESSING_FAILED` The processing operations failed." +
+					"\n\t - `DELETION_FAILED` The delete operation failed, and the entity was not deleted." +
+					"\n\t - `MOVE_FAILED` Entity could not be moved to a different location." +
+					"\n\t - `MIGRATING` Migrating entity from NEO to CF.",
+				Computed: true,
 			},
 		},
 	}

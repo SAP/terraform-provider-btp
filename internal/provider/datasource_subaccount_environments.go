@@ -107,7 +107,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"service_name": schema.StringAttribute{
-							MarkdownDescription: "Name of the service offered in the catalog of the corresponding environment broker (for example, cloudfoundry).",
+							MarkdownDescription: "Name of the service offered in the catalog of the corresponding environment broker (for example: cloudfoundry).",
 							Computed:            true,
 						},
 						"schema_create": schema.StringAttribute{

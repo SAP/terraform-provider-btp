@@ -54,7 +54,10 @@ resource "btp_subaccount_service_binding" "my_parameterized_binding" {
 - `labels` (Map of Set of String) Set of words or phrases assigned to service binding.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `ready` (Boolean) Whether the service binding is ready.
-- `state` (String) Current state of the service binding.
+- `state` (String) Current state of the service binding. Possible values are: 
+	 `in progress`
+	 `failed`
+	 `succeeded`
 
 ## Import
 
