@@ -21,7 +21,7 @@ resource "btp_globalaccount_role_collection" "my_collection" {
   name        = "My own role collection"
   description = "A description of what the role collection is supposed to do."
 
-  role_references = [
+  roles = [
     {
       name                 = "Global Account Admin"
       role_template_app_id = "cis-central!b13"
@@ -37,14 +37,14 @@ resource "btp_globalaccount_role_collection" "my_collection" {
 ### Required
 
 - `name` (String) The name of the role collection.
-- `role_references` (Attributes List) (see [below for nested schema](#nestedatt--role_references))
+- `roles` (Attributes List) (see [below for nested schema](#nestedatt--roles))
 
 ### Optional
 
 - `description` (String) Whether the role collection is readonly.
 
-<a id="nestedatt--role_references"></a>
-### Nested Schema for `role_references`
+<a id="nestedatt--roles"></a>
+### Nested Schema for `roles`
 
 Required:
 

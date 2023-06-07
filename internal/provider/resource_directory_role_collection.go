@@ -25,10 +25,10 @@ type directoryRoleCollectionRoleRefType struct {
 }
 
 type directoryRoleCollectionTypeConfig struct {
-	DirectoryId    types.String                         `tfsdk:"directory_id"`
-	Name           types.String                         `tfsdk:"name"`
-	Description    types.String                         `tfsdk:"description"`
-	RoleReferences []directoryRoleCollectionRoleRefType `tfsdk:"role_references"`
+	DirectoryId types.String                         `tfsdk:"directory_id"`
+	Name        types.String                         `tfsdk:"name"`
+	Description types.String                         `tfsdk:"description"`
+	Roles       []directoryRoleCollectionRoleRefType `tfsdk:"roles"`
 }
 
 type directoryRoleCollectionType struct {
@@ -70,7 +70,7 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf0
 				Optional:            true,
 				Computed:            true,
 			},
-			"role_references": schema.ListNestedAttribute{
+			"roles": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
@@ -112,9 +112,9 @@ func (rs *directoryRoleCollectionType) Read(ctx context.Context, req resource.Re
 	state.Name = types.StringValue(cliRes.Name)
 	state.Description = types.StringValue(cliRes.Description)
 
-	state.RoleReferences = []directoryRoleCollectionRoleRefType{}
+	state.Roles = []directoryRoleCollectionRoleRefType{}
 	for _, role := range cliRes.RoleReferences {
-		state.RoleReferences = append(state.RoleReferences, directoryRoleCollectionRoleRefType{
+		state.Roles = append(state.Roles, directoryRoleCollectionRoleRefType{
 			RoleTemplateName:  types.StringValue(role.RoleTemplateName),
 			RoleTemplateAppId: types.StringValue(role.RoleTemplateAppId),
 			Name:              types.StringValue(role.Name),
@@ -139,7 +139,7 @@ func (rs *directoryRoleCollectionType) Create(ctx context.Context, req resource.
 		return
 	}
 
-	for _, role := range plan.RoleReferences {
+	for _, role := range plan.Roles {
 		_, err := rs.cli.Security.Role.AddByDirectory(ctx, plan.DirectoryId.ValueString(), plan.Name.ValueString(), role.Name.ValueString(), role.RoleTemplateAppId.ValueString(), role.RoleTemplateName.ValueString())
 
 		if err != nil {

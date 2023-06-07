@@ -15,7 +15,7 @@ func newGlobalaccountRoleCollectionsDataSource() datasource.DataSource {
 	return &globalaccountRoleCollectionsDataSource{}
 }
 
-type globalaccountRoleCollectionsRoleReferences struct {
+type globalaccountRoleCollectionsRoleType struct {
 	/* OUTPUT */
 	RoleTemplateName  types.String `tfsdk:"role_template_name"`
 	RoleTemplateAppId types.String `tfsdk:"role_template_app_id"`
@@ -25,10 +25,10 @@ type globalaccountRoleCollectionsRoleReferences struct {
 
 type globalaccountRoleCollectionsValueConfig struct {
 	/* OUTPUT */
-	Name           types.String                                 `tfsdk:"name"`
-	IsReadOnly     types.Bool                                   `tfsdk:"read_only"`
-	Description    types.String                                 `tfsdk:"description"`
-	RoleReferences []globalaccountRoleCollectionsRoleReferences `tfsdk:"role_references"`
+	Name        types.String                           `tfsdk:"name"`
+	IsReadOnly  types.Bool                             `tfsdk:"read_only"`
+	Description types.String                           `tfsdk:"description"`
+	Roles       []globalaccountRoleCollectionsRoleType `tfsdk:"roles"`
 }
 
 type globalaccountRoleCollectionsDataSourceConfig struct {
@@ -77,7 +77,7 @@ func (ds *globalaccountRoleCollectionsDataSource) Schema(_ context.Context, _ da
 							MarkdownDescription: "The description of the role collection.",
 							Computed:            true,
 						},
-						"role_references": schema.ListNestedAttribute{
+						"roles": schema.ListNestedAttribute{
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"role_template_name": schema.StringAttribute{
@@ -129,14 +129,14 @@ func (ds *globalaccountRoleCollectionsDataSource) Read(ctx context.Context, req 
 
 	for _, rolecollection := range cliRes {
 		val := globalaccountRoleCollectionsValueConfig{
-			Name:           types.StringValue(rolecollection.Name),
-			Description:    types.StringValue(rolecollection.Description),
-			IsReadOnly:     types.BoolValue(rolecollection.IsReadOnly),
-			RoleReferences: []globalaccountRoleCollectionsRoleReferences{},
+			Name:        types.StringValue(rolecollection.Name),
+			Description: types.StringValue(rolecollection.Description),
+			IsReadOnly:  types.BoolValue(rolecollection.IsReadOnly),
+			Roles:       []globalaccountRoleCollectionsRoleType{},
 		}
 
 		for _, ref := range rolecollection.RoleReferences {
-			val.RoleReferences = append(val.RoleReferences, globalaccountRoleCollectionsRoleReferences{
+			val.Roles = append(val.Roles, globalaccountRoleCollectionsRoleType{
 				RoleTemplateName:  types.StringValue(ref.RoleTemplateName),
 				RoleTemplateAppId: types.StringValue(ref.RoleTemplateAppId),
 				Description:       types.StringValue(ref.Description),
