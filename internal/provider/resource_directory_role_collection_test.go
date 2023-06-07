@@ -17,7 +17,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My role collection", "Description of my role collection"),
+					Config: hclProvider() + hclResourceDirectoryRoleCollection("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My role collection", "Description of my role collection"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 
@@ -35,7 +35,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 }
 
-func hclResourceDirectoryRoleCollectionNoDescription(resourceName string, directoryId string, displayName string, description string) string {
+func hclResourceDirectoryRoleCollection(resourceName string, directoryId string, displayName string, description string) string {
 	return fmt.Sprintf(`resource "btp_directory_role_collection" "%s" {
         directory_id 		= "%s"
         name      			= "%s"
