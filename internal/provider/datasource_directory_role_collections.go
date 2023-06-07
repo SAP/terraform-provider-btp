@@ -17,7 +17,7 @@ func newDirectoryRoleCollectionsDataSource() datasource.DataSource {
 	return &directoryRoleCollectionsDataSource{}
 }
 
-type directoryRoleCollectionsRoleReferences struct {
+type directoryRoleCollectionsRoleType struct {
 	/* OUTPUT */
 	RoleTemplateName  types.String `tfsdk:"role_template_name"`
 	RoleTemplateAppId types.String `tfsdk:"role_template_app_id"`
@@ -27,10 +27,10 @@ type directoryRoleCollectionsRoleReferences struct {
 
 type directoryRoleCollectionsValueConfig struct {
 	/* OUTPUT */
-	Name           types.String                             `tfsdk:"name"`
-	IsReadOnly     types.Bool                               `tfsdk:"read_only"`
-	Description    types.String                             `tfsdk:"description"`
-	RoleReferences []directoryRoleCollectionsRoleReferences `tfsdk:"role_references"`
+	Name        types.String                       `tfsdk:"name"`
+	IsReadOnly  types.Bool                         `tfsdk:"read_only"`
+	Description types.String                       `tfsdk:"description"`
+	Roles       []directoryRoleCollectionsRoleType `tfsdk:"roles"`
 }
 
 type directoryRoleCollectionsDataSourceConfig struct {
@@ -87,7 +87,7 @@ func (ds *directoryRoleCollectionsDataSource) Schema(_ context.Context, _ dataso
 							MarkdownDescription: "The description of the role collection.",
 							Computed:            true,
 						},
-						"role_references": schema.ListNestedAttribute{
+						"roles": schema.ListNestedAttribute{
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"role_template_name": schema.StringAttribute{
@@ -139,14 +139,14 @@ func (ds *directoryRoleCollectionsDataSource) Read(ctx context.Context, req data
 
 	for _, rolecollection := range cliRes {
 		val := directoryRoleCollectionsValueConfig{
-			Name:           types.StringValue(rolecollection.Name),
-			Description:    types.StringValue(rolecollection.Description),
-			IsReadOnly:     types.BoolValue(rolecollection.IsReadOnly),
-			RoleReferences: []directoryRoleCollectionsRoleReferences{},
+			Name:        types.StringValue(rolecollection.Name),
+			Description: types.StringValue(rolecollection.Description),
+			IsReadOnly:  types.BoolValue(rolecollection.IsReadOnly),
+			Roles:       []directoryRoleCollectionsRoleType{},
 		}
 
 		for _, ref := range rolecollection.RoleReferences {
-			val.RoleReferences = append(val.RoleReferences, directoryRoleCollectionsRoleReferences{
+			val.Roles = append(val.Roles, directoryRoleCollectionsRoleType{
 				RoleTemplateName:  types.StringValue(ref.RoleTemplateName),
 				RoleTemplateAppId: types.StringValue(ref.RoleTemplateAppId),
 				Description:       types.StringValue(ref.Description),

@@ -18,7 +18,7 @@ func newSubaccountRoleCollectionDataSource() datasource.DataSource {
 	return &subaccountRoleCollectionDataSource{}
 }
 
-type subaccountRoleCollectionRoleReferences struct {
+type subaccountRoleCollectionRoleType struct {
 	/* OUTPUT */
 	RoleTemplateName  types.String `tfsdk:"role_template_name"`
 	RoleTemplateAppId types.String `tfsdk:"role_template_app_id"`
@@ -31,10 +31,10 @@ type subaccountRoleCollectionDataSourceConfig struct {
 	SubaccountId types.String `tfsdk:"subaccount_id"`
 	Id           types.String `tfsdk:"id"`
 	/* OUTPUT */
-	Name           types.String                             `tfsdk:"name"`
-	IsReadOnly     types.Bool                               `tfsdk:"read_only"`
-	Description    types.String                             `tfsdk:"description"`
-	RoleReferences []subaccountRoleCollectionRoleReferences `tfsdk:"role_references"`
+	Name        types.String                       `tfsdk:"name"`
+	IsReadOnly  types.Bool                         `tfsdk:"read_only"`
+	Description types.String                       `tfsdk:"description"`
+	Roles       []subaccountRoleCollectionRoleType `tfsdk:"roles"`
 }
 
 type subaccountRoleCollectionDataSource struct {
@@ -84,7 +84,7 @@ func (ds *subaccountRoleCollectionDataSource) Schema(_ context.Context, _ dataso
 				MarkdownDescription: "The description of the role collection.",
 				Computed:            true,
 			},
-			"role_references": schema.ListNestedAttribute{
+			"roles": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"role_template_name": schema.StringAttribute{
@@ -131,10 +131,10 @@ func (ds *subaccountRoleCollectionDataSource) Read(ctx context.Context, req data
 	data.Name = types.StringValue(rolecollection.Name)
 	data.Description = types.StringValue(rolecollection.Description)
 	data.IsReadOnly = types.BoolValue(rolecollection.IsReadOnly)
-	data.RoleReferences = []subaccountRoleCollectionRoleReferences{}
 
+	data.Roles = []subaccountRoleCollectionRoleType{}
 	for _, ref := range rolecollection.RoleReferences {
-		data.RoleReferences = append(data.RoleReferences, subaccountRoleCollectionRoleReferences{
+		data.Roles = append(data.Roles, subaccountRoleCollectionRoleType{
 			RoleTemplateName:  types.StringValue(ref.RoleTemplateName),
 			RoleTemplateAppId: types.StringValue(ref.RoleTemplateAppId),
 			Description:       types.StringValue(ref.Description),

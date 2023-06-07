@@ -28,7 +28,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "name", "Subaccount Viewer"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "description", "Read-only access to the subaccount"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "read_only", "true"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "role_references.#", "5"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "roles.#", "5"),
 					),
 				},
 			},

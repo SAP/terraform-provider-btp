@@ -22,7 +22,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", "Administrative access to the global account"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "read_only", "true"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "role_references.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "4"),
 					),
 				},
 			},
@@ -42,7 +42,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", ""),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "read_only", "false"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "role_references.#", "0"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "0"),
 					),
 				},
 			},

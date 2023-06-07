@@ -23,9 +23,9 @@ type globalaccountRoleCollectionRoleRefType struct {
 }
 
 type globalaccountRoleCollectionType struct {
-	Name           types.String                             `tfsdk:"name"`
-	Description    types.String                             `tfsdk:"description"`
-	RoleReferences []globalaccountRoleCollectionRoleRefType `tfsdk:"role_references"`
+	Name        types.String                             `tfsdk:"name"`
+	Description types.String                             `tfsdk:"description"`
+	Roles       []globalaccountRoleCollectionRoleRefType `tfsdk:"roles"`
 }
 
 type globalaccountRoleCollectionResource struct {
@@ -60,7 +60,7 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf0
 				Optional:            true,
 				Computed:            true,
 			},
-			"role_references": schema.ListNestedAttribute{
+			"roles": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
@@ -102,9 +102,9 @@ func (rs *globalaccountRoleCollectionResource) Read(ctx context.Context, req res
 	state.Name = types.StringValue(cliRes.Name)
 	state.Description = types.StringValue(cliRes.Description)
 
-	state.RoleReferences = []globalaccountRoleCollectionRoleRefType{}
+	state.Roles = []globalaccountRoleCollectionRoleRefType{}
 	for _, role := range cliRes.RoleReferences {
-		state.RoleReferences = append(state.RoleReferences, globalaccountRoleCollectionRoleRefType{
+		state.Roles = append(state.Roles, globalaccountRoleCollectionRoleRefType{
 			RoleTemplateName:  types.StringValue(role.RoleTemplateName),
 			RoleTemplateAppId: types.StringValue(role.RoleTemplateAppId),
 			Name:              types.StringValue(role.Name),
@@ -132,7 +132,7 @@ func (rs *globalaccountRoleCollectionResource) Create(ctx context.Context, req r
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
 
-	for _, role := range plan.RoleReferences {
+	for _, role := range plan.Roles {
 		_, err := rs.cli.Security.Role.AddByGlobalAccount(ctx, plan.Name.ValueString(), role.Name.ValueString(), role.RoleTemplateAppId.ValueString(), role.RoleTemplateName.ValueString())
 
 		if err != nil {
