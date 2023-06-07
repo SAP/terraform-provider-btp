@@ -18,10 +18,17 @@ func newDirectoryRoleCollectionResource() resource.Resource {
 	return &directoryRoleCollectionType{}
 }
 
+type directoryRoleCollectionRoleRefType struct {
+	Name              types.String `tfsdk:"name"`
+	RoleTemplateAppId types.String `tfsdk:"role_template_app_id"`
+	RoleTemplateName  types.String `tfsdk:"role_template_name"`
+}
+
 type directoryRoleCollectionTypeConfig struct {
-	DirectoryId types.String `tfsdk:"directory_id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
+	DirectoryId    types.String                         `tfsdk:"directory_id"`
+	Name           types.String                         `tfsdk:"name"`
+	Description    types.String                         `tfsdk:"description"`
+	RoleReferences []directoryRoleCollectionRoleRefType `tfsdk:"role_references"`
 }
 
 type directoryRoleCollectionType struct {
@@ -63,29 +70,25 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf0
 				Optional:            true,
 				Computed:            true,
 			},
-			/*"role_references": schema.ListNestedAttribute{
-			    NestedObject: schema.NestedAttributeObject{
-			        Attributes: map[string]schema.Attribute{
-			            "role_template_name": schema.StringAttribute{
-			                MarkdownDescription: "The name of the referenced role template.",
-			                Computed:    true,
-			            },
-			            "role_template_app_id": schema.StringAttribute{
-			                MarkdownDescription: "The name of the referenced template app id",
-			                Computed:    true,
-			            },
-			            "description": schema.StringAttribute{
-			                MarkdownDescription: "The description of the referenced role",
-			                Computed:    true,
-			            },
-			            "name": schema.StringAttribute{
-			                MarkdownDescription: "The name of the referenced role.",
-			                Computed:    true,
-			            },
-			        },
-			    },
-			    Computed: true,
-			},*/
+			"role_references": schema.ListNestedAttribute{
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							MarkdownDescription: "The name of the referenced role.",
+							Required:            true,
+						},
+						"role_template_app_id": schema.StringAttribute{
+							MarkdownDescription: "The name of the referenced template app id",
+							Required:            true,
+						},
+						"role_template_name": schema.StringAttribute{
+							MarkdownDescription: "The name of the referenced role template.",
+							Required:            true,
+						},
+					},
+				},
+				Required: true,
+			},
 		},
 	}
 }
@@ -109,6 +112,15 @@ func (rs *directoryRoleCollectionType) Read(ctx context.Context, req resource.Re
 	state.Name = types.StringValue(cliRes.Name)
 	state.Description = types.StringValue(cliRes.Description)
 
+	state.RoleReferences = []directoryRoleCollectionRoleRefType{}
+	for _, role := range cliRes.RoleReferences {
+		state.RoleReferences = append(state.RoleReferences, directoryRoleCollectionRoleRefType{
+			RoleTemplateName:  types.StringValue(role.RoleTemplateName),
+			RoleTemplateAppId: types.StringValue(role.RoleTemplateAppId),
+			Name:              types.StringValue(role.Name),
+		})
+	}
+
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
@@ -125,6 +137,14 @@ func (rs *directoryRoleCollectionType) Create(ctx context.Context, req resource.
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Role Collection (Directory)", fmt.Sprintf("%s", err))
 		return
+	}
+
+	for _, role := range plan.RoleReferences {
+		_, err := rs.cli.Security.Role.AddByDirectory(ctx, plan.DirectoryId.ValueString(), plan.Name.ValueString(), role.Name.ValueString(), role.RoleTemplateAppId.ValueString(), role.RoleTemplateName.ValueString())
+
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Assigning Role To Role Collection (Directory)", fmt.Sprintf("%s", err))
+		}
 	}
 
 	plan.Name = types.StringValue(cliRes.Name)

@@ -7,7 +7,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
@@ -18,10 +17,17 @@ func newSubaccountRoleCollectionResource() resource.Resource {
 	return &subaccountRoleCollectionResource{}
 }
 
+type subaccountRoleCollectionRoleRefType struct {
+	Name              types.String `tfsdk:"name"`
+	RoleTemplateAppId types.String `tfsdk:"role_template_app_id"`
+	RoleTemplateName  types.String `tfsdk:"role_template_name"`
+}
+
 type subaccountRoleCollectionType struct {
-	SubaccountId types.String `tfsdk:"subaccount_id"`
-	Name         types.String `tfsdk:"name"`
-	Description  types.String `tfsdk:"description"`
+	SubaccountId   types.String                          `tfsdk:"subaccount_id"`
+	Name           types.String                          `tfsdk:"name"`
+	Description    types.String                          `tfsdk:"description"`
+	RoleReferences []subaccountRoleCollectionRoleRefType `tfsdk:"role_references"`
 }
 
 type subaccountRoleCollectionResource struct {
@@ -63,29 +69,25 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf0
 				Optional:            true,
 				Computed:            true,
 			},
-			/*"role_references": schema.ListNestedAttribute{
-			    NestedObject: schema.NestedAttributeObject{
-			        Attributes: map[string]schema.Attribute{
-			            "role_template_name": schema.StringAttribute{
-			                MarkdownDescription: "The name of the referenced role template.",
-			                Computed:    true,
-			            },
-			            "role_template_app_id": schema.StringAttribute{
-			                MarkdownDescription: "The name of the referenced template app id",
-			                Computed:    true,
-			            },
-			            "description": schema.StringAttribute{
-			                MarkdownDescription: "The description of the referenced role",
-			                Computed:    true,
-			            },
-			            "name": schema.StringAttribute{
-			                MarkdownDescription: "The name of the referenced role.",
-			                Computed:    true,
-			            },
-			        },
-			    },
-			    Computed: true,
-			},*/
+			"role_references": schema.ListNestedAttribute{
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							MarkdownDescription: "The name of the referenced role.",
+							Required:            true,
+						},
+						"role_template_name": schema.StringAttribute{
+							MarkdownDescription: "The name of the referenced role template.",
+							Required:            true,
+						},
+						"role_template_app_id": schema.StringAttribute{
+							MarkdownDescription: "The name of the referenced template app id",
+							Required:            true,
+						},
+					},
+				},
+				Required: true,
+			},
 		},
 	}
 }
@@ -109,6 +111,15 @@ func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resour
 	state.Name = types.StringValue(cliRes.Name)
 	state.Description = types.StringValue(cliRes.Description)
 
+	state.RoleReferences = []subaccountRoleCollectionRoleRefType{}
+	for _, role := range cliRes.RoleReferences {
+		state.RoleReferences = append(state.RoleReferences, subaccountRoleCollectionRoleRefType{
+			RoleTemplateName:  types.StringValue(role.RoleTemplateName),
+			RoleTemplateAppId: types.StringValue(role.RoleTemplateAppId),
+			Name:              types.StringValue(role.Name),
+		})
+	}
+
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
@@ -125,6 +136,14 @@ func (rs *subaccountRoleCollectionResource) Create(ctx context.Context, req reso
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Role Collection (Subaccount)", fmt.Sprintf("%s", err))
 		return
+	}
+
+	for _, role := range plan.RoleReferences {
+		_, err := rs.cli.Security.Role.AddBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.Name.ValueString(), role.Name.ValueString(), role.RoleTemplateAppId.ValueString(), role.RoleTemplateName.ValueString())
+
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Assigning Role To Role Collection (Subaccount)", fmt.Sprintf("%s", err))
+		}
 	}
 
 	plan.Name = types.StringValue(cliRes.Name)

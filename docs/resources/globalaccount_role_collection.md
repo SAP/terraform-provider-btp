@@ -20,6 +20,14 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf0
 resource "btp_globalaccount_role_collection" "my_collection" {
   name        = "My own role collection"
   description = "A description of what the role collection is supposed to do."
+
+  role_references = [
+    {
+      name                 = "Global Account Admin"
+      role_template_app_id = "cis-central!b13"
+      role_template_name   = "GlobalAccount_Admin"
+    }
+  ]
 }
 ```
 
@@ -29,9 +37,19 @@ resource "btp_globalaccount_role_collection" "my_collection" {
 ### Required
 
 - `name` (String) The name of the role collection.
+- `role_references` (Attributes List) (see [below for nested schema](#nestedatt--role_references))
 
 ### Optional
 
 - `description` (String) Whether the role collection is readonly.
+
+<a id="nestedatt--role_references"></a>
+### Nested Schema for `role_references`
+
+Required:
+
+- `name` (String) The name of the referenced role.
+- `role_template_app_id` (String) The name of the referenced template app id
+- `role_template_name` (String) The name of the referenced role template.
 
 
