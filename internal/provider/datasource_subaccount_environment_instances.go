@@ -43,6 +43,7 @@ type subaccountEnvironmentInstanceValue struct {
 
 type subaccountEnvironmentInstancesDataSourceConfig struct {
 	/* INPUT */
+	Id           types.String `tfsdk:"id"`
 	SubaccountId types.String `tfsdk:"subaccount_id"`
 	/* OUTPUT */
 	Values []subaccountEnvironmentInstanceValue `tfsdk:"values"`
@@ -77,6 +78,11 @@ You must be assigned to the subaccount admin or viewer role.`,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the subaccount.",
+				Computed:            true,
 			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
@@ -232,7 +238,7 @@ func (ds *subaccountEnvironmentInstancesDataSource) Read(ctx context.Context, re
 
 		data.Values = append(data.Values, instanceValue)
 	}
-
+	data.Id = data.SubaccountId
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 }
