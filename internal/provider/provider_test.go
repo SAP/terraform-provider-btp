@@ -106,12 +106,15 @@ func stopQuietly(rec *recorder.Recorder) {
 func TestProvider_HasResources(t *testing.T) {
 	expectedResources := []string{
 		"btp_directory",
-		// TODO: switched off for phase 1
-		//"btp_directory_role",
+		/* TODO: switched off for phase 1
+		/"btp_directory_role",
+		*/
 		"btp_directory_role_collection",
 		"btp_directory_role_collection_assignment",
 		"btp_globalaccount_resource_provider",
+		/* TODO: switched off for phase 1
 		"btp_globalaccount_role",
+		*/
 		"btp_globalaccount_role_collection",
 		"btp_globalaccount_role_collection_assignment",
 		"btp_globalaccount_trust_configuration",
@@ -121,9 +124,11 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_subaccount_role",
 		"btp_subaccount_role_collection",
 		"btp_subaccount_role_collection_assignment",
+		/* TODO: switched off for phase 1
 		"btp_subaccount_service_binding",
 		"btp_subaccount_service_instance",
 		"btp_subaccount_subscription",
+		*/
 		"btp_subaccount_trust_configuration",
 	}
 
@@ -162,8 +167,10 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_globalaccount_apps",
 		*/
 		"btp_globalaccount_entitlements",
+		/*TODO: Switched off for phase 1
 		"btp_globalaccount_resource_provider",
 		"btp_globalaccount_resource_providers",
+		*/
 		"btp_globalaccount_role",
 		"btp_globalaccount_role_collection",
 		"btp_globalaccount_role_collections",
@@ -187,24 +194,22 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_role_collection",
 		"btp_subaccount_role_collections",
 		"btp_subaccount_roles",
+		/*TODO: Switched off for phase 1
 		"btp_subaccount_service_binding",
 		"btp_subaccount_service_bindings",
-		/*TODO: Switched off for phase 1
 		"btp_subaccount_service_broker",
 		"btp_subaccount_service_brokers",
-		*/
 		"btp_subaccount_service_instance",
 		"btp_subaccount_service_instances",
 		"btp_subaccount_service_offering",
 		"btp_subaccount_service_offerings",
 		"btp_subaccount_service_plan",
 		"btp_subaccount_service_plans",
-		/*TODO: Switched off for phase 1
 		"btp_subaccount_service_platform",
 		"btp_subaccount_service_platforms",
-		*/
 		"btp_subaccount_subscription",
 		"btp_subaccount_subscriptions",
+		*/
 		"btp_subaccount_trust_configuration",
 		"btp_subaccount_trust_configurations",
 		"btp_subaccount_user",
