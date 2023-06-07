@@ -43,6 +43,7 @@ type regionDataSourceConfig struct {
 }
 
 type regionsDataSourceConfig struct {
+	Id types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values types.List `tfsdk:"values"`
 }
@@ -70,6 +71,11 @@ func (ds *regionsDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 __Tips__
 You must be assigned to the global account admin or viewer role.`,
 		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
+				MarkdownDescription: "The ID of the global account.",
+				Computed:            true,
+			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -139,7 +145,6 @@ func (ds *regionsDataSource) Read(ctx context.Context, req datasource.ReadReques
 		resp.Diagnostics.AddError("API Error Reading Resource Regions", fmt.Sprintf("%s", err))
 		return
 	}
-
 	regions := []regionDataSourceConfig{}
 
 	for _, regionConf := range cliRes.Datacenters {
@@ -157,6 +162,8 @@ func (ds *regionsDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 		regions = append(regions, r)
 	}
+
+	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
 
 	data.Values, diags = types.ListValueFrom(ctx, regionType, regions)
 	resp.Diagnostics.Append(diags...)
