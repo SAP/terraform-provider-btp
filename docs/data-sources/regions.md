@@ -25,6 +25,7 @@ data "btp_regions" "all" {}
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the global account.
 - `values` (Attributes List) The regions supported by this global account. (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
