@@ -20,6 +20,7 @@ func newDirectoryRoleCollectionResource() resource.Resource {
 
 type directoryRoleCollectionTypeConfig struct {
 	DirectoryId types.String `tfsdk:"directory_id"`
+	Id          types.String `tfsdk:"id"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 }
@@ -53,6 +54,11 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf0
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `name` attribute instead",
+				MarkdownDescription: "The ID of the role collection.",
+				Computed:            true,
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",
@@ -129,6 +135,7 @@ func (rs *directoryRoleCollectionType) Create(ctx context.Context, req resource.
 
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
+	plan.Id = types.StringValue(cliRes.Name)
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
