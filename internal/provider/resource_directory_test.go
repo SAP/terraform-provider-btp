@@ -17,19 +17,20 @@ func TestResourceDirectory(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceDirectoryParent("uut", "parent-folder", "This is a parent folder"),
+					Config: hclProvider() + hclResourceDirectoryParent("uut", "my-parent-folder", "This is a parent folder"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_directory.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_directory.uut", "parent_id", regexpValidUUID),
 
-						resource.TestCheckResourceAttr("btp_directory.uut", "subdomain", ""),
-						resource.TestCheckResourceAttr("btp_directory.uut", "name", "parent-folder"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-parent-folder"),
 						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is a parent folder"),
-						resource.TestCheckResourceAttr("btp_directory.uut", "features.#", "1"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "subdomain", ""),
 						resource.TestCheckResourceAttr("btp_directory.uut", "created_by", "john.doe@int.test"),
 						resource.TestCheckResourceAttr("btp_directory.uut", "state", "OK"),
+
+						resource.TestCheckResourceAttr("btp_directory.uut", "features.#", "1"),
 						resource.TestCheckResourceAttr("btp_directory.uut", "labels.#", "0"),
 					),
 				},
