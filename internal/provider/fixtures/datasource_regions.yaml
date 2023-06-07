@@ -1,0 +1,745 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - fd08b41c-7dc2-9d94-e1ce-363f7811721d
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:30 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 187cdc1c-d75c-4384-42de-0a48206ee256
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.487099054s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - ac03ae81-498d-8cd3-41db-fbb7e944d238
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/available-region?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"datacenters":[{"name":"cf-eu12","displayName":"Europe (Frankfurt)","region":"eu12","environment":"cloudfoundry","iaasProvider":"AWS","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.eu12.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.eu12.hana.ondemand.com","domain":"eu12.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false},{"name":"neo-eu2-canary","displayName":"Europe (Frankfurt) - Canary","region":"eu2-canary","environment":"neo","iaasProvider":"SAP","supportsTrial":false,"provisioningServiceUrl":"https://cisservices.int.sap.eu2.hana.ondemand.com/com.sap.core.commercial.service.web","domain":"int.sap.eu2.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false},{"name":"cf-us31","displayName":"US (Iowa) GCP","region":"us31","environment":"cloudfoundry","iaasProvider":"GCP","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.us31.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.us31.hana.ondemand.com","domain":"us31.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"STANDARD","restricted":false},{"name":"cf-eu21","displayName":"Europe (Netherlands) Azure Multi-AZ Test internal","region":"eu21","environment":"cloudfoundry","iaasProvider":"AZURE","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.eu21.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.eu21.hana.ondemand.com","domain":"eu21.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"STANDARD","restricted":false},{"name":"cf-eu10-canary","displayName":"Europe (Frankfurt) - Canary - AWS","region":"eu10-canary","environment":"cloudfoundry","iaasProvider":"AWS","supportsTrial":true,"provisioningServiceUrl":"https://provisioning-service.cfapps.sap.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.sap.hana.ondemand.com","domain":"sap.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:32 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - d3624784-d365-49bd-4b55-48ebc566b9aa
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 353.425953ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 60bd2686-050a-4325-9924-0d4e78ee6ad1
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:34 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 2a702f08-b9ac-4482-7089-8d351e1312da
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 627.284327ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - fcabfb90-eb92-a386-63df-524d8ee71992
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/available-region?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"datacenters":[{"name":"cf-eu12","displayName":"Europe (Frankfurt)","region":"eu12","environment":"cloudfoundry","iaasProvider":"AWS","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.eu12.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.eu12.hana.ondemand.com","domain":"eu12.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false},{"name":"neo-eu2-canary","displayName":"Europe (Frankfurt) - Canary","region":"eu2-canary","environment":"neo","iaasProvider":"SAP","supportsTrial":false,"provisioningServiceUrl":"https://cisservices.int.sap.eu2.hana.ondemand.com/com.sap.core.commercial.service.web","domain":"int.sap.eu2.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false},{"name":"cf-us31","displayName":"US (Iowa) GCP","region":"us31","environment":"cloudfoundry","iaasProvider":"GCP","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.us31.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.us31.hana.ondemand.com","domain":"us31.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"STANDARD","restricted":false},{"name":"cf-eu21","displayName":"Europe (Netherlands) Azure Multi-AZ Test internal","region":"eu21","environment":"cloudfoundry","iaasProvider":"AZURE","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.eu21.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.eu21.hana.ondemand.com","domain":"eu21.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"STANDARD","restricted":false},{"name":"cf-eu10-canary","displayName":"Europe (Frankfurt) - Canary - AWS","region":"eu10-canary","environment":"cloudfoundry","iaasProvider":"AWS","supportsTrial":true,"provisioningServiceUrl":"https://provisioning-service.cfapps.sap.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.sap.hana.ondemand.com","domain":"sap.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:35 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - bc2bf0a8-e2d4-43f1-41f3-27a810975120
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 280.481287ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 1bbee823-04c9-ac86-56ea-2fcf2c476f91
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:39 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - d098f986-ee49-4056-6d4a-7fa070148f88
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 702.069314ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 00d7c126-6dfd-b96d-cce2-3f5574194cea
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/available-region?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"datacenters":[{"name":"cf-eu12","displayName":"Europe (Frankfurt)","region":"eu12","environment":"cloudfoundry","iaasProvider":"AWS","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.eu12.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.eu12.hana.ondemand.com","domain":"eu12.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false},{"name":"neo-eu2-canary","displayName":"Europe (Frankfurt) - Canary","region":"eu2-canary","environment":"neo","iaasProvider":"SAP","supportsTrial":false,"provisioningServiceUrl":"https://cisservices.int.sap.eu2.hana.ondemand.com/com.sap.core.commercial.service.web","domain":"int.sap.eu2.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false},{"name":"cf-us31","displayName":"US (Iowa) GCP","region":"us31","environment":"cloudfoundry","iaasProvider":"GCP","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.us31.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.us31.hana.ondemand.com","domain":"us31.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"STANDARD","restricted":false},{"name":"cf-eu21","displayName":"Europe (Netherlands) Azure Multi-AZ Test internal","region":"eu21","environment":"cloudfoundry","iaasProvider":"AZURE","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.eu21.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.eu21.hana.ondemand.com","domain":"eu21.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"STANDARD","restricted":false},{"name":"cf-eu10-canary","displayName":"Europe (Frankfurt) - Canary - AWS","region":"eu10-canary","environment":"cloudfoundry","iaasProvider":"AWS","supportsTrial":true,"provisioningServiceUrl":"https://provisioning-service.cfapps.sap.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.sap.hana.ondemand.com","domain":"sap.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:41 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 23f2d8ea-6362-42e2-5082-cb0e1d51e185
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 434.650492ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 2f7f5d19-f315-1002-78e0-cedf60fbcbce
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:43 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 1e02358b-867d-4109-5923-1a49fd82d425
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 507.900187ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 6b06dd96-6e55-2341-5c83-0a55a61eac0d
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/available-region?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"datacenters":[{"name":"cf-eu12","displayName":"Europe (Frankfurt)","region":"eu12","environment":"cloudfoundry","iaasProvider":"AWS","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.eu12.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.eu12.hana.ondemand.com","domain":"eu12.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false},{"name":"neo-eu2-canary","displayName":"Europe (Frankfurt) - Canary","region":"eu2-canary","environment":"neo","iaasProvider":"SAP","supportsTrial":false,"provisioningServiceUrl":"https://cisservices.int.sap.eu2.hana.ondemand.com/com.sap.core.commercial.service.web","domain":"int.sap.eu2.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false},{"name":"cf-us31","displayName":"US (Iowa) GCP","region":"us31","environment":"cloudfoundry","iaasProvider":"GCP","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.us31.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.us31.hana.ondemand.com","domain":"us31.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"STANDARD","restricted":false},{"name":"cf-eu21","displayName":"Europe (Netherlands) Azure Multi-AZ Test internal","region":"eu21","environment":"cloudfoundry","iaasProvider":"AZURE","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.eu21.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.eu21.hana.ondemand.com","domain":"eu21.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"STANDARD","restricted":false},{"name":"cf-eu10-canary","displayName":"Europe (Frankfurt) - Canary - AWS","region":"eu10-canary","environment":"cloudfoundry","iaasProvider":"AWS","supportsTrial":true,"provisioningServiceUrl":"https://provisioning-service.cfapps.sap.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.sap.hana.ondemand.com","domain":"sap.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:44 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 113bbf47-a287-4f9a-73ff-d1c4c67e05ff
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 279.59992ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 6de0cb30-1ae7-3338-9318-03f348f2f490
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:46 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 83921f54-6844-4fec-6818-ce659bca1869
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 629.754369ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - af68a6fe-e7ff-2752-e24e-c803f5669d64
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/available-region?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"datacenters":[{"name":"cf-eu12","displayName":"Europe (Frankfurt)","region":"eu12","environment":"cloudfoundry","iaasProvider":"AWS","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.eu12.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.eu12.hana.ondemand.com","domain":"eu12.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false},{"name":"neo-eu2-canary","displayName":"Europe (Frankfurt) - Canary","region":"eu2-canary","environment":"neo","iaasProvider":"SAP","supportsTrial":false,"provisioningServiceUrl":"https://cisservices.int.sap.eu2.hana.ondemand.com/com.sap.core.commercial.service.web","domain":"int.sap.eu2.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false},{"name":"cf-us31","displayName":"US (Iowa) GCP","region":"us31","environment":"cloudfoundry","iaasProvider":"GCP","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.us31.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.us31.hana.ondemand.com","domain":"us31.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"STANDARD","restricted":false},{"name":"cf-eu21","displayName":"Europe (Netherlands) Azure Multi-AZ Test internal","region":"eu21","environment":"cloudfoundry","iaasProvider":"AZURE","supportsTrial":false,"provisioningServiceUrl":"https://provisioning-service.cfapps.eu21.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.eu21.hana.ondemand.com","domain":"eu21.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"STANDARD","restricted":false},{"name":"cf-eu10-canary","displayName":"Europe (Frankfurt) - Canary - AWS","region":"eu10-canary","environment":"cloudfoundry","iaasProvider":"AWS","supportsTrial":true,"provisioningServiceUrl":"https://provisioning-service.cfapps.sap.hana.ondemand.com","saasRegistryServiceUrl":"https://saas-manager.cfapps.sap.hana.ondemand.com","domain":"sap.hana.ondemand.com","isMainDataCenter":true,"geoAccess":"BACKWARD_COMPLIANT_EU_ACCESS","restricted":false}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:47 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - a5a4e5c6-a702-4d15-63bd-0453cb2ab07e
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 280.335397ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.4.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 8ee84ab1-0761-57cc-0bf8-98b2d1c87026
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 139
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Jun 2023 14:05:50 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - e75c1cf8-a1ea-4f67-73d4-601b99843eca
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 560.617225ms
