@@ -41,4 +41,8 @@ resource "btp_directory_role_collection_assignment" "directory_viewer_group" {
 - `origin` (String) The identity provider that hosts the user or group. The default value is 'ldap'.
 - `user_name` (String) The username of the user to assign.
 
+### Read-Only
+
+- `id` (String, Deprecated) The ID of the user/group to entitle to the role collection.
+
 

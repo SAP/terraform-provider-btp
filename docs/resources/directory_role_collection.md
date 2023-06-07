@@ -36,4 +36,8 @@ resource "btp_directory_role_collection" "my_collection" {
 
 - `description` (String) Whether the role collection is readonly.
 
+### Read-Only
+
+- `id` (String, Deprecated) The ID of the role collection.
+
 
