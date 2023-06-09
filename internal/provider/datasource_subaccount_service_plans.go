@@ -62,10 +62,7 @@ func (ds *subaccountServicePlansDataSource) Configure(_ context.Context, req dat
 
 func (ds *subaccountServicePlansDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List the plans of services that your subaccount is entitled to use in your environment.
-
-__Further documentation:__
-https://help.sap.com/viewer/09cc82baadc542a688176dce601398de/Cloud/en-US/e8d395397dc64ebeaa8e3e5e0a187a75.html`,
+		MarkdownDescription: `List the plans of services that your subaccount is entitled to use in your environment.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

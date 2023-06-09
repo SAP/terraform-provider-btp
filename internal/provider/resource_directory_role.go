@@ -37,7 +37,7 @@ func (rs *directoryRoleResource) Schema(_ context.Context, _ resource.SchemaRequ
 		MarkdownDescription: `Create a role in a directory.
 
 __Further documentation:__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html`,
+<https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",

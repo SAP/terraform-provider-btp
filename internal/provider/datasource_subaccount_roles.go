@@ -56,7 +56,7 @@ func (ds *subaccountRolesDataSource) Schema(_ context.Context, _ datasource.Sche
 		MarkdownDescription: `List all roles.
 
 __Further documentation:__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html`,
+<https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

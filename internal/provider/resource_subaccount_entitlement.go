@@ -46,7 +46,7 @@ __Tip:__
 You must be assigned to the global account admin or viewer role.
 
 __Further documentation:__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/00aa2c23479d42568b18882b1ca90d79.html`,
+<https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas>`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

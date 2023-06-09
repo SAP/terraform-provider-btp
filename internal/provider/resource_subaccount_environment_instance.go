@@ -48,9 +48,9 @@ __Tips:__
 * Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
 
 __Further documentation:__
-Cloud Foundry: https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/aee40e1afa56445a9bd57c2621d6eaaa.html
-Kyma: https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/befe01d5d8864e59bf847fa5a5f3d669.html
-Concept: https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/15547f7e7ecd47ee9fa052b0e18c7b0a.html`,
+* Cloud Foundry: <https://help.sap.com/docs/btp/sap-business-technology-platform/org-management-using-sap-btp-command-line-interface-btp-cli>
+* Kyma: <https://help.sap.com/docs/btp/sap-business-technology-platform/available-plans-in-kyma-environment>
+* Concept: <https://help.sap.com/docs/btp/sap-business-technology-platform/environments>`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

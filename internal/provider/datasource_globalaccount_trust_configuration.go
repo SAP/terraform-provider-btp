@@ -40,7 +40,7 @@ __Tip:__
 You must be viewer or administrator of the global account.
 
 __Further documentation:__
-https://help.sap.com/docs/BTP/ea72206b834e4ace9cd834feed6c0e09/80edbe70b8f3478d8a59c21a91a47aa6.html`,
+<https://help.sap.com/docs/btp/sap-btp-neo-environment/platform-identity-provider>`,
 		Attributes: map[string]schema.Attribute{
 			"origin": schema.StringAttribute{
 				MarkdownDescription: "The origin of the identity provider.",

@@ -53,7 +53,7 @@ __Tips:__
 * A directory path in the account hierarchy can have only one directory that is enabled with the ` + "`ENTITLEMENTS`" + ` or ` + "`AUTHORIZATIONS`" + ` features. If such a directory exists, other directories in that path can only be enabled with the ` + "`DEFAULT`" + ` features.
 
 __Further documentation:__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html`,
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>`,
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The display name of the directory.",

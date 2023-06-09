@@ -49,7 +49,7 @@ __Tip:__
 You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories of which you are the directory admin.
 
 __Further documentation:__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html`,
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

@@ -41,7 +41,7 @@ __Tip:__
 You must be viewer or administrator of the subaccount.
 
 __Further documentation:__
-https://help.sap.com/docs/BTP/ea72206b834e4ace9cd834feed6c0e09/80edbe70b8f3478d8a59c21a91a47aa6.html`,
+<https://help.sap.com/docs/btp/sap-btp-neo-environment/platform-identity-provider>`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

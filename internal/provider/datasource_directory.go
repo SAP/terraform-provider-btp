@@ -41,7 +41,7 @@ __Tip:__
 You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
 
 __Further documentation:__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html`,
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",
