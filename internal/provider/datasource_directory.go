@@ -65,7 +65,10 @@ __Further documentation:__
 			"features": schema.SetAttribute{
 				ElementType: types.StringType,
 				MarkdownDescription: "The features that are enabled for the directory. Possible values are: " +
-					"\n\t - `DEFAULT` All directories have the following basic feature enabled. (1) Group and filter subaccounts for reports and filters, (2) monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model), and (3) set custom properties and tags to the directory for identification and reporting purposes." +
+					"\n\t - `DEFAULT` All directories have the following basic feature enabled: " +
+					"\n\t\t 1. Group and filter subaccounts for reports and filters " +
+					"\n\t\t 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)" +
+					"\n\t\t 3. Set custom properties and tags to the directory for identification and reporting purposes." +
 					"\n\t - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory." +
 					"\n\t - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.",
 				Computed: true,
