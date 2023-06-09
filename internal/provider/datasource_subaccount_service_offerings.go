@@ -65,7 +65,7 @@ func (ds *subaccountServiceOfferingsDataSource) Schema(_ context.Context, _ data
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `List the services your subaccount is entitled to use in your runtime environment.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/viewer/09cc82baadc542a688176dce601398de/Cloud/en-US/4613e39f89bf485fb38353642791ca3f.html`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{

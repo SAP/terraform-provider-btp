@@ -43,10 +43,10 @@ func (ds *subaccountTrustConfigurationsDataSource) Schema(_ context.Context, _ d
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `List all trust configurations that are configured for your subaccount.
 
-__Tip__
+__Tip:__
 You must be viewer or administrator of the subaccount.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/docs/BTP/65de2977205c403bbc107264b8eccf4b/cb1bc8f1bd5c482e891063960d7acd78.html`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{

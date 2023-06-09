@@ -68,7 +68,7 @@ func (ds *regionsDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Get all the available regions for a global account.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin or viewer role.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{

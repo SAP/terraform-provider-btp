@@ -51,7 +51,7 @@ func (ds *globalaccountRolesDataSource) Schema(_ context.Context, _ datasource.S
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `List all roles.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework

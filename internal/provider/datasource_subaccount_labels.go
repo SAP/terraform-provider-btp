@@ -45,10 +45,10 @@ func (ds *subaccountLabelsDataSource) Schema(_ context.Context, _ datasource.Sch
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Get all the user-defined labels that are currently assigned to a specific subaccount.
 
-__Tip__
+__Tip:__
 You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories of which you are the directory admin.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{

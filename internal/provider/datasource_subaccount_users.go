@@ -45,7 +45,7 @@ func (ds *subaccountUsersDataSource) Schema(_ context.Context, _ datasource.Sche
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `List all users.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/cc1c676b43904066abb2a4838cbd0c37.html`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{

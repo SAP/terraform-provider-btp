@@ -48,11 +48,11 @@ func (rs *directoryResource) Schema(_ context.Context, _ resource.SchemaRequest,
 
 You can create up to 5 levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
 
-__Tips__
+__Tips:__
 * You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
 * A directory path in the account hierarchy can have only one directory that is enabled with the ` + "`ENTITLEMENTS`" + ` or ` + "`AUTHORIZATIONS`" + ` features. If such a directory exists, other directories in that path can only be enabled with the ` + "`DEFAULT`" + ` features.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html`,
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{

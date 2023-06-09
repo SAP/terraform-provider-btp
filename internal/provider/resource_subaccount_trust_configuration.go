@@ -39,7 +39,7 @@ func (rs *subaccountTrustConfigurationResource) Schema(_ context.Context, _ reso
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Establish trust from a subaccount to an Identity Authentication tenant.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/docs/BTP/65de2977205c403bbc107264b8eccf4b/cb1bc8f1bd5c482e891063960d7acd78.html`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{

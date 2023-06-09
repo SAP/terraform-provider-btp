@@ -34,7 +34,7 @@ func (rs *globalaccountRoleResource) Schema(_ context.Context, _ resource.Schema
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Create a role in a global account.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html`,
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{

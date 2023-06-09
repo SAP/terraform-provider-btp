@@ -37,10 +37,10 @@ func (ds *directoryDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Get the details about a directory.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{

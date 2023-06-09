@@ -43,11 +43,11 @@ func (rs *subaccountEnvironmentInstanceResource) Schema(_ context.Context, _ res
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Create an environment instance, such as a Cloud Foundry org, in a subaccount.
 
-__Tips__
-You must be assigned to the subaccount admin role.
-Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
+__Tips:__
+* You must be assigned to the subaccount admin role.
+* Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
 
-__Further documentation__
+__Further documentation:__
 Cloud Foundry: https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/aee40e1afa56445a9bd57c2621d6eaaa.html
 Kyma: https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/befe01d5d8864e59bf847fa5a5f3d669.html
 Concept: https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/15547f7e7ecd47ee9fa052b0e18c7b0a.html`,

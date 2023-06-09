@@ -42,10 +42,10 @@ func (rs *subaccountEntitlementResource) Schema(_ context.Context, _ resource.Sc
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Assigns the entitlement plan of a service, multitenant application, or environment, to a subaccount. Note that some environments, such as Cloud Foundry, are available by default to all global accounts and their subaccounts, and therefore are not made available as entitlements.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin or viewer role.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/00aa2c23479d42568b18882b1ca90d79.html`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{

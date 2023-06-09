@@ -46,10 +46,10 @@ func (rs *subaccountResource) Schema(_ context.Context, _ resource.SchemaRequest
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Create a subaccount in a global account or directory.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account or directory admin role.
 
-__Further documentation__
+__Further documentation:__
 https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html`,
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{

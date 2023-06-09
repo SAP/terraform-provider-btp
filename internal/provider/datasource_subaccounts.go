@@ -70,7 +70,7 @@ func (ds *subaccountsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `List all the subaccounts in a global account, including the subaccounts in directories.
 
-__Tips__
+__Tip:__
 You must be assigned to the admin or viewer role of the global account, directory.`,
 		Attributes: map[string]schema.Attribute{
 			"labels_filter": schema.StringAttribute{
