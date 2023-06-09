@@ -3,21 +3,21 @@ page_title: "btp_subaccount Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
   Create a subaccount in a global account or directory.
-  Tips
+  Tip:
   You must be assigned to the global account or directory admin role.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_subaccount (Resource)
 
 Create a subaccount in a global account or directory.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account or directory admin role.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>
 
 ## Example Usage
 

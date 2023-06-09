@@ -3,21 +3,21 @@ page_title: "btp_globalaccount Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Get details about a global account.
-  Tip
+  Tip:
   You must be assigned to the global account admin or viewer role.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_globalaccount (Data Source)
 
 Get details about a global account.
 
-__Tip__
+__Tip:__
 You must be assigned to the global account admin or viewer role.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>
 
 ## Example Usage
 

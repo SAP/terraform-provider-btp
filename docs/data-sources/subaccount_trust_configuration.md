@@ -3,21 +3,21 @@ page_title: "btp_subaccount_trust_configuration Data Source - terraform-provider
 subcategory: ""
 description: |-
   Get details about a trust configuration.
-  Tip
+  Tip:
   You must be viewer or administrator of the subaccount.
-  Further documentation
-  https://help.sap.com/docs/BTP/ea72206b834e4ace9cd834feed6c0e09/80edbe70b8f3478d8a59c21a91a47aa6.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-btp-neo-environment/platform-identity-provider
 ---
 
 # btp_subaccount_trust_configuration (Data Source)
 
 Get details about a trust configuration.
 
-__Tip__
+__Tip:__
 You must be viewer or administrator of the subaccount.
 
-__Further documentation__
-https://help.sap.com/docs/BTP/ea72206b834e4ace9cd834feed6c0e09/80edbe70b8f3478d8a59c21a91a47aa6.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-btp-neo-environment/platform-identity-provider>
 
 ## Example Usage
 

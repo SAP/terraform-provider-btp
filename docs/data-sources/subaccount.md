@@ -3,7 +3,7 @@ page_title: "btp_subaccount Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Get details about a subaccount.
-  Tip
+  Tip:
   You must be assigned to the admin or viewer role of the global account, directory, or subaccount.
 ---
 
@@ -11,7 +11,7 @@ description: |-
 
 Get details about a subaccount.
 
-__Tip__
+__Tip:__
 You must be assigned to the admin or viewer role of the global account, directory, or subaccount.
 
 ## Example Usage

@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   List all the available environments for a subaccount.
   This includes the environments, such as Cloud Foundry, which are available by default to all subaccounts, and those restricted environments, such as Kyma, which are offered in the product catalog as service entitlements and whose plans have already been assigned by a global account admin to the subaccount.
-  Tips
+  Tip:
   You must be assigned to the subaccount admin or viewer role.
 ---
 
@@ -14,7 +14,7 @@ List all the available environments for a subaccount.
 
 This includes the environments, such as Cloud Foundry, which are available by default to all subaccounts, and those restricted environments, such as Kyma, which are offered in the product catalog as service entitlements and whose plans have already been assigned by a global account admin to the subaccount.
 
-__Tips__
+__Tip:__
 You must be assigned to the subaccount admin or viewer role.
 
 ## Example Usage

@@ -4,11 +4,11 @@ subcategory: ""
 description: |-
   Directories allow you to organize and manage your subaccounts according to your technical and business needs. The use of directories is optional.
   You can create up to 5 levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
-  Tips
+  Tips:
   * You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
   * A directory path in the account hierarchy can have only one directory that is enabled with the ENTITLEMENTS or AUTHORIZATIONS features. If such a directory exists, other directories in that path can only be enabled with the DEFAULT features.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_directory (Resource)
@@ -17,12 +17,12 @@ Directories allow you to organize and manage your subaccounts according to your 
 
 You can create up to 5 levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
 
-__Tips__
+__Tips:__
 * You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
 * A directory path in the account hierarchy can have only one directory that is enabled with the `ENTITLEMENTS` or `AUTHORIZATIONS` features. If such a directory exists, other directories in that path can only be enabled with the `DEFAULT` features.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>
 
 ## Example Usage
 
@@ -57,7 +57,10 @@ resource "btp_directory" "child" {
 - `created_by` (String) Details of the user that created the directory.
 - `created_date` (String) The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `features` (Set of String) The features that are enabled for the directory. Possible values are: 
-	 - `DEFAULT` All directories have the following basic feature enabled. (1) Group and filter subaccounts for reports and filters, (2) monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model), and (3) set custom properties and tags to the directory for identification and reporting purposes.
+	 - `DEFAULT` All directories have the following basic feature enabled: 
+		 1. Group and filter subaccounts for reports and filters 
+		 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)
+		 3. Set custom properties and tags to the directory for identification and reporting purposes.
 	 - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.
 	 - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.
 - `id` (String) The ID of the directory.

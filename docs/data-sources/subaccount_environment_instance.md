@@ -3,7 +3,7 @@ page_title: "btp_subaccount_environment_instance Data Source - terraform-provide
 subcategory: ""
 description: |-
   Get the details of a specific environment instance in a subaccount.
-  Tips
+  Tip:
   You must be assigned to the subaccount admin or viewer role.
 ---
 
@@ -11,7 +11,7 @@ description: |-
 
 Get the details of a specific environment instance in a subaccount.
 
-__Tips__
+__Tip:__
 You must be assigned to the subaccount admin or viewer role.
 
 ## Example Usage
