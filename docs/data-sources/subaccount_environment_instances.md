@@ -3,7 +3,7 @@ page_title: "btp_subaccount_environment_instances Data Source - terraform-provid
 subcategory: ""
 description: |-
   List all the environment instances in a subaccount.
-  Tip
+  Tip:
   You must be assigned to the subaccount admin or viewer role.
 ---
 
@@ -11,7 +11,7 @@ description: |-
 
 List all the environment instances in a subaccount.
 
-__Tip__
+__Tip:__
 You must be assigned to the subaccount admin or viewer role.
 
 ## Example Usage

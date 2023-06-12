@@ -3,21 +3,21 @@ page_title: "btp_subaccount_entitlement Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
   Assigns the entitlement plan of a service, multitenant application, or environment, to a subaccount. Note that some environments, such as Cloud Foundry, are available by default to all global accounts and their subaccounts, and therefore are not made available as entitlements.
-  Tips
+  Tip:
   You must be assigned to the global account admin or viewer role.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/00aa2c23479d42568b18882b1ca90d79.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas
 ---
 
 # btp_subaccount_entitlement (Resource)
 
 Assigns the entitlement plan of a service, multitenant application, or environment, to a subaccount. Note that some environments, such as Cloud Foundry, are available by default to all global accounts and their subaccounts, and therefore are not made available as entitlements.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin or viewer role.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/00aa2c23479d42568b18882b1ca90d79.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas>
 
 ## Example Usage
 

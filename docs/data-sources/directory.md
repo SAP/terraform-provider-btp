@@ -3,21 +3,21 @@ page_title: "btp_directory Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Get the details about a directory.
-  Tips
+  Tip:
   You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_directory (Data Source)
 
 Get the details about a directory.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>
 
 ## Example Usage
 
@@ -40,7 +40,10 @@ data "btp_directory" "by_id" {
 - `created_date` (String) The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `description` (String) The description of the directory.
 - `features` (Set of String) The features that are enabled for the directory. Possible values are: 
-	 - `DEFAULT` All directories have the following basic feature enabled. (1) Group and filter subaccounts for reports and filters, (2) monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model), and (3) set custom properties and tags to the directory for identification and reporting purposes.
+	 - `DEFAULT` All directories have the following basic feature enabled: 
+		 1. Group and filter subaccounts for reports and filters 
+		 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)
+		 3. Set custom properties and tags to the directory for identification and reporting purposes.
 	 - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.
 	 - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.
 - `labels` (Map of Set of String) Set of words or phrases assigned to the directory.

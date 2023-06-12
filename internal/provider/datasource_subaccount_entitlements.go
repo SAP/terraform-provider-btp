@@ -48,7 +48,7 @@ func (ds *subaccountEntitlementsDataSource) Schema(_ context.Context, _ datasour
 To get all entitlements and quota assigned to a specific subaccount:
 * You must be assigned to either the subaccount admin or subaccount viewer role.
 
-__Tips__
+__Tip:__
 You must be assigned to one of these roles: subaccount admin, subaccount viewer.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{

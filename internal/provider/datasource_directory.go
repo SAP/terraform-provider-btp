@@ -37,11 +37,11 @@ func (ds *directoryDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Get the details about a directory.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html`,
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",
@@ -65,7 +65,10 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a70
 			"features": schema.SetAttribute{
 				ElementType: types.StringType,
 				MarkdownDescription: "The features that are enabled for the directory. Possible values are: " +
-					"\n\t - `DEFAULT` All directories have the following basic feature enabled. (1) Group and filter subaccounts for reports and filters, (2) monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model), and (3) set custom properties and tags to the directory for identification and reporting purposes." +
+					"\n\t - `DEFAULT` All directories have the following basic feature enabled: " +
+					"\n\t\t 1. Group and filter subaccounts for reports and filters " +
+					"\n\t\t 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)" +
+					"\n\t\t 3. Set custom properties and tags to the directory for identification and reporting purposes." +
 					"\n\t - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory." +
 					"\n\t - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.",
 				Computed: true,

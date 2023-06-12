@@ -3,7 +3,7 @@ page_title: "btp_regions Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Get all the available regions for a global account.
-  Tips
+  Tip:
   You must be assigned to the global account admin or viewer role.
 ---
 
@@ -11,7 +11,7 @@ description: |-
 
 Get all the available regions for a global account.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin or viewer role.
 
 ## Example Usage

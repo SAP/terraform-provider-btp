@@ -36,11 +36,11 @@ func (ds *globalaccountTrustConfigurationDataSource) Schema(_ context.Context, _
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Get details about a trust configuration.
 
-__Tip__
+__Tip:__
 You must be viewer or administrator of the global account.
 
-__Further documentation__
-https://help.sap.com/docs/BTP/ea72206b834e4ace9cd834feed6c0e09/80edbe70b8f3478d8a59c21a91a47aa6.html`,
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-btp-neo-environment/platform-identity-provider>`,
 		Attributes: map[string]schema.Attribute{
 			"origin": schema.StringAttribute{
 				MarkdownDescription: "The origin of the identity provider.",

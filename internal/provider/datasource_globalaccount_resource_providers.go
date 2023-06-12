@@ -48,11 +48,11 @@ func (ds *globalaccountGlobalaccountResourceProvidersDataSource) Schema(_ contex
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `List all the resource provider instances in a global account.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin or viewer role.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/e2c250dc5abd468a81f4f619206157a2.html`,
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/managing-resource-providers>`,
 		Attributes: map[string]schema.Attribute{
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{

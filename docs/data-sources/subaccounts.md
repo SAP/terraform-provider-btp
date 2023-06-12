@@ -3,7 +3,7 @@ page_title: "btp_subaccounts Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   List all the subaccounts in a global account, including the subaccounts in directories.
-  Tips
+  Tip:
   You must be assigned to the admin or viewer role of the global account, directory.
 ---
 
@@ -11,7 +11,7 @@ description: |-
 
 List all the subaccounts in a global account, including the subaccounts in directories.
 
-__Tips__
+__Tip:__
 You must be assigned to the admin or viewer role of the global account, directory.
 
 ## Example Usage

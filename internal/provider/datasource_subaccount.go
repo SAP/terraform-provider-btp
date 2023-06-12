@@ -37,7 +37,7 @@ func (ds *subaccountDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Get details about a subaccount.
 
-__Tip__
+__Tip:__
 You must be assigned to the admin or viewer role of the global account, directory, or subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
