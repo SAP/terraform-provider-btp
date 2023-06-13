@@ -22,7 +22,7 @@ type cfOrgParameters struct {
 
 func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 	t.Run("happy path - simple CF creation", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_environment_instance.landscape_label")
+		rec := setupVCR(t, "fixtures/resource_subaccount_environment_instance")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -43,39 +43,8 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - wrong plan name", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_environment_instance.wrong_plan")
-		defer stopQuietly(rec)
-
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclProvider() + hclResourceSubaccountEnvironmentInstanceCF("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "cloudFoundry-from-terraform", "default", "cf-eu12", "cf-terraform-org"),
-					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 500; Correlation ID:\s+[a-f0-9\-]+\]`),
-				},
-			},
-		})
-	})
-
-	t.Run("error path - no parameters", func(t *testing.T) {
-
-		rec := setupVCR(t, "fixtures/resource_subaccount_environment_instance.no_parameters")
-		defer stopQuietly(rec)
-
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclProvider() + hclResourceSubaccountEnvironmentInstanceCFWoParameters("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "cloudFoundry-from-terraform", "default", "cf-eu12"),
-					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 500; Correlation ID:\s+[a-f0-9\-]+\]`),
-				},
-			},
-		})
-	})
-
+	// Error cases for CREATE lead to errors as no resource was created, but plugin test framework tries to delete the non existent resources
+	// See also: https://github.com/hashicorp/terraform-plugin-testing/issues/85
 }
 
 func hclResourceSubaccountEnvironmentInstanceCF(resourceName string, subaccountId string, name string, planName string, landscapeLabel string, orgName string) string {
@@ -101,17 +70,4 @@ func hclResourceSubaccountEnvironmentInstanceCF(resourceName string, subaccountI
 		landscape_label    = "%s"
 		parameters         = %q
 	}`, resourceName, subaccountId, name, planName, landscapeLabel, string(jsonCfParameters))
-}
-
-func hclResourceSubaccountEnvironmentInstanceCFWoParameters(resourceName string, subaccountId string, name string, planName string, landscapeLabel string) string {
-
-	return fmt.Sprintf(`resource "btp_subaccount_environment_instance" "%s"{
-		subaccount_id      = "%s"
-		name               = "%s"
-		environment_type   = "cloudfoundry"
-		plan_name          = "%s"
-		service_name       = "cloudfoundry"
-		landscape_label    = "%s"
-		parameters         = ""
-	}`, resourceName, subaccountId, name, planName, landscapeLabel)
 }
