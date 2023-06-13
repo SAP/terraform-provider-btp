@@ -1,0 +1,27 @@
+{
+	"name": "Terraform provider for SAP BTP - Development",
+	"image": "mcr.microsoft.com/devcontainers/go:1.20-bullseye",
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		"ghcr.io/devcontainers/features/terraform:1": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {},
+			"extensions": [
+				"golang.go",
+				"HashiCorp.terraform",
+				"ms-vscode.makefile-tools"
+			]
+		},
+		"codespaces": {}
+	},
+	"postCreateCommand": "cp ./assets/provider-config-local.txt ~/.terraformrc",
+	"hostRequirements": {
+		"memory": "4gb"
+	},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	"remoteUser": "vscode"
+}
