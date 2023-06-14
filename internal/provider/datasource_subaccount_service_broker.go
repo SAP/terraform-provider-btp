@@ -127,7 +127,7 @@ func (ds *subaccountServiceBrokerDataSource) Read(ctx context.Context, req datas
 	} else if !data.Name.IsNull() {
 		cliRes, _, err = ds.cli.Services.Broker.GetByName(ctx, data.SubaccountId.ValueString(), data.Name.ValueString())
 	} else {
-		err = fmt.Errorf("neither broker ID, nor broker Name have been provided.")
+		err = fmt.Errorf("neither broker ID, nor broker Name have been provided")
 	}
 
 	if err != nil {

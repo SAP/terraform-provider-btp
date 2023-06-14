@@ -138,7 +138,7 @@ func (ds *subaccountServiceInstanceDataSource) Read(ctx context.Context, req dat
 	} else if !data.Name.IsNull() {
 		cliRes, _, err = ds.cli.Services.Instance.GetByName(ctx, data.SubaccountId.ValueString(), data.Name.ValueString())
 	} else {
-		err = fmt.Errorf("neither instance ID, nor instance Name have been provided.")
+		err = fmt.Errorf("neither instance ID, nor instance Name have been provided")
 	}
 
 	if err != nil {

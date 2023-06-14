@@ -135,7 +135,7 @@ func (ds *subaccountServiceBindingDataSource) Read(ctx context.Context, req data
 	} else if !data.Name.IsNull() {
 		cliRes, _, err = ds.cli.Services.Binding.GetByName(ctx, data.SubaccountId.ValueString(), data.Name.ValueString())
 	} else {
-		err = fmt.Errorf("neither binding ID, nor binding Name have been provided.")
+		err = fmt.Errorf("neither binding ID, nor binding Name have been provided")
 	}
 
 	if err != nil {
