@@ -9,12 +9,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/tfdefaults"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
@@ -88,9 +88,9 @@ func (rs *subaccountRoleCollectionAssignmentResource) Schema(_ context.Context, 
 				MarkdownDescription: "The identity provider that hosts the user or group. The default value is `ldap`.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString("ldap"),
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					tfdefaults.DefaultStringValue("ldap"),
 				},
 			},
 		},
