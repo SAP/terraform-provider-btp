@@ -33,8 +33,8 @@ func entitledServiceType() map[string]attr.Type {
 		"plan_name":            types.StringType,
 		"plan_display_name":    types.StringType,
 		"plan_description":     types.StringType,
-		"quota_assigned":       types.NumberType,
-		"quota_remaining":      types.NumberType,
+		"quota_assigned":       types.Float64Type,
+		"quota_remaining":      types.Float64Type,
 	}
 }
 
@@ -100,11 +100,11 @@ You must be assigned to one of these roles: global account admin, global account
 							MarkdownDescription: "The description of the entitled service plan.",
 							Computed:            true,
 						},
-						"quota_assigned": schema.NumberAttribute{
+						"quota_assigned": schema.Float64Attribute{
 							MarkdownDescription: "The overall quota assigned.",
 							Computed:            true,
 						},
-						"quota_remaining": schema.NumberAttribute{
+						"quota_remaining": schema.Float64Attribute{
 							MarkdownDescription: "The quota which is not used.",
 							Computed:            true,
 						},
