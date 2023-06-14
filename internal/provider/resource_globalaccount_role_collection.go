@@ -23,6 +23,7 @@ type globalaccountRoleCollectionRoleRefType struct {
 }
 
 type globalaccountRoleCollectionType struct {
+	Id          types.String                             `tfsdk:"id"`
 	Name        types.String                             `tfsdk:"name"`
 	Description types.String                             `tfsdk:"description"`
 	Roles       []globalaccountRoleCollectionRoleRefType `tfsdk:"roles"`
@@ -55,8 +56,13 @@ __Further documentation:__
 				MarkdownDescription: "The name of the role collection.",
 				Required:            true,
 			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `name` attribute instead",
+				MarkdownDescription: "The ID of the role collection.",
+				Computed:            true,
+			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "Whether the role collection is readonly.",
+				MarkdownDescription: "The description of the role collection.",
 				Optional:            true,
 				Computed:            true,
 			},
@@ -131,6 +137,7 @@ func (rs *globalaccountRoleCollectionResource) Create(ctx context.Context, req r
 
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
+	plan.Id = types.StringValue(cliRes.Name)
 
 	for _, role := range plan.Roles {
 		_, err := rs.cli.Security.Role.AddByGlobalAccount(ctx, plan.Name.ValueString(), role.Name.ValueString(), role.RoleTemplateAppId.ValueString(), role.RoleTemplateName.ValueString())
