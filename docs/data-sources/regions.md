@@ -3,7 +3,7 @@ page_title: "btp_regions Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Get all the available regions for a global account.
-  Tips
+  Tip:
   You must be assigned to the global account admin or viewer role.
 ---
 
@@ -11,7 +11,7 @@ description: |-
 
 Get all the available regions for a global account.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin or viewer role.
 
 ## Example Usage
@@ -25,6 +25,7 @@ data "btp_regions" "all" {}
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the global account.
 - `values` (Attributes List) The regions supported by this global account. (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
@@ -34,7 +35,13 @@ Read-Only:
 
 - `domain` (String) The domain of the data center
 - `environment` (String) The environment that the data center supports. For example: Kubernetes, Cloud Foundry.
-- `iaas_provider` (String) The infrastructure provider for the data center. Valid values: * <b>AWS:</b> Amazon Web Services. * <b>GCP:</b> Google Cloud Platform. * <b>AZURE:</b> Microsoft Azure. * <b>SAP:</b> SAP BTP (Neo). * <b>ALI:</b> Alibaba Cloud. * <b>IBM:</b> IBM Cloud.
+- `iaas_provider` (String) The infrastructure provider for the data center. Possible values are: 
+	 - `AWS` Amazon Web Services.
+	 - `GCP` Google Cloud Platform.
+	 - `AZURE` Microsoft Azure.
+	 - `SAP` SAP BTP (Neo).
+	 - `ALI` Alibaba Cloud.
+	 - `IBM` IBM Cloud.
 - `id` (String) Technical name of the data center. Must be unique within the cloud deployment.
 - `name` (String) Descriptive name of the data center for customer-facing UIs.
 - `provisioning_service_url` (String) Provisioning service URL.

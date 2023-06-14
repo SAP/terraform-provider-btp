@@ -3,7 +3,7 @@ page_title: "btp_subaccount_environment_instances Data Source - terraform-provid
 subcategory: ""
 description: |-
   List all the environment instances in a subaccount.
-  Tip
+  Tip:
   You must be assigned to the subaccount admin or viewer role.
 ---
 
@@ -11,7 +11,7 @@ description: |-
 
 List all the environment instances in a subaccount.
 
-__Tip__
+__Tip:__
 You must be assigned to the subaccount admin or viewer role.
 
 ## Example Usage
@@ -31,6 +31,7 @@ data "btp_subaccount_environment_instances" "all" {
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the subaccount.
 - `values` (Attributes List) (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
@@ -56,6 +57,16 @@ Read-Only:
 - `platform_id` (String) ID of the platform for the environment instance in the corresponding service broker's catalog.
 - `service_id` (String) ID of the service for the environment instance in the corresponding service broker's catalog.
 - `service_name` (String) Name of the service for the environment instance in the corresponding service broker's catalog.
-- `state` (String) Current state of the environment instance.
+- `state` (String) Current state of the environment instance. Possible values are: 
+	 - `OK`
+	 - `CREATING`
+	 - `CREATION_FAILED`
+	 - `DELETING`
+	 - `DELETION_FAILED`
+	 - `UPDATE_FAILED`
+	 - `UPDATING`
 - `tenant_id` (String) The ID of the tenant that owns the environment instance.
-- `type` (String) The last provisioning operation on the environment instance. * Provision: Environment instance created. * Update: Environment instance changed. * Deprovision: Environment instance deleted.
+- `type` (String) The last provisioning operation on the environment instance. Possible values are: 
+	 - `Provision` Environment instance created.
+	 - `Update` Environment instance changed.
+	 - `Deprovision` Environment instance deleted.

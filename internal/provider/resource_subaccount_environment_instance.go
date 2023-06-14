@@ -43,14 +43,14 @@ func (rs *subaccountEnvironmentInstanceResource) Schema(_ context.Context, _ res
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Create an environment instance, such as a Cloud Foundry org, in a subaccount.
 
-__Tips__
-You must be assigned to the subaccount admin role.
-Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
+__Tips:__
+* You must be assigned to the subaccount admin role.
+* Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
 
-__Further documentation__
-Cloud Foundry: https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/aee40e1afa56445a9bd57c2621d6eaaa.html
-Kyma: https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/befe01d5d8864e59bf847fa5a5f3d669.html
-Concept: https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/15547f7e7ecd47ee9fa052b0e18c7b0a.html`,
+__Further documentation:__
+* Cloud Foundry: <https://help.sap.com/docs/btp/sap-business-technology-platform/org-management-using-sap-btp-command-line-interface-btp-cli>
+* Kyma: <https://help.sap.com/docs/btp/sap-business-technology-platform/available-plans-in-kyma-environment>
+* Concept: <https://help.sap.com/docs/btp/sap-business-technology-platform/environments>`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -137,16 +137,26 @@ Concept: https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-U
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "Current state of the environment instance.",
-				Computed:            true,
+				MarkdownDescription: "Current state of the environment instance. Possible values are: " + // TODO describe states listed below
+					"\n\t - `OK`" +
+					"\n\t - `CREATING`" +
+					"\n\t - `CREATION_FAILED`" +
+					"\n\t - `DELETING`" +
+					"\n\t - `DELETION_FAILED`" +
+					"\n\t - `UPDATE_FAILED`" +
+					"\n\t - `UPDATING`",
+				Computed: true,
 			},
 			"tenant_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the tenant that owns the environment instance.",
 				Computed:            true,
 			},
 			"type": schema.StringAttribute{
-				MarkdownDescription: "The last provisioning operation on the environment instance. * Provision: Environment instance created. * Update: Environment instance changed. * Deprovision: Environment instance deleted.",
-				Computed:            true,
+				MarkdownDescription: "The last provisioning operation on the environment instance. Possible values are: " +
+					"\n\t - `Provision` Environment instance created." +
+					"\n\t - `Update` Environment instance changed." +
+					"\n\t - `Deprovision` Environment instance deleted.",
+				Computed: true,
 			},
 		},
 	}

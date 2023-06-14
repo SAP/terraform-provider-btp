@@ -3,16 +3,16 @@ page_title: "btp_directory_users Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   List all users.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/cc1c676b43904066abb2a4838cbd0c37.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management
 ---
 
 # btp_directory_users (Data Source)
 
 List all users.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/cc1c676b43904066abb2a4838cbd0c37.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management>
 
 ## Example Usage
 

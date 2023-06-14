@@ -43,6 +43,7 @@ type regionDataSourceConfig struct {
 }
 
 type regionsDataSourceConfig struct {
+	Id types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values types.List `tfsdk:"values"`
 }
@@ -67,9 +68,14 @@ func (ds *regionsDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Get all the available regions for a global account.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin or viewer role.`,
 		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
+				MarkdownDescription: "The ID of the global account.",
+				Computed:            true,
+			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -94,8 +100,14 @@ You must be assigned to the global account admin or viewer role.`,
 							Computed:            true,
 						},
 						"iaas_provider": schema.StringAttribute{
-							MarkdownDescription: "The infrastructure provider for the data center. Valid values: * <b>AWS:</b> Amazon Web Services. * <b>GCP:</b> Google Cloud Platform. * <b>AZURE:</b> Microsoft Azure. * <b>SAP:</b> SAP BTP (Neo). * <b>ALI:</b> Alibaba Cloud. * <b>IBM:</b> IBM Cloud.",
-							Computed:            true,
+							MarkdownDescription: "The infrastructure provider for the data center. Possible values are: " +
+								"\n\t - `AWS` Amazon Web Services." +
+								"\n\t - `GCP` Google Cloud Platform." +
+								"\n\t - `AZURE` Microsoft Azure." +
+								"\n\t - `SAP` SAP BTP (Neo)." +
+								"\n\t - `ALI` Alibaba Cloud." +
+								"\n\t - `IBM` IBM Cloud.",
+							Computed: true,
 						},
 						"provisioning_service_url": schema.StringAttribute{
 							MarkdownDescription: "Provisioning service URL.",
@@ -133,7 +145,6 @@ func (ds *regionsDataSource) Read(ctx context.Context, req datasource.ReadReques
 		resp.Diagnostics.AddError("API Error Reading Resource Regions", fmt.Sprintf("%s", err))
 		return
 	}
-
 	regions := []regionDataSourceConfig{}
 
 	for _, regionConf := range cliRes.Datacenters {
@@ -151,6 +162,8 @@ func (ds *regionsDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 		regions = append(regions, r)
 	}
+
+	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
 
 	data.Values, diags = types.ListValueFrom(ctx, regionType, regions)
 	resp.Diagnostics.Append(diags...)

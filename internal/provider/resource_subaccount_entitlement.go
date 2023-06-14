@@ -42,11 +42,11 @@ func (rs *subaccountEntitlementResource) Schema(_ context.Context, _ resource.Sc
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Assigns the entitlement plan of a service, multitenant application, or environment, to a subaccount. Note that some environments, such as Cloud Foundry, are available by default to all global accounts and their subaccounts, and therefore are not made available as entitlements.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin or viewer role.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/00aa2c23479d42568b18882b1ca90d79.html`,
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas>`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -79,8 +79,12 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/00aa2c2
 				},
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "The current state of the entitlement.",
-				Computed:            true,
+				MarkdownDescription: "The current state of the entitlement. Possible values are: " + // TODO describe states listed below
+					"\n\t - `OK`" +
+					"\n\t - `STARTED`" +
+					"\n\t - `PROCESSING`" +
+					"\n\t - `PROCESSING_FAILED`",
+				Computed: true,
 			},
 			"last_modified": schema.StringAttribute{
 				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",

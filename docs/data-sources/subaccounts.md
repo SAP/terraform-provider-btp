@@ -3,7 +3,7 @@ page_title: "btp_subaccounts Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   List all the subaccounts in a global account, including the subaccounts in directories.
-  Tips
+  Tip:
   You must be assigned to the admin or viewer role of the global account, directory.
 ---
 
@@ -11,7 +11,7 @@ description: |-
 
 List all the subaccounts in a global account, including the subaccounts in directories.
 
-__Tips__
+__Tip:__
 You must be assigned to the admin or viewer role of the global account, directory.
 
 ## Example Usage
@@ -53,6 +53,32 @@ Read-Only:
 - `parent_features` (Set of String) The features of parent entity of the subaccount.
 - `parent_id` (String) The GUID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the GUID of the global account.
 - `region` (String) The region in which the subaccount was created.
-- `state` (String) The current state of the subaccount.
+- `state` (String) The current state of the subaccount. Possible values are: 
+	 - `OK`
+	 - `CANCELED`
+	 - `CREATING`
+	 - `CREATION_FAILED`
+	 - `DELETING`
+	 - `DELETION_FAILED`
+	 - `MIGRATING`
+	 - `MIGRATION_FAILED`
+	 - `MIGRATED`
+	 - `MOVE_FAILED`
+	 - `MOVE_TO_OTHER_GA_FAILED`
+	 - `MOVING`
+	 - `MOVING_TO_OTHER_GA`
+	 - `PENDING_REVIEW`
+	 - `PROCESSING`
+	 - `PROCESSING_FAILED`
+	 - `ROLLBACK_MIGRATION_PROCESSING`
+	 - `STARTED`
+	 - `SUSPENSION_FAILED`
+	 - `UPDATE_ACCOUNT_TYPE_FAILED`
+	 - `UPDATE_DIRECTORY_TYPE_FAILED`
+	 - `UPDATE_FAILED`
+	 - `UPDATING`
 - `subdomain` (String) The subdomain that becomes part of the path used to access the authorization tenant of the subaccount. Must be unique within the defined region. Use only letters (a-z), digits (0-9), and hyphens (not at the start or end). Maximum length is 63 characters. Cannot be changed after the subaccount has been created.
-- `usage` (String) Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. * <b>UNSET:</b> Global account or subaccount admin has not set the production-relevancy flag. Default value. * <b>NOT_USED_FOR_PRODUCTION:</b> Subaccount is not used for production purposes. * <b>USED_FOR_PRODUCTION:</b> Subaccount is used for production purposes.
+- `usage` (String) Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: 
+	- `UNSET` Global account or subaccount admin has not set the production-relevancy flag (default value).
+	- `NOT_USED_FOR_PRODUCTION` Subaccount is not used for production purposes.
+	- `USED_FOR_PRODUCTION` Subaccount is used for production purposes.

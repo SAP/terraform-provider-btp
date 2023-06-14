@@ -150,7 +150,7 @@ func (ds *subaccountServicePlanDataSource) Read(ctx context.Context, req datasou
 	} else if !data.Name.IsNull() && !data.OfferingName.IsNull() {
 		cliRes, _, err = ds.cli.Services.Plan.GetByName(ctx, data.SubaccountId.ValueString(), data.Name.ValueString(), data.OfferingName.ValueString())
 	} else {
-		err = fmt.Errorf("neither offering ID, nor offering Name have been provided.")
+		err = fmt.Errorf("neither offering ID, nor offering Name have been provided")
 	}
 
 	if err != nil {

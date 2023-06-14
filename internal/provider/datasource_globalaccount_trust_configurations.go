@@ -40,11 +40,11 @@ func (ds *globalaccountTrustConfigurationsDataSource) Schema(_ context.Context, 
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `List all trust configurations that are configured for your global account.
 
-__Tip__
+__Tip:__
 You must be viewer or administrator of the global account.
 
-__Further documentation__
-https://help.sap.com/docs/BTP/65de2977205c403bbc107264b8eccf4b/cb1bc8f1bd5c482e891063960d7acd78.html`,
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",

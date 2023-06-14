@@ -3,21 +3,21 @@ page_title: "btp_directory Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Get the details about a directory.
-  Tips
+  Tip:
   You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_directory (Data Source)
 
 Get the details about a directory.
 
-__Tips__
+__Tip:__
 You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/8ed4a705efa0431b910056c0acdbf377.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>
 
 ## Example Usage
 
@@ -39,10 +39,31 @@ data "btp_directory" "by_id" {
 - `created_by` (String) Details of the user that created the directory.
 - `created_date` (String) The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `description` (String) The description of the directory.
-- `features` (Set of String) The features that are enabled for the directory. Valid values: - DEFAULT: (Mandatory) All directories have the following basic feature enabled. (1) Group and filter subaccounts for reports and filters, (2) monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model), and (3) set custom properties and tags to the directory for identification and reporting purposes. - ENTITLEMENTS: (Optional) Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.  - AUTHORIZATIONS: (Optional) Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the ENTITLEMENTS feature. <br/><b>Valid values:</b>  [DEFAULT] [DEFAULT,ENTITLEMENTS] [DEFAULT,ENTITLEMENTS,AUTHORIZATIONS]<br/>
+- `features` (Set of String) The features that are enabled for the directory. Possible values are: 
+	 - `DEFAULT` All directories have the following basic feature enabled: 
+		 1. Group and filter subaccounts for reports and filters 
+		 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)
+		 3. Set custom properties and tags to the directory for identification and reporting purposes.
+	 - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.
+	 - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.
 - `labels` (Map of Set of String) Set of words or phrases assigned to the directory.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `name` (String) The display name of the directory.
 - `parent_id` (String) The GUID of the directory's parent entity. Typically this is the global account.
-- `state` (String) The current state of the directory. * <b>STARTED:</b> CRUD operation on an entity has started. * <b>CREATING:</b> Creating entity operation is in progress. * <b>UPDATING:</b> Updating entity operation is in progress. * <b>MOVING:</b> Moving entity operation is in progress. * <b>PROCESSING:</b> A series of operations related to the entity is in progress. * <b>DELETING:</b> Deleting entity operation is in progress. * <b>OK:</b> The CRUD operation or series of operations completed successfully. * <b>PENDING REVIEW:</b> The processing operation has been stopped for reviewing and can be restarted by the operator. * <b>CANCELLED:</b> The operation or processing was canceled by the operator. * <b>CREATION_FAILED:</b> The creation operation failed, and the entity was not created or was created but cannot be used. * <b>UPDATE_FAILED:</b> The update operation failed, and the entity was not updated. * <b>PROCESSING_FAILED:</b> The processing operations failed. * <b>DELETION_FAILED:</b> The delete operation failed, and the entity was not deleted. * <b>MOVE_FAILED:</b> Entity could not be moved to a different location. * <b>MIGRATING:</b> Migrating entity from NEO to CF.
+- `state` (String) The current state of the directory. Possible values are: 
+	 - `OK` The CRUD operation or series of operations completed successfully.
+	 - `STARTED` CRUD operation on an entity has started.
+	 - `CREATING` Creating entity operation is in progress.
+	 - `UPDATING` Updating entity operation is in progress.
+	 - `MOVING` Moving entity operation is in progress.
+	 - `PROCESSING` A series of operations related to the entity is in progress.
+	 - `DELETING` Deleting entity operation is in progress.
+	 - `PENDING REVIEW` The processing operation has been stopped for reviewing and can be restarted by the operator.
+	 - `CANCELLED` The operation or processing was canceled by the operator.
+	 - `CREATION_FAILED` The creation operation failed, and the entity was not created or was created but cannot be used.
+	 - `UPDATE_FAILED` The update operation failed, and the entity was not updated.
+	 - `PROCESSING_FAILED` The processing operations failed.
+	 - `DELETION_FAILED` The delete operation failed, and the entity was not deleted.
+	 - `MOVE_FAILED` Entity could not be moved to a different location.
+	 - `MIGRATING` Migrating entity from NEO to CF.
 - `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. Unique within the defined region.

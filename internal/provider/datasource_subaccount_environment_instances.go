@@ -43,6 +43,7 @@ type subaccountEnvironmentInstanceValue struct {
 
 type subaccountEnvironmentInstancesDataSourceConfig struct {
 	/* INPUT */
+	Id           types.String `tfsdk:"id"`
 	SubaccountId types.String `tfsdk:"subaccount_id"`
 	/* OUTPUT */
 	Values []subaccountEnvironmentInstanceValue `tfsdk:"values"`
@@ -68,7 +69,7 @@ func (ds *subaccountEnvironmentInstancesDataSource) Schema(_ context.Context, _ 
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `List all the environment instances in a subaccount.
 
-__Tip__
+__Tip:__
 You must be assigned to the subaccount admin or viewer role.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
@@ -77,6 +78,11 @@ You must be assigned to the subaccount admin or viewer role.`,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the subaccount.",
+				Computed:            true,
 			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
@@ -156,16 +162,26 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"state": schema.StringAttribute{
-							MarkdownDescription: "Current state of the environment instance.",
-							Computed:            true,
+							MarkdownDescription: "Current state of the environment instance. Possible values are: " + // TODO describe states listed below
+								"\n\t - `OK`" +
+								"\n\t - `CREATING`" +
+								"\n\t - `CREATION_FAILED`" +
+								"\n\t - `DELETING`" +
+								"\n\t - `DELETION_FAILED`" +
+								"\n\t - `UPDATE_FAILED`" +
+								"\n\t - `UPDATING`",
+							Computed: true,
 						},
 						"tenant_id": schema.StringAttribute{
 							MarkdownDescription: "The ID of the tenant that owns the environment instance.",
 							Computed:            true,
 						},
 						"type": schema.StringAttribute{
-							MarkdownDescription: "The last provisioning operation on the environment instance. * Provision: Environment instance created. * Update: Environment instance changed. * Deprovision: Environment instance deleted.",
-							Computed:            true,
+							MarkdownDescription: "The last provisioning operation on the environment instance. Possible values are: " +
+								"\n\t - `Provision` Environment instance created." +
+								"\n\t - `Update` Environment instance changed." +
+								"\n\t - `Deprovision` Environment instance deleted.",
+							Computed: true,
 						},
 					},
 				},
@@ -222,7 +238,7 @@ func (ds *subaccountEnvironmentInstancesDataSource) Read(ctx context.Context, re
 
 		data.Values = append(data.Values, instanceValue)
 	}
-
+	data.Id = data.SubaccountId
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 }

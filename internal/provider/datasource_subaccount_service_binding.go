@@ -92,8 +92,11 @@ func (ds *subaccountServiceBindingDataSource) Schema(_ context.Context, _ dataso
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "Current state of the service binding.",
-				Computed:            true,
+				MarkdownDescription: "Current state of the service binding. Possible values are: " + // TODO describe states listed below
+					"\n\t `in progress`" +
+					"\n\t `failed`" +
+					"\n\t `succeeded`",
+				Computed: true,
 			},
 			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
@@ -132,7 +135,7 @@ func (ds *subaccountServiceBindingDataSource) Read(ctx context.Context, req data
 	} else if !data.Name.IsNull() {
 		cliRes, _, err = ds.cli.Services.Binding.GetByName(ctx, data.SubaccountId.ValueString(), data.Name.ValueString())
 	} else {
-		err = fmt.Errorf("neither binding ID, nor binding Name have been provided.")
+		err = fmt.Errorf("neither binding ID, nor binding Name have been provided")
 	}
 
 	if err != nil {

@@ -3,27 +3,27 @@ page_title: "btp_subaccount_environment_instance Resource - terraform-provider-b
 subcategory: ""
 description: |-
   Create an environment instance, such as a Cloud Foundry org, in a subaccount.
-  Tips
-  You must be assigned to the subaccount admin role.
-  Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
-  Further documentation
-  Cloud Foundry: https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/aee40e1afa56445a9bd57c2621d6eaaa.html
-  Kyma: https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/befe01d5d8864e59bf847fa5a5f3d669.html
-  Concept: https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/15547f7e7ecd47ee9fa052b0e18c7b0a.html
+  Tips:
+  * You must be assigned to the subaccount admin role.
+  * Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
+  Further documentation:
+  * Cloud Foundry: https://help.sap.com/docs/btp/sap-business-technology-platform/org-management-using-sap-btp-command-line-interface-btp-cli
+  * Kyma: https://help.sap.com/docs/btp/sap-business-technology-platform/available-plans-in-kyma-environment
+  * Concept: https://help.sap.com/docs/btp/sap-business-technology-platform/environments
 ---
 
 # btp_subaccount_environment_instance (Resource)
 
 Create an environment instance, such as a Cloud Foundry org, in a subaccount.
 
-__Tips__
-You must be assigned to the subaccount admin role.
-Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
+__Tips:__
+* You must be assigned to the subaccount admin role.
+* Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
 
-__Further documentation__
-Cloud Foundry: https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/aee40e1afa56445a9bd57c2621d6eaaa.html
-Kyma: https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/befe01d5d8864e59bf847fa5a5f3d669.html
-Concept: https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/15547f7e7ecd47ee9fa052b0e18c7b0a.html
+__Further documentation:__
+* Cloud Foundry: <https://help.sap.com/docs/btp/sap-business-technology-platform/org-management-using-sap-btp-command-line-interface-btp-cli>
+* Kyma: <https://help.sap.com/docs/btp/sap-business-technology-platform/available-plans-in-kyma-environment>
+* Concept: <https://help.sap.com/docs/btp/sap-business-technology-platform/environments>
 
 ## Example Usage
 
@@ -82,9 +82,19 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
 - `plan_id` (String) ID of the service plan for the environment instance in the corresponding service broker's catalog.
 - `platform_id` (String) ID of the platform for the environment instance in the corresponding service broker's catalog.
 - `service_id` (String) ID of the service for the environment instance in the corresponding service broker's catalog.
-- `state` (String) Current state of the environment instance.
+- `state` (String) Current state of the environment instance. Possible values are: 
+	 - `OK`
+	 - `CREATING`
+	 - `CREATION_FAILED`
+	 - `DELETING`
+	 - `DELETION_FAILED`
+	 - `UPDATE_FAILED`
+	 - `UPDATING`
 - `tenant_id` (String) The ID of the tenant that owns the environment instance.
-- `type` (String) The last provisioning operation on the environment instance. * Provision: Environment instance created. * Update: Environment instance changed. * Deprovision: Environment instance deleted.
+- `type` (String) The last provisioning operation on the environment instance. Possible values are: 
+	 - `Provision` Environment instance created.
+	 - `Update` Environment instance changed.
+	 - `Deprovision` Environment instance deleted.
 
 ## Import
 

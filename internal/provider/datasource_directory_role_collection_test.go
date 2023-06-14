@@ -28,7 +28,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "name", "Directory Viewer"),
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "description", "Read-only access to the directory"),
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "read_only", "true"),
-						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "role_references.#", "3"),
+						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "roles.#", "3"),
 					),
 				},
 			},

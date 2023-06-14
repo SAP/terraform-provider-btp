@@ -30,7 +30,12 @@ Then open the cloned repository in [Visual Studio Code](https://code.visualstudi
 
 ![screenshot of Visual Studio Code - Open a Remote Window](assets/VSCode_Command_Palette_Reopen.png)
 
-This will trigger the start of the dev container based on the configuration defined in the [devcontainer.json](.devcontainer/devcontainer.json) file.
+This will trigger the start of the dev container. You can choose to open a devcontainer with two configurations:
+
+* without considering a `devcontainer.env` file using [.devcontainer/default/devcontainer.json](.devcontainer/default/devcontainer.json).
+* loading a `.env` file using [.devcontainer/withenvfile/devcontainer.json](.devcontainer/withenvfile/devcontainer.json). This configuration expects a file called `devcontainer.env` in the folder `.devcontainer`.
+
+> **Note** - `.env` files are excluded from git via `.gitignore`. You can use the file to store the environment variables `BTP_USERNAME` and `BTP_PASSWORD` that are needed when developing tests.
 
 > **Note** - In the first run, the download of the container might take a while, so maybe time to grab a cup of coffee ☕.
 

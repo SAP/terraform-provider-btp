@@ -49,7 +49,7 @@ To view all the resources that a directory and its subdirectories and subaccount
 * The directory must be a directory that is configured to manage its own entitlements.
 * You must be assigned to either the global account admin or global account viewers role.
 
-__Tips__
+__Tip:__
 You must be assigned to one of these roles: global account admin, global account viewer`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{

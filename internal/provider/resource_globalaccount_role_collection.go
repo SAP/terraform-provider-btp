@@ -16,9 +16,16 @@ func newGlobalaccountRoleCollectionResource() resource.Resource {
 	return &globalaccountRoleCollectionResource{}
 }
 
+type globalaccountRoleCollectionRoleRefType struct {
+	Name              types.String `tfsdk:"name"`
+	RoleTemplateAppId types.String `tfsdk:"role_template_app_id"`
+	RoleTemplateName  types.String `tfsdk:"role_template_name"`
+}
+
 type globalaccountRoleCollectionType struct {
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
+	Name        types.String                             `tfsdk:"name"`
+	Description types.String                             `tfsdk:"description"`
+	Roles       []globalaccountRoleCollectionRoleRefType `tfsdk:"roles"`
 }
 
 type globalaccountRoleCollectionResource struct {
@@ -41,8 +48,8 @@ func (rs *globalaccountRoleCollectionResource) Schema(_ context.Context, _ resou
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Create a role collection in a global account.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html`,
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",
@@ -53,29 +60,25 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf0
 				Optional:            true,
 				Computed:            true,
 			},
-			/*"role_references": schema.ListNestedAttribute{
-			    NestedObject: schema.NestedAttributeObject{
-			        Attributes: map[string]schema.Attribute{
-			            "role_template_name": schema.StringAttribute{
-			                MarkdownDescription: "The name of the referenced role template.",
-			                Computed:    true,
-			            },
-			            "role_template_app_id": schema.StringAttribute{
-			                MarkdownDescription: "The name of the referenced template app id",
-			                Computed:    true,
-			            },
-			            "description": schema.StringAttribute{
-			                MarkdownDescription: "The description of the referenced role",
-			                Computed:    true,
-			            },
-			            "name": schema.StringAttribute{
-			                MarkdownDescription: "The name of the referenced role.",
-			                Computed:    true,
-			            },
-			        },
-			    },
-			    Computed: true,
-			},*/
+			"roles": schema.ListNestedAttribute{
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							MarkdownDescription: "The name of the referenced role.",
+							Required:            true,
+						},
+						"role_template_app_id": schema.StringAttribute{
+							MarkdownDescription: "The name of the referenced template app id",
+							Required:            true,
+						},
+						"role_template_name": schema.StringAttribute{
+							MarkdownDescription: "The name of the referenced role template.",
+							Required:            true,
+						},
+					},
+				},
+				Required: true,
+			},
 		},
 	}
 }
@@ -99,6 +102,15 @@ func (rs *globalaccountRoleCollectionResource) Read(ctx context.Context, req res
 	state.Name = types.StringValue(cliRes.Name)
 	state.Description = types.StringValue(cliRes.Description)
 
+	state.Roles = []globalaccountRoleCollectionRoleRefType{}
+	for _, role := range cliRes.RoleReferences {
+		state.Roles = append(state.Roles, globalaccountRoleCollectionRoleRefType{
+			RoleTemplateName:  types.StringValue(role.RoleTemplateName),
+			RoleTemplateAppId: types.StringValue(role.RoleTemplateAppId),
+			Name:              types.StringValue(role.Name),
+		})
+	}
+
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
@@ -119,6 +131,14 @@ func (rs *globalaccountRoleCollectionResource) Create(ctx context.Context, req r
 
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
+
+	for _, role := range plan.Roles {
+		_, err := rs.cli.Security.Role.AddByGlobalAccount(ctx, plan.Name.ValueString(), role.Name.ValueString(), role.RoleTemplateAppId.ValueString(), role.RoleTemplateName.ValueString())
+
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Assigning Role To Role Collection (Global Account)", fmt.Sprintf("%s", err))
+		}
+	}
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)

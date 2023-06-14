@@ -1,5 +1,5 @@
 {
-	"name": "Terraform provider for SAP BTP - Development",
+	"name": "Terraform provider for SAP BTP - Development (with env file)",
 	"image": "mcr.microsoft.com/devcontainers/go:1.20-bullseye",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
@@ -23,5 +23,13 @@
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-	"remoteUser": "vscode"
+	"remoteUser": "vscode",
+	// This devcontainer expects a file named .devcontainer/devcontainer.env to exist.
+	// you should place the following environment variables in that file:
+	// - BTP_USERNAME
+	// - BTP_PASSWORD
+	"runArgs": [
+		"--env-file",
+		".devcontainer/devcontainer.env"
+	]
 }

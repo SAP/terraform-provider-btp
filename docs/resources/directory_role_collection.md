@@ -3,16 +3,16 @@ page_title: "btp_directory_role_collection Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
   Create a role collection in a directory.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_directory_role_collection (Resource)
 
 Create a role collection in a directory.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>
 
 ## Example Usage
 
@@ -21,6 +21,14 @@ resource "btp_directory_role_collection" "my_collection" {
   directory_id = "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0"
   name         = "My own role collection"
   description  = "A description of what the role collection is supposed to do."
+
+  roles = [
+    {
+      name                 = "Directory Admin"
+      role_template_app_id = "cis-central!b13"
+      role_template_name   = "Directory_Admin"
+    }
+  ]
 }
 ```
 
@@ -31,6 +39,7 @@ resource "btp_directory_role_collection" "my_collection" {
 
 - `directory_id` (String) The ID of the directory.
 - `name` (String) The name of the role collection.
+- `roles` (Attributes List) (see [below for nested schema](#nestedatt--roles))
 
 ### Optional
 
@@ -40,4 +49,11 @@ resource "btp_directory_role_collection" "my_collection" {
 
 - `id` (String, Deprecated) The ID of the role collection.
 
+<a id="nestedatt--roles"></a>
+### Nested Schema for `roles`
 
+Required:
+
+- `name` (String) The name of the referenced role.
+- `role_template_app_id` (String) The name of the referenced template app id
+- `role_template_name` (String) The name of the referenced role template.

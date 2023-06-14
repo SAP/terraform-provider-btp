@@ -3,16 +3,16 @@ page_title: "btp_globalaccount_roles Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   List all roles.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_globalaccount_roles (Data Source)
 
 List all roles.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>
 
 ## Example Usage
 

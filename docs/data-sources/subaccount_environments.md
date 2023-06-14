@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   List all the available environments for a subaccount.
   This includes the environments, such as Cloud Foundry, which are available by default to all subaccounts, and those restricted environments, such as Kyma, which are offered in the product catalog as service entitlements and whose plans have already been assigned by a global account admin to the subaccount.
-  Tips
+  Tip:
   You must be assigned to the subaccount admin or viewer role.
 ---
 
@@ -14,7 +14,7 @@ List all the available environments for a subaccount.
 
 This includes the environments, such as Cloud Foundry, which are available by default to all subaccounts, and those restricted environments, such as Kyma, which are offered in the product catalog as service entitlements and whose plans have already been assigned by a global account admin to the subaccount.
 
-__Tips__
+__Tip:__
 You must be assigned to the subaccount admin or viewer role.
 
 ## Example Usage
@@ -34,6 +34,7 @@ data "btp_subaccount_environments" "all" {
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the subaccount.
 - `values` (Attributes List) (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
@@ -51,5 +52,5 @@ Read-Only:
 - `schema_update` (String) The update schema of the environment broker.
 - `service_description` (String) The short description of the service.
 - `service_display_name` (String) The display name of the service.
-- `service_name` (String) Name of the service offered in the catalog of the corresponding environment broker (for example, cloudfoundry).
+- `service_name` (String) Name of the service offered in the catalog of the corresponding environment broker (for example: cloudfoundry).
 - `technical_key` (String) Technical key of the corresponding environment broker.

@@ -37,7 +37,7 @@ func (ds *subaccountEnvironmentInstanceDataSource) Schema(_ context.Context, _ d
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Get the details of a specific environment instance in a subaccount.
 
-__Tips__
+__Tip:__
 You must be assigned to the subaccount admin or viewer role.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
@@ -125,16 +125,26 @@ You must be assigned to the subaccount admin or viewer role.`,
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "Current state of the environment instance.",
-				Computed:            true,
+				MarkdownDescription: "Current state of the environment instance. Possible values are: " + // TODO describe states listed below
+					"\n\t - `OK`" +
+					"\n\t - `CREATING`" +
+					"\n\t - `CREATION_FAILED`" +
+					"\n\t - `DELETING`" +
+					"\n\t - `DELETION_FAILED`" +
+					"\n\t - `UPDATE_FAILED`" +
+					"\n\t - `UPDATING`",
+				Computed: true,
 			},
 			"tenant_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the tenant that owns the environment instance.",
 				Computed:            true,
 			},
 			"type": schema.StringAttribute{
-				MarkdownDescription: "The last provisioning operation on the environment instance. * Provision: Environment instance created. * Update: Environment instance changed. * Deprovision: Environment instance deleted.",
-				Computed:            true,
+				MarkdownDescription: "The last provisioning operation on the environment instance. Possible values are: " +
+					"\n\t - `Provision` Environment instance created." +
+					"\n\t - `Update` Environment instance changed." +
+					"\n\t - `Deprovision` Environment instance deleted.",
+				Computed: true,
 			},
 		},
 	}

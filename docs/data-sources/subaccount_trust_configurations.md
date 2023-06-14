@@ -3,21 +3,21 @@ page_title: "btp_subaccount_trust_configurations Data Source - terraform-provide
 subcategory: ""
 description: |-
   List all trust configurations that are configured for your subaccount.
-  Tip
+  Tip:
   You must be viewer or administrator of the subaccount.
-  Further documentation
-  https://help.sap.com/docs/BTP/65de2977205c403bbc107264b8eccf4b/cb1bc8f1bd5c482e891063960d7acd78.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers
 ---
 
 # btp_subaccount_trust_configurations (Data Source)
 
 List all trust configurations that are configured for your subaccount.
 
-__Tip__
+__Tip:__
 You must be viewer or administrator of the subaccount.
 
-__Further documentation__
-https://help.sap.com/docs/BTP/65de2977205c403bbc107264b8eccf4b/cb1bc8f1bd5c482e891063960d7acd78.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>
 
 ## Example Usage
 

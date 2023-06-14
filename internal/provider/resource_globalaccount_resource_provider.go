@@ -43,16 +43,16 @@ For example, if you are subscribed to Amazon Web Services (AWS) and have already
 
 The use of this functionality is subject to the availability of the supported non-SAP cloud vendors in your country or region.
 
-__Tips__
+__Tips:__
 * You must be assigned to the global account admin role.
 * You can create more than one instance of a given resource provider, each with its unique configuration properties. In such cases, the display name and technical name should be descriptive enough so that you and developers can easily differentiate between each instance.
 * After you configure a new resource provider instance, its supported services are added as entitlements in your global account.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/e2c250dc5abd468a81f4f619206157a2.html`,
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/managing-resource-providers>`,
 		Attributes: map[string]schema.Attribute{
 			"resource_provider": schema.StringAttribute{
-				MarkdownDescription: "Provider of the requested resource. For example: AWS, AZURE.",
+				MarkdownDescription: "Provider of the requested resource. Possible values are: `AWS`, `AZURE`.",
 				Required:            true,
 			},
 			"id": schema.StringAttribute{

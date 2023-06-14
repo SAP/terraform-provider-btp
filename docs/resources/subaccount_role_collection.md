@@ -3,16 +3,16 @@ page_title: "btp_subaccount_role_collection Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
   Create a role collection in a subaccount.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_subaccount_role_collection (Resource)
 
 Create a role collection in a subaccount.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>
 
 ## Example Usage
 
@@ -21,6 +21,14 @@ resource "btp_subaccount_role_collection" "my_collection" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   name          = "My own role collection"
   description   = "A description of what the role collection is supposed to do."
+
+  roles = [
+    {
+      name                 = "Subaccount Admin"
+      role_template_app_id = "cis-local!b2"
+      role_template_name   = "Subaccount_Admin"
+    }
+  ]
 }
 ```
 
@@ -30,10 +38,20 @@ resource "btp_subaccount_role_collection" "my_collection" {
 ### Required
 
 - `name` (String) The name of the role collection.
+- `roles` (Attributes List) (see [below for nested schema](#nestedatt--roles))
 - `subaccount_id` (String) The ID of the subaccount.
 
 ### Optional
 
 - `description` (String) Whether the role collection is readonly.
+
+<a id="nestedatt--roles"></a>
+### Nested Schema for `roles`
+
+Required:
+
+- `name` (String) The name of the referenced role.
+- `role_template_app_id` (String) The name of the referenced template app id
+- `role_template_name` (String) The name of the referenced role template.
 
 

@@ -3,16 +3,16 @@ page_title: "btp_globalaccount_role_collection Resource - terraform-provider-btp
 subcategory: ""
 description: |-
   Create a role collection in a global account.
-  Further documentation
-  https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html
+  Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_globalaccount_role_collection (Resource)
 
 Create a role collection in a global account.
 
-__Further documentation__
-https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf082d3d43eba9200fe15647922a.html
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>
 
 ## Example Usage
 
@@ -20,6 +20,14 @@ https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/0039cf0
 resource "btp_globalaccount_role_collection" "my_collection" {
   name        = "My own role collection"
   description = "A description of what the role collection is supposed to do."
+
+  roles = [
+    {
+      name                 = "Global Account Admin"
+      role_template_app_id = "cis-central!b13"
+      role_template_name   = "GlobalAccount_Admin"
+    }
+  ]
 }
 ```
 
@@ -29,9 +37,19 @@ resource "btp_globalaccount_role_collection" "my_collection" {
 ### Required
 
 - `name` (String) The name of the role collection.
+- `roles` (Attributes List) (see [below for nested schema](#nestedatt--roles))
 
 ### Optional
 
 - `description` (String) Whether the role collection is readonly.
+
+<a id="nestedatt--roles"></a>
+### Nested Schema for `roles`
+
+Required:
+
+- `name` (String) The name of the referenced role.
+- `role_template_app_id` (String) The name of the referenced template app id
+- `role_template_name` (String) The name of the referenced role template.
 
 

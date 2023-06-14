@@ -38,8 +38,8 @@ func (rs *globalaccountTrustConfigurationResource) Schema(_ context.Context, _ r
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Establish trust from a global account to an Identity Authentication tenant.
 
-__Further documentation__
-https://help.sap.com/docs/BTP/65de2977205c403bbc107264b8eccf4b/cb1bc8f1bd5c482e891063960d7acd78.html`,
+__Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>`,
 		Attributes: map[string]schema.Attribute{
 			"identity_provider": schema.StringAttribute{
 				MarkdownDescription: "The name of the Identity Authentication tenant that you want the global account to connect.",

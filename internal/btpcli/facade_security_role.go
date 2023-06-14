@@ -142,3 +142,63 @@ func (f *securityRoleFacade) DeleteByGlobalAccount(ctx context.Context, roleName
 		"roleTemplateName": roleTemplateName,
 	}))
 }
+
+func (f *securityRoleFacade) AddBySubaccount(ctx context.Context, subaccountId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+	return f.cliClient.Execute(ctx, NewAddRequest(f.getCommand(), map[string]string{
+		"subaccount":         subaccountId,
+		"roleName":           roleName,
+		"roleCollectionName": targetRoleCollection,
+		"roleTemplateAppID":  roleTemplateAppId,
+		"roleTemplateName":   roleTemplateName,
+	}))
+}
+
+func (f *securityRoleFacade) AddByDirectory(ctx context.Context, directoryId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+	return f.cliClient.Execute(ctx, NewAddRequest(f.getCommand(), map[string]string{
+		"directory":          directoryId,
+		"roleName":           roleName,
+		"roleCollectionName": targetRoleCollection,
+		"roleTemplateAppID":  roleTemplateAppId,
+		"roleTemplateName":   roleTemplateName,
+	}))
+}
+
+func (f *securityRoleFacade) AddByGlobalAccount(ctx context.Context, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+	return f.cliClient.Execute(ctx, NewAddRequest(f.getCommand(), map[string]string{
+		"globalAccount":      f.cliClient.GetGlobalAccountSubdomain(),
+		"roleName":           roleName,
+		"roleCollectionName": targetRoleCollection,
+		"roleTemplateAppID":  roleTemplateAppId,
+		"roleTemplateName":   roleTemplateName,
+	}))
+}
+
+func (f *securityRoleFacade) RemoveBySubaccount(ctx context.Context, subaccountId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+	return f.cliClient.Execute(ctx, NewRemoveRequest(f.getCommand(), map[string]string{
+		"subaccount":         subaccountId,
+		"roleName":           roleName,
+		"roleCollectionName": targetRoleCollection,
+		"roleTemplateAppID":  roleTemplateAppId,
+		"roleTemplateName":   roleTemplateName,
+	}))
+}
+
+func (f *securityRoleFacade) RemoveByDirectory(ctx context.Context, directoryId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+	return f.cliClient.Execute(ctx, NewRemoveRequest(f.getCommand(), map[string]string{
+		"directory":          directoryId,
+		"roleName":           roleName,
+		"roleCollectionName": targetRoleCollection,
+		"roleTemplateAppID":  roleTemplateAppId,
+		"roleTemplateName":   roleTemplateName,
+	}))
+}
+
+func (f *securityRoleFacade) RemoveByGlobalAccount(ctx context.Context, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+	return f.cliClient.Execute(ctx, NewRemoveRequest(f.getCommand(), map[string]string{
+		"globalAccount":      f.cliClient.GetGlobalAccountSubdomain(),
+		"roleName":           roleName,
+		"roleCollectionName": targetRoleCollection,
+		"roleTemplateAppID":  roleTemplateAppId,
+		"roleTemplateName":   roleTemplateName,
+	}))
+}

@@ -18,7 +18,7 @@ func newDirectoryRoleCollectionDataSource() datasource.DataSource {
 	return &directoryRoleCollectionDataSource{}
 }
 
-type directoryRoleCollectionRoleReferences struct {
+type directoryRoleCollectionRoleType struct {
 	/* OUTPUT */
 	RoleTemplateName  types.String `tfsdk:"role_template_name"`
 	RoleTemplateAppId types.String `tfsdk:"role_template_app_id"`
@@ -32,9 +32,9 @@ type directoryRoleCollectionDataSourceConfig struct {
 	Id          types.String `tfsdk:"id"`
 	Name        types.String `tfsdk:"name"`
 	/* OUTPUT */
-	IsReadOnly     types.Bool                              `tfsdk:"read_only"`
-	Description    types.String                            `tfsdk:"description"`
-	RoleReferences []directoryRoleCollectionRoleReferences `tfsdk:"role_references"`
+	IsReadOnly  types.Bool                        `tfsdk:"read_only"`
+	Description types.String                      `tfsdk:"description"`
+	Roles       []directoryRoleCollectionRoleType `tfsdk:"roles"`
 }
 
 type directoryRoleCollectionDataSource struct {
@@ -84,7 +84,7 @@ func (ds *directoryRoleCollectionDataSource) Schema(_ context.Context, _ datasou
 				MarkdownDescription: "The description of the role collection.",
 				Computed:            true,
 			},
-			"role_references": schema.ListNestedAttribute{
+			"roles": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"role_template_name": schema.StringAttribute{
@@ -132,9 +132,9 @@ func (ds *directoryRoleCollectionDataSource) Read(ctx context.Context, req datas
 	data.Description = types.StringValue(cliRes.Description)
 	data.IsReadOnly = types.BoolValue(cliRes.IsReadOnly)
 
-	data.RoleReferences = []directoryRoleCollectionRoleReferences{}
+	data.Roles = []directoryRoleCollectionRoleType{}
 	for _, ref := range cliRes.RoleReferences {
-		data.RoleReferences = append(data.RoleReferences, directoryRoleCollectionRoleReferences{
+		data.Roles = append(data.Roles, directoryRoleCollectionRoleType{
 			RoleTemplateName:  types.StringValue(ref.RoleTemplateName),
 			RoleTemplateAppId: types.StringValue(ref.RoleTemplateAppId),
 			Description:       types.StringValue(ref.Description),

@@ -5,7 +5,7 @@ description: |-
   Get all the entitlements and quota assignments for a subaccount.
   To get all entitlements and quota assigned to a specific subaccount:
   * You must be assigned to either the subaccount admin or subaccount viewer role.
-  Tips
+  Tip:
   You must be assigned to one of these roles: subaccount admin, subaccount viewer.
 ---
 
@@ -16,7 +16,7 @@ Get all the entitlements and quota assignments for a subaccount.
 To get all entitlements and quota assigned to a specific subaccount:
 * You must be assigned to either the subaccount admin or subaccount viewer role.
 
-__Tips__
+__Tip:__
 You must be assigned to one of these roles: subaccount admin, subaccount viewer.
 
 ## Example Usage

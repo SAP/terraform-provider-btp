@@ -35,6 +35,7 @@ type subaccountEnvironment struct {
 type subaccountEnvironmentsDataSourceConfig struct {
 	/* INPUT */
 	SubaccountId types.String `tfsdk:"subaccount_id"`
+	Id           types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values []subaccountEnvironment `tfsdk:"values"`
 }
@@ -61,7 +62,7 @@ func (ds *subaccountEnvironmentsDataSource) Schema(_ context.Context, _ datasour
 
 This includes the environments, such as Cloud Foundry, which are available by default to all subaccounts, and those restricted environments, such as Kyma, which are offered in the product catalog as service entitlements and whose plans have already been assigned by a global account admin to the subaccount.
 
-__Tips__
+__Tip:__
 You must be assigned to the subaccount admin or viewer role.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
@@ -70,6 +71,11 @@ You must be assigned to the subaccount admin or viewer role.`,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the subaccount.",
+				Computed:            true,
 			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
@@ -107,7 +113,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"service_name": schema.StringAttribute{
-							MarkdownDescription: "Name of the service offered in the catalog of the corresponding environment broker (for example, cloudfoundry).",
+							MarkdownDescription: "Name of the service offered in the catalog of the corresponding environment broker (for example: cloudfoundry).",
 							Computed:            true,
 						},
 						"schema_create": schema.StringAttribute{
@@ -164,6 +170,8 @@ func (ds *subaccountEnvironmentsDataSource) Read(ctx context.Context, req dataso
 			UpdateSchema:       types.StringValue(availableEnvironment.UpdateSchema),
 		})
 	}
+
+	data.Id = data.SubaccountId
 
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)

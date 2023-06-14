@@ -47,7 +47,7 @@ func (rs *subaccountSubscriptionResource) Schema(_ context.Context, _ resource.S
 		MarkdownDescription: `Subscribe to a multitenant application from a subaccount.
 Custom or partner-developed applications are currently not supported.
 
-__Tips__
+__Tip:__
 You must be assigned to the subaccount admin role.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
