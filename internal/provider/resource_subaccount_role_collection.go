@@ -87,7 +87,7 @@ __Further documentation:__
 							Required:            true,
 						},
 						"role_template_app_id": schema.StringAttribute{
-							MarkdownDescription: "The name of the referenced template app id",
+							MarkdownDescription: "The name of the referenced template app id.",
 							Required:            true,
 						},
 					},

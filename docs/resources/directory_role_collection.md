@@ -43,7 +43,7 @@ resource "btp_directory_role_collection" "my_collection" {
 
 ### Optional
 
-- `description` (String) Whether the role collection is readonly.
+- `description` (String) The description of the role collection.
 
 <a id="nestedatt--roles"></a>
 ### Nested Schema for `roles`
@@ -51,7 +51,7 @@ resource "btp_directory_role_collection" "my_collection" {
 Required:
 
 - `name` (String) The name of the referenced role.
-- `role_template_app_id` (String) The name of the referenced template app id
+- `role_template_app_id` (String) The name of the referenced template app id.
 - `role_template_name` (String) The name of the referenced role template.
 
 
