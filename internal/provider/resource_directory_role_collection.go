@@ -66,7 +66,7 @@ __Further documentation:__
 				Required:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "Whether the role collection is readonly.",
+				MarkdownDescription: "The description of the role collection.",
 				Optional:            true,
 				Computed:            true,
 			},
@@ -78,7 +78,7 @@ __Further documentation:__
 							Required:            true,
 						},
 						"role_template_app_id": schema.StringAttribute{
-							MarkdownDescription: "The name of the referenced template app id",
+							MarkdownDescription: "The name of the referenced template app id.",
 							Required:            true,
 						},
 						"role_template_name": schema.StringAttribute{
