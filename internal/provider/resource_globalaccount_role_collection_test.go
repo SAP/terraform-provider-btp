@@ -29,6 +29,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "name", "My new role collection"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "roles.#", "1"),
 					),
 				},
 			},
