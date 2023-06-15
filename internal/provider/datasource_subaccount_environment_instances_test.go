@@ -27,13 +27,10 @@ func TestDataSourceSubaccountEnvironmentInstances(t *testing.T) {
 			},
 		})
 	})
-
 }
 
 func hclDatasourceSubaccountEnvironmentInstances(resourceName string, subaccountId string) string {
-	template := `
-data "btp_subaccount_environment_instances" "%s" {
-  subaccount_id = "%s"
-}`
+	template := `data "btp_subaccount_environment_instances" "%s" { subaccount_id = "%s" }`
+
 	return fmt.Sprintf(template, resourceName, subaccountId)
 }

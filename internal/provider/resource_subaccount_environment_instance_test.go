@@ -21,6 +21,7 @@ type cfOrgParameters struct {
 }
 
 func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
+	t.Parallel()
 	t.Run("happy path - simple CF creation", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/resource_subaccount_environment_instance")
 		defer stopQuietly(rec)
@@ -61,13 +62,14 @@ func hclResourceSubaccountEnvironmentInstanceCF(resourceName string, subaccountI
 
 	jsonCfParameters, _ := json.Marshal(cfParameters)
 
-	return fmt.Sprintf(`resource "btp_subaccount_environment_instance" "%s"{
-		subaccount_id      = "%s"
-		name               = "%s"
-		environment_type   = "cloudfoundry"
-		plan_name          = "%s"
-		service_name       = "cloudfoundry"
-		landscape_label    = "%s"
-		parameters         = %q
-	}`, resourceName, subaccountId, name, planName, landscapeLabel, string(jsonCfParameters))
+	return fmt.Sprintf(`
+resource "btp_subaccount_environment_instance" "%s"{
+    subaccount_id    = "%s"
+	name             = "%s"
+	environment_type = "cloudfoundry"
+	plan_name        = "%s"
+	service_name     = "cloudfoundry"
+	landscape_label  = "%s"
+	parameters       = %q
+}`, resourceName, subaccountId, name, planName, landscapeLabel, string(jsonCfParameters))
 }

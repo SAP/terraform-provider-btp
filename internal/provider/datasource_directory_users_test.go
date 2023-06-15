@@ -74,16 +74,16 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 }
 
 func hclDatasourceDirectoryUsersDefaultIdp(resourceName string, directoryId string) string {
-	template := `data "btp_directory_users" "%s" {
-  directory_id    = "%s"
-}`
+	template := `data "btp_directory_users" "%s" { directory_id = "%s" }`
+
 	return fmt.Sprintf(template, resourceName, directoryId)
 }
 
 func hclDatasourceDirectoryUsersWithCustomIdp(resourceName string, directoryId string, origin string) string {
-	template := `data "btp_directory_users" "%s" {
-  directory_id    = "%s"
-  origin    = "%s"
+	template := `
+data "btp_directory_users" "%s" {
+    directory_id = "%s"
+    origin       = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, directoryId, origin)
 }

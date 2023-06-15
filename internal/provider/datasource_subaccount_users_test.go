@@ -74,16 +74,16 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 }
 
 func hclDatasourceSubaccountUsersDefaultIdp(resourceName string, subaccountId string) string {
-	template := `data "btp_subaccount_users" "%s" {
-	subaccount_id = "%s"
-}`
+	template := `data "btp_subaccount_users" "%s" { subaccount_id = "%s" }`
+
 	return fmt.Sprintf(template, resourceName, subaccountId)
 }
 
 func hclDatasourceSubaccountUsersWithCustomIdp(resourceName string, subaccountId string, origin string) string {
-	template := `data "btp_subaccount_users" "%s" {
-	subaccount_id = "%s"
-	origin = "%s"
+	template := `
+data "btp_subaccount_users" "%s" {
+    subaccount_id = "%s" 
+    origin        = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId, origin)
 }

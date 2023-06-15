@@ -32,7 +32,6 @@ func TestDataSourceDirectoryEntitlements(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("error path - directory_id not a valid UUID", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -45,7 +44,6 @@ func TestDataSourceDirectoryEntitlements(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("error path - directory_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -58,7 +56,6 @@ func TestDataSourceDirectoryEntitlements(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("error path - cli server returns error", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
@@ -80,13 +77,12 @@ func TestDataSourceDirectoryEntitlements(t *testing.T) {
 			},
 		})
 	})
-
 }
 
 func hclDatasourceDirectoryEntitlements(resourceName string, directoryId string) string {
 	template := `
 data "btp_directory_entitlements" "%s" {
-  directory_id = "%s"
+    directory_id = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, directoryId)
 }

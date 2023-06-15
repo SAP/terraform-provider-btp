@@ -27,13 +27,10 @@ func TestDataSourceSubaccountEntitlements(t *testing.T) {
 			},
 		})
 	})
-
 }
 
 func hclDatasourceSubaccountEntitlements(resourceName string, subaccountId string) string {
-	template := `
-data "btp_subaccount_entitlements" "%s" {
-  subaccount_id = "%s"
-}`
+	template := `data "btp_subaccount_entitlements" "%s" { subaccount_id = "%s" }`
+
 	return fmt.Sprintf(template, resourceName, subaccountId)
 }
