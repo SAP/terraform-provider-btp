@@ -75,6 +75,7 @@ func (rs *directoryRoleCollectionAssignmentResource) Schema(_ context.Context, _
 				},
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.MatchRoot("user_name"), path.MatchRoot("group_name")),
+					stringvalidator.LengthBetween(1, 256),
 				},
 			},
 			"group_name": schema.StringAttribute{

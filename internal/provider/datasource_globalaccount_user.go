@@ -63,7 +63,7 @@ func (ds *globalaccountUserDataSource) Schema(_ context.Context, _ datasource.Sc
 				MarkdownDescription: "The username of the user.",
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.LengthAtLeast(1),
+					stringvalidator.LengthBetween(1, 256),
 				},
 			},
 			"id": schema.StringAttribute{
