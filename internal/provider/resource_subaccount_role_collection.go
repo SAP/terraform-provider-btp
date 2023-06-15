@@ -26,6 +26,7 @@ type subaccountRoleCollectionRoleRefType struct {
 type subaccountRoleCollectionType struct {
 	SubaccountId types.String                          `tfsdk:"subaccount_id"`
 	Name         types.String                          `tfsdk:"name"`
+	Id           types.String                          `tfsdk:"id"`
 	Description  types.String                          `tfsdk:"description"`
 	Roles        []subaccountRoleCollectionRoleRefType `tfsdk:"roles"`
 }
@@ -60,16 +61,21 @@ __Further documentation:__
 					uuidvalidator.ValidUUID(),
 				},
 			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `name` attribute instead",
+				MarkdownDescription: "The ID of the role collection.",
+				Computed:            true,
+			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",
 				Required:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "Whether the role collection is readonly.",
+				MarkdownDescription: "The description of the role collection.",
 				Optional:            true,
 				Computed:            true,
 			},
-			"roles": schema.ListNestedAttribute{
+			"roles": schema.SetNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
@@ -148,6 +154,7 @@ func (rs *subaccountRoleCollectionResource) Create(ctx context.Context, req reso
 
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
+	plan.Id = types.StringValue(cliRes.Name)
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
