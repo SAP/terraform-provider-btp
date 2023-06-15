@@ -41,7 +41,11 @@ resource "btp_globalaccount_role_collection" "my_collection" {
 
 ### Optional
 
-- `description` (String) Whether the role collection is readonly.
+- `description` (String) The description of the role collection.
+
+### Read-Only
+
+- `id` (String, Deprecated) The ID of the role collection.
 
 <a id="nestedatt--roles"></a>
 ### Nested Schema for `roles`
