@@ -73,13 +73,13 @@ func hclResourceSubAccountRoleCollection(resourceName string, subaccountId strin
 		Name:              "Subaccount Viewer",
 		RoleTemplateAppId: "cis-local!b2",
 		RoleTemplateName:  "Subaccount_Viewer",
-	})
-
-	roles = append(roles, subaccountRoleCollectionRoleRefTestType{
-		Name:              "Destination Viewer",
-		RoleTemplateAppId: "destination-xsappname!b9",
-		RoleTemplateName:  "Destination_Viewer",
-	})
+	},
+		subaccountRoleCollectionRoleRefTestType{
+			Name:              "Destination Viewer",
+			RoleTemplateAppId: "destination-xsappname!b9",
+			RoleTemplateName:  "Destination_Viewer",
+		},
+	)
 
 	rolesJson, _ := json.Marshal(roles)
 
@@ -99,13 +99,13 @@ func hclResourceSubAccountRoleCollectionNoSubaccountId(resourceName string, disp
 		Name:              "Subaccount Viewer",
 		RoleTemplateAppId: "cis-local!b2",
 		RoleTemplateName:  "Subaccount_Viewer",
-	})
-
-	roles = append(roles, subaccountRoleCollectionRoleRefTestType{
-		Name:              "Destination Viewer",
-		RoleTemplateAppId: "destination-xsappname!b9",
-		RoleTemplateName:  "Destination_Viewer",
-	})
+	},
+		subaccountRoleCollectionRoleRefTestType{
+			Name:              "Destination Viewer",
+			RoleTemplateAppId: "destination-xsappname!b9",
+			RoleTemplateName:  "Destination_Viewer",
+		},
+	)
 
 	rolesJson, _ := json.Marshal(roles)
 
