@@ -52,8 +52,7 @@ func hclDatasourceGlobalaccountUsers(resourceName string) string {
 }
 
 func hclDatasourceGlobalaccountUsersWithCustomIdp(resourceName string, origin string) string {
-	template := `data "btp_globalaccount_users" "%s" {
-  origin    = "%s"
-}`
+	template := `data "btp_globalaccount_users" "%s" { origin = "%s" }`
+
 	return fmt.Sprintf(template, resourceName, origin)
 }

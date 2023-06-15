@@ -52,9 +52,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 }
 
 func hclDatasourceGlobalaccountRoleCollection(resourceName string, name string) string {
-	template := `data "btp_globalaccount_role_collection" "%s" {
-		name               = "%s"
-	  }`
+	template := `data "btp_globalaccount_role_collection" "%s" { name = "%s" }`
 
 	return fmt.Sprintf(template, resourceName, name)
 }

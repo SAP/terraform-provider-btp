@@ -112,7 +112,8 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 }
 
 func hclDatasourceSubaccountUser(resourceName string, subaccountId string, userName string, origin string) string {
-	template := `data "btp_subaccount_user" "%s" {
+	template := `
+data "btp_subaccount_user" "%s" {
 	subaccount_id = "%s"
 	user_name 	 = "%s"
   	origin    	 = "%s"

@@ -54,5 +54,5 @@ func TestDataSourceGlobalaccountRoleCollections(t *testing.T) {
 }
 
 func hclDatasourceGlobalaccountRoleCollections(resourceName string) string {
-	return fmt.Sprintf(`data "btp_globalaccount_role_collections" "%s" { }`, resourceName)
+	return fmt.Sprintf(`data "btp_globalaccount_role_collections" "%s" {}`, resourceName)
 }

@@ -120,11 +120,12 @@ func TestDataSourceSubaccountRole(t *testing.T) {
 }
 
 func hclDatasourceSubaccountRole(resourceName string, subaccountId string, name string, roleTemplateName string, appId string) string {
-	template := `data "btp_subaccount_role" "%s" {
-  subaccount_id       = "%s"
-  name               = "%s"
-  role_template_name = "%s"
-  app_id             = "%s"
+	template := `
+data "btp_subaccount_role" "%s" {
+    subaccount_id       = "%s"
+    name                = "%s"
+    role_template_name  = "%s"
+    app_id              = "%s"
 }`
 
 	return fmt.Sprintf(template, resourceName, subaccountId, name, roleTemplateName, appId)

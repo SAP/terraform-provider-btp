@@ -27,7 +27,6 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("happy path - subaccount not existing", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_subaccount_trust_configurations.subaccount_not_existing")
 		defer stopQuietly(rec)
@@ -43,12 +42,10 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 			},
 		})
 	})
-
 }
 
 func hclDatasourceSubaccountTrustConfigurations(resourceName string, subaccountId string) string {
-	template := `data "btp_subaccount_trust_configurations" "%s" {
-		subaccount_id = "%s"
-	}`
+	template := `data "btp_subaccount_trust_configurations" "%s" { subaccount_id = "%s" }`
+
 	return fmt.Sprintf(template, resourceName, subaccountId)
 }

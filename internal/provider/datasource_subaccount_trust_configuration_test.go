@@ -33,7 +33,6 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("happy path", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_subaccount_trust_configuration.custom_idp_exists")
 		defer stopQuietly(rec)
@@ -58,7 +57,6 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("happy path", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_subaccount_trust_configuration.custom_idp_not_existing")
 		defer stopQuietly(rec)
@@ -83,13 +81,13 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			},
 		})
 	})
-
 }
 
 func hclDatasourceSubaccountTrustConfiguration(resourceName string, subaccountId string, origin string) string {
-	template := `data "btp_subaccount_trust_configuration" "%s" {
-		subaccount_id = "%s"
-		origin = "%s"
+	template := `
+data "btp_subaccount_trust_configuration" "%s" {
+    subaccount_id = "%s"
+	origin = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId, origin)
 }

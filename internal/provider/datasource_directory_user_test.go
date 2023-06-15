@@ -35,7 +35,6 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("happy path - custom idp", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_directory_user.custom_idp")
 		defer stopQuietly(rec)
@@ -61,7 +60,6 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("error path - directory_id not a valid UUID", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -74,7 +72,6 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("error path - directory_id, user_name and origin are mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -87,7 +84,6 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			},
 		})
 	})
-
 }
 
 func hclDatasourceDirectoryUserCustomIdp(resourceName string, directoryId string, userName string, origin string) string {
@@ -100,7 +96,8 @@ func hclDatasourceDirectoryUserCustomIdp(resourceName string, directoryId string
 }
 
 func hclDatasourceDirectoryUserDefaultIdp(resourceName string, directoryId string, userName string) string {
-	template := `data "btp_directory_user" "%s" {
+	template := `
+data "btp_directory_user" "%s" {
 	directory_id = "%s"
 	user_name 	 = "%s"
 }`
