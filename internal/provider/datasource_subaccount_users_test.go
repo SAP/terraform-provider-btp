@@ -2,7 +2,10 @@ package provider
 
 import (
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -71,6 +74,39 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 		})
 	})
 	// TODO: error path with non existing idp
+	t.Run("error path - origin must not be empty if given", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProvider() + hclDatasourceSubaccountUsersWithCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", ""),
+					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
+				},
+			},
+		})
+	})
+	t.Run("error path - cli server returns error", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if strings.HasPrefix(r.URL.Path, "/login/") {
+				fmt.Fprintf(w, "{}")
+				return
+			}
+			w.WriteHeader(http.StatusNotFound)
+		}))
+		defer srv.Close()
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(srv.Client()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceSubaccountUsersWithCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint-platform"),
+					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+				},
+			},
+		})
+	})
 }
 
 func hclDatasourceSubaccountUsersDefaultIdp(resourceName string, subaccountId string) string {
