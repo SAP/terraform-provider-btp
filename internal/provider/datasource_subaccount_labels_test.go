@@ -76,9 +76,7 @@ func TestDataSourceSubaccountLabels(t *testing.T) {
 }
 
 func hclDatasourceSubaccountLabels(resourceName string, subaccountId string) string {
-	template := `
-data "btp_subaccount_labels" "%s" {
-  subaccount_id = "%s"
-}`
+	template := `data "btp_subaccount_labels" "%s" { subaccount_id = "%s" }`
+
 	return fmt.Sprintf(template, resourceName, subaccountId)
 }
