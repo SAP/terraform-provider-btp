@@ -49,8 +49,8 @@ func hclResourceGlobalAccountRoleCollection(resourceName string, displayName str
 	rolesJson, _ := json.Marshal(roles)
 
 	return fmt.Sprintf(`resource "btp_globalaccount_role_collection" "%s" {
-        name      			= "%s"
-        description      	= "%s"
-		roles               = %v
+        name         = "%s"
+        description  = "%s"
+	roles        = %v
     }`, resourceName, displayName, description, string(rolesJson))
 }
