@@ -37,7 +37,7 @@ func TestDataSourceSubaccountEnvironmentInstances(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_subaccount_environment_instance" "uut" {}`,
+					Config:      hclProvider() + `data "btp_subaccount_environment_instances" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
