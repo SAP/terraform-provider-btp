@@ -15,7 +15,7 @@ type globalaccountRoleCollectionRoleRefTestType struct {
 	RoleTemplateName  string `json:"role_template_name"`
 }
 
-func TestResourceDirectoryRoleCollection(t *testing.T) {
+func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/resource_globalaccount_role_collection")
 		defer stopQuietly(rec)
@@ -25,7 +25,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceGlobalaccountRoleCollection("uut", "My new role collection", "Description of my new role collection", "Global Account Viewer", "cis-central!b13", "GlobalAccount_Viewer"),
+					Config: hclProvider() + hclResourceGlobalAccountRoleCollection("uut", "My new role collection", "Description of my new role collection", "Global Account Viewer", "cis-central!b13", "GlobalAccount_Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "name", "My new role collection"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "description", "Description of my new role collection"),
@@ -37,7 +37,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 }
 
-func hclResourceGlobalaccountRoleCollection(resourceName string, displayName string, description string, roleName string, RoleTemplateAppId string, RoleTemplateName string) string {
+func hclResourceGlobalAccountRoleCollection(resourceName string, displayName string, description string, roleName string, RoleTemplateAppId string, RoleTemplateName string) string {
 
 	roles := []globalaccountRoleCollectionRoleRefTestType{}
 
