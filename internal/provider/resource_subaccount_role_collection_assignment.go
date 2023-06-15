@@ -66,6 +66,9 @@ func (rs *subaccountRoleCollectionAssignmentResource) Schema(_ context.Context, 
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"user_name": schema.StringAttribute{
 				MarkdownDescription: "The username of the user to assign.",
