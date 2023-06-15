@@ -39,7 +39,7 @@ resource "btp_directory_role_collection" "my_collection" {
 
 - `directory_id` (String) The ID of the directory.
 - `name` (String) The name of the role collection.
-- `roles` (Attributes List) (see [below for nested schema](#nestedatt--roles))
+- `roles` (Attributes Set) (see [below for nested schema](#nestedatt--roles))
 
 ### Optional
 
