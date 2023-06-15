@@ -72,7 +72,7 @@ func (ds *directoryUserDataSource) Schema(_ context.Context, _ datasource.Schema
 				MarkdownDescription: "The username of the user.",
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.LengthAtLeast(1),
+					stringvalidator.LengthBetween(1, 256),
 				},
 			},
 			"id": schema.StringAttribute{

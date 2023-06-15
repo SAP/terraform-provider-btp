@@ -69,7 +69,7 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProvider() + hclDatasourceDirectoryUserCustomIdp("uut", "5381d6a4-d67f-45b1-93a0-624876f74d03", "", "terraformint"),
-					ExpectError: regexp.MustCompile(`Attribute user_name string length must be at least 1, got: 0`),
+					ExpectError: regexp.MustCompile(`Attribute user_name string length must be between 1 and 256, got: 0`),
 				},
 			},
 		})

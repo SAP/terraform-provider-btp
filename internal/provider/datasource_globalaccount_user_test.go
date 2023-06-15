@@ -44,7 +44,7 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProvider() + hclDatasourceGlobalaccountUser("uut", ""),
-					ExpectError: regexp.MustCompile(`Attribute user_name string length must be at least 1, got: 0`),
+					ExpectError: regexp.MustCompile(`Attribute user_name string length must be between 1 and 256, got: 0`),
 				},
 			},
 		})
