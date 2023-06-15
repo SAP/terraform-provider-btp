@@ -12,6 +12,7 @@ import (
 )
 
 func TestResourceSubaccount(t *testing.T) {
+	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/resource_subaccount")
 		defer stopQuietly(rec)
@@ -120,18 +121,24 @@ func TestResourceSubaccount(t *testing.T) {
 }
 
 func hclResourceSubaccount(resourceName string, displayName string, region string, subdomain string) string {
-	return fmt.Sprintf(`resource "btp_subaccount" "%s" {
-        name      = "%s"
-        region    = "%s"
-        subdomain = "%s"
-    }`, resourceName, displayName, region, subdomain)
+	template := `
+resource "btp_subaccount" "%s" {
+    name      = "%s"
+    region    = "%s"
+    subdomain = "%s"
+}`
+
+	return fmt.Sprintf(template, resourceName, displayName, region, subdomain)
 }
 
 func hclResourceSubaccountWithParent(resourceName string, parentId string, displayName string, region string, subdomain string) string {
-	return fmt.Sprintf(`resource "btp_subaccount" "%s" {
-        parent_id = "%s"
-        name      = "%s"
-        region    = "%s"
-        subdomain = "%s"
-    }`, resourceName, parentId, displayName, region, subdomain)
+	template := `
+resource "btp_subaccount" "%s" {
+    parent_id = "%s"
+    name      = "%s"
+    region    = "%s"
+    subdomain = "%s"
+}`
+
+	return fmt.Sprintf(template, resourceName, parentId, displayName, region, subdomain)
 }

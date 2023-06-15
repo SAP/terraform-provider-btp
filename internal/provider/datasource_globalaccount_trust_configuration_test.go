@@ -33,7 +33,6 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("happy path - custom idp - existing", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.custom_idp_exists")
 		defer stopQuietly(rec)
@@ -58,7 +57,6 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("happy path - custom idp - not existing", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.custom_idp_not_existing")
 		defer stopQuietly(rec)
@@ -83,12 +81,10 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 			},
 		})
 	})
-
 }
 
 func hclDatasourceGlobalaccountTrustConfiguration(resourceName string, origin string) string {
-	template := `data "btp_globalaccount_trust_configuration" "%s" {
-  origin    = "%s"
-}`
+	template := `data "btp_globalaccount_trust_configuration" "%s" { origin = "%s" }`
+
 	return fmt.Sprintf(template, resourceName, origin)
 }

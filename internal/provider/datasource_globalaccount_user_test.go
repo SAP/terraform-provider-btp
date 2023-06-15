@@ -36,9 +36,10 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 }
 
 func hclDatasourceGlobalaccountUser(resourceName string, userName string, origin string) string {
-	template := `data "btp_globalaccount_user" "%s" {
-  user_name = "%s"
-  origin    = "%s"
+	template := `
+data "btp_globalaccount_user" "%s" {
+    user_name = "%s"
+    origin    = "%s"
 }`
 
 	return fmt.Sprintf(template, resourceName, userName, origin)

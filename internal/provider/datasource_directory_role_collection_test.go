@@ -99,8 +99,8 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 func hclDatasourceDirectoryRoleCollection(resourceName string, id string, name string) string {
 	template := `
 data "btp_directory_role_collection" "%s" {
-  directory_id = "%s"
-  name         = "%s"
+    directory_id = "%s"
+    name         = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, id, name)
 }
