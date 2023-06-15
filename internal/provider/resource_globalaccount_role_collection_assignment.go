@@ -54,6 +54,9 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"user_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the user to assign.",
@@ -71,6 +74,9 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+				},
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
 				},
 			},
 			"origin": schema.StringAttribute{

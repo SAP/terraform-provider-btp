@@ -66,6 +66,9 @@ func (rs *directoryRoleCollectionAssignmentResource) Schema(_ context.Context, _
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"user_name": schema.StringAttribute{
 				MarkdownDescription: "The username of the user to assign.",
@@ -83,6 +86,9 @@ func (rs *directoryRoleCollectionAssignmentResource) Schema(_ context.Context, _
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+				},
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
 				},
 			},
 			"origin": schema.StringAttribute{
