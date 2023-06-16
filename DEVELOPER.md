@@ -14,7 +14,7 @@ First, you need to setup your development environment. The following sections de
 
 ## Dev Container
 
-> **Note** - In order to use dev containers you must have a container runtime up and running on the machine. For details, we refer to the official documentation about [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers)
+> **Note**: In order to use dev containers you must have a container runtime up and running on the machine. For details, we refer to the official documentation about [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers)
 
 First, you must clone the repository:
 
@@ -35,9 +35,9 @@ This will trigger the start of the dev container. You can choose to open a devco
 * without considering a `devcontainer.env` file using [.devcontainer/default/devcontainer.json](.devcontainer/default/devcontainer.json). Use this if you don't need to debug in the container.
 * loading a `.env` file using [.devcontainer/withenvfile/devcontainer.json](.devcontainer/withenvfile/devcontainer.json). This configuration expects a file called `devcontainer.env` in the folder `.devcontainer`, which is needed for debugging.
 
-> **Note** - `.env` files are excluded from git via `.gitignore`. You can use the file to store the environment variables `BTP_USERNAME` and `BTP_PASSWORD` that are needed when developing tests.
+> **Note**: `.env` files are excluded from git via `.gitignore`. You can use the file to store the environment variables `BTP_USERNAME` and `BTP_PASSWORD` that are needed when developing tests.
 
-> **Note** - In the first run, the download of the container might take a while, so maybe time to grab a cup of coffee ☕.
+> **Note**: In the first run, the download of the container might take a while, so maybe time to grab a cup of coffee ☕.
 
 ## Local Setup
 
