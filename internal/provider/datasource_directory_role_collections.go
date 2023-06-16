@@ -87,7 +87,7 @@ func (ds *directoryRoleCollectionsDataSource) Schema(_ context.Context, _ dataso
 							MarkdownDescription: "The description of the role collection.",
 							Computed:            true,
 						},
-						"roles": schema.ListNestedAttribute{
+						"roles": schema.SetNestedAttribute{
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"role_template_name": schema.StringAttribute{
