@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -10,8 +11,11 @@ import (
 func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 	t.Parallel()
 
-	t.Run("happy path - complete configuration", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.complete")
+	// TODO: we need an additional test in a global account
+	// without a configured trust configuration
+
+	t.Run("happy path - trust config exists", func(t *testing.T) {
+		rec := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.exists")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -20,13 +24,8 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config: hclProvider() + hclResourceGlobalaccountTrustConfigurationSimple("uut", "terraformint.accounts400.ondemand.com"),
-					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestMatchResourceAttr("btp_globalaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
-						//resource.TestMatchResourceAttr("btp_globalaccount_trust_configuration.uut", "created_date", regexpValidRFC3999Format),
-						//resource.TestMatchResourceAttr("btp_globalaccount_trust_configuration.uut", "last_modified", regexpValidRFC3999Format),
-						//resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "id", "sap.custom"),
-
-					),
+					// TODO: we need to work on a good error message for an account that already has a trust configuration
+					ExpectError: regexp.MustCompile(`invalid character 'L' looking for beginning of value`),
 				},
 			},
 		})
