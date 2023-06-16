@@ -46,7 +46,7 @@ func TestResourceDirectory(t *testing.T) {
 
 func hclResourceDirectoryParent(resourceName string, displayName string, description string) string {
 	return fmt.Sprintf(`resource "btp_directory" "%s" {
-        name      = "%s"
-        description    = "%s"
+        name        = "%s"
+        description = "%s"
     }`, resourceName, displayName, description)
 }
