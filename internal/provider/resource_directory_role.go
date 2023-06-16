@@ -74,7 +74,7 @@ __Further documentation:__
 			},
 
 			// TODO: this was commented out for now as user has no direct influence
-			//"scopes": schema.ListNestedAttribute{
+			//"scopes": schema.SetNestedAttribute{
 			//	NestedObject: schema.NestedAttributeObject{
 			//		Attributes: map[string]schema.Attribute{
 			//			"name": schema.StringAttribute{

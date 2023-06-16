@@ -70,7 +70,7 @@ __Further documentation:__
 				Optional:            true,
 				Computed:            true,
 			},
-			"roles": schema.ListNestedAttribute{
+			"roles": schema.SetNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{

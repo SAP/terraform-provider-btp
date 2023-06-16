@@ -29,7 +29,7 @@ data "btp_globalaccount_role_collection" "globalaccount_admin" {
 - `description` (String) The description of the role collection.
 - `id` (String, Deprecated) The ID of the global account.
 - `read_only` (Boolean) Whether the role collection is readonly.
-- `roles` (Attributes List) (see [below for nested schema](#nestedatt--roles))
+- `roles` (Attributes Set) (see [below for nested schema](#nestedatt--roles))
 
 <a id="nestedatt--roles"></a>
 ### Nested Schema for `roles`

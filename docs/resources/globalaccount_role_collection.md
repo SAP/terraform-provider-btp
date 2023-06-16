@@ -37,7 +37,7 @@ resource "btp_globalaccount_role_collection" "my_collection" {
 ### Required
 
 - `name` (String) The name of the role collection.
-- `roles` (Attributes List) (see [below for nested schema](#nestedatt--roles))
+- `roles` (Attributes Set) (see [below for nested schema](#nestedatt--roles))
 
 ### Optional
 
