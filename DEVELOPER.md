@@ -77,7 +77,14 @@ Navigate into the directory of the cloned repository.
 
 ### Configuration of the Terraform CLI
 
-Next you need to setup local development overrides in the Terraform CLI according to [this documentation](https://developer.hashicorp.com/terraform/plugin/debugging#terraform-cli-development-overrides). Once in place, Terraform will only consider local development builds for this provider. The configuration should look similar to this:
+Next you need to setup local development overrides in the Terraform CLI according to [this documentation](https://developer.hashicorp.com/terraform/plugin/debugging#terraform-cli-development-overrides). Once in place, Terraform will only consider local development builds for this provider.
+
+Keep in mind that the [configuration file](https://developer.hashicorp.com/terraform/cli/config/config-file) location depends on your operating system:
+
+* Mac/Linux/WSL: `~/.terraformrc`
+* Windows: `%APPDATA%/terraform.rc`
+
+The configuration should look similar to this:
 
 ```hcl
 provider_installation {
@@ -88,11 +95,6 @@ provider_installation {
   direct {}
 }
 ```
-
-Keep in mind that the [configuration file](https://developer.hashicorp.com/terraform/cli/config/config-file) location depends on your operating system:
-
-* Mac/Linux/WSL: `~/.terraformrc`
-* Windows: `%APPDATA%/terraform.rc`
 
 ## Install the Terraform Provider for SAP BTP Locally
 
