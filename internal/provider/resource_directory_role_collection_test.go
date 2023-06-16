@@ -37,8 +37,8 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 
 func hclResourceDirectoryRoleCollection(resourceName string, directoryId string, displayName string, description string) string {
 	return fmt.Sprintf(`resource "btp_directory_role_collection" "%s" {
-        directory_id 		= "%s"
-        name      			= "%s"
-        description      	= "%s"
+        directory_id = "%s"
+        name         = "%s"
+        description  = "%s"
     }`, resourceName, directoryId, displayName, description)
 }
