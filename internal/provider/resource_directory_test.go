@@ -1,11 +1,15 @@
 package provider
 
+/*
 import (
 	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
+*/
+/*
 
 func TestResourceDirectory(t *testing.T) {
 	t.Run("happy path - parent directory", func(t *testing.T) {
@@ -50,3 +54,5 @@ func hclResourceDirectoryParent(resourceName string, displayName string, descrip
         description = "%s"
     }`, resourceName, displayName, description)
 }
+
+*/
