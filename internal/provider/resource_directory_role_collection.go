@@ -25,11 +25,10 @@ type directoryRoleCollectionRoleRefType struct {
 }
 
 type directoryRoleCollectionTypeConfig struct {
-	DirectoryId types.String `tfsdk:"directory_id"`
-	Id          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-
+	DirectoryId types.String                         `tfsdk:"directory_id"`
+	Name        types.String                         `tfsdk:"name"`
+	Description types.String                         `tfsdk:"description"`
+	Roles       []directoryRoleCollectionRoleRefType `tfsdk:"roles"`
 }
 
 type directoryRoleCollectionType struct {
@@ -62,21 +61,16 @@ __Further documentation:__
 					uuidvalidator.ValidUUID(),
 				},
 			},
-			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
-				DeprecationMessage:  "Use the `name` attribute instead",
-				MarkdownDescription: "The ID of the role collection.",
-				Computed:            true,
-			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",
 				Required:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "Whether the role collection is readonly.",
+				MarkdownDescription: "The description of the role collection.",
 				Optional:            true,
 				Computed:            true,
 			},
-			"roles": schema.ListNestedAttribute{
+			"roles": schema.SetNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
@@ -84,7 +78,7 @@ __Further documentation:__
 							Required:            true,
 						},
 						"role_template_app_id": schema.StringAttribute{
-							MarkdownDescription: "The name of the referenced template app id",
+							MarkdownDescription: "The name of the referenced template app id.",
 							Required:            true,
 						},
 						"role_template_name": schema.StringAttribute{
@@ -155,7 +149,6 @@ func (rs *directoryRoleCollectionType) Create(ctx context.Context, req resource.
 
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
-	plan.Id = types.StringValue(cliRes.Name)
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
