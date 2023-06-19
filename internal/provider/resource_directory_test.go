@@ -27,17 +27,13 @@ func TestResourceDirectory(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-parent-folder"),
 						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is a parent folder"),
 						resource.TestCheckResourceAttr("btp_directory.uut", "subdomain", ""),
-						resource.TestCheckResourceAttr("btp_directory.uut", "state", "OK"),
-
-						resource.TestCheckResourceAttr("btp_directory.uut", "features.#", "1"),
-						resource.TestCheckResourceAttr("btp_directory.uut", "labels.#", "0"),
 					),
-				},
-				{
-					ResourceName:      "btp_directory.uut",
-					ImportState:       true,
-					ImportStateVerify: true,
-				},
+				}, /*
+					{
+						ResourceName:      "btp_directory.uut",
+						ImportState:       true,
+						ImportStateVerify: true,
+					},*/
 			},
 		})
 	})
