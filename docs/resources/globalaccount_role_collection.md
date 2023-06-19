@@ -37,11 +37,15 @@ resource "btp_globalaccount_role_collection" "my_collection" {
 ### Required
 
 - `name` (String) The name of the role collection.
-- `roles` (Attributes List) (see [below for nested schema](#nestedatt--roles))
+- `roles` (Attributes Set) (see [below for nested schema](#nestedatt--roles))
 
 ### Optional
 
-- `description` (String) Whether the role collection is readonly.
+- `description` (String) The description of the role collection.
+
+### Read-Only
+
+- `id` (String, Deprecated) The ID of the role collection.
 
 <a id="nestedatt--roles"></a>
 ### Nested Schema for `roles`
@@ -49,7 +53,7 @@ resource "btp_globalaccount_role_collection" "my_collection" {
 Required:
 
 - `name` (String) The name of the referenced role.
-- `role_template_app_id` (String) The name of the referenced template app id
+- `role_template_app_id` (String) The name of the referenced template app id.
 - `role_template_name` (String) The name of the referenced role template.
 
 
