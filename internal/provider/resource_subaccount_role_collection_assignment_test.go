@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"testing"
 
@@ -20,11 +19,11 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceRoleCollectionAssignment("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", os.Getenv("BTP_USERNAME")),
+					Config: hclProvider() + hclResourceRoleCollectionAssignment("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "jenny.doe@test.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
-						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "user_name", os.Getenv("BTP_USERNAME")),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "user_name", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "ldap"),
 					),
 				},
@@ -41,11 +40,11 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceRoleCollectionAssignmentWithOrigin("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", os.Getenv("BTP_USERNAME"), "terraformint-platform"),
+					Config: hclProvider() + hclResourceRoleCollectionAssignmentWithOrigin("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
-						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "user_name", os.Getenv("BTP_USERNAME")),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "user_name", "john.doe@test.com"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
 					),
 				},
