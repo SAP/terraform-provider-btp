@@ -25,6 +25,7 @@ type directoryRoleCollectionRoleRefType struct {
 }
 
 type directoryRoleCollectionTypeConfig struct {
+	Id          types.String                         `tfsdk:"id"`
 	DirectoryId types.String                         `tfsdk:"directory_id"`
 	Name        types.String                         `tfsdk:"name"`
 	Description types.String                         `tfsdk:"description"`
@@ -60,6 +61,11 @@ __Further documentation:__
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `directory_id` attribute instead",
+				MarkdownDescription: "The ID of the directory.",
+				Computed:            true,
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",
@@ -147,6 +153,7 @@ func (rs *directoryRoleCollectionType) Create(ctx context.Context, req resource.
 		}
 	}
 
+	plan.Id = plan.DirectoryId
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
 
