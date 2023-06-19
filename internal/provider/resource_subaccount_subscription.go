@@ -10,13 +10,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/saas_manager_service"
-	"github.com/SAP/terraform-provider-btp/internal/tfdefaults"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
@@ -69,8 +69,8 @@ You must be assigned to the subaccount admin role.`,
 				MarkdownDescription: "The parameters of the subscription as a valid JSON object.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(`{}`),
 				PlanModifiers: []planmodifier.String{
-					tfdefaults.DefaultStringValue(`{}`),
 					stringplanmodifier.RequiresReplace(),
 				},
 				Validators: []validator.String{

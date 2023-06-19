@@ -2,7 +2,10 @@ package provider
 
 import (
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -46,6 +49,26 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 			},
 		})
 	})
+	// FIXME ends in unmarshal error
+	/*
+	   t.Run("error path - non existing idp", func(t *testing.T) {
+	       rec := setupVCR(t, "fixtures/datasource_directory_users.non_existing_idp")
+	       defer stopQuietly(rec)
+
+	       resource.Test(t, resource.TestCase{
+	           IsUnitTest:               true,
+	           ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+	           Steps: []resource.TestStep{
+	               {
+	                   Config: hclProvider() + hclDatasourceDirectoryUsersWithCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "this-doesnt-exist"),
+	                   Check: resource.ComposeAggregateTestCheckFunc(
+	                       resource.TestCheckResourceAttr("data.btp_directory_users.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+	                       resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "2"),
+	                   ),
+	               },
+	           },
+	       })
+	   })*/
 	t.Run("error path - directory_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -70,20 +93,52 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 			},
 		})
 	})
-	// TODO: error path with non existing idp
+	t.Run("error path - origin must not be empty if given", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProvider() + hclDatasourceDirectoryUsersWithCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", ""),
+					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
+				},
+			},
+		})
+	})
+	t.Run("error path - cli server returns error", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if strings.HasPrefix(r.URL.Path, "/login/") {
+				fmt.Fprintf(w, "{}")
+				return
+			}
+			w.WriteHeader(http.StatusNotFound)
+		}))
+		defer srv.Close()
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(srv.Client()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceDirectoryUsersDefaultIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+				},
+			},
+		})
+	})
 }
 
 func hclDatasourceDirectoryUsersDefaultIdp(resourceName string, directoryId string) string {
-	template := `data "btp_directory_users" "%s" {
-  directory_id    = "%s"
-}`
+	template := `data "btp_directory_users" "%s" { directory_id = "%s" }`
+
 	return fmt.Sprintf(template, resourceName, directoryId)
 }
 
 func hclDatasourceDirectoryUsersWithCustomIdp(resourceName string, directoryId string, origin string) string {
-	template := `data "btp_directory_users" "%s" {
-  directory_id    = "%s"
-  origin    = "%s"
+	template := `
+data "btp_directory_users" "%s" {
+    directory_id = "%s"
+    origin       = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, directoryId, origin)
 }

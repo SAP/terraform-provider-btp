@@ -8,6 +8,7 @@ import (
 )
 
 func TestResourceSubaccountEntitlement(t *testing.T) {
+	t.Parallel()
 	t.Run("happy path - no amount", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/resource_subaccount_entitlement.no_amount")
 		defer stopQuietly(rec)
@@ -76,11 +77,14 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 }
 
 func hclResourceSubaccountEntitlement(resourceName string, subaccountId string, serviceName string, planName string) string {
-	return fmt.Sprintf(`resource "btp_subaccount_entitlement" "%s" {
-        subaccount_id      = "%s"
-        service_name    = "%s"
-        plan_name = "%s"
-    }`, resourceName, subaccountId, serviceName, planName)
+	template := `
+resource "btp_subaccount_entitlement" "%s" {
+    subaccount_id = "%s"
+    service_name  = "%s"
+    plan_name     = "%s"
+}`
+
+	return fmt.Sprintf(template, resourceName, subaccountId, serviceName, planName)
 }
 
 /* TODO: Check how to provide the amount attribute. Currently not possible.

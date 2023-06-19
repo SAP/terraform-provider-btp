@@ -58,6 +58,18 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			},
 		})
 	})
+	t.Run("error path - name must not be empty", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProvider() + hclDatasourceSubaccountRoleCollection("uut", "this-is-not-a-uuid", ""),
+					ExpectError: regexp.MustCompile(`Attribute name string length must be at least 1, got: 0`),
+				},
+			},
+		})
+	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
@@ -84,8 +96,8 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 func hclDatasourceSubaccountRoleCollection(resourceName string, id string, name string) string {
 	template := `
 data "btp_subaccount_role_collection" "%s" {
-  subaccount_id = "%s"
-  name         = "%s"
+    subaccount_id = "%s"
+    name          = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, id, name)
 }

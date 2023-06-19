@@ -87,11 +87,11 @@ You must be assigned to one of these roles: global account admin, global account
 							MarkdownDescription: "The description of the entitled service plan.",
 							Computed:            true,
 						},
-						"quota_assigned": schema.NumberAttribute{
+						"quota_assigned": schema.Float64Attribute{
 							MarkdownDescription: "The overall quota assigned.",
 							Computed:            true,
 						},
-						"quota_remaining": schema.NumberAttribute{
+						"quota_remaining": schema.Float64Attribute{
 							MarkdownDescription: "The quota which is not used.",
 							Computed:            true,
 						},

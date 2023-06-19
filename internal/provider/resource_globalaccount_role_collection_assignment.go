@@ -9,12 +9,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/tfdefaults"
 )
 
 func newGlobalaccountRoleCollectionAssignmentResource() resource.Resource {
@@ -54,6 +54,9 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"user_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the user to assign.",
@@ -63,6 +66,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 				},
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.MatchRoot("user_name"), path.MatchRoot("group_name")),
+					stringvalidator.LengthBetween(1, 256),
 				},
 			},
 			"group_name": schema.StringAttribute{
@@ -71,14 +75,17 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"origin": schema.StringAttribute{
 				MarkdownDescription: "The identity provider that hosts the user or group. The default value is `ldap`.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString("ldap"),
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					tfdefaults.DefaultStringValue("ldap"),
 				},
 			},
 		},

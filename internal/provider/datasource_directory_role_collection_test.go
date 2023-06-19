@@ -73,6 +73,18 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			},
 		})
 	})
+	t.Run("error path - name must not be empty", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProvider() + hclDatasourceDirectoryRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", ""),
+					ExpectError: regexp.MustCompile(`Attribute name string length must be at least 1, got: 0`),
+				},
+			},
+		})
+	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
@@ -99,8 +111,8 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 func hclDatasourceDirectoryRoleCollection(resourceName string, id string, name string) string {
 	template := `
 data "btp_directory_role_collection" "%s" {
-  directory_id = "%s"
-  name         = "%s"
+    directory_id = "%s"
+    name         = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, id, name)
 }

@@ -2,6 +2,10 @@ package provider
 
 import (
 	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -20,13 +24,13 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 				{
 					Config: hclProvider() + hclDatasourceGlobalaccountUsers("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "11"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "3"),
 					),
 				},
 			},
 		})
 	})
-	t.Run("happy path with custom idp", func(t *testing.T) {
+	t.Run("happy path - with custom idp", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_globalaccount_users.custom_idp")
 		defer stopQuietly(rec)
 
@@ -44,6 +48,39 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 		})
 	})
 	// TODO: error path with non existing idp
+	t.Run("error path - origin must not be empty if given", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProvider() + hclDatasourceGlobalaccountUsersWithCustomIdp("uut", ""),
+					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
+				},
+			},
+		})
+	})
+	t.Run("error path - cli server returns error", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if strings.HasPrefix(r.URL.Path, "/login/") {
+				fmt.Fprintf(w, "{}")
+				return
+			}
+			w.WriteHeader(http.StatusNotFound)
+		}))
+		defer srv.Close()
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(srv.Client()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceGlobalaccountUsersWithCustomIdp("uut", "terraformint-platform"),
+					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+				},
+			},
+		})
+	})
 }
 
 func hclDatasourceGlobalaccountUsers(resourceName string) string {
@@ -52,8 +89,7 @@ func hclDatasourceGlobalaccountUsers(resourceName string) string {
 }
 
 func hclDatasourceGlobalaccountUsersWithCustomIdp(resourceName string, origin string) string {
-	template := `data "btp_globalaccount_users" "%s" {
-  origin    = "%s"
-}`
+	template := `data "btp_globalaccount_users" "%s" { origin = "%s" }`
+
 	return fmt.Sprintf(template, resourceName, origin)
 }
