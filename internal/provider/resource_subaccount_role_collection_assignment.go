@@ -120,7 +120,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 		return
 	}
 
-	// This resource is not supposed to be read by definition. However nothing the user can do about thate, hence no error message is raised via resp.Diagnostics.
+	// This resource is not supposed to be read by definition. However nothing the user can do about that, hence no error message is raised via resp.Diagnostics.
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
