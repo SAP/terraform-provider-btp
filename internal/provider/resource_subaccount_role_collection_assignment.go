@@ -120,9 +120,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 		return
 	}
 
-	// To support the terraform plugin test framework  lifecycle, we push out a warning instead of an error if the resource is read.
-	resp.Diagnostics.AddWarning("API Warning Reading Resource Role Collection Assignment (Subaccount)", "This resource is not supposed to be read.")
-
+	// This resource is not supposed to be read by definition. However nothing the user can do about thate, hence no error message is raised via resp.Diagnostics.
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
