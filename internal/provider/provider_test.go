@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"unicode"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
@@ -62,12 +63,27 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 		intUser := os.Getenv("BTP_USERNAME")
 		intUserPwd := os.Getenv("BTP_PASSWORD")
 
+		firstName, lastName := getNameFromEmail(intUser)
+
 		if strings.Contains(i.Request.URL, "/login/") {
 			i.Request.Body = strings.ReplaceAll(i.Request.Body, intUserPwd, "redacted")
 		}
 
 		i.Request.Body = strings.ReplaceAll(i.Request.Body, intUser, "john.doe@int.test")
 		i.Response.Body = strings.ReplaceAll(i.Response.Body, intUser, "john.doe@int.test")
+
+		if strings.Contains(i.Response.Body, "givenName") {
+			i.Response.Body = strings.ReplaceAll(i.Response.Body, firstName, "John")
+		}
+
+		if strings.Contains(i.Response.Body, "familyName") {
+			i.Response.Body = strings.ReplaceAll(i.Response.Body, lastName, "Doe")
+		}
+
+		if strings.Contains(i.Response.Body, "externalId") {
+			indexOfExternalId := strings.Index(i.Response.Body, "\"externalId\":")
+			i.Response.Body = i.Response.Body[:indexOfExternalId+14] + "I000000" + i.Response.Body[indexOfExternalId+21:]
+		}
 
 		return nil
 	}
@@ -101,6 +117,23 @@ func stopQuietly(rec *recorder.Recorder) {
 	if err := rec.Stop(); err != nil {
 		panic(err)
 	}
+}
+
+func getNameFromEmail(email string) (firstName, lastName string) {
+	emailAt := strings.Index(email, "@")
+	emailFirstName := strings.Split(email[:emailAt], ".")[0]
+	emailLastName := strings.Split(email[:emailAt], ".")[1]
+
+	firstName = convertFirstLetterToUpperCase(emailFirstName)
+	lastName = convertFirstLetterToUpperCase(emailLastName)
+	return
+}
+
+func convertFirstLetterToUpperCase(stringToConvert string) (convertedString string) {
+	runes := []rune(stringToConvert)
+	runes[0] = unicode.ToUpper(runes[0])
+	convertedString = string(runes)
+	return
 }
 
 func TestProvider_HasResources(t *testing.T) {

@@ -24,6 +24,7 @@ func newSubaccountRoleCollectionAssignmentResource() resource.Resource {
 
 type subaccountRoleCollectionAssignmentType struct {
 	SubaccountId       types.String `tfsdk:"subaccount_id"`
+	Id                 types.String `tfsdk:"id"`
 	RoleCollectionName types.String `tfsdk:"role_collection_name"`
 	Username           types.String `tfsdk:"user_name"`
 	Groupname          types.String `tfsdk:"group_name"`
@@ -70,6 +71,11 @@ func (rs *subaccountRoleCollectionAssignmentResource) Schema(_ context.Context, 
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `role_collection_name` field instead",
+				MarkdownDescription: "The ID of the role collection",
+				Computed:            true,
+			},
 			"user_name": schema.StringAttribute{
 				MarkdownDescription: "The username of the user to assign.",
 				Optional:            true,
@@ -114,7 +120,8 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Reading Resource Role Collection Assignment (Subaccount)", "This resource is not supposed to be read.")
+	// To support the terraform plugin test framework  lifecycle, we push out a warning instead of an error if the resource is read.
+	resp.Diagnostics.AddWarning("API Warning Reading Resource Role Collection Assignment (Subaccount)", "This resource is not supposed to be read.")
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -141,6 +148,8 @@ func (rs *subaccountRoleCollectionAssignmentResource) Create(ctx context.Context
 		resp.Diagnostics.AddError("API Error Creating Resource Role Collection Assignment (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	plan.Id = types.StringValue(plan.RoleCollectionName.ValueString())
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
