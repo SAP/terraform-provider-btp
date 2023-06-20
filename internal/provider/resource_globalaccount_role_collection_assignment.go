@@ -102,8 +102,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Read(ctx context.Contex
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Reading Resource Role Collection Assignment (Global Account)", "This resource is not supposed to be read.")
-
+	// This resource is not supposed to be read by definition. However nothing the user can do about that, hence no error message is raised via resp.Diagnostics.
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
