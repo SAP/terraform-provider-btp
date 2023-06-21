@@ -25,7 +25,7 @@ The [developer documentation](DEVELOPER.md) file is a basic outline on how to bu
 
 For more information about how to contribute, the project structure, and additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
 
-> **Note**: We take Terraform's security and our users' trust very seriously. If you believe you have found a security issue in the Terraform provider for SAP BTP, please responsibly disclose it by using the *private reporting of vulnerabilities* in this repository.
+> **Note**: We take Terraform's security and our users' trust very seriously. If you believe you have found a security issue in the Terraform provider for SAP BTP, please responsibly disclose it by using the [*private reporting of vulnerabilities*](https://docs.github.com/code-security/security-advisories/repository-security-advisories/configuring-private-vulnerability-reporting-for-a-repository#enabling-or-disabling-private-vulnerability-reporting-for-a-repository) in this repository.
 
 ## Code of Conduct
 
