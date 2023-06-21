@@ -41,9 +41,9 @@ data "btp_subaccount_user" "someone_else" {
 ### Read-Only
 
 - `active` (Boolean) Shows if the account is still in use.
-- `email` (String) The email address of the user.
+- `email` (String) The e-mail address of the user.
 - `family_name` (String) The last name of the user.
 - `given_name` (String) The given name of the user.
 - `id` (String) The ID of the user.
-- `role_collections` (Set of String) Set of role collections which are assigned to the user.
+- `role_collections` (Set of String) Set of role collections, which are assigned to the user.
 - `verified` (Boolean) The verification status of the user.

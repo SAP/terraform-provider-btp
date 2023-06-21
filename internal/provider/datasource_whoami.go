@@ -42,15 +42,15 @@ func (gen *whoamiDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 		MarkdownDescription: `Returns information about the logged-in user.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				MarkdownDescription: "User ID of the logged-in user.",
+				MarkdownDescription: "The ID of the logged-in user.",
 				Computed:            true,
 			},
 			"email": schema.StringAttribute{
-				MarkdownDescription: "Email address of the logged-in user.",
+				MarkdownDescription: "The e-mail address of the logged-in user.",
 				Computed:            true,
 			},
 			"issuer": schema.StringAttribute{
-				MarkdownDescription: "Name of the token issuer.",
+				MarkdownDescription: "The name of the token issuer.",
 				Computed:            true,
 			},
 		},

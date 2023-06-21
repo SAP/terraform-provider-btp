@@ -46,7 +46,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Configure(_ context.Con
 
 func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Assign a user or a group to a role collection on globalaccount level.`,
+		MarkdownDescription: `Assign a user or a group to a role collection on global account level.`,
 		Attributes: map[string]schema.Attribute{
 			"role_collection_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",

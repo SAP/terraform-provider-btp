@@ -30,7 +30,7 @@ data "btp_directory_role_collection" "directory_admin" {
 
 - `description` (String) The description of the role collection.
 - `id` (String, Deprecated) The ID of the directory.
-- `read_only` (Boolean) Whether the role collection is readonly.
+- `read_only` (Boolean) Whether the role collection is read-only.
 - `roles` (Attributes Set) (see [below for nested schema](#nestedatt--roles))
 
 <a id="nestedatt--roles"></a>

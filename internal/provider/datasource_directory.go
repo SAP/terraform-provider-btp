@@ -112,7 +112,7 @@ __Further documentation:__
 				Computed: true,
 			},
 			"subdomain": schema.StringAttribute{
-				MarkdownDescription: "Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. Unique within the defined region.",
+				MarkdownDescription: "Applies only to directories that have the user authorization management feature enabled. The subdomain is part of the path used to access the authorization tenant of the directory.",
 				Computed:            true,
 			},
 		},

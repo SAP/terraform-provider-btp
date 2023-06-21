@@ -44,6 +44,6 @@ Read-Only:
 - `plan_display_name` (String) The display name of the entitled service plan.
 - `plan_name` (String) The name of the entitled service plan.
 - `quota_assigned` (Number) The overall quota assigned.
-- `quota_remaining` (Number) The quota which is not used.
+- `quota_remaining` (Number) The quota, which is not used.
 - `service_display_name` (String) The display name of the entitled service.
 - `service_name` (String) The name of the entitled service.

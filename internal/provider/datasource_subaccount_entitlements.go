@@ -53,7 +53,7 @@ You must be assigned to one of these roles: subaccount admin, subaccount viewer.
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
-				MarkdownDescription: "The ID of the sub account.",
+				MarkdownDescription: "The ID of the subaccount.",
 				Computed:            true,
 			}, "subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -90,7 +90,7 @@ You must be assigned to one of these roles: subaccount admin, subaccount viewer.
 							Computed:            true,
 						},
 						"quota_remaining": schema.Float64Attribute{
-							MarkdownDescription: "The quota which is not used.",
+							MarkdownDescription: "The quota, which is not used.",
 							Computed:            true,
 						},
 					},

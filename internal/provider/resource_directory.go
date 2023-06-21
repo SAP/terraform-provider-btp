@@ -46,7 +46,7 @@ func (rs *directoryResource) Schema(_ context.Context, _ resource.SchemaRequest,
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Directories allow you to organize and manage your subaccounts according to your technical and business needs. The use of directories is optional.
 
-You can create up to 5 levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
+You can create up to five levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
 
 __Tips:__
 * You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
@@ -79,7 +79,7 @@ __Further documentation:__
 				},
 			},
 			"subdomain": schema.StringAttribute{
-				MarkdownDescription: "Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. Unique within the defined region.",
+				MarkdownDescription: "Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. It has to be unique within the defined region.",
 				Optional:            true,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{

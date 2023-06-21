@@ -92,7 +92,7 @@ You must be assigned to one of these roles: global account admin, global account
 							Computed:            true,
 						},
 						"quota_remaining": schema.Float64Attribute{
-							MarkdownDescription: "The quota which is not used.",
+							MarkdownDescription: "The quota, which is not used.",
 							Computed:            true,
 						},
 					},

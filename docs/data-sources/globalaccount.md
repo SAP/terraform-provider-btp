@@ -49,7 +49,7 @@ data "btp_globalaccount" "this" {}
 - `geo_access` (String) The geographic locations from where the global account can be accessed. Possible values are: 
 	 - `STANDARD` The global account can be accessed from any geographic location.
 	 - `EU_ACCESS` The global account can be accessed only within locations in the EU.
-- `id` (String) The unique ID of the global account.
+- `id` (String) The ID of the global account.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `license_type` (String) The type of license for the global account. The license type affects the scope of functions of the account. Possible values are: 
 	 - `DEVELOPER` For internal developer global accounts on Staging or Canary landscapes.
@@ -81,7 +81,7 @@ data "btp_globalaccount" "this" {}
 	 - `DELETION_FAILED` The delete operation failed, and the entity was not deleted.
 	 - `MOVE_FAILED` Entity could not be moved to a different location.
 	 - `MIGRATING` Migrating entity from NEO to CF.
-- `subdomain` (String) Relevant only for entities that require authorization (e.g. global account). The subdomain that becomes part of the path used to access the authorization tenant of the global account. Unique within the defined region.
+- `subdomain` (String) The subdomain is part of the path used to access the authorization tenant of the global account.
 - `usage` (String) For internal accounts, the intended purpose of the global account. Possible values are: 
 	 - `Development` For development of a service.
 	 - `Testing` For testing development.

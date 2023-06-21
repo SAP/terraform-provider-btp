@@ -36,7 +36,7 @@ data "btp_subaccount_entitlements" "all" {
 
 ### Read-Only
 
-- `id` (String, Deprecated) The ID of the sub account.
+- `id` (String, Deprecated) The ID of the subaccount.
 - `values` (Attributes Map) (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
@@ -48,6 +48,6 @@ Read-Only:
 - `plan_display_name` (String) The display name of the entitled service plan.
 - `plan_name` (String) The name of the entitled service plan.
 - `quota_assigned` (Number) The overall quota assigned.
-- `quota_remaining` (Number) The quota which is not used.
+- `quota_remaining` (Number) The quota, which is not used.
 - `service_display_name` (String) The display name of the entitled service.
 - `service_name` (String) The name of the entitled service.

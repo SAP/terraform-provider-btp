@@ -81,7 +81,7 @@ func (ds *subaccountRoleCollectionsDataSource) Schema(_ context.Context, _ datas
 							Computed:            true,
 						},
 						"read_only": schema.BoolAttribute{
-							MarkdownDescription: "Whether the role collection is readonly.",
+							MarkdownDescription: "Whether the role collection is read-only.",
 							Computed:            true,
 						},
 						"description": schema.StringAttribute{

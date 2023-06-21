@@ -66,4 +66,4 @@ data "btp_directory" "by_id" {
 	 - `DELETION_FAILED` The delete operation failed, and the entity was not deleted.
 	 - `MOVE_FAILED` Entity could not be moved to a different location.
 	 - `MIGRATING` Migrating entity from NEO to CF.
-- `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. Unique within the defined region.
+- `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain is part of the path used to access the authorization tenant of the directory.

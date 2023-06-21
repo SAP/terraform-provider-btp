@@ -3,7 +3,7 @@ page_title: "btp_directory Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
   Directories allow you to organize and manage your subaccounts according to your technical and business needs. The use of directories is optional.
-  You can create up to 5 levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
+  You can create up to five levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
   Tips:
   * You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
   * A directory path in the account hierarchy can have only one directory that is enabled with the ENTITLEMENTS or AUTHORIZATIONS features. If such a directory exists, other directories in that path can only be enabled with the DEFAULT features.
@@ -15,7 +15,7 @@ description: |-
 
 Directories allow you to organize and manage your subaccounts according to your technical and business needs. The use of directories is optional.
 
-You can create up to 5 levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
+You can create up to five levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
 
 __Tips:__
 * You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
@@ -50,7 +50,7 @@ resource "btp_directory" "child" {
 
 - `description` (String) A description of the directory.
 - `parent_id` (String) The GUID of the directory's parent entity. Typically this is the global account.
-- `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. Unique within the defined region.
+- `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. It has to be unique within the defined region.
 
 ### Read-Only
 
