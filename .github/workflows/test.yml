@@ -87,16 +87,18 @@ jobs:
           name: coverage-report
           path: cover.out
 
-            # TODO: activate once public
-            #  sonar:
-            #    needs: test
-            #    runs-on: ubuntu-latest
-            #    steps:
-            #    - uses: actions/checkout@v3
-            #    - uses: actions/download-artifact@v1
-            #      with:
-            #        name: coverage-#report
-            #    - uses: sonarsource/sonarcloud-github-action@master
-            #      env:
-            #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            #        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: actions/download-artifact@v1
+        with:
+          name: coverage-report
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
