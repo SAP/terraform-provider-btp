@@ -2,6 +2,7 @@
 
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/terraform-provider-btp)](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp)
 ![Golang](https://img.shields.io/badge/Go-1.20-informational)
+[![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7484/badge)](https://bestpractices.coreinfrastructure.org/projects/7484)
 
 ## About this Project
 
