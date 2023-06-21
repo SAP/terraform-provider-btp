@@ -6,7 +6,7 @@
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7484/badge)](https://bestpractices.coreinfrastructure.org/projects/7484)
 
 
-## About this Project
+## About This Project
 
 The Terraform provider for SAP BTP allows the management of resources on the [SAP Business Technology Platform](https://www.sap.com/products/technology-platform.html) via [Terraform](https://terraform.io/).
 
@@ -28,7 +28,7 @@ The [developer documentation](DEVELOPER.md) file is a basic outline on how to bu
 
 For more information about how to contribute, the project structure, and additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
 
-> **Note**: We take Terraform's security and our users' trust very seriously. If you believe you have found a security issue in the Terraform provider for SAP BTP, please responsibly disclose it. You find more details on the process in [our security policy](https://github.com/SAP/terraform-provider-btp/security/policy).
+> **Note**: We take Terraform's security and our users' trust seriously. If you believe you have found a security issue in the Terraform provider for SAP BTP, please responsibly disclose it. You find more details on the process in [our security policy](https://github.com/SAP/terraform-provider-btp/security/policy).
 
 ## Code of Conduct
 
@@ -36,4 +36,4 @@ Members, contributors, and leaders pledge to make participation in our community
 
 ## Licensing
 
-Copyright 2023 SAP SE or an SAP affiliate company and `terraform-provider-btp` contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information, including third-party components and their licensing/copyright information, is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp).
+Copyright 2023 SAP SE or an SAP affiliate company and `terraform-provider-btp` contributors. See our [LICENSE](LICENSE) for copyright and license information. Detailed information, including third-party components and their licensing/copyright information, is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp).

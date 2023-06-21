@@ -41,7 +41,7 @@ func (rs *resourceGlobalaccountProviderResource) Schema(_ context.Context, _ res
 		MarkdownDescription: `Create a resource provider instance to allow your global account to connect to your provider account on a non-SAP cloud vendor. Through this channel, you can then consume remote service resources that you already own and which are supported by SAP BTP.
 For example, if you are subscribed to Amazon Web Services (AWS) and have already purchased services, such as PostgreSQL, you can register the vendor as a resource provider in SAP BTP and consume this service across your subaccounts together with other services offered by SAP.
 
-The use of this functionality is subject to the availability of the supported non-SAP cloud vendors in your country or region.
+The use of this functionality is subject to the availability of the supported non-SAP cloud vendors in your country/region.
 
 __Tips:__
 * You must be assigned to the global account admin role.

@@ -14,7 +14,7 @@ First, you need to setup your development environment. The following sections de
 
 ## Dev Container
 
-> **Note**: In order to use dev containers you must have a container runtime up and running on the machine. For details, we refer to the official documentation about [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers)
+> **Note**: In order to use dev containers, you must have a container runtime up and running on the machine. For details, we refer to the official documentation about [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers).
 
 First, you must clone the repository:
 
@@ -30,7 +30,7 @@ Then open the cloned repository in [Visual Studio Code](https://code.visualstudi
 
 ![screenshot of Visual Studio Code - Open a Remote Window](assets/VSCode_Command_Palette_Reopen.png)
 
-This will trigger the start of the dev container. You can choose to open a devcontainer with two configurations:
+This will trigger the start of the dev container. You can choose to open a dev container with two configurations:
 
 * without considering a `devcontainer.env` file using [.devcontainer/default/devcontainer.json](.devcontainer/default/devcontainer.json). Use this if you don't need to debug in the container.
 * loading a `.env` file using [.devcontainer/withenvfile/devcontainer.json](.devcontainer/withenvfile/devcontainer.json). This configuration expects a file called `devcontainer.env` in the folder `.devcontainer`, which is needed for debugging.

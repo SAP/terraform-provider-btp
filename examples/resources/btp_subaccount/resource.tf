@@ -5,7 +5,7 @@ resource "btp_subaccount" "my_project" {
   region    = "eu30"
 }
 
-# create a subaccount in every Azure region which has support for cloudfoundry
+# create a subaccount in every Azure region which has support for cloud foundry
 
 # Look up all regions via data source
 data "btp_regions" "all" {}

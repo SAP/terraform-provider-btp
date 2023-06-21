@@ -56,7 +56,7 @@ __Further documentation:__
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
-				MarkdownDescription: "The ID of the globalaccount.",
+				MarkdownDescription: "The ID of the global account.",
 				Computed:            true,
 			},
 			"values": schema.ListNestedAttribute{

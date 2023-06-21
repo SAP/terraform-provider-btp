@@ -20,6 +20,6 @@ data "btp_whoami" "me" {}
 
 ### Read-Only
 
-- `email` (String) Email address of the logged-in user.
-- `id` (String) User ID of the logged-in user.
-- `issuer` (String) Name of the token issuer.
+- `email` (String) The e-mail address of the logged-in user.
+- `id` (String) The ID of the logged-in user.
+- `issuer` (String) The name of the token issuer.

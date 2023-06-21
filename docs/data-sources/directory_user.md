@@ -45,5 +45,5 @@ data "btp_directory_user" "someone_else" {
 - `family_name` (String) The last name of the user.
 - `given_name` (String) The given name of the user.
 - `id` (String) The ID of the user.
-- `role_collections` (Set of String) Set of role collections which are assigned to the user.
+- `role_collections` (Set of String) Set of role collections, which are assigned to the user.
 - `verified` (Boolean) The verification status of the user.

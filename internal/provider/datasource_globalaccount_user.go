@@ -71,7 +71,7 @@ func (ds *globalaccountUserDataSource) Schema(_ context.Context, _ datasource.Sc
 				Computed:            true,
 			},
 			"email": schema.StringAttribute{
-				MarkdownDescription: "The email address of the user.",
+				MarkdownDescription: "The e-mail address of the user.",
 				Computed:            true,
 			},
 			"given_name": schema.StringAttribute{
@@ -92,7 +92,7 @@ func (ds *globalaccountUserDataSource) Schema(_ context.Context, _ datasource.Sc
 			},
 			"role_collections": schema.SetAttribute{
 				ElementType:         types.StringType,
-				MarkdownDescription: "Set of role collections which are assigned to the user.",
+				MarkdownDescription: "Set of role collections, which are assigned to the user.",
 				Computed:            true,
 			},
 		},

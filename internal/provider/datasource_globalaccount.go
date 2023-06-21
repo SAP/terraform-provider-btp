@@ -67,7 +67,7 @@ __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				MarkdownDescription: "The unique ID of the global account.",
+				MarkdownDescription: "The ID of the global account.",
 				Computed:            true,
 			},
 			"name": schema.StringAttribute{
@@ -140,7 +140,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"subdomain": schema.StringAttribute{
-				MarkdownDescription: "Relevant only for entities that require authorization (e.g. global account). The subdomain that becomes part of the path used to access the authorization tenant of the global account. Unique within the defined region.",
+				MarkdownDescription: "The subdomain is part of the path used to access the authorization tenant of the global account.",
 				Computed:            true,
 			},
 			"usage": schema.StringAttribute{

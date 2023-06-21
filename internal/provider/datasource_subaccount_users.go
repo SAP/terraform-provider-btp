@@ -58,7 +58,7 @@ __Further documentation:__
 			},
 			"id": schema.StringAttribute{
 				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
-				MarkdownDescription: "The ID of the sub account.",
+				MarkdownDescription: "The ID of the subaccount.",
 				Computed:            true,
 			},
 			"origin": schema.StringAttribute{
