@@ -114,8 +114,7 @@ func (rs *directoryRoleCollectionAssignmentResource) Read(ctx context.Context, r
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Reading Resource Role Collection Assignment (Directory)", "This resource is not supposed to be read.")
-
+	// This resource is not supposed to be read by definition. However nothing the user can do about that, hence no error message is raised via resp.Diagnostics.
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }

@@ -1,8 +1,10 @@
 # Terraform Provider for SAP BTP
 
-[![REUSE status](https://api.reuse.software/badge/github.com/SAP/terraform-provider-btp)](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp)
 ![Golang](https://img.shields.io/badge/Go-1.20-informational)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SAP_terraform-provider-btp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=SAP_terraform-provider-btp)
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/terraform-provider-btp)](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7484/badge)](https://bestpractices.coreinfrastructure.org/projects/7484)
+
 
 ## About this Project
 
@@ -20,9 +22,9 @@ The [developer documentation](DEVELOPER.md) file is a basic outline on how to bu
 
 ❓ - If you have a *question* you can ask it here in [GitHub Discussions](https://github.com/SAP/terraform-provider-btp/discussions/) or in the [SAP Community](https://answers.sap.com/questions/ask.html).
 
-🐞 - If you find a bug, feel free to create a [bug report](https://github.com/SAP/terraform-provider-btp/issues/new?assignees=&labels=bug&template=bug-report.yml&title=%5BBUG%5D+%3Ctitle%3E).
+🐞 - If you find a bug, feel free to create a [bug report](https://github.com/SAP/terraform-provider-btp/issues/new?assignees=&labels=bug%2Cneeds-triage&projects=&template=bug_report.yml&title=%5BBUG%5D).
 
-💡 - If you have an idea for improvement or a feature request, please open a [feature request](https://github.com/SAP/terraform-provider-btp/issues/new?assignees=&labels=enhancement&template=feature-request.yml&title=%5BFEATURE+REQUEST%5D+%3Ctitle%3E).
+💡 - If you have an idea for improvement or a feature request, please open a [feature request](https://github.com/SAP/terraform-provider-btp/issues/new?assignees=&labels=enhancement%2Cneeds-triage&projects=&template=feature_request.yml&title=%5BFEATURE%5D).
 
 For more information about how to contribute, the project structure, and additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
 
