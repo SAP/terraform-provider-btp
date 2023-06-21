@@ -1,8 +1,9 @@
 # Terraform Provider for SAP BTP
 
-[![REUSE status](https://api.reuse.software/badge/github.com/SAP/terraform-provider-btp)](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp)
 ![Golang](https://img.shields.io/badge/Go-1.20-informational)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SAP_terraform-provider-btp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=SAP_terraform-provider-btp)
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/terraform-provider-btp)](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp)
+[![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7484/badge)](https://bestpractices.coreinfrastructure.org/projects/7484)
 
 
 ## About this Project
