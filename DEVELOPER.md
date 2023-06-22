@@ -135,3 +135,14 @@ Success! The configuration is valid, but there were some validation warnings as 
 In case of errors, please check first that you executed the previous steps correctly. If you are still stuck, feel free to ask for support by raising a [question](https://github.com/SAP/terraform-provider-btp/discussions/categories/q-a) in the [GitHub Discussions](https://github.com/SAP/terraform-provider-btp/discussions/categories/q-a) of this repository.
 
 > **Note**: Be aware that when using the development override you must not use the `terraform init`command. It is not necessary and may error unexpectedly.
+
+## Howto Commit
+
+Once you're done applying changes to the cloned repository, please ensure that the tests can still be executed (by running `make test`) and that the documentation is up to date (by executing `make generate`). Afterwards you're encouraged to open a pull-request to this repository. Please be aware that we're following the [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/), which means the pull-request title has to be structured in a certain way:
+
+* `fix: typo in the documentation`
+* `feat: new resource xyz added`
+* `refactor!: aligning schemas`
+* `feat(btp_subaccount): a scoped feature`
+
+For more examples, please have a look in the [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
