@@ -6,7 +6,6 @@
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/terraform-provider-btp)](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7484/badge)](https://bestpractices.coreinfrastructure.org/projects/7484)
 
-
 ## About This Project
 
 The Terraform provider for SAP BTP allows the management of resources on the [SAP Business Technology Platform](https://www.sap.com/products/technology-platform.html) via [Terraform](https://terraform.io/).
@@ -18,6 +17,10 @@ You find usage examples in the [examples folder](./examples/) of this repository
 ## Developing & Contributing to the Provider
 
 The [developer documentation](DEVELOPER.md) file is a basic outline on how to build and develop the provider.
+
+## Usage of the Provider
+
+For the best experience using the Terraform Provider for SAP BTP, we recommend applying the common best practices for Terraform adoption as described in the [Hashicorp documentation](https://developer.hashicorp.com/well-architected-framework/operational-excellence/operational-excellence-terraform-maturity).
 
 ## Support, Feedback, Contributing
 
