@@ -1,5 +1,5 @@
 # Linter to enforce semantic pull request titles (see https://www.conventionalcommits.org/en/v1.0.0/)
-name: "Lint PR"
+name: "Semantic PR Check"
 
 on:
   pull_request_target:
@@ -7,7 +7,12 @@ on:
       - opened
       - edited
       - synchronize
-
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+    
 permissions:
   pull-requests: read
 
