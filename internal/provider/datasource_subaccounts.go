@@ -34,10 +34,9 @@ var subaccountObjType = types.ObjectType{
 		},
 		"region": types.StringType,
 
-		"state":          types.StringType,
-		"subdomain":      types.StringType,
-		"technical_name": types.StringType,
-		"usage":          types.StringType,
+		"state":     types.StringType,
+		"subdomain": types.StringType,
+		"usage":     types.StringType,
 	},
 }
 
@@ -46,6 +45,7 @@ func newSubaccountsDataSource() datasource.DataSource {
 }
 
 type subaccountsType struct {
+	Id           types.String `tfsdk:"id"`
 	LabelsFilter types.String `tfsdk:"labels_filter"`
 	Values       types.List   `tfsdk:"values"`
 }
@@ -79,6 +79,11 @@ You must be assigned to the admin or viewer role of the global account, director
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
+			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
+				MarkdownDescription: "The ID of the global account.",
+				Computed:            true,
 			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
@@ -225,6 +230,8 @@ func (ds *subaccountsDataSource) Read(ctx context.Context, req datasource.ReadRe
 
 		subaccountConfigs = append(subaccountConfigs, c)
 	}
+
+	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
 
 	data.Values, diags = types.ListValueFrom(ctx, subaccountObjType, subaccountConfigs)
 	resp.Diagnostics.Append(diags...)

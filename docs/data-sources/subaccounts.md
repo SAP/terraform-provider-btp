@@ -35,6 +35,7 @@ data "btp_subaccounts" "filtered" {
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the global account.
 - `values` (Attributes List) The subaccounts contained in the global account. (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
