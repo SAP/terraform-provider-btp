@@ -39,3 +39,7 @@ provider "btp" {
 - `idp` (String) The identity provider to be used for authentication (default: `sap.default`).
 - `password` (String, Sensitive) Your password. Note that if two-factor authentication is enabled, concatenate your password, followed by the passcode, in a single string.
 - `username` (String) Your user name, usually an e-mail address.
+
+## Best Practices
+
+For the best experience using the SAP BTP provider, we recommend applying the common best practices for Terraform adoption as described in the [Hashicorp documentation](https://developer.hashicorp.com/well-architected-framework/operational-excellence/operational-excellence-terraform-maturity).
