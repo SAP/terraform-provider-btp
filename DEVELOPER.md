@@ -106,16 +106,32 @@ make install
 
 ## Verify the Setup
 
-Next, we verify that Terraform has access to your local build of the provider. Please navigate to one of the workspaces in the `examples` directory, e.g.:
+Next, we verify that Terraform has access to your local build of the provider. Navigate to the folder `examples/provider/`:
 
 ```bash
-cd examples/subaccount/
+cd examples/provider/
 ```
 
-If you are now able to validate the scripts, everything is correctly set up:
+To verify the setup, execute the `terraform validate` command:
 
 ```bash
 terraform validate
 ```
 
+If the setup was successful you should see the following message:
+
+```bash
+╷
+│ Warning: Provider development overrides are in effect
+│ 
+│ The following provider development overrides are set in the CLI configuration:
+│  - sap/btp in /go/bin
+│ 
+│ The behavior may therefore not match any released version of the provider and applying changes may cause the state to become incompatible with published releases.
+╵
+Success! The configuration is valid, but there were some validation warnings as shown above.
+```
+
 In case of errors, please check first that you executed the previous steps correctly. If you are still stuck, feel free to ask for support by raising a [question](https://github.com/SAP/terraform-provider-btp/discussions/categories/q-a) in the [GitHub Discussions](https://github.com/SAP/terraform-provider-btp/discussions/categories/q-a) of this repository.
+
+> **Note**: Be aware that when using the development override you must not use the `terraform init`command. It is not necessary and may error unexpectedly.
