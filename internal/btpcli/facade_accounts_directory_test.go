@@ -49,7 +49,7 @@ func TestAccountsDirectoryFacade_Create(t *testing.T) {
 			assertCall(t, r, command, ActionCreate, map[string]string{
 				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
 				"displayName":   "my-directory",
-				"labels":        "",
+				"labels":        "null",
 			})
 		}))
 		defer srv.Close()
@@ -74,7 +74,7 @@ func TestAccountsDirectoryFacade_Create(t *testing.T) {
 				"description":   description,
 				"subdomain":     subdomain,
 				"parentID":      parentId,
-				"labels":        "",
+				"labels":        "null",
 			})
 		}))
 		defer srv.Close()
