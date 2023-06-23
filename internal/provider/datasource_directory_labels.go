@@ -43,7 +43,7 @@ func (ds *directoryLabelsDataSource) Configure(_ context.Context, req datasource
 
 func (ds *directoryLabelsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get all the user-defined labels that are currently assigned to a specific directory.
+		MarkdownDescription: `Gets all the user-defined labels that are currently assigned to a specific directory.
 
 __Tip:__
 You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories of which you are the directory admin.
