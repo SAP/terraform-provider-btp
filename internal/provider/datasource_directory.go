@@ -35,7 +35,7 @@ func (ds *directoryDataSource) Configure(_ context.Context, req datasource.Confi
 
 func (ds *directoryDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get the details about a directory.
+		MarkdownDescription: `Gets the details about a directory.
 
 __Tip:__
 You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
@@ -55,7 +55,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
@@ -83,7 +83,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"name": schema.StringAttribute{

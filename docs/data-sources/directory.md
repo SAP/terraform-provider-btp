@@ -2,7 +2,7 @@
 page_title: "btp_directory Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Get the details about a directory.
+  Gets the details about a directory.
   Tip:
   You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
   Further documentation:
@@ -11,7 +11,7 @@ description: |-
 
 # btp_directory (Data Source)
 
-Get the details about a directory.
+Gets the details about a directory.
 
 __Tip:__
 You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
@@ -37,7 +37,7 @@ data "btp_directory" "by_id" {
 ### Read-Only
 
 - `created_by` (String) Details of the user that created the directory.
-- `created_date` (String) The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `description` (String) The description of the directory.
 - `features` (Set of String) The features that are enabled for the directory. Possible values are: 
 
@@ -47,7 +47,7 @@ data "btp_directory" "by_id" {
   | ENTITLEMENTS | Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory. |
   | AUTHORIZATIONS | Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature. |
 - `labels` (Map of Set of String) Set of words or phrases assigned to the directory.
-- `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `name` (String) The display name of the directory.
 - `parent_id` (String) The GUID of the directory's parent entity. Typically this is the global account.
 - `state` (String) The current state of the directory. Possible values are: 
