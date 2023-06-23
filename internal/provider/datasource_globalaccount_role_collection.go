@@ -52,7 +52,7 @@ func (ds *globalaccountRoleCollectionDataSource) Configure(_ context.Context, re
 
 func (ds *globalaccountRoleCollectionDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a specific global account role collection.`,
+		MarkdownDescription: `Gets details about a specific global account role collection.`,
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",
