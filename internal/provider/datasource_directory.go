@@ -64,13 +64,15 @@ __Further documentation:__
 			},
 			"features": schema.SetAttribute{
 				ElementType: types.StringType,
-				MarkdownDescription: "The features that are enabled for the directory. Possible values are: " +
-					"\n\t - `DEFAULT` All directories have the following basic feature enabled: " +
-					"\n\t\t 1. Group and filter subaccounts for reports and filters " +
-					"\n\t\t 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)" +
-					"\n\t\t 3. Set custom properties and tags to the directory for identification and reporting purposes." +
-					"\n\t - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory." +
-					"\n\t - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.",
+				MarkdownDescription: "The features that are enabled for the directory. Possible values are: \n" +
+					"\n  | value | description |" +
+					"\n  | ----- | ----------- |" +
+					"\n  | DEFAULT | All directories have the following basic feature enabled: " +
+					"<br> 1. Group and filter subaccounts for reports and filters " +
+					"<br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)" +
+					"<br> 3. Set custom properties and tags to the directory for identification and reporting purposes. |" +
+					"\n  | ENTITLEMENTS | Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory. |" +
+					"\n  | AUTHORIZATIONS | Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature. |",
 				Computed: true,
 			},
 			"labels": schema.MapAttribute{
@@ -93,22 +95,24 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "The current state of the directory. Possible values are: " +
-					"\n\t - `OK` The CRUD operation or series of operations completed successfully." +
-					"\n\t - `STARTED` CRUD operation on an entity has started." +
-					"\n\t - `CREATING` Creating entity operation is in progress." +
-					"\n\t - `UPDATING` Updating entity operation is in progress." +
-					"\n\t - `MOVING` Moving entity operation is in progress." +
-					"\n\t - `PROCESSING` A series of operations related to the entity is in progress." +
-					"\n\t - `DELETING` Deleting entity operation is in progress." +
-					"\n\t - `PENDING REVIEW` The processing operation has been stopped for reviewing and can be restarted by the operator." +
-					"\n\t - `CANCELLED` The operation or processing was canceled by the operator." +
-					"\n\t - `CREATION_FAILED` The creation operation failed, and the entity was not created or was created but cannot be used." +
-					"\n\t - `UPDATE_FAILED` The update operation failed, and the entity was not updated." +
-					"\n\t - `PROCESSING_FAILED` The processing operations failed." +
-					"\n\t - `DELETION_FAILED` The delete operation failed, and the entity was not deleted." +
-					"\n\t - `MOVE_FAILED` Entity could not be moved to a different location." +
-					"\n\t - `MIGRATING` Migrating entity from NEO to CF.",
+				MarkdownDescription: "The current state of the directory. Possible values are: \n" +
+					"\n  | state | description |" +
+					"\n  | ----- | ----------- |" +
+					"\n  | OK | The CRUD operation or series of operations completed successfully. |" +
+					"\n  | STARTED | CRUD operation on an entity has started. |" +
+					"\n  | CANCELLED | The operation or processing was canceled by the operator. |" +
+					"\n  | PROCESSING | A series of operations related to the entity is in progress. |" +
+					"\n  | PROCESSING_FAILED | The processing operations failed. |" +
+					"\n  | CREATING | Creating entity operation is in progress. |" +
+					"\n  | CREATION_FAILED | The creation operation failed, and the entity was not created or was created but cannot be used. |" +
+					"\n  | UPDATING | Updating entity operation is in progress. |" +
+					"\n  | UPDATE_FAILED | The update operation failed, and the entity was not updated. |" +
+					"\n  | MOVING | Moving entity operation is in progress. |" +
+					"\n  | MOVE_FAILED | Entity could not be moved to a different location. |" +
+					"\n  | DELETING | Deleting entity operation is in progress. |" +
+					"\n  | DELETION_FAILED | The delete operation failed, and the entity was not deleted. |" +
+					"\n  | PENDING REVIEW | The processing operation has been stopped for reviewing and can be restarted by the operator. |" +
+					"\n  | MIGRATING | Migrating entity from NEO to CF. |",
 				Computed: true,
 			},
 			"subdomain": schema.StringAttribute{

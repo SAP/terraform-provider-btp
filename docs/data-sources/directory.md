@@ -40,30 +40,33 @@ data "btp_directory" "by_id" {
 - `created_date` (String) The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `description` (String) The description of the directory.
 - `features` (Set of String) The features that are enabled for the directory. Possible values are: 
-	 - `DEFAULT` All directories have the following basic feature enabled: 
-		 1. Group and filter subaccounts for reports and filters 
-		 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)
-		 3. Set custom properties and tags to the directory for identification and reporting purposes.
-	 - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.
-	 - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.
+
+  | value | description |
+  | ----- | ----------- |
+  | DEFAULT | All directories have the following basic feature enabled: <br> 1. Group and filter subaccounts for reports and filters <br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)<br> 3. Set custom properties and tags to the directory for identification and reporting purposes. |
+  | ENTITLEMENTS | Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory. |
+  | AUTHORIZATIONS | Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature. |
 - `labels` (Map of Set of String) Set of words or phrases assigned to the directory.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `name` (String) The display name of the directory.
 - `parent_id` (String) The GUID of the directory's parent entity. Typically this is the global account.
 - `state` (String) The current state of the directory. Possible values are: 
-	 - `OK` The CRUD operation or series of operations completed successfully.
-	 - `STARTED` CRUD operation on an entity has started.
-	 - `CREATING` Creating entity operation is in progress.
-	 - `UPDATING` Updating entity operation is in progress.
-	 - `MOVING` Moving entity operation is in progress.
-	 - `PROCESSING` A series of operations related to the entity is in progress.
-	 - `DELETING` Deleting entity operation is in progress.
-	 - `PENDING REVIEW` The processing operation has been stopped for reviewing and can be restarted by the operator.
-	 - `CANCELLED` The operation or processing was canceled by the operator.
-	 - `CREATION_FAILED` The creation operation failed, and the entity was not created or was created but cannot be used.
-	 - `UPDATE_FAILED` The update operation failed, and the entity was not updated.
-	 - `PROCESSING_FAILED` The processing operations failed.
-	 - `DELETION_FAILED` The delete operation failed, and the entity was not deleted.
-	 - `MOVE_FAILED` Entity could not be moved to a different location.
-	 - `MIGRATING` Migrating entity from NEO to CF.
+
+  | state | description |
+  | ----- | ----------- |
+  | OK | The CRUD operation or series of operations completed successfully. |
+  | STARTED | CRUD operation on an entity has started. |
+  | CANCELLED | The operation or processing was canceled by the operator. |
+  | PROCESSING | A series of operations related to the entity is in progress. |
+  | PROCESSING_FAILED | The processing operations failed. |
+  | CREATING | Creating entity operation is in progress. |
+  | CREATION_FAILED | The creation operation failed, and the entity was not created or was created but cannot be used. |
+  | UPDATING | Updating entity operation is in progress. |
+  | UPDATE_FAILED | The update operation failed, and the entity was not updated. |
+  | MOVING | Moving entity operation is in progress. |
+  | MOVE_FAILED | Entity could not be moved to a different location. |
+  | DELETING | Deleting entity operation is in progress. |
+  | DELETION_FAILED | The delete operation failed, and the entity was not deleted. |
+  | PENDING REVIEW | The processing operation has been stopped for reviewing and can be restarted by the operator. |
+  | MIGRATING | Migrating entity from NEO to CF. |
 - `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain is part of the path used to access the authorization tenant of the directory.
