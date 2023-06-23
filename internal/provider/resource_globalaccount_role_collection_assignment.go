@@ -22,6 +22,7 @@ func newGlobalaccountRoleCollectionAssignmentResource() resource.Resource {
 }
 
 type globalaccountRoleCollectionAssignmentType struct {
+	Id                 types.String `tfsdk:"id"`
 	RoleCollectionName types.String `tfsdk:"role_collection_name"`
 	Username           types.String `tfsdk:"user_name"`
 	Groupname          types.String `tfsdk:"group_name"`
@@ -57,6 +58,11 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `role_collection_name` field instead",
+				MarkdownDescription: "The ID of the role collection",
+				Computed:            true,
 			},
 			"user_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the user to assign.",
@@ -128,6 +134,8 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Create(ctx context.Cont
 		resp.Diagnostics.AddError("API Error Creating Resource Role Collection Assignment (Global Account)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	plan.Id = types.StringValue(plan.RoleCollectionName.ValueString())
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)

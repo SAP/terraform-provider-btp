@@ -38,4 +38,7 @@ resource "btp_globalaccount_role_collection_assignment" "globalaccount_viewer_gr
 - `origin` (String) The identity provider that hosts the user or group. The default value is `ldap`.
 - `user_name` (String) The name of the user to assign.
 
+### Read-Only
+
+- `id` (String, Deprecated) The ID of the role collection
 
