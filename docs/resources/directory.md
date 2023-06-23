@@ -49,6 +49,7 @@ resource "btp_directory" "child" {
 ### Optional
 
 - `description` (String) A description of the directory.
+- `labels` (Map of Set of String) Contains information about the labels assigned to a specified global account. Labels are represented in a JSON array of key-value pairs; each key has up to 10 corresponding values.
 - `parent_id` (String) The GUID of the directory's parent entity. Typically this is the global account.
 - `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. It has to be unique within the defined region.
 
@@ -64,7 +65,6 @@ resource "btp_directory" "child" {
 	 - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.
 	 - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.
 - `id` (String) The ID of the directory.
-- `labels` (Map of Set of String) Contains information about the labels assigned to a specified global account. Labels are represented in a JSON array of key-value pairs; each key has up to 10 corresponding values.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `state` (String) The current state of the directory. Possible values are: 
 	 - `OK` The CRUD operation or series of operations completed successfully.
