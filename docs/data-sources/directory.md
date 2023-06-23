@@ -49,7 +49,7 @@ data "btp_directory" "by_id" {
 - `labels` (Map of Set of String) Set of words or phrases assigned to the directory.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `name` (String) The display name of the directory.
-- `parent_id` (String) The GUID of the directory's parent entity. Typically this is the global account.
+- `parent_id` (String) The ID of the directory's parent entity. Typically this is the global account.
 - `state` (String) The current state of the directory. Possible values are: 
 	 - `OK` The CRUD operation or series of operations completed successfully.
 	 - `STARTED` CRUD operation on an entity has started.
@@ -65,5 +65,5 @@ data "btp_directory" "by_id" {
 	 - `PROCESSING_FAILED` The processing operations failed.
 	 - `DELETION_FAILED` The delete operation failed, and the entity was not deleted.
 	 - `MOVE_FAILED` Entity could not be moved to a different location.
-	 - `MIGRATING` Migrating entity from NEO to CF.
+	 - `MIGRATING` Migrating entity from Neo to Cloud Foundry.
 - `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain is part of the path used to access the authorization tenant of the directory.

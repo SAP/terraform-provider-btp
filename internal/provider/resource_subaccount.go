@@ -88,7 +88,7 @@ __Further documentation:__
 				},
 			},
 			"parent_id": schema.StringAttribute{
-				MarkdownDescription: "The GUID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the GUID of the global account.",
+				MarkdownDescription: "The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.",
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{

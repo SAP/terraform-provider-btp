@@ -80,7 +80,7 @@ data "btp_globalaccount" "this" {}
 	 - `PROCESSING_FAILED` The processing operations failed.
 	 - `DELETION_FAILED` The delete operation failed, and the entity was not deleted.
 	 - `MOVE_FAILED` Entity could not be moved to a different location.
-	 - `MIGRATING` Migrating entity from NEO to CF.
+	 - `MIGRATING` Migrating entity from Neo to Cloud Foundry.
 - `subdomain` (String) The subdomain is part of the path used to access the authorization tenant of the global account.
 - `usage` (String) For internal accounts, the intended purpose of the global account. Possible values are: 
 	 - `Development` For development of a service.
