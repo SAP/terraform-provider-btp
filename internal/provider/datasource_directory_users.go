@@ -44,7 +44,7 @@ func (ds *directoryUsersDataSource) Configure(_ context.Context, req datasource.
 
 func (ds *directoryUsersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List all users.
+		MarkdownDescription: `Lists all users.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management>`,

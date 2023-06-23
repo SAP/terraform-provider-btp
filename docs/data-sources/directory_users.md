@@ -2,14 +2,14 @@
 page_title: "btp_directory_users Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  List all users.
+  Lists all users.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management
 ---
 
 # btp_directory_users (Data Source)
 
-List all users.
+Lists all users.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management>
