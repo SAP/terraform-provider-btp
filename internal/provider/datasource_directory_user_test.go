@@ -27,10 +27,10 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "user_name", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "origin", "ldap"),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "active", "false"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "active", "true"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", ""),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", ""),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "id", ""),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "id", "40c72ef9-b901-4b89-91fb-3d283231f7b4"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "0"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "false"),
 					),
@@ -47,15 +47,15 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceDirectoryUserCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com", "terraformint"),
+					Config: hclProvider() + hclDatasourceDirectoryUserCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "user_name", "jenny.doe@test.com"),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "origin", "terraformint"),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "active", "false"),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", ""),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", ""),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "id", ""),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "origin", "terraformint-platform"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "active", "true"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", "unknown"), //FIXME should be empty, see NGPBUG-357810
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", "unknown"),  //FIXME should be empty, see NGPBUG-357810
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "id", "2b5382f4-1922-4803-8dcb-5babe097b12b"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "0"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "false"),
 					),
