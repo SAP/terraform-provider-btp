@@ -19,26 +19,26 @@ func (f *securityTrustFacade) getCommand() string {
 	return "security/trust"
 }
 
-func (f *securityTrustFacade) ListByGlobalAccount(ctx context.Context) (xsuaa_trust.TrustConfigurationResponseCollectionObject, *CommandResponse, error) {
+func (f *securityTrustFacade) ListByGlobalAccount(ctx context.Context) (xsuaa_trust.TrustConfigurationResponseCollectionObject, CommandResponse, error) {
 	return doExecute[xsuaa_trust.TrustConfigurationResponseCollectionObject](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 	}))
 }
 
-func (f *securityTrustFacade) GetByGlobalAccount(ctx context.Context, origin string) (xsuaa_trust.TrustConfigurationResponseObject, *CommandResponse, error) {
+func (f *securityTrustFacade) GetByGlobalAccount(ctx context.Context, origin string) (xsuaa_trust.TrustConfigurationResponseObject, CommandResponse, error) {
 	return doExecute[xsuaa_trust.TrustConfigurationResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 		"origin":        origin,
 	}))
 }
 
-func (f *securityTrustFacade) ListBySubaccount(ctx context.Context, subaccountId string) (xsuaa_trust.TrustConfigurationResponseCollectionObject, *CommandResponse, error) {
+func (f *securityTrustFacade) ListBySubaccount(ctx context.Context, subaccountId string) (xsuaa_trust.TrustConfigurationResponseCollectionObject, CommandResponse, error) {
 	return doExecute[xsuaa_trust.TrustConfigurationResponseCollectionObject](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 	}))
 }
 
-func (f *securityTrustFacade) GetBySubaccount(ctx context.Context, subaccountId string, origin string) (xsuaa_trust.TrustConfigurationResponseObject, *CommandResponse, error) {
+func (f *securityTrustFacade) GetBySubaccount(ctx context.Context, subaccountId string, origin string) (xsuaa_trust.TrustConfigurationResponseObject, CommandResponse, error) {
 	return doExecute[xsuaa_trust.TrustConfigurationResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 		"origin":     origin,
@@ -53,11 +53,11 @@ type TrustConfigurationInput struct {
 	Domain           *string `btpcli:"domain"`
 }
 
-func (f *securityTrustFacade) CreateByGlobalAccount(ctx context.Context, args TrustConfigurationInput) (xsuaa_trust.ModifyTrustConfigurationResponseObject, *CommandResponse, error) {
+func (f *securityTrustFacade) CreateByGlobalAccount(ctx context.Context, args TrustConfigurationInput) (xsuaa_trust.ModifyTrustConfigurationResponseObject, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_trust.ModifyTrustConfigurationResponseObject{}, nil, err
+		return xsuaa_trust.ModifyTrustConfigurationResponseObject{}, CommandResponse{}, err
 	}
 
 	params["globalAccount"] = f.cliClient.GetGlobalAccountSubdomain()
@@ -65,11 +65,11 @@ func (f *securityTrustFacade) CreateByGlobalAccount(ctx context.Context, args Tr
 	return doExecute[xsuaa_trust.ModifyTrustConfigurationResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *securityTrustFacade) CreateBySubaccount(ctx context.Context, subaccountId string, args TrustConfigurationInput) (xsuaa_trust.ModifyTrustConfigurationResponseObject, *CommandResponse, error) {
+func (f *securityTrustFacade) CreateBySubaccount(ctx context.Context, subaccountId string, args TrustConfigurationInput) (xsuaa_trust.ModifyTrustConfigurationResponseObject, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_trust.ModifyTrustConfigurationResponseObject{}, nil, err
+		return xsuaa_trust.ModifyTrustConfigurationResponseObject{}, CommandResponse{}, err
 	}
 
 	params["subaccount"] = subaccountId
@@ -77,7 +77,7 @@ func (f *securityTrustFacade) CreateBySubaccount(ctx context.Context, subaccount
 	return doExecute[xsuaa_trust.ModifyTrustConfigurationResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *securityTrustFacade) DeleteByGlobalAccount(ctx context.Context, originKey string) (xsuaa_trust.ModifyTrustConfigurationResponseObject, *CommandResponse, error) {
+func (f *securityTrustFacade) DeleteByGlobalAccount(ctx context.Context, originKey string) (xsuaa_trust.ModifyTrustConfigurationResponseObject, CommandResponse, error) {
 	return doExecute[xsuaa_trust.ModifyTrustConfigurationResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 		"originKey":     originKey,
@@ -85,7 +85,7 @@ func (f *securityTrustFacade) DeleteByGlobalAccount(ctx context.Context, originK
 	}))
 }
 
-func (f *securityTrustFacade) DeleteBySubaccount(ctx context.Context, subaccountId string, originKey string) (xsuaa_trust.ModifyTrustConfigurationResponseObject, *CommandResponse, error) {
+func (f *securityTrustFacade) DeleteBySubaccount(ctx context.Context, subaccountId string, originKey string) (xsuaa_trust.ModifyTrustConfigurationResponseObject, CommandResponse, error) {
 	return doExecute[xsuaa_trust.ModifyTrustConfigurationResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 		"originKey":  originKey,

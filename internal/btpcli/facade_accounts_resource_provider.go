@@ -19,13 +19,13 @@ func (f *accountsResourceProviderFacade) getCommand() string {
 	return "accounts/resource-provider"
 }
 
-func (f *accountsResourceProviderFacade) List(ctx context.Context) ([]provisioning.ResourceProviderResponseObject, *CommandResponse, error) {
+func (f *accountsResourceProviderFacade) List(ctx context.Context) ([]provisioning.ResourceProviderResponseObject, CommandResponse, error) {
 	return doExecute[[]provisioning.ResourceProviderResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 	}))
 }
 
-func (f *accountsResourceProviderFacade) Get(ctx context.Context, resourceProvider string, resourceTechnicalName string) (provisioning.ResourceProviderResponseObject, *CommandResponse, error) {
+func (f *accountsResourceProviderFacade) Get(ctx context.Context, resourceProvider string, resourceTechnicalName string) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
 	return doExecute[provisioning.ResourceProviderResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 		"provider":      resourceProvider,
@@ -41,11 +41,11 @@ type GlobalaccountResourceProviderCreateInput struct {
 	ConfigurationInfo string `btpcli:"configurationInfo"`
 }
 
-func (f *accountsResourceProviderFacade) Create(ctx context.Context, args GlobalaccountResourceProviderCreateInput) (provisioning.ResourceProviderResponseObject, *CommandResponse, error) {
+func (f *accountsResourceProviderFacade) Create(ctx context.Context, args GlobalaccountResourceProviderCreateInput) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return provisioning.ResourceProviderResponseObject{}, nil, err
+		return provisioning.ResourceProviderResponseObject{}, CommandResponse{}, err
 	}
 
 	params["globalAccount"] = f.cliClient.GetGlobalAccountSubdomain()
@@ -53,7 +53,7 @@ func (f *accountsResourceProviderFacade) Create(ctx context.Context, args Global
 	return doExecute[provisioning.ResourceProviderResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *accountsResourceProviderFacade) Delete(ctx context.Context, resourceProvider string, resourceTechnicalName string) (provisioning.ResourceProviderResponseObject, *CommandResponse, error) {
+func (f *accountsResourceProviderFacade) Delete(ctx context.Context, resourceProvider string, resourceTechnicalName string) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
 	return doExecute[provisioning.ResourceProviderResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 		"provider":      resourceProvider,

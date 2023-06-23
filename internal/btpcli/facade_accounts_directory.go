@@ -19,7 +19,7 @@ func (f *accountsDirectoryFacade) getCommand() string {
 	return "accounts/directory"
 }
 
-func (f *accountsDirectoryFacade) Get(ctx context.Context, directoryId string) (cis.DirectoryResponseObject, *CommandResponse, error) {
+func (f *accountsDirectoryFacade) Get(ctx context.Context, directoryId string) (cis.DirectoryResponseObject, CommandResponse, error) {
 	return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 		"directoryID":   directoryId,
@@ -33,11 +33,11 @@ type DirectoryCreateInput struct {
 	Subdomain   *string `btpcli:"subdomain"`
 }
 
-func (f *accountsDirectoryFacade) Create(ctx context.Context, args *DirectoryCreateInput) (cis.DirectoryResponseObject, *CommandResponse, error) {
+func (f *accountsDirectoryFacade) Create(ctx context.Context, args *DirectoryCreateInput) (cis.DirectoryResponseObject, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return cis.DirectoryResponseObject{}, nil, err
+		return cis.DirectoryResponseObject{}, CommandResponse{}, err
 	}
 
 	params["globalAccount"] = f.cliClient.GetGlobalAccountSubdomain()
@@ -45,7 +45,7 @@ func (f *accountsDirectoryFacade) Create(ctx context.Context, args *DirectoryCre
 	return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *accountsDirectoryFacade) Delete(ctx context.Context, directoryId string) (cis.DirectoryResponseObject, *CommandResponse, error) {
+func (f *accountsDirectoryFacade) Delete(ctx context.Context, directoryId string) (cis.DirectoryResponseObject, CommandResponse, error) {
 	return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 		"directoryID":   directoryId,

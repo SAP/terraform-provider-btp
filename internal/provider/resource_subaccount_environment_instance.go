@@ -288,12 +288,12 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 		Refresh: func() (interface{}, string, error) {
 			subRes, comRes, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, state.SubaccountId.ValueString(), cliRes.Id)
 
-			if err != nil {
-				return subRes, subRes.State, err
-			}
-
 			if comRes.StatusCode == http.StatusNotFound {
 				return subRes, "DELETED", nil
+			}
+
+			if err != nil {
+				return subRes, subRes.State, err
 			}
 
 			return subRes, subRes.State, nil

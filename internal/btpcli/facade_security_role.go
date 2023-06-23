@@ -19,13 +19,13 @@ func (f *securityRoleFacade) getCommand() string {
 	return "security/role"
 }
 
-func (f *securityRoleFacade) ListByGlobalAccount(ctx context.Context) ([]xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) ListByGlobalAccount(ctx context.Context) ([]xsuaa_authz.Role, CommandResponse, error) {
 	return doExecute[[]xsuaa_authz.Role](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 	}))
 }
 
-func (f *securityRoleFacade) GetByGlobalAccount(ctx context.Context, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) GetByGlobalAccount(ctx context.Context, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, CommandResponse, error) {
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"globalAccount":    f.cliClient.GetGlobalAccountSubdomain(),
 		"roleName":         roleName,
@@ -34,13 +34,13 @@ func (f *securityRoleFacade) GetByGlobalAccount(ctx context.Context, roleName st
 	}))
 }
 
-func (f *securityRoleFacade) ListBySubaccount(ctx context.Context, subaccountId string) ([]xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) ListBySubaccount(ctx context.Context, subaccountId string) ([]xsuaa_authz.Role, CommandResponse, error) {
 	return doExecute[[]xsuaa_authz.Role](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 	}))
 }
 
-func (f *securityRoleFacade) GetBySubaccount(ctx context.Context, subaccountId string, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) GetBySubaccount(ctx context.Context, subaccountId string, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, CommandResponse, error) {
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"subaccount":       subaccountId,
 		"roleName":         roleName,
@@ -49,13 +49,13 @@ func (f *securityRoleFacade) GetBySubaccount(ctx context.Context, subaccountId s
 	}))
 }
 
-func (f *securityRoleFacade) ListByDirectory(ctx context.Context, directoryId string) ([]xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) ListByDirectory(ctx context.Context, directoryId string) ([]xsuaa_authz.Role, CommandResponse, error) {
 	return doExecute[[]xsuaa_authz.Role](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"directory": directoryId,
 	}))
 }
 
-func (f *securityRoleFacade) GetByDirectory(ctx context.Context, directoryId string, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) GetByDirectory(ctx context.Context, directoryId string, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, CommandResponse, error) {
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"directory":        directoryId,
 		"roleName":         roleName,
@@ -71,17 +71,17 @@ type DirectoryRoleCreateInput struct {
 	DirectoryId      string `btpcli:"directory"`
 }
 
-func (f *securityRoleFacade) CreateByDirectory(ctx context.Context, args *DirectoryRoleCreateInput) (xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) CreateByDirectory(ctx context.Context, args *DirectoryRoleCreateInput) (xsuaa_authz.Role, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_authz.Role{}, nil, err
+		return xsuaa_authz.Role{}, CommandResponse{}, err
 	}
 
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *securityRoleFacade) DeleteByDirectory(ctx context.Context, directoryId string, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) DeleteByDirectory(ctx context.Context, directoryId string, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, CommandResponse, error) {
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"directory":        directoryId,
 		"roleName":         roleName,
@@ -97,17 +97,17 @@ type SubaccountRoleCreateInput struct {
 	SubaccountId     string `btpcli:"subaccount"`
 }
 
-func (f *securityRoleFacade) CreateBySubaccount(ctx context.Context, args *SubaccountRoleCreateInput) (xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) CreateBySubaccount(ctx context.Context, args *SubaccountRoleCreateInput) (xsuaa_authz.Role, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_authz.Role{}, nil, err
+		return xsuaa_authz.Role{}, CommandResponse{}, err
 	}
 
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *securityRoleFacade) DeleteBySubaccount(ctx context.Context, subaccountId string, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) DeleteBySubaccount(ctx context.Context, subaccountId string, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, CommandResponse, error) {
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"subaccount":       subaccountId,
 		"roleName":         roleName,
@@ -122,11 +122,11 @@ type GlobalAccountRoleCreateInput struct {
 	RoleTemplateName string `btpcli:"roleTemplateName"`
 }
 
-func (f *securityRoleFacade) CreateByGlobalAccount(ctx context.Context, args *GlobalAccountRoleCreateInput) (xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) CreateByGlobalAccount(ctx context.Context, args *GlobalAccountRoleCreateInput) (xsuaa_authz.Role, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_authz.Role{}, nil, err
+		return xsuaa_authz.Role{}, CommandResponse{}, err
 	}
 
 	params["globalAccount"] = f.cliClient.GetGlobalAccountSubdomain()
@@ -134,7 +134,7 @@ func (f *securityRoleFacade) CreateByGlobalAccount(ctx context.Context, args *Gl
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *securityRoleFacade) DeleteByGlobalAccount(ctx context.Context, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, *CommandResponse, error) {
+func (f *securityRoleFacade) DeleteByGlobalAccount(ctx context.Context, roleName string, roleTemplateAppId string, roleTemplateName string) (xsuaa_authz.Role, CommandResponse, error) {
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"globalAccount":    f.cliClient.GetGlobalAccountSubdomain(),
 		"roleName":         roleName,
@@ -143,7 +143,7 @@ func (f *securityRoleFacade) DeleteByGlobalAccount(ctx context.Context, roleName
 	}))
 }
 
-func (f *securityRoleFacade) AddBySubaccount(ctx context.Context, subaccountId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+func (f *securityRoleFacade) AddBySubaccount(ctx context.Context, subaccountId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (CommandResponse, error) {
 	return f.cliClient.Execute(ctx, NewAddRequest(f.getCommand(), map[string]string{
 		"subaccount":         subaccountId,
 		"roleName":           roleName,
@@ -153,7 +153,7 @@ func (f *securityRoleFacade) AddBySubaccount(ctx context.Context, subaccountId s
 	}))
 }
 
-func (f *securityRoleFacade) AddByDirectory(ctx context.Context, directoryId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+func (f *securityRoleFacade) AddByDirectory(ctx context.Context, directoryId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (CommandResponse, error) {
 	return f.cliClient.Execute(ctx, NewAddRequest(f.getCommand(), map[string]string{
 		"directory":          directoryId,
 		"roleName":           roleName,
@@ -163,7 +163,7 @@ func (f *securityRoleFacade) AddByDirectory(ctx context.Context, directoryId str
 	}))
 }
 
-func (f *securityRoleFacade) AddByGlobalAccount(ctx context.Context, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+func (f *securityRoleFacade) AddByGlobalAccount(ctx context.Context, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (CommandResponse, error) {
 	return f.cliClient.Execute(ctx, NewAddRequest(f.getCommand(), map[string]string{
 		"globalAccount":      f.cliClient.GetGlobalAccountSubdomain(),
 		"roleName":           roleName,
@@ -173,7 +173,7 @@ func (f *securityRoleFacade) AddByGlobalAccount(ctx context.Context, targetRoleC
 	}))
 }
 
-func (f *securityRoleFacade) RemoveBySubaccount(ctx context.Context, subaccountId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+func (f *securityRoleFacade) RemoveBySubaccount(ctx context.Context, subaccountId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (CommandResponse, error) {
 	return f.cliClient.Execute(ctx, NewRemoveRequest(f.getCommand(), map[string]string{
 		"subaccount":         subaccountId,
 		"roleName":           roleName,
@@ -183,7 +183,7 @@ func (f *securityRoleFacade) RemoveBySubaccount(ctx context.Context, subaccountI
 	}))
 }
 
-func (f *securityRoleFacade) RemoveByDirectory(ctx context.Context, directoryId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+func (f *securityRoleFacade) RemoveByDirectory(ctx context.Context, directoryId string, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (CommandResponse, error) {
 	return f.cliClient.Execute(ctx, NewRemoveRequest(f.getCommand(), map[string]string{
 		"directory":          directoryId,
 		"roleName":           roleName,
@@ -193,7 +193,7 @@ func (f *securityRoleFacade) RemoveByDirectory(ctx context.Context, directoryId 
 	}))
 }
 
-func (f *securityRoleFacade) RemoveByGlobalAccount(ctx context.Context, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (*CommandResponse, error) {
+func (f *securityRoleFacade) RemoveByGlobalAccount(ctx context.Context, targetRoleCollection string, roleName string, roleTemplateAppId string, roleTemplateName string) (CommandResponse, error) {
 	return f.cliClient.Execute(ctx, NewRemoveRequest(f.getCommand(), map[string]string{
 		"globalAccount":      f.cliClient.GetGlobalAccountSubdomain(),
 		"roleName":           roleName,

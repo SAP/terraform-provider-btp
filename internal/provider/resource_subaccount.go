@@ -295,12 +295,12 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		Refresh: func() (interface{}, string, error) {
 			subRes, comRes, err := rs.cli.Accounts.Subaccount.Get(ctx, cliRes.Guid)
 
-			if err != nil {
-				return subRes, subRes.State, err
+			if comRes.StatusCode == http.StatusNotFound {
+				return subRes, "DELETED", nil
 			}
 
-			if comRes.StatusCode == http.StatusNotFound {
-				return subRes, "DELETED", err
+			if err != nil {
+				return subRes, subRes.State, err
 			}
 
 			return subRes, subRes.State, nil

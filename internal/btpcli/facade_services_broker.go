@@ -18,7 +18,7 @@ func (f servicesBrokerFacade) getCommand() string {
 	return "services/broker"
 }
 
-func (f servicesBrokerFacade) List(ctx context.Context, subaccountId string, fieldsFilter string, labelsFilter string) ([]servicemanager.ServiceBrokerResponseObject, *CommandResponse, error) {
+func (f servicesBrokerFacade) List(ctx context.Context, subaccountId string, fieldsFilter string, labelsFilter string) ([]servicemanager.ServiceBrokerResponseObject, CommandResponse, error) {
 	params := map[string]string{
 		"subaccount": subaccountId,
 	}
@@ -34,14 +34,14 @@ func (f servicesBrokerFacade) List(ctx context.Context, subaccountId string, fie
 	return doExecute[[]servicemanager.ServiceBrokerResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), params))
 }
 
-func (f servicesBrokerFacade) GetById(ctx context.Context, subaccountId string, brokerId string) (servicemanager.ServiceBrokerResponseObject, *CommandResponse, error) {
+func (f servicesBrokerFacade) GetById(ctx context.Context, subaccountId string, brokerId string) (servicemanager.ServiceBrokerResponseObject, CommandResponse, error) {
 	return doExecute[servicemanager.ServiceBrokerResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 		"id":         brokerId,
 	}))
 }
 
-func (f servicesBrokerFacade) GetByName(ctx context.Context, subaccountId string, brokerName string) (servicemanager.ServiceBrokerResponseObject, *CommandResponse, error) {
+func (f servicesBrokerFacade) GetByName(ctx context.Context, subaccountId string, brokerName string) (servicemanager.ServiceBrokerResponseObject, CommandResponse, error) {
 	return doExecute[servicemanager.ServiceBrokerResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 		"name":       brokerName,
