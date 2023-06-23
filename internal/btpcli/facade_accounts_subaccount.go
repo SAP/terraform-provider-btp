@@ -19,7 +19,7 @@ func (f *accountsSubaccountFacade) getCommand() string {
 	return "accounts/subaccount"
 }
 
-func (f *accountsSubaccountFacade) List(ctx context.Context, labelsFilter string) (cis.ResponseCollectionSubaccountResponseObject, *CommandResponse, error) {
+func (f *accountsSubaccountFacade) List(ctx context.Context, labelsFilter string) (cis.ResponseCollectionSubaccountResponseObject, CommandResponse, error) {
 	params := map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 	}
@@ -32,7 +32,7 @@ func (f *accountsSubaccountFacade) List(ctx context.Context, labelsFilter string
 	return doExecute[cis.ResponseCollectionSubaccountResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), params))
 }
 
-func (f *accountsSubaccountFacade) Get(ctx context.Context, subaccountId string) (cis.SubaccountResponseObject, *CommandResponse, error) {
+func (f *accountsSubaccountFacade) Get(ctx context.Context, subaccountId string) (cis.SubaccountResponseObject, CommandResponse, error) {
 	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 	}))
@@ -51,7 +51,7 @@ type SubaccountCreateInput struct { // TODO support all options
 	//UsedForProduction bool   `json:"usedForProduction"`
 }
 
-func (f *accountsSubaccountFacade) Create(ctx context.Context, displayName string, subdomain string, region string) (cis.SubaccountResponseObject, *CommandResponse, error) { // TODO switch to object
+func (f *accountsSubaccountFacade) Create(ctx context.Context, displayName string, subdomain string, region string) (cis.SubaccountResponseObject, CommandResponse, error) { // TODO switch to object
 	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), map[string]string{
 		"displayName": displayName,
 		"subdomain":   subdomain,
@@ -59,14 +59,14 @@ func (f *accountsSubaccountFacade) Create(ctx context.Context, displayName strin
 	}))
 }
 
-func (f *accountsSubaccountFacade) Update(ctx context.Context, subaccountId string, displayName string) (cis.SubaccountResponseObject, *CommandResponse, error) { // TODO switch to object
+func (f *accountsSubaccountFacade) Update(ctx context.Context, subaccountId string, displayName string) (cis.SubaccountResponseObject, CommandResponse, error) { // TODO switch to object
 	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), map[string]string{
 		"subaccount":  subaccountId,
 		"displayName": displayName,
 	}))
 }
 
-func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId string) (cis.SubaccountResponseObject, *CommandResponse, error) {
+func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId string) (cis.SubaccountResponseObject, CommandResponse, error) {
 	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"subaccount":  subaccountId,
 		"confirm":     "true",
@@ -74,7 +74,7 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 	}))
 }
 
-func (f *accountsSubaccountFacade) Subscribe(ctx context.Context, subaccountId string, appName string, planName string, parameters string) (saas_manager_service.SubscriptionAssignmentResponseObject, *CommandResponse, error) {
+func (f *accountsSubaccountFacade) Subscribe(ctx context.Context, subaccountId string, appName string, planName string, parameters string) (saas_manager_service.SubscriptionAssignmentResponseObject, CommandResponse, error) {
 	return doExecute[saas_manager_service.SubscriptionAssignmentResponseObject](f.cliClient, ctx, NewSubscribeRequest(f.getCommand(), map[string]string{
 		"subaccount":         subaccountId,
 		"appName":            appName,
@@ -83,7 +83,7 @@ func (f *accountsSubaccountFacade) Subscribe(ctx context.Context, subaccountId s
 	}))
 }
 
-func (f *accountsSubaccountFacade) Unsubscribe(ctx context.Context, subaccountId string, appName string) (saas_manager_service.SubscriptionAssignmentResponseObject, *CommandResponse, error) {
+func (f *accountsSubaccountFacade) Unsubscribe(ctx context.Context, subaccountId string, appName string) (saas_manager_service.SubscriptionAssignmentResponseObject, CommandResponse, error) {
 	return doExecute[saas_manager_service.SubscriptionAssignmentResponseObject](f.cliClient, ctx, NewUnsubscribeRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 		"appName":    appName,

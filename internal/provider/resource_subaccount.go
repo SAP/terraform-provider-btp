@@ -88,7 +88,7 @@ __Further documentation:__
 				},
 			},
 			"parent_id": schema.StringAttribute{
-				MarkdownDescription: "The GUID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the GUID of the global account.",
+				MarkdownDescription: "The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.",
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
@@ -295,12 +295,12 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		Refresh: func() (interface{}, string, error) {
 			subRes, comRes, err := rs.cli.Accounts.Subaccount.Get(ctx, cliRes.Guid)
 
-			if err != nil {
-				return subRes, subRes.State, err
+			if comRes.StatusCode == http.StatusNotFound {
+				return subRes, "DELETED", nil
 			}
 
-			if comRes.StatusCode == http.StatusNotFound {
-				return subRes, "DELETED", err
+			if err != nil {
+				return subRes, subRes.State, err
 			}
 
 			return subRes, subRes.State, nil

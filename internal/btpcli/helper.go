@@ -20,7 +20,7 @@ func nthElementOrDefault[T any](slice []T, n int, defaultValue T) T {
 	return slice[n]
 }
 
-func doExecute[T interface{}](cliClient *v2Client, ctx context.Context, req *CommandRequest, options ...CommandOptions) (T, *CommandResponse, error) {
+func doExecute[T interface{}](cliClient *v2Client, ctx context.Context, req *CommandRequest, options ...CommandOptions) (T, CommandResponse, error) {
 	var obj T
 
 	res, err := cliClient.Execute(ctx, req, options...)

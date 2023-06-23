@@ -19,13 +19,13 @@ func (f *accountsEnvironmentInstanceFacade) getCommand() string {
 	return "accounts/environment-instance"
 }
 
-func (f *accountsEnvironmentInstanceFacade) List(ctx context.Context, subaccountId string) (provisioning.EnvironmentInstancesResponseCollection, *CommandResponse, error) {
+func (f *accountsEnvironmentInstanceFacade) List(ctx context.Context, subaccountId string) (provisioning.EnvironmentInstancesResponseCollection, CommandResponse, error) {
 	return doExecute[provisioning.EnvironmentInstancesResponseCollection](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 	}))
 }
 
-func (f *accountsEnvironmentInstanceFacade) Get(ctx context.Context, subaccountId string, environmentId string) (provisioning.EnvironmentInstanceResponseObject, *CommandResponse, error) {
+func (f *accountsEnvironmentInstanceFacade) Get(ctx context.Context, subaccountId string, environmentId string) (provisioning.EnvironmentInstanceResponseObject, CommandResponse, error) {
 	return doExecute[provisioning.EnvironmentInstanceResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"subaccount":    subaccountId,
 		"environmentID": environmentId,
@@ -42,17 +42,17 @@ type SubaccountEnvironmentInstanceCreateInput struct {
 	SubaccountID    string `btpcli:"subaccount"`
 }
 
-func (f *accountsEnvironmentInstanceFacade) Create(ctx context.Context, args *SubaccountEnvironmentInstanceCreateInput) (provisioning.EnvironmentInstanceResponseObject, *CommandResponse, error) {
+func (f *accountsEnvironmentInstanceFacade) Create(ctx context.Context, args *SubaccountEnvironmentInstanceCreateInput) (provisioning.EnvironmentInstanceResponseObject, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return provisioning.EnvironmentInstanceResponseObject{}, nil, err
+		return provisioning.EnvironmentInstanceResponseObject{}, CommandResponse{}, err
 	}
 
 	return doExecute[provisioning.EnvironmentInstanceResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *accountsEnvironmentInstanceFacade) Delete(ctx context.Context, subaccountId string, environmentId string) (provisioning.EnvironmentInstanceResponseObject, *CommandResponse, error) {
+func (f *accountsEnvironmentInstanceFacade) Delete(ctx context.Context, subaccountId string, environmentId string) (provisioning.EnvironmentInstanceResponseObject, CommandResponse, error) {
 	return doExecute[provisioning.EnvironmentInstanceResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"subaccount":    subaccountId,
 		"environmentID": environmentId,

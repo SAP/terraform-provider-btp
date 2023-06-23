@@ -14,7 +14,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 	// TODO: we need an additional test in a global account
 	// without a configured trust configuration
 
-	t.Run("happy path - trust config exists", func(t *testing.T) {
+	t.Run("error path - trust config does already exist", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.exists")
 		defer stopQuietly(rec)
 
@@ -23,9 +23,8 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceGlobalaccountTrustConfigurationSimple("uut", "terraformint.accounts400.ondemand.com"),
-					// TODO: we need to work on a good error message for an account that already has a trust configuration
-					ExpectError: regexp.MustCompile(`invalid character 'L' looking for beginning of value`),
+					Config:      hclProvider() + hclResourceGlobalaccountTrustConfigurationSimple("uut", "terraformint.accounts400.ondemand.com"),
+					ExpectError: regexp.MustCompile(`the backend responded with an unknown error: 400`), //FIXME NGPBUG-350117
 				},
 			},
 		})
@@ -34,10 +33,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 }
 
 func hclResourceGlobalaccountTrustConfigurationSimple(resourceName string, identityProvider string) string {
-	template := `
-resource "btp_globalaccount_trust_configuration" "%s" {
-    identity_provider  	= "%s"
-}`
+	template := `resource "btp_globalaccount_trust_configuration" "%s" { identity_provider = "%s" }`
 
 	return fmt.Sprintf(template, resourceName, identityProvider)
 }

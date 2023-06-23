@@ -52,7 +52,7 @@ Read-Only:
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `name` (String) A descriptive name of the subaccount for customer-facing UIs.
 - `parent_features` (Set of String) The features of parent entity of the subaccount.
-- `parent_id` (String) The GUID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the GUID of the global account.
+- `parent_id` (String) The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.
 - `region` (String) The region in which the subaccount was created.
 - `state` (String) The current state of the subaccount. Possible values are: 
 	 - `OK`

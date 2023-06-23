@@ -18,7 +18,7 @@ func (f *accountsSubscriptionFacade) getCommand() string {
 	return "accounts/subscription"
 }
 
-func (f *accountsSubscriptionFacade) List(ctx context.Context, subaccountId string) ([]saas_manager_service.EntitledApplicationsResponseObject, *CommandResponse, error) {
+func (f *accountsSubscriptionFacade) List(ctx context.Context, subaccountId string) ([]saas_manager_service.EntitledApplicationsResponseObject, CommandResponse, error) {
 	type wrapper struct { // FIXME should be in types package
 		Applications []saas_manager_service.EntitledApplicationsResponseObject `json:"applications"`
 	}
@@ -30,7 +30,7 @@ func (f *accountsSubscriptionFacade) List(ctx context.Context, subaccountId stri
 	return data.Applications, res, err
 }
 
-func (f *accountsSubscriptionFacade) Get(ctx context.Context, subaccountId string, appName string, planName string) (saas_manager_service.EntitledApplicationsResponseObject, *CommandResponse, error) {
+func (f *accountsSubscriptionFacade) Get(ctx context.Context, subaccountId string, appName string, planName string) (saas_manager_service.EntitledApplicationsResponseObject, CommandResponse, error) {
 	params := map[string]string{
 		"subaccount": subaccountId,
 		"appName":    appName,
