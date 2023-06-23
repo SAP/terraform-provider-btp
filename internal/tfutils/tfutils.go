@@ -80,6 +80,7 @@ func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 			value = fmt.Sprintf("%v", fieldVal.ValueBool())
 		case "bool":
 			fieldVal := field.Interface().(bool)
+
 			value = fmt.Sprintf("%v", fieldVal)
 		case "string":
 			value = field.Interface().(string)

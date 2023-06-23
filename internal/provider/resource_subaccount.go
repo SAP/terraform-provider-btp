@@ -205,7 +205,34 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	cliRes, _, err := rs.cli.Accounts.Subaccount.Create(ctx, plan.Name.ValueString(), plan.Subdomain.ValueString(), plan.Region.ValueString())
+	args := btpcli.SubaccountCreateInput{
+		DisplayName: plan.Name.ValueString(),
+		Subdomain:   plan.Subdomain.ValueString(),
+		Region:      plan.Region.ValueString(),
+	}
+
+	if !plan.Description.IsUnknown() {
+		description := plan.Description.ValueString()
+		args.Description = description
+	}
+
+	if !plan.ParentID.IsUnknown() {
+		parentID := plan.ParentID.ValueString()
+		args.Directory = parentID
+	}
+
+	if plan.BetaEnabled.IsUnknown() {
+		betaEnabled := plan.BetaEnabled.ValueBool()
+		args.BetaEnabled = betaEnabled
+	}
+
+	if !plan.Labels.IsUnknown() {
+		var labels map[string][]string
+		plan.Labels.ElementsAs(ctx, &labels, false)
+		args.Labels = labels
+	}
+
+	cliRes, _, err := rs.cli.Accounts.Subaccount.Create(ctx, &args)
 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Subaccount", fmt.Sprintf("%s", err))
