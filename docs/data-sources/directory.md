@@ -43,9 +43,9 @@ data "btp_directory" "by_id" {
 
   | value | description |
   | ----- | ----------- |
-  | DEFAULT | All directories have the following basic feature enabled: <br> 1. Group and filter subaccounts for reports and filters <br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)<br> 3. Set custom properties and tags to the directory for identification and reporting purposes. |
-  | ENTITLEMENTS | Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory. |
-  | AUTHORIZATIONS | Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature. |
+  | `DEFAULT` | All directories have the following basic feature enabled: <br> 1. Group and filter subaccounts for reports and filters <br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)<br> 3. Set custom properties and tags to the directory for identification and reporting purposes. |
+  | `ENTITLEMENTS` | Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory. |
+  | `AUTHORIZATIONS` | Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature. |
 - `labels` (Map of Set of String) Set of words or phrases assigned to the directory.
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `name` (String) The display name of the directory.
@@ -54,19 +54,19 @@ data "btp_directory" "by_id" {
 
   | state | description |
   | ----- | ----------- |
-  | OK | The CRUD operation or series of operations completed successfully. |
-  | STARTED | CRUD operation on an entity has started. |
-  | CANCELLED | The operation or processing was canceled by the operator. |
-  | PROCESSING | A series of operations related to the entity is in progress. |
-  | PROCESSING_FAILED | The processing operations failed. |
-  | CREATING | Creating entity operation is in progress. |
-  | CREATION_FAILED | The creation operation failed, and the entity was not created or was created but cannot be used. |
-  | UPDATING | Updating entity operation is in progress. |
-  | UPDATE_FAILED | The update operation failed, and the entity was not updated. |
-  | MOVING | Moving entity operation is in progress. |
-  | MOVE_FAILED | Entity could not be moved to a different location. |
-  | DELETING | Deleting entity operation is in progress. |
-  | DELETION_FAILED | The delete operation failed, and the entity was not deleted. |
-  | PENDING REVIEW | The processing operation has been stopped for reviewing and can be restarted by the operator. |
-  | MIGRATING | Migrating entity from NEO to CF. |
+  | `OK` | The CRUD operation or series of operations completed successfully. |
+  | `STARTED` | CRUD operation on an entity has started. |
+  | `CANCELLED` | The operation or processing was canceled by the operator. |
+  | `PROCESSING` | A series of operations related to the entity is in progress. |
+  | `PROCESSING_FAILED` | The processing operations failed. |
+  | `CREATING` | Creating entity operation is in progress. |
+  | `CREATION_FAILED` | The creation operation failed, and the entity was not created or was created but cannot be used. |
+  | `UPDATING` | Updating entity operation is in progress. |
+  | `UPDATE_FAILED` | The update operation failed, and the entity was not updated. |
+  | `MOVING` | Moving entity operation is in progress. |
+  | `MOVE_FAILED` | Entity could not be moved to a different location. |
+  | `DELETING` | Deleting entity operation is in progress. |
+  | `DELETION_FAILED` | The delete operation failed, and the entity was not deleted. |
+  | `PENDING REVIEW` | The processing operation has been stopped for reviewing and can be restarted by the operator. |
+  | `MIGRATING` | Migrating entity from NEO to CF. |
 - `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain is part of the path used to access the authorization tenant of the directory.
