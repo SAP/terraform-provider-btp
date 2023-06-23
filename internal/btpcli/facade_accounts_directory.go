@@ -31,6 +31,7 @@ type DirectoryCreateInput struct {
 	Description *string `btpcli:"description"`
 	ParentID    *string `btpcli:"parentID"`
 	Subdomain   *string `btpcli:"subdomain"`
+	Labels      string  `btpcli:"labels"`
 }
 
 func (f *accountsDirectoryFacade) Create(ctx context.Context, args *DirectoryCreateInput) (cis.DirectoryResponseObject, *CommandResponse, error) {

@@ -89,6 +89,14 @@ __Further documentation:__
 					stringvalidator.RegexMatches(regexp.MustCompile("^[a-z0-9](?:[a-z0-9|-]{0,61}[a-z0-9])?$"), "must only contain letters (a-z), digits (0-9), and hyphens (not at the start or end)"),
 				},
 			},
+			"labels": schema.MapAttribute{
+				ElementType: types.SetType{
+					ElemType: types.StringType,
+				},
+				MarkdownDescription: "Contains information about the labels assigned to a specified global account. Labels are represented in a JSON array of key-value pairs; each key has up to 10 corresponding values.",
+				Optional:            true,
+				Computed:            true,
+			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",
 				Computed:            true,
@@ -112,13 +120,6 @@ __Further documentation:__
 					"\n\t - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory." +
 					"\n\t - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.",
 				Computed: true,
-			},
-			"labels": schema.MapAttribute{
-				ElementType: types.SetType{
-					ElemType: types.StringType,
-				},
-				MarkdownDescription: "Contains information about the labels assigned to a specified global account. Labels are represented in a JSON array of key-value pairs; each key has up to 10 corresponding values.",
-				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
 				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
