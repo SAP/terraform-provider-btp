@@ -58,7 +58,7 @@ func (ds *subaccountRoleDataSource) Configure(_ context.Context, req datasource.
 
 func (ds *subaccountRoleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a specific subaccount role.`,
+		MarkdownDescription: `Gets details about a specific subaccount role.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
