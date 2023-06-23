@@ -2,24 +2,19 @@
 page_title: "btp_globalaccount_entitlements Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Get all the entitlements and quota assignments for a global account.
+  Gets all the entitlements and quota assignments for a global account.
   To view all the resources a global account:
   * Target only the global account in the command line.
   * You must be assigned to either the global account admin or global account viewers role.
-  Tip:
-  You must be assigned to one of these roles: global account admin, global account viewer.
 ---
 
 # btp_globalaccount_entitlements (Data Source)
 
-Get all the entitlements and quota assignments for a global account.
+Gets all the entitlements and quota assignments for a global account.
 
 To view all the resources a global account:
 * Target only the global account in the command line.
 * You must be assigned to either the global account admin or global account viewers role.
-
-__Tip:__
-You must be assigned to one of these roles: global account admin, global account viewer.
 
 ## Example Usage
 
