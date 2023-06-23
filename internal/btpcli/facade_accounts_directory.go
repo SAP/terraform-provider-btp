@@ -27,11 +27,11 @@ func (f *accountsDirectoryFacade) Get(ctx context.Context, directoryId string) (
 }
 
 type DirectoryCreateInput struct {
-	DisplayName string  `btpcli:"displayName"`
-	Description *string `btpcli:"description"`
-	ParentID    *string `btpcli:"parentID"`
-	Subdomain   *string `btpcli:"subdomain"`
-	Labels      string  `btpcli:"labels"`
+	DisplayName string              `btpcli:"displayName"`
+	Description *string             `btpcli:"description"`
+	ParentID    *string             `btpcli:"parentID"`
+	Subdomain   *string             `btpcli:"subdomain"`
+	Labels      map[string][]string `btpcli:"labels"`
 }
 
 func (f *accountsDirectoryFacade) Create(ctx context.Context, args *DirectoryCreateInput) (cis.DirectoryResponseObject, *CommandResponse, error) {

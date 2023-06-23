@@ -199,6 +199,12 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 		args.Subdomain = &subdomain
 	}
 
+	if !plan.Labels.IsUnknown() {
+		var labels map[string][]string
+		plan.Labels.ElementsAs(ctx, &labels, false)
+		args.Labels = labels
+	}
+
 	cliRes, _, err := rs.cli.Accounts.Directory.Create(ctx, &args)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Directory", fmt.Sprintf("%s", err))
