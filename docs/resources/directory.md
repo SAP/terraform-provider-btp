@@ -49,7 +49,7 @@ resource "btp_directory" "child" {
 ### Optional
 
 - `description` (String) A description of the directory.
-- `parent_id` (String) The GUID of the directory's parent entity. Typically this is the global account.
+- `parent_id` (String) The ID of the directory's parent entity. Typically this is the global account.
 - `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. It has to be unique within the defined region.
 
 ### Read-Only
@@ -81,7 +81,7 @@ resource "btp_directory" "child" {
 	 - `PROCESSING_FAILED` The processing operations failed.
 	 - `DELETION_FAILED` The delete operation failed, and the entity was not deleted.
 	 - `MOVE_FAILED` Entity could not be moved to a different location.
-	 - `MIGRATING` Migrating entity from NEO to CF.
+	 - `MIGRATING` Migrating entity from Neo to Cloud Foundry.
 
 ## Import
 

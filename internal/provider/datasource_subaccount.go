@@ -79,7 +79,7 @@ You must be assigned to the admin or viewer role of the global account, director
 				Computed:            true,
 			},
 			"parent_id": schema.StringAttribute{
-				MarkdownDescription: "The GUID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the GUID of the global account.",
+				MarkdownDescription: "The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.",
 				Computed:            true,
 			},
 			"parent_features": schema.SetAttribute{

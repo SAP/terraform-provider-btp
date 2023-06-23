@@ -167,7 +167,7 @@ __Further documentation:__
 					"\n\t - `PROCESSING_FAILED` The processing operations failed." +
 					"\n\t - `DELETION_FAILED` The delete operation failed, and the entity was not deleted." +
 					"\n\t - `MOVE_FAILED` Entity could not be moved to a different location." +
-					"\n\t - `MIGRATING` Migrating entity from NEO to CF.",
+					"\n\t - `MIGRATING` Migrating entity from Neo to Cloud Foundry.",
 				Computed: true,
 			},
 			"created_date": schema.StringAttribute{
