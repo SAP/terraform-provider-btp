@@ -265,9 +265,62 @@ func TestV2Client_Execute(t *testing.T) {
 			},
 		}
 
-		_, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
+		cmdRes, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
 		assert.NoError(t, err)
+		assert.Equal(t, 201, cmdRes.StatusCode)
+	})
+	t.Run("backend error handling", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "my.custom.idp", r.Header.Get(HeaderCLICustomIDP))
+			w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 500))
+			w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
+			fmt.Fprintf(w, `{"error":"this is a backend error"}`)
+		}))
+		defer srv.Close()
+
+		srvUrl, _ := url.Parse(srv.URL)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut.session = &Session{
+			GlobalAccountSubdomain: "globalaccount-subdomain",
+			IdentityProvider:       "my.custom.idp",
+			LoggedInUser: &v2LoggedInUser{
+				Email:    "john.doe@int.test",
+				Username: "john.doe@int.test",
+				Issuer:   "customidp.accounts.ondemand.com",
+			},
+		}
+
+		cmdRes, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
+
+		assert.EqualError(t, err, "this is a backend error")
+		assert.Equal(t, 500, cmdRes.StatusCode)
+	})
+	t.Run("backend error handling - incompatible error message", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "my.custom.idp", r.Header.Get(HeaderCLICustomIDP))
+			w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 500))
+			w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
+			fmt.Fprintf(w, `this is a backend error`)
+		}))
+		defer srv.Close()
+
+		srvUrl, _ := url.Parse(srv.URL)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut.session = &Session{
+			GlobalAccountSubdomain: "globalaccount-subdomain",
+			IdentityProvider:       "my.custom.idp",
+			LoggedInUser: &v2LoggedInUser{
+				Email:    "john.doe@int.test",
+				Username: "john.doe@int.test",
+				Issuer:   "customidp.accounts.ondemand.com",
+			},
+		}
+
+		cmdRes, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
+
+		assert.EqualError(t, err, "the backend responded with an unknown error: 500")
+		assert.Equal(t, 500, cmdRes.StatusCode)
 	})
 }
 

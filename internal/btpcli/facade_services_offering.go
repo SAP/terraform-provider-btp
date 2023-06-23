@@ -18,7 +18,7 @@ func (f servicesOfferingFacade) getCommand() string {
 	return "services/offering"
 }
 
-func (f servicesOfferingFacade) List(ctx context.Context, subaccountId string, fieldsFilter string, labelsFilter string, environment string) ([]servicemanager.ServiceOfferingResponseObject, *CommandResponse, error) {
+func (f servicesOfferingFacade) List(ctx context.Context, subaccountId string, fieldsFilter string, labelsFilter string, environment string) ([]servicemanager.ServiceOfferingResponseObject, CommandResponse, error) {
 	params := map[string]string{
 		"subaccount": subaccountId,
 	}
@@ -38,14 +38,14 @@ func (f servicesOfferingFacade) List(ctx context.Context, subaccountId string, f
 	return doExecute[[]servicemanager.ServiceOfferingResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), params))
 }
 
-func (f servicesOfferingFacade) GetById(ctx context.Context, subaccountId string, offeringId string) (servicemanager.ServiceOfferingResponseObject, *CommandResponse, error) {
+func (f servicesOfferingFacade) GetById(ctx context.Context, subaccountId string, offeringId string) (servicemanager.ServiceOfferingResponseObject, CommandResponse, error) {
 	return doExecute[servicemanager.ServiceOfferingResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 		"id":         offeringId,
 	}))
 }
 
-func (f servicesOfferingFacade) GetByName(ctx context.Context, subaccountId string, offeringName string) (servicemanager.ServiceOfferingResponseObject, *CommandResponse, error) {
+func (f servicesOfferingFacade) GetByName(ctx context.Context, subaccountId string, offeringName string) (servicemanager.ServiceOfferingResponseObject, CommandResponse, error) {
 	return doExecute[servicemanager.ServiceOfferingResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 		"name":       offeringName,

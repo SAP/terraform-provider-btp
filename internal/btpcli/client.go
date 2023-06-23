@@ -197,7 +197,7 @@ func (v2 *v2Client) Logout(ctx context.Context, logoutReq *LogoutRequest) (*Logo
 }
 
 // Execute executes a command
-func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options ...CommandOptions) (*CommandResponse, error) {
+func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options ...CommandOptions) (cmdRes CommandResponse, err error) {
 	ctx = v2.initTrace(ctx)
 
 	wrappedArgs := struct {
@@ -209,29 +209,38 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 	res, err := v2.doPostRequest(ctx, fmt.Sprintf("%s?%s", path.Join("command", cliTargetProtocolVersion, cmdReq.Command), cmdReq.Action), wrappedArgs)
 
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	opts := firstElementOrDefault(options, CommandOptions{GoodState: http.StatusOK, KnownErrorStates: map[int]string{}})
 	opts.KnownErrorStates[http.StatusGatewayTimeout] = "Command timed out. Please try again later."
 
 	if err = v2.checkResponseForErrors(ctx, res, opts.GoodState, opts.KnownErrorStates); err != nil {
-		return nil, err
+		return
 	}
 
-	var backendStatusCode int
-
-	if convertedBackendStatusCode, err := strconv.Atoi(res.Header.Get(HeaderCLIBackendStatus)); err == nil {
-		backendStatusCode = convertedBackendStatusCode
-	} else {
-		return nil, fmt.Errorf("unable to convert reported backend status code: %w", err)
+	if cmdRes.StatusCode, err = strconv.Atoi(res.Header.Get(HeaderCLIBackendStatus)); err != nil {
+		err = fmt.Errorf("unable to convert reported backend status code: %w", err)
+		return
 	}
 
-	return &CommandResponse{
-		StatusCode:  backendStatusCode,
-		Body:        res.Body,
-		ContentType: res.Header.Get(HeaderCLIBackendMediaType),
-	}, nil
+	if cmdRes.StatusCode >= 400 {
+		var backendError struct {
+			Message string `json:"error"`
+		}
+
+		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {
+			err = fmt.Errorf(backendError.Message)
+		} else {
+			err = fmt.Errorf("the backend responded with an unknown error: %d", cmdRes.StatusCode)
+		}
+
+		return
+	}
+
+	cmdRes.Body = res.Body
+	cmdRes.ContentType = res.Header.Get(HeaderCLIBackendMediaType)
+	return
 }
 
 func (v2 *v2Client) GetGlobalAccountSubdomain() string {

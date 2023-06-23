@@ -71,7 +71,7 @@ __Further documentation:__
 				},
 			},
 			"parent_id": schema.StringAttribute{
-				MarkdownDescription: "The GUID of the directory's parent entity. Typically this is the global account.",
+				MarkdownDescription: "The ID of the directory's parent entity. Typically this is the global account.",
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
@@ -141,7 +141,7 @@ __Further documentation:__
 					"\n\t - `PROCESSING_FAILED` The processing operations failed." +
 					"\n\t - `DELETION_FAILED` The delete operation failed, and the entity was not deleted." +
 					"\n\t - `MOVE_FAILED` Entity could not be moved to a different location." +
-					"\n\t - `MIGRATING` Migrating entity from NEO to CF.",
+					"\n\t - `MIGRATING` Migrating entity from Neo to Cloud Foundry.",
 				Computed: true,
 			},
 		},
@@ -279,12 +279,12 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 		Refresh: func() (interface{}, string, error) {
 			subRes, comRes, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
 
-			if err != nil {
-				return subRes, subRes.EntityState, err
-			}
-
 			if comRes.StatusCode == http.StatusNotFound || comRes.StatusCode == http.StatusForbidden {
 				return subRes, "DELETED", nil
+			}
+
+			if err != nil {
+				return subRes, subRes.EntityState, err
 			}
 
 			return subRes, subRes.EntityState, nil

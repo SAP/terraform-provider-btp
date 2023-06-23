@@ -179,7 +179,7 @@ __Further documentation:__
 					getFormattedValueAsTableRow("`MOVING`", "Moving entity operation is in progress.") +
 					getFormattedValueAsTableRow("`MOVE_FAILED`", "Entity could not be moved to a different location.") +
 					getFormattedValueAsTableRow("`PENDING REVIEW`", "The processing operation has been stopped for reviewing and can be restarted by the operator.") +
-					getFormattedValueAsTableRow("`MIGRATING`", "Migrating entity from NEO to CF."),
+					getFormattedValueAsTableRow("`MIGRATING`", "Migrating entity from Migrating entity from Neo to Cloud Foundry."),
 				Computed: true,
 			},
 			"created_date": schema.StringAttribute{

@@ -19,25 +19,25 @@ func (f *accountsEntitlementFacade) getCommand() string {
 	return "accounts/entitlement"
 }
 
-func (f *accountsEntitlementFacade) ListByGlobalAccount(ctx context.Context) (cis_entitlements.EntitledAndAssignedServicesResponseObject, *CommandResponse, error) {
+func (f *accountsEntitlementFacade) ListByGlobalAccount(ctx context.Context) (cis_entitlements.EntitledAndAssignedServicesResponseObject, CommandResponse, error) {
 	return doExecute[cis_entitlements.EntitledAndAssignedServicesResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 	}))
 }
 
-func (f *accountsEntitlementFacade) ListBySubaccount(ctx context.Context, subaccountId string) (cis_entitlements.EntitledAndAssignedServicesResponseObject, *CommandResponse, error) {
+func (f *accountsEntitlementFacade) ListBySubaccount(ctx context.Context, subaccountId string) (cis_entitlements.EntitledAndAssignedServicesResponseObject, CommandResponse, error) {
 	return doExecute[cis_entitlements.EntitledAndAssignedServicesResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"subaccountFilter": subaccountId,
 	}))
 }
 
-func (f *accountsEntitlementFacade) ListByDirectory(ctx context.Context, directoryId string) (cis_entitlements.EntitledAndAssignedServicesResponseObject, *CommandResponse, error) {
+func (f *accountsEntitlementFacade) ListByDirectory(ctx context.Context, directoryId string) (cis_entitlements.EntitledAndAssignedServicesResponseObject, CommandResponse, error) {
 	return doExecute[cis_entitlements.EntitledAndAssignedServicesResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"directory": directoryId,
 	}))
 }
 
-func (f *accountsEntitlementFacade) AssignToSubaccount(ctx context.Context, subaccountId string, serviceName string, servicePlanName string, amount int) (*CommandResponse, error) {
+func (f *accountsEntitlementFacade) AssignToSubaccount(ctx context.Context, subaccountId string, serviceName string, servicePlanName string, amount int) (CommandResponse, error) {
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
 		"subaccount":      subaccountId,
 		"serviceName":     serviceName,
@@ -48,7 +48,7 @@ func (f *accountsEntitlementFacade) AssignToSubaccount(ctx context.Context, suba
 	return res, err
 }
 
-func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, subaccountId string, serviceName string, servicePlanName string) (*CommandResponse, error) {
+func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, subaccountId string, serviceName string, servicePlanName string) (CommandResponse, error) {
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
 		"subaccount":      subaccountId,
 		"serviceName":     serviceName,
@@ -59,7 +59,7 @@ func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, suba
 	return res, err
 }
 
-func (f *accountsEntitlementFacade) DisableInSubaccount(ctx context.Context, subaccountId string, serviceName string, servicePlanName string) (*CommandResponse, error) {
+func (f *accountsEntitlementFacade) DisableInSubaccount(ctx context.Context, subaccountId string, serviceName string, servicePlanName string) (CommandResponse, error) {
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
 		"subaccount":      subaccountId,
 		"serviceName":     serviceName,
@@ -76,7 +76,7 @@ type UnfoldedEntitlement struct {
 	Assignment cis_entitlements.AssignedServicePlanSubaccountDto
 }
 
-func (f *accountsEntitlementFacade) GetAssignedBySubaccount(ctx context.Context, subaccountId, serviceName string, servicePlanName string) (*UnfoldedEntitlement, *CommandResponse, error) {
+func (f *accountsEntitlementFacade) GetAssignedBySubaccount(ctx context.Context, subaccountId, serviceName string, servicePlanName string) (*UnfoldedEntitlement, CommandResponse, error) {
 	cliRes, comRes, err := f.ListBySubaccount(ctx, subaccountId)
 
 	if err != nil {
