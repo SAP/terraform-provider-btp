@@ -155,7 +155,7 @@ func TestServicesInstanceFacade_Create(t *testing.T) {
 	servicePlanId := "b50d1b0b-2059-4f21-a014-2ea87752eb48"
 	parameters := "{}"
 	labels := map[string][]string{
-		"a": []string{"b"},
+		"a": {"b"},
 	}
 
 	t.Run("constructs the CLI params correctly - with parameters set", func(t *testing.T) {
