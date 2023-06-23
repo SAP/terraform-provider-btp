@@ -24,6 +24,7 @@ func newDirectoryRoleCollectionAssignmentResource() resource.Resource {
 
 type directoryRoleCollectionAssignmentType struct {
 	DirectoryId        types.String `tfsdk:"directory_id"`
+	Id                 types.String `tfsdk:"id"`
 	RoleCollectionName types.String `tfsdk:"role_collection_name"`
 	Username           types.String `tfsdk:"user_name"`
 	Groupname          types.String `tfsdk:"group_name"`
@@ -59,6 +60,11 @@ func (rs *directoryRoleCollectionAssignmentResource) Schema(_ context.Context, _
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `role_collection_name` field instead",
+				MarkdownDescription: "The ID of the role collection",
+				Computed:            true,
 			},
 			"role_collection_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",

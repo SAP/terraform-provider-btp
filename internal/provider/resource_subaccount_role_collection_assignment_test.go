@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestResourceRolCollectionAssignment(t *testing.T) {
+func TestResourceSubaccountRoleCollectionAssignment(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - simple role collection assignment", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment")
@@ -19,7 +19,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceRoleCollectionAssignment("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "jenny.doe@test.com"),
+					Config: hclProvider() + hclResourceSubaccountRoleCollectionAssignment("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "jenny.doe@test.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
@@ -40,7 +40,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceRoleCollectionAssignmentWithOrigin("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
+					Config: hclProvider() + hclResourceSubaccountRoleCollectionAssignmentWithOrigin("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
@@ -78,7 +78,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 	})
 }
 
-func hclResourceRoleCollectionAssignment(resourceName string, subaccountId string, roleCollectionName string, userName string) string {
+func hclResourceSubaccountRoleCollectionAssignment(resourceName string, subaccountId string, roleCollectionName string, userName string) string {
 
 	return fmt.Sprintf(`
 resource "btp_subaccount_role_collection_assignment" "%s"{
@@ -88,7 +88,7 @@ resource "btp_subaccount_role_collection_assignment" "%s"{
 }`, resourceName, subaccountId, roleCollectionName, userName)
 }
 
-func hclResourceRoleCollectionAssignmentWithOrigin(resourceName string, subaccountId string, roleCollectionName string, userName string, origin string) string {
+func hclResourceSubaccountRoleCollectionAssignmentWithOrigin(resourceName string, subaccountId string, roleCollectionName string, userName string, origin string) string {
 
 	return fmt.Sprintf(`
 resource "btp_subaccount_role_collection_assignment" "%s"{
