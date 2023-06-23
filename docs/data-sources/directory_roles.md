@@ -2,14 +2,14 @@
 page_title: "btp_directory_roles Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Lists all roles.
+  Gets all roles.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_directory_roles (Data Source)
 
-Lists all roles.
+Gets all roles.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>

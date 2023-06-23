@@ -2,12 +2,12 @@
 page_title: "btp_directory_role_collections Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Lists all role collections.
+  Gets all role collections.
 ---
 
 # btp_directory_role_collections (Data Source)
 
-Lists all role collections.
+Gets all role collections.
 
 ## Example Usage
 
