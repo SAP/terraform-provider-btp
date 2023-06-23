@@ -1,6 +1,7 @@
 # Terraform Provider for SAP BTP
 
 ![Golang](https://img.shields.io/badge/Go-1.20-informational)
+[![Go Report Card](https://goreportcard.com/badge/github.com/SAP/terraform-provider-btp)](https://goreportcard.com/report/github.com/SAP/terraform-provider-btp)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SAP_terraform-provider-btp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=SAP_terraform-provider-btp)
 [![CodeQL](https://github.com/SAP/terraform-provider-btp/actions/workflows/codeql.yml/badge.svg)](https://github.com/SAP/terraform-provider-btp/actions/workflows/codeql.yml)
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/terraform-provider-btp)](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp)
