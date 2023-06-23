@@ -42,3 +42,4 @@ resource "btp_globalaccount_role_collection_assignment" "globalaccount_viewer_gr
 
 - `id` (String, Deprecated) The ID of the role collection
 
+
