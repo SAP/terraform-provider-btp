@@ -2,17 +2,17 @@
 page_title: "btp_directory_entitlements Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Get all the entitlements and quota assignments for a directory.
-  To view all the resources that a directory and its subdirectories and subaccounts are entitled to use:
+  Gets all the entitlements and quota assignments for a directory.
+  To view all the resources that a directory and its subdirectories and subaccounts are entitled to use, the following condition must be met:
   * The directory must be a directory that is configured to manage its own entitlements.
   * You must be assigned to either the global account admin or global account viewers role.
 ---
 
 # btp_directory_entitlements (Data Source)
 
-Get all the entitlements and quota assignments for a directory.
+Gets all the entitlements and quota assignments for a directory.
 
-To view all the resources that a directory and its subdirectories and subaccounts are entitled to use:
+To view all the resources that a directory and its subdirectories and subaccounts are entitled to use, the following condition must be met:
 * The directory must be a directory that is configured to manage its own entitlements.
 * You must be assigned to either the global account admin or global account viewers role.
 

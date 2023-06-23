@@ -43,9 +43,9 @@ func (ds *directoryEntitlementsDataSource) Configure(_ context.Context, req data
 
 func (ds *directoryEntitlementsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get all the entitlements and quota assignments for a directory.
+		MarkdownDescription: `Gets all the entitlements and quota assignments for a directory.
 
-To view all the resources that a directory and its subdirectories and subaccounts are entitled to use:
+To view all the resources that a directory and its subdirectories and subaccounts are entitled to use, the following condition must be met:
 * The directory must be a directory that is configured to manage its own entitlements.
 * You must be assigned to either the global account admin or global account viewers role.`,
 		Attributes: map[string]schema.Attribute{
