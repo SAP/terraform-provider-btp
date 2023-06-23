@@ -18,7 +18,7 @@ func (f *accountsAvailableRegionFacade) getCommand() string {
 	return "accounts/available-region"
 }
 
-func (f *accountsAvailableRegionFacade) List(ctx context.Context) (cis.DataCenterResponseCollection, *CommandResponse, error) {
+func (f *accountsAvailableRegionFacade) List(ctx context.Context) (cis.DataCenterResponseCollection, CommandResponse, error) {
 	return doExecute[cis.DataCenterResponseCollection](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 	}))

@@ -18,7 +18,7 @@ func (f *accountsGlobalAccountFacade) getCommand() string {
 	return "accounts/global-account"
 }
 
-func (f *accountsGlobalAccountFacade) Get(ctx context.Context) (cis.GlobalAccountResponseObject, *CommandResponse, error) {
+func (f *accountsGlobalAccountFacade) Get(ctx context.Context) (cis.GlobalAccountResponseObject, CommandResponse, error) {
 	return doExecute[cis.GlobalAccountResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 	}))

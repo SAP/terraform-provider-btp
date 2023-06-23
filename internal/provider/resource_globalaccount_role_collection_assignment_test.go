@@ -19,9 +19,9 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceGlobalaccountRoleCollectionAssignment("uut", "Destination Administrator", "jenny.doe@test.com"),
+					Config: hclProvider() + hclResourceGlobalaccountRoleCollectionAssignment("uut", "Global Account Viewer", "jenny.doe@test.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "role_collection_name", "Global Account Viewer"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "user_name", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "origin", "ldap"),
 					),
@@ -39,9 +39,9 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceGlobalaccountRoleCollectionAssignmentWithOrigin("uut", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
+					Config: hclProvider() + hclResourceGlobalaccountRoleCollectionAssignmentWithOrigin("uut", "Global Account Viewer", "john.doe@test.com", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "role_collection_name", "Global Account Viewer"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "user_name", "john.doe@test.com"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
 					),

@@ -279,12 +279,12 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 		Refresh: func() (interface{}, string, error) {
 			subRes, comRes, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
 
-			if err != nil {
-				return subRes, subRes.EntityState, err
-			}
-
 			if comRes.StatusCode == http.StatusNotFound || comRes.StatusCode == http.StatusForbidden {
 				return subRes, "DELETED", nil
+			}
+
+			if err != nil {
+				return subRes, subRes.EntityState, err
 			}
 
 			return subRes, subRes.EntityState, nil

@@ -42,6 +42,21 @@ func TestDataSourceSubaccount(t *testing.T) {
 			},
 		})
 	})
+	t.Run("error path - subaccount doesn't exist", func(t *testing.T) {
+		rec := setupVCR(t, "fixtures/datasource_subaccount.err_subaccount_doesnt_exist")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProvider() + hclDatasourceSubaccount("test", "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+					ExpectError: regexp.MustCompile(`404 Not Found: \[no body\] \[Error: 404\]`), // TODO improve error text
+				},
+			},
+		})
+	})
 	t.Run("error path - id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
