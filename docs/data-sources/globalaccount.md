@@ -2,7 +2,7 @@
 page_title: "btp_globalaccount Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Get details about a global account.
+  Gets details about a global account.
   Tip:
   You must be assigned to the global account admin or viewer role.
   Further documentation:
@@ -11,7 +11,7 @@ description: |-
 
 # btp_globalaccount (Data Source)
 
-Get details about a global account.
+Gets details about a global account.
 
 __Tip:__
 You must be assigned to the global account admin or viewer role.
@@ -31,11 +31,14 @@ data "btp_globalaccount" "this" {}
 ### Read-Only
 
 - `commercial_model` (String) The type of the commercial contract that was signed.
-- `consumption_based` (Boolean) Whether the customer of the global account pays only for services that they actually use (consumption-based) or pay for subscribed services at a fixed cost irrespective of consumption (subscription-based).
+- `consumption_based` (Boolean) Whether the customer of the global account pays only for services that they actually use (consumption-based) or pays for subscribed services at a fixed cost irrespective of consumption (subscription-based).
 - `contract_status` (String) The status of the customer contract and its associated root global account. Possible values are: 
-	 - `ACTIVE` The customer contract and its associated global account is currently active.
-	 - `PENDING_TERMINATION` A termination process has been triggered for a customer contract (the customer contract has expired, or a customer has given notification that they wish to terminate their contract), and the global account is currently in the validation period. The customer can still access their global account until the end of the validation period.
-	 - `SUSPENDED` For enterprise accounts, specifies that the customer's global account is currently in the grace period of the termination process. Access to the global account by the customer is blocked. No data is deleted until the deletion date is reached at the end of the grace period. For trial accounts, specifies that the account is suspended, and the account owner has not yet extended the trial period.
+
+  | status | description | 
+  | --- | --- | 
+  | `ACTIVE` | The customer contract and its associated global account is currently active. | 
+  | `PENDING_TERMINATION` | A termination process has been triggered for a customer contract (the customer contract has expired, or a customer has given notification that they wish to terminate their contract), and the global account is currently in the validation period. The customer can still access their global account until the end of the validation period. | 
+  | `SUSPENDED` | For enterprise accounts, specifies that the customer's global account is currently in the grace period of the termination process. Access to the global account by the customer is blocked. No data is deleted until the deletion date is reached at the end of the grace period. For trial accounts, specifies that the account is suspended, and the account owner has not yet extended the trial period. |
 - `costobject_id` (String) The number or code of the cost center, internal order, or Work Breakdown Structure element that is charged for the creation and usage of the global account. The type of the cost object must be configured in `costobject_type`.
 - `costobject_type` (String) The type of accounting assignment object that is associated with the global account owner and used to charge for the creation and usage of the global account. The number or code of the specified cost object is defined in `costobject_id`. Possible values are: 
 	 - `COST_CENTER`
@@ -47,43 +50,58 @@ data "btp_globalaccount" "this" {}
 - `description` (String) The description of the global account.
 - `expiry_date` (String) The planned date that the global account expires. This is the same date as the Contract End Date, unless a manual adjustment has been made to the actual expiration date of the global account. Typically, this property is automatically populated only when a formal termination order is received from the CRM system. From a customer perspective, this date marks the start of the grace period, which is typically 30 days before the actual deletion of the account.
 - `geo_access` (String) The geographic locations from where the global account can be accessed. Possible values are: 
-	 - `STANDARD` The global account can be accessed from any geographic location.
-	 - `EU_ACCESS` The global account can be accessed only within locations in the EU.
+
+  | value | description | 
+  | --- | --- | 
+  | `STANDARD` | The global account can be accessed from any geographic location. | 
+  | `EU_ACCESS` | The global account can be accessed only within locations in the EU. |
 - `id` (String) The ID of the global account.
 - `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `license_type` (String) The type of license for the global account. The license type affects the scope of functions of the account. Possible values are: 
-	 - `DEVELOPER` For internal developer global accounts on Staging or Canary landscapes.
-	 - `CUSTOMER` For customer global accounts.
-	 - `PARTNER` For partner global accounts.
-	 - `INTERNAL_DEV` For internal global accounts on the Dev landscape.
-	 - `INTERNAL_PROD` For internal global accounts on the Live landscape.
-	 - `TRIAL` For customer trial accounts.
+
+  | type | description | 
+  | --- | --- | 
+  | `DEVELOPER`  | For internal developer global accounts on Staging or Canary landscapes. | 
+  | `CUSTOMER` | For customer global accounts. | 
+  | `PARTNER` | For partner global accounts. | 
+  | `INTERNAL_DEV` | For internal global accounts on the Dev landscape.  | 
+  | `INTERNAL_PROD` | For internal global accounts on the Live landscape. | 
+  | `TRIAL` | For customer trial accounts. |
 - `name` (String) The display name of the global account.
 - `origin` (String) The origin of the account. Possible values are: 
-	 - `ORDER` Created by the Order Processing API or Submit Order wizard.
-	 - `OPERATOR` Created by the Global Account wizard.
-	 - `REGION_SETUP` Created automatically as part of the region setup.
+
+  | origin | description | 
+  | --- | --- | 
+  | `ORDER` | Created by the Order Processing API or Submit Order wizard. | 
+  | `OPERATOR` | Created by the Global Account wizard. | 
+  | `REGION_SETUP` | Created automatically as part of the region setup. |
 - `renewal_date` (String) The date that an expired contract was renewed.
 - `service_id` (String) For internal accounts, the service for which the global account was created.
 - `state` (String) The current state of the global account. Possible values are: 
-	 - `STARTED` CRUD operation on an entity has started.
-	 - `CREATING` Creating entity operation is in progress.
-	 - `UPDATING` Updating entity operation is in progress.
-	 - `MOVING` Moving entity operation is in progress.
-	 - `PROCESSING` A series of operations related to the entity is in progress.
-	 - `DELETING` Deleting entity operation is in progress.
-	 - `OK` The CRUD operation or series of operations completed successfully.
-	 - `PENDING REVIEW` The processing operation has been stopped for reviewing and can be restarted by the operator.
-	 - `CANCELLED` The operation or processing was canceled by the operator.
-	 - `CREATION_FAILED` The creation operation failed, and the entity was not created or was created but cannot be used.
-	 - `UPDATE_FAILED` The update operation failed, and the entity was not updated.
-	 - `PROCESSING_FAILED` The processing operations failed.
-	 - `DELETION_FAILED` The delete operation failed, and the entity was not deleted.
-	 - `MOVE_FAILED` Entity could not be moved to a different location.
-	 - `MIGRATING` Migrating entity from NEO to CF.
+
+  | state | description | 
+  | --- | --- | 
+  | `OK` | The CRUD operation or series of operations completed successfully. | 
+  | `STARTED` | CRUD operation on an entity has started. | 
+  | `CANCELLED` | The operation or processing was canceled by the operator. | 
+  | `PROCESSING` | A series of operations related to the entity is in progress. | 
+  | `PROCESSING_FAILED` | The processing operations failed. | 
+  | `CREATING` | Creating entity operation is in progress. | 
+  | `CREATION_FAILED` | The creation operation failed, and the entity was not created or was created but cannot be used. | 
+  | `UPDATING` |  Updating entity operation is in progress. | 
+  | `UPDATE_FAILED` | The update operation failed, and the entity was not updated. | 
+  | `DELETING` | Deleting entity operation is in progress. | 
+  | `DELETION_FAILED` | The delete operation failed, and the entity was not deleted. | 
+  | `MOVING` | Moving entity operation is in progress. | 
+  | `MOVE_FAILED` | Entity could not be moved to a different location. | 
+  | `PENDING REVIEW` | The processing operation has been stopped for reviewing and can be restarted by the operator. | 
+  | `MIGRATING` | Migrating entity from NEO to CF. |
 - `subdomain` (String) The subdomain is part of the path used to access the authorization tenant of the global account.
 - `usage` (String) For internal accounts, the intended purpose of the global account. Possible values are: 
-	 - `Development` For development of a service.
-	 - `Testing` For testing development.
-	 - `Demo` For creating demos.
-	 - `Production` For delivering a service in a production landscape.
+
+  | usage | description | 
+  | --- | --- | 
+  | `Development` | For testing development. | 
+  | `Testing` | For testing development. | 
+  | `Demo` | For creating demos. | 
+  | `Production`  | For delivering a service in a production landscape. |
