@@ -90,6 +90,11 @@ func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 
 			value = field.Elem().Interface().(string)
 		case "map[string][]string": // FIXME would be nice to have `enodethisasjson` tag, instead of an explicit typemapping
+
+			if field.IsNil() {
+				continue
+			}
+
 			valueArr, err := json.Marshal(field.Interface())
 
 			if err != nil {
