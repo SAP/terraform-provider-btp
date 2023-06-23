@@ -65,14 +65,14 @@ __Further documentation:__
 			"features": schema.SetAttribute{
 				ElementType: types.StringType,
 				MarkdownDescription: "The features that are enabled for the directory. Possible values are: \n" +
-					"\n  | value | description |" +
-					"\n  | ----- | ----------- |" +
-					"\n  | `DEFAULT` | All directories have the following basic feature enabled: " +
-					"<br> 1. Group and filter subaccounts for reports and filters " +
-					"<br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)" +
-					"<br> 3. Set custom properties and tags to the directory for identification and reporting purposes. |" +
-					"\n  | `ENTITLEMENTS` | Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory. |" +
-					"\n  | `AUTHORIZATIONS` | Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature. |",
+					getFormattedValueAsTableRow("value", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`DEFAULT` ", "All directories have the following basic feature enabled:"+
+						"<br> 1. Group and filter subaccounts for reports and filters "+
+						"<br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)"+
+						"<br> 3. Set custom properties and tags to the directory for identification and reporting purposes.") +
+					getFormattedValueAsTableRow("`ENTITLEMENTS`", "Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.") +
+					getFormattedValueAsTableRow("`AUTHORIZATIONS`", "Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature."),
 				Computed: true,
 			},
 			"labels": schema.MapAttribute{
@@ -96,23 +96,23 @@ __Further documentation:__
 			},
 			"state": schema.StringAttribute{
 				MarkdownDescription: "The current state of the directory. Possible values are: \n" +
-					"\n  | state | description |" +
-					"\n  | ----- | ----------- |" +
-					"\n  | `OK` | The CRUD operation or series of operations completed successfully. |" +
-					"\n  | `STARTED` | CRUD operation on an entity has started. |" +
-					"\n  | `CANCELLED` | The operation or processing was canceled by the operator. |" +
-					"\n  | `PROCESSING` | A series of operations related to the entity is in progress. |" +
-					"\n  | `PROCESSING_FAILED` | The processing operations failed. |" +
-					"\n  | `CREATING` | Creating entity operation is in progress. |" +
-					"\n  | `CREATION_FAILED` | The creation operation failed, and the entity was not created or was created but cannot be used. |" +
-					"\n  | `UPDATING` | Updating entity operation is in progress. |" +
-					"\n  | `UPDATE_FAILED` | The update operation failed, and the entity was not updated. |" +
-					"\n  | `MOVING` | Moving entity operation is in progress. |" +
-					"\n  | `MOVE_FAILED` | Entity could not be moved to a different location. |" +
-					"\n  | `DELETING` | Deleting entity operation is in progress. |" +
-					"\n  | `DELETION_FAILED` | The delete operation failed, and the entity was not deleted. |" +
-					"\n  | `PENDING REVIEW` | The processing operation has been stopped for reviewing and can be restarted by the operator. |" +
-					"\n  | `MIGRATING` | Migrating entity from NEO to CF. |",
+					getFormattedValueAsTableRow("state", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`OK`", "The CRUD operation or series of operations completed successfully.") +
+					getFormattedValueAsTableRow("`STARTED`", "CRUD operation on an entity has started.") +
+					getFormattedValueAsTableRow("`CANCELLED`", "The operation or processing was canceled by the operator.") +
+					getFormattedValueAsTableRow("`PROCESSING`", "A series of operations related to the entity is in progress.") +
+					getFormattedValueAsTableRow("`PROCESSING_FAILED`", "The processing operations failed.") +
+					getFormattedValueAsTableRow("`CREATING`", "Creating entity operation is in progress.") +
+					getFormattedValueAsTableRow("`CREATION_FAILED`", "The creation operation failed, and the entity was not created or was created but cannot be used.") +
+					getFormattedValueAsTableRow("`UPDATING`", "Updating entity operation is in progress.") +
+					getFormattedValueAsTableRow("`UPDATE_FAILED`", "The update operation failed, and the entity was not updated.") +
+					getFormattedValueAsTableRow("`MOVING`", "Moving entity operation is in progress.") +
+					getFormattedValueAsTableRow("`MOVE_FAILED`", "Entity could not be moved to a different location.") +
+					getFormattedValueAsTableRow("`DELETING`", "Deleting entity operation is in progress.") +
+					getFormattedValueAsTableRow("`DELETION_FAILED`", "The delete operation failed, and the entity was not deleted.") +
+					getFormattedValueAsTableRow("`PENDING REVIEW`", "The processing operation has been stopped for reviewing and can be restarted by the operator.") +
+					getFormattedValueAsTableRow("`MIGRATING`", "Migrating entity from NEO to CF."),
 				Computed: true,
 			},
 			"subdomain": schema.StringAttribute{

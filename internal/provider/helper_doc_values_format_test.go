@@ -52,7 +52,7 @@ func TestToGetFormattedValue(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.description, func(t *testing.T) {
-			outputValue := getFormattedValue(test.value, test.descriptionValue)
+			outputValue := getFormattedValueAsTableRow(test.value, test.descriptionValue)
 
 			assert.Equal(t, test.expects, outputValue)
 		})
