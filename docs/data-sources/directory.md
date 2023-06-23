@@ -63,10 +63,10 @@ data "btp_directory" "by_id" {
   | `CREATION_FAILED` | The creation operation failed, and the entity was not created or was created but cannot be used. | 
   | `UPDATING` | Updating entity operation is in progress. | 
   | `UPDATE_FAILED` | The update operation failed, and the entity was not updated. | 
-  | `MOVING` | Moving entity operation is in progress. | 
-  | `MOVE_FAILED` | Entity could not be moved to a different location. | 
   | `DELETING` | Deleting entity operation is in progress. | 
   | `DELETION_FAILED` | The delete operation failed, and the entity was not deleted. | 
+  | `MOVING` | Moving entity operation is in progress. | 
+  | `MOVE_FAILED` | Entity could not be moved to a different location. | 
   | `PENDING REVIEW` | The processing operation has been stopped for reviewing and can be restarted by the operator. | 
   | `MIGRATING` | Migrating entity from NEO to CF. |
 - `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain is part of the path used to access the authorization tenant of the directory.

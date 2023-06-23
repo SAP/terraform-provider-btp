@@ -107,10 +107,10 @@ __Further documentation:__
 					getFormattedValueAsTableRow("`CREATION_FAILED`", "The creation operation failed, and the entity was not created or was created but cannot be used.") +
 					getFormattedValueAsTableRow("`UPDATING`", "Updating entity operation is in progress.") +
 					getFormattedValueAsTableRow("`UPDATE_FAILED`", "The update operation failed, and the entity was not updated.") +
-					getFormattedValueAsTableRow("`MOVING`", "Moving entity operation is in progress.") +
-					getFormattedValueAsTableRow("`MOVE_FAILED`", "Entity could not be moved to a different location.") +
 					getFormattedValueAsTableRow("`DELETING`", "Deleting entity operation is in progress.") +
 					getFormattedValueAsTableRow("`DELETION_FAILED`", "The delete operation failed, and the entity was not deleted.") +
+					getFormattedValueAsTableRow("`MOVING`", "Moving entity operation is in progress.") +
+					getFormattedValueAsTableRow("`MOVE_FAILED`", "Entity could not be moved to a different location.") +
 					getFormattedValueAsTableRow("`PENDING REVIEW`", "The processing operation has been stopped for reviewing and can be restarted by the operator.") +
 					getFormattedValueAsTableRow("`MIGRATING`", "Migrating entity from NEO to CF."),
 				Computed: true,
