@@ -47,10 +47,7 @@ func (ds *directoryEntitlementsDataSource) Schema(_ context.Context, _ datasourc
 
 To view all the resources that a directory and its subdirectories and subaccounts are entitled to use:
 * The directory must be a directory that is configured to manage its own entitlements.
-* You must be assigned to either the global account admin or global account viewers role.
-
-__Tip:__
-You must be assigned to one of these roles: global account admin, global account viewer`,
+* You must be assigned to either the global account admin or global account viewers role.`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",
