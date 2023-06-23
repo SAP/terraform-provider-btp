@@ -53,8 +53,8 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "user_name", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "origin", "terraformint-platform"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "active", "true"),
-                        resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", "unknown"), //FIXME should be empty, see NGPBUG-357810
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", "unknown"), //FIXME should be empty, see NGPBUG-357810
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", "unknown"), //FIXME should be empty, see NGPBUG-357810
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", "unknown"),  //FIXME should be empty, see NGPBUG-357810
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "id", "2b5382f4-1922-4803-8dcb-5babe097b12b"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "0"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "false"),
