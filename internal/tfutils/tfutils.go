@@ -83,7 +83,13 @@ func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 
 			value = fmt.Sprintf("%v", fieldVal)
 		case "string":
-			value = field.Interface().(string)
+			fieldVal := field.Interface().(string)
+
+			if fieldVal == "" {
+				continue
+			}
+
+			value = fieldVal
 		case "*string":
 			if field.IsNil() {
 				continue
@@ -91,6 +97,11 @@ func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 
 			value = field.Elem().Interface().(string)
 		case "map[string][]string": // FIXME would be nice to have `enodethisasjson` tag, instead of an explicit typemapping
+
+			if field.IsNil() {
+				continue
+			}
+
 			valueArr, err := json.Marshal(field.Interface())
 
 			if err != nil {
