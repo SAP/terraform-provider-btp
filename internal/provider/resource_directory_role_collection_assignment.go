@@ -23,6 +23,7 @@ func newDirectoryRoleCollectionAssignmentResource() resource.Resource {
 }
 
 type directoryRoleCollectionAssignmentType struct {
+	Id                 types.String `tfsdk:"id"`
 	DirectoryId        types.String `tfsdk:"directory_id"`
 	RoleCollectionName types.String `tfsdk:"role_collection_name"`
 	Username           types.String `tfsdk:"user_name"`
@@ -69,6 +70,11 @@ func (rs *directoryRoleCollectionAssignmentResource) Schema(_ context.Context, _
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `role_collection_name` field instead",
+				MarkdownDescription: "The ID of the role collection",
+				Computed:            true,
 			},
 			"user_name": schema.StringAttribute{
 				MarkdownDescription: "The username of the user to assign.",
@@ -140,6 +146,8 @@ func (rs *directoryRoleCollectionAssignmentResource) Create(ctx context.Context,
 		resp.Diagnostics.AddError("API Error Creating Resource Role Collection Assignment (Directory)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	plan.Id = types.StringValue(plan.RoleCollectionName.ValueString())
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
