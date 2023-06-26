@@ -5,6 +5,7 @@ import (
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/saas_manager_service"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 )
 
 func newAccountsSubaccountFacade(cliClient *v2Client) accountsSubaccountFacade {
@@ -39,24 +40,27 @@ func (f *accountsSubaccountFacade) Get(ctx context.Context, subaccountId string)
 }
 
 type SubaccountCreateInput struct { // TODO support all options
-	//BetaEnabled       bool   `json:"betaEnabled"`
-	//Description       string `json:"description"`
-	//Directory         string `json:"directoryID"`
-	DisplayName string `json:"displayName"`
+	BetaEnabled       bool                `btpcli:"betaEnabled"`
+	Description       string              `btpcli:"description"`
+	Directory         string              `btpcli:"directoryID"`
+	DisplayName       string              `btpcli:"displayName"`
+	Labels            map[string][]string `btpcli:"labels"`
+	Region            string              `btpcli:"region"`
+	Subdomain         string              `btpcli:"subdomain"`
+	UsedForProduction bool                `btpcli:"usedForProduction"`
 	//Globalaccount     string `json:"globalAccount"`
-	//Labels            string `json:"labels"`
-	Region string `json:"region"`
 	//SubaccountAdmins  string `json:"subaccountAdmins"`
-	Subdomain string `json:"subdomain"`
-	//UsedForProduction bool   `json:"usedForProduction"`
 }
 
-func (f *accountsSubaccountFacade) Create(ctx context.Context, displayName string, subdomain string, region string) (cis.SubaccountResponseObject, CommandResponse, error) { // TODO switch to object
-	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), map[string]string{
-		"displayName": displayName,
-		"subdomain":   subdomain,
-		"region":      region,
-	}))
+func (f *accountsSubaccountFacade) Create(ctx context.Context, args *SubaccountCreateInput) (cis.SubaccountResponseObject, CommandResponse, error) {
+
+	params, err := tfutils.ToBTPCLIParamsMap(args)
+
+	if err != nil {
+		return cis.SubaccountResponseObject{}, CommandResponse{}, err
+	}
+
+	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
 func (f *accountsSubaccountFacade) Update(ctx context.Context, subaccountId string, displayName string) (cis.SubaccountResponseObject, CommandResponse, error) { // TODO switch to object

@@ -90,15 +90,21 @@ func TestAccountsSubaccountFacade_Create(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
-				"displayName": displayName,
-				"subdomain":   subdomain,
-				"region":      region,
+				"displayName":       displayName,
+				"subdomain":         subdomain,
+				"region":            region,
+				"betaEnabled":       "false",
+				"usedForProduction": "false",
 			})
 
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Accounts.Subaccount.Create(context.TODO(), displayName, subdomain, region)
+		_, res, err := uut.Accounts.Subaccount.Create(context.TODO(), &SubaccountCreateInput{
+			DisplayName: displayName,
+			Subdomain:   subdomain,
+			Region:      region,
+		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
