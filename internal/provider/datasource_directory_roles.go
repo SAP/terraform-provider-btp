@@ -53,7 +53,7 @@ func (ds *directoryRolesDataSource) Configure(_ context.Context, req datasource.
 
 func (ds *directoryRolesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List all roles.
+		MarkdownDescription: `Gets all roles.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,

@@ -2,7 +2,7 @@
 page_title: "btp_directory_labels Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Get all the user-defined labels that are currently assigned to a specific directory.
+  Gets all the user-defined labels that are currently assigned to a specific directory.
   Tip:
   You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories of which you are the directory admin.
   Further documentation:
@@ -11,7 +11,7 @@ description: |-
 
 # btp_directory_labels (Data Source)
 
-Get all the user-defined labels that are currently assigned to a specific directory.
+Gets all the user-defined labels that are currently assigned to a specific directory.
 
 __Tip:__
 You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories of which you are the directory admin.

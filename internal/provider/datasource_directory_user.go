@@ -101,7 +101,7 @@ func (ds *directoryUserDataSource) Schema(_ context.Context, _ datasource.Schema
 			},
 			"role_collections": schema.SetAttribute{
 				ElementType:         types.StringType,
-				MarkdownDescription: "Set of role collections, which are assigned to the user.",
+				MarkdownDescription: "The set of role collections, which are assigned to the user.",
 				Computed:            true,
 			},
 		},

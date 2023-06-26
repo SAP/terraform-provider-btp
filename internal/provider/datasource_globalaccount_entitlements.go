@@ -63,14 +63,11 @@ func (ds *globalaccountEntitlementsDataSource) Configure(_ context.Context, req 
 
 func (ds *globalaccountEntitlementsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get all the entitlements and quota assignments for a global account.
+		MarkdownDescription: `Gets all the entitlements and quota assignments for a global account.
 
 To view all the resources a global account:
 * Target only the global account in the command line.
-* You must be assigned to either the global account admin or global account viewers role.
-
-__Tip:__
-You must be assigned to one of these roles: global account admin, global account viewer.`,
+* You must be assigned to either the global account admin or global account viewers role.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",

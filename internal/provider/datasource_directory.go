@@ -35,7 +35,7 @@ func (ds *directoryDataSource) Configure(_ context.Context, req datasource.Confi
 
 func (ds *directoryDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get the details about a directory.
+		MarkdownDescription: `Gets the details about a directory.
 
 __Tip:__
 You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
@@ -55,7 +55,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
@@ -64,13 +64,15 @@ __Further documentation:__
 			},
 			"features": schema.SetAttribute{
 				ElementType: types.StringType,
-				MarkdownDescription: "The features that are enabled for the directory. Possible values are: " +
-					"\n\t - `DEFAULT` All directories have the following basic feature enabled: " +
-					"\n\t\t 1. Group and filter subaccounts for reports and filters " +
-					"\n\t\t 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)" +
-					"\n\t\t 3. Set custom properties and tags to the directory for identification and reporting purposes." +
-					"\n\t - `ENTITLEMENTS` Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory." +
-					"\n\t - `AUTHORIZATIONS` Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature.",
+				MarkdownDescription: "The features that are enabled for the directory. Possible values are: \n" +
+					getFormattedValueAsTableRow("value", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`DEFAULT` ", "All directories have the following basic feature enabled:"+
+						"<br> 1. Group and filter subaccounts for reports and filters "+
+						"<br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)"+
+						"<br> 3. Set custom properties and tags to the directory for identification and reporting purposes.") +
+					getFormattedValueAsTableRow("`ENTITLEMENTS`", "Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.") +
+					getFormattedValueAsTableRow("`AUTHORIZATIONS`", "Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature."),
 				Computed: true,
 			},
 			"labels": schema.MapAttribute{
@@ -81,7 +83,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"name": schema.StringAttribute{
@@ -93,22 +95,24 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "The current state of the directory. Possible values are: " +
-					"\n\t - `OK` The CRUD operation or series of operations completed successfully." +
-					"\n\t - `STARTED` CRUD operation on an entity has started." +
-					"\n\t - `CREATING` Creating entity operation is in progress." +
-					"\n\t - `UPDATING` Updating entity operation is in progress." +
-					"\n\t - `MOVING` Moving entity operation is in progress." +
-					"\n\t - `PROCESSING` A series of operations related to the entity is in progress." +
-					"\n\t - `DELETING` Deleting entity operation is in progress." +
-					"\n\t - `PENDING REVIEW` The processing operation has been stopped for reviewing and can be restarted by the operator." +
-					"\n\t - `CANCELLED` The operation or processing was canceled by the operator." +
-					"\n\t - `CREATION_FAILED` The creation operation failed, and the entity was not created or was created but cannot be used." +
-					"\n\t - `UPDATE_FAILED` The update operation failed, and the entity was not updated." +
-					"\n\t - `PROCESSING_FAILED` The processing operations failed." +
-					"\n\t - `DELETION_FAILED` The delete operation failed, and the entity was not deleted." +
-					"\n\t - `MOVE_FAILED` Entity could not be moved to a different location." +
-					"\n\t - `MIGRATING` Migrating entity from Neo to Cloud Foundry.",
+				MarkdownDescription: "The current state of the directory. Possible values are: \n" +
+					getFormattedValueAsTableRow("state", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`OK`", "The CRUD operation or series of operations completed successfully.") +
+					getFormattedValueAsTableRow("`STARTED`", "CRUD operation on an entity has started.") +
+					getFormattedValueAsTableRow("`CANCELLED`", "The operation or processing was canceled by the operator.") +
+					getFormattedValueAsTableRow("`PROCESSING`", "A series of operations related to the entity is in progress.") +
+					getFormattedValueAsTableRow("`PROCESSING_FAILED`", "The processing operations failed.") +
+					getFormattedValueAsTableRow("`CREATING`", "Creating entity operation is in progress.") +
+					getFormattedValueAsTableRow("`CREATION_FAILED`", "The creation operation failed, and the entity was not created or was created but cannot be used.") +
+					getFormattedValueAsTableRow("`UPDATING`", "Updating entity operation is in progress.") +
+					getFormattedValueAsTableRow("`UPDATE_FAILED`", "The update operation failed, and the entity was not updated.") +
+					getFormattedValueAsTableRow("`DELETING`", "Deleting entity operation is in progress.") +
+					getFormattedValueAsTableRow("`DELETION_FAILED`", "The delete operation failed, and the entity was not deleted.") +
+					getFormattedValueAsTableRow("`MOVING`", "Moving entity operation is in progress.") +
+					getFormattedValueAsTableRow("`MOVE_FAILED`", "Entity could not be moved to a different location.") +
+					getFormattedValueAsTableRow("`PENDING REVIEW`", "The processing operation has been stopped for reviewing and can be restarted by the operator.") +
+					getFormattedValueAsTableRow("`MIGRATING`", "Migrating entity from Neo to Cloud Foundry."),
 				Computed: true,
 			},
 			"subdomain": schema.StringAttribute{

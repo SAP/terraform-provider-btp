@@ -2,12 +2,12 @@
 page_title: "btp_globalaccount_role_collections Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  List all role collections.
+  Gets all role collections.
 ---
 
 # btp_globalaccount_role_collections (Data Source)
 
-List all role collections.
+Gets all role collections.
 
 ## Example Usage
 

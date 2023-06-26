@@ -2,12 +2,12 @@
 page_title: "btp_directory_role_collection Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Get details about a specific directory role collection.
+  Gets details about a specific directory role collection.
 ---
 
 # btp_directory_role_collection (Data Source)
 
-Get details about a specific directory role collection.
+Gets details about a specific directory role collection.
 
 ## Example Usage
 
