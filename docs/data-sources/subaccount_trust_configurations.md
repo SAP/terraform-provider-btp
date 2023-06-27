@@ -2,7 +2,7 @@
 page_title: "btp_subaccount_trust_configurations Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  List all trust configurations that are configured for your subaccount.
+  Gets all trust configurations that are configured for your subaccount.
   Tip:
   You must be viewer or administrator of the subaccount.
   Further documentation:
@@ -11,7 +11,7 @@ description: |-
 
 # btp_subaccount_trust_configurations (Data Source)
 
-List all trust configurations that are configured for your subaccount.
+Gets all trust configurations that are configured for your subaccount.
 
 __Tip:__
 You must be viewer or administrator of the subaccount.
@@ -50,6 +50,6 @@ Read-Only:
 - `name` (String) The name of the trust configuration.
 - `origin` (String) The origin of the identity provider.
 - `protocol` (String) The protocol used to establish trust with the identity provider.
-- `read_only` (Boolean) Whether the trust configuration can be modified.
-- `status` (String) Whether the identity provider is currently active or not.
+- `read_only` (Boolean) Shows whether the trust configuration can be modified.
+- `status` (String) Shows whether the identity provider is currently active or not.
 - `type` (String) The trust type.
