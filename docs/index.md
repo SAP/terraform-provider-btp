@@ -14,8 +14,8 @@ The Terraform provider for SAP BTP enables you to automate the provisioning, man
 terraform {
   required_providers {
     btp = {
-      source  = "sap/btp"
-      version = "~> 0.1"
+      source  = "SAP/btp"
+      version = "0.1.0-beta1"
     }
   }
 }
