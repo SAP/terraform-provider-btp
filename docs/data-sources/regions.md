@@ -39,12 +39,12 @@ Read-Only:
 
   | value | description | 
   | --- | --- | 
-  | AWS | Amazon Web Services. | 
-  | GCP | Google Cloud Platform. | 
-  | AZURE | Microsoft Azure. | 
-  | SAP | SAP BTP (Neo). | 
-  | ALI | Alibaba Cloud. | 
-  | IBM | AIBM Cloud. |
+  | `AWS` | Amazon Web Services. | 
+  | `GCP` | Google Cloud Platform. | 
+  | `AZURE` | Microsoft Azure. | 
+  | `SAP` | SAP BTP (Neo). | 
+  | `ALI` | Alibaba Cloud. | 
+  | `IBM` | AIBM Cloud. |
 - `id` (String) Technical name of the data center. Must be unique within the cloud deployment.
 - `name` (String) Descriptive name of the data center for customer-facing UIs.
 - `provisioning_service_url` (String) Provisioning service URL.

@@ -103,12 +103,12 @@ You must be assigned to the global account admin or viewer role.`,
 							MarkdownDescription: "The infrastructure provider for the data center. Possible values are: \n" +
 								getFormattedValueAsTableRow("value", "description") +
 								getFormattedValueAsTableRow("---", "---") +
-								getFormattedValueAsTableRow("AWS", "Amazon Web Services.") +
-								getFormattedValueAsTableRow("GCP", "Google Cloud Platform.") +
-								getFormattedValueAsTableRow("AZURE", "Microsoft Azure.") +
-								getFormattedValueAsTableRow("SAP", "SAP BTP (Neo).") +
-								getFormattedValueAsTableRow("ALI", "Alibaba Cloud.") +
-								getFormattedValueAsTableRow("IBM", "AIBM Cloud."),
+								getFormattedValueAsTableRow("`AWS`", "Amazon Web Services.") +
+								getFormattedValueAsTableRow("`GCP`", "Google Cloud Platform.") +
+								getFormattedValueAsTableRow("`AZURE`", "Microsoft Azure.") +
+								getFormattedValueAsTableRow("`SAP`", "SAP BTP (Neo).") +
+								getFormattedValueAsTableRow("`ALI`", "Alibaba Cloud.") +
+								getFormattedValueAsTableRow("`IBM`", "AIBM Cloud."),
 							Computed: true,
 						},
 						"provisioning_service_url": schema.StringAttribute{
