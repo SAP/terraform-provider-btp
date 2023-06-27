@@ -95,7 +95,7 @@ data "btp_globalaccount" "this" {}
   | `MOVING` | Moving entity operation is in progress. | 
   | `MOVE_FAILED` | Entity could not be moved to a different location. | 
   | `PENDING REVIEW` | The processing operation has been stopped for reviewing and can be restarted by the operator. | 
-  | `MIGRATING` | Migrating entity from Migrating entity from Neo to Cloud Foundry. |
+  | `MIGRATING` | Migrating entity from Neo to Cloud Foundry. |
 - `subdomain` (String) The subdomain is part of the path used to access the authorization tenant of the global account.
 - `usage` (String) For internal accounts, the intended purpose of the global account. Possible values are: 
 
