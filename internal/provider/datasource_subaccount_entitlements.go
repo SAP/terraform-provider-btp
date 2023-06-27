@@ -43,13 +43,10 @@ func (ds *subaccountEntitlementsDataSource) Configure(_ context.Context, req dat
 
 func (ds *subaccountEntitlementsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get all the entitlements and quota assignments for a subaccount.
+		MarkdownDescription: `Gets all the entitlements and quota assignments for a subaccount.
 
 To get all entitlements and quota assigned to a specific subaccount:
-* You must be assigned to either the subaccount admin or subaccount viewer role.
-
-__Tip:__
-You must be assigned to one of these roles: subaccount admin, subaccount viewer.`,
+* You must be assigned to either the subaccount admin or subaccount viewer role.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
