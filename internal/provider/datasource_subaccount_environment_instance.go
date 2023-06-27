@@ -131,10 +131,10 @@ You must be assigned to the subaccount admin or viewer role.`,
 					getFormattedValueAsTableRow("`OK`", "The CRUD operation or series of operations completed successfully.") +
 					getFormattedValueAsTableRow("`CREATING`", "Creating entity operation is in progress.") +
 					getFormattedValueAsTableRow("`CREATION_FAILED`", "The creation operation failed, and the entity was not created or was created but cannot be used.") +
-					getFormattedValueAsTableRow("`DELETING`", "Deleting entity operation is in progress.") +
-					getFormattedValueAsTableRow("`DELETION_FAILED`", "The delete operation failed, and the entity was not deleted.") +
 					getFormattedValueAsTableRow("`UPDATING`", "Updating entity operation is in progress.") +
-					getFormattedValueAsTableRow("`UPDATE_FAILED`", "The update operation failed, and the entity was not updated."),
+					getFormattedValueAsTableRow("`UPDATE_FAILED`", "The update operation failed, and the entity was not updated.") +
+					getFormattedValueAsTableRow("`DELETING`", "Deleting entity operation is in progress.") +
+					getFormattedValueAsTableRow("`DELETION_FAILED`", "The delete operation failed, and the entity was not deleted."),
 				Computed: true,
 			},
 			"tenant_id": schema.StringAttribute{

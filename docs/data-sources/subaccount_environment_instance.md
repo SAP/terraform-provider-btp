@@ -57,10 +57,10 @@ data "btp_subaccount_environment_instance" "cloudfoundry" {
   | `OK` | The CRUD operation or series of operations completed successfully. | 
   | `CREATING` | Creating entity operation is in progress. | 
   | `CREATION_FAILED` | The creation operation failed, and the entity was not created or was created but cannot be used. | 
-  | `DELETING` | Deleting entity operation is in progress. | 
-  | `DELETION_FAILED` | The delete operation failed, and the entity was not deleted. | 
   | `UPDATING` | Updating entity operation is in progress. | 
-  | `UPDATE_FAILED` | The update operation failed, and the entity was not updated. |
+  | `UPDATE_FAILED` | The update operation failed, and the entity was not updated. | 
+  | `DELETING` | Deleting entity operation is in progress. | 
+  | `DELETION_FAILED` | The delete operation failed, and the entity was not deleted. |
 - `tenant_id` (String) The ID of the tenant that owns the environment instance.
 - `type` (String) The last provisioning operation on the environment instance. Possible values are: 
 
