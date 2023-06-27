@@ -35,7 +35,7 @@ func (ds *subaccountDataSource) Configure(_ context.Context, req datasource.Conf
 
 func (ds *subaccountDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a subaccount.
+		MarkdownDescription: `Gets details about a subaccount.
 
 __Tip:__
 You must be assigned to the admin or viewer role of the global account, directory, or subaccount.`,
@@ -92,30 +92,32 @@ You must be assigned to the admin or viewer role of the global account, director
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "The current state of the subaccount. Possible values are: " + // TODO describe the values listed below
-					"\n\t - `OK`" +
-					"\n\t - `CANCELED`" +
-					"\n\t - `CREATING`" +
-					"\n\t - `CREATION_FAILED`" +
-					"\n\t - `DELETING`" +
-					"\n\t - `DELETION_FAILED`" +
-					"\n\t - `MIGRATING`" +
-					"\n\t - `MIGRATION_FAILED`" +
-					"\n\t - `MIGRATED`" +
-					"\n\t - `MOVE_FAILED`" +
-					"\n\t - `MOVE_TO_OTHER_GA_FAILED`" +
-					"\n\t - `MOVING`" +
-					"\n\t - `MOVING_TO_OTHER_GA`" +
-					"\n\t - `PENDING_REVIEW`" +
-					"\n\t - `PROCESSING`" +
-					"\n\t - `PROCESSING_FAILED`" +
-					"\n\t - `ROLLBACK_MIGRATION_PROCESSING`" +
-					"\n\t - `STARTED`" +
-					"\n\t - `SUSPENSION_FAILED`" +
-					"\n\t - `UPDATE_ACCOUNT_TYPE_FAILED`" +
-					"\n\t - `UPDATE_DIRECTORY_TYPE_FAILED`" +
-					"\n\t - `UPDATE_FAILED`" +
-					"\n\t - `UPDATING`",
+				MarkdownDescription: "The current state of the subaccount. Possible values are: \n" +
+					getFormattedValueAsTableRow("state", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`OK`", "The CRUD operation or series of operations completed successfully.") +
+					getFormattedValueAsTableRow("`STARTED`", "CRUD operation on the subaccount has started.") +
+					getFormattedValueAsTableRow("`CANCELED`", "The operation or processing was canceled by the operator.") +
+					getFormattedValueAsTableRow("`PROCESSING`", "A series of operations related to the subaccount are in progress.") +
+					getFormattedValueAsTableRow("`PROCESSING_FAILED`", "The processing operations failed.") +
+					getFormattedValueAsTableRow("`CREATING`", "Creating the subaccount is in progress.") +
+					getFormattedValueAsTableRow("`CREATION_FAILED`", "The creation operation failed, and the subaccount was not created or was created but cannot be used.") +
+					getFormattedValueAsTableRow("`UPDATING`", "Updating the subaccount is in progress.") +
+					getFormattedValueAsTableRow("`UPDATE_FAILED`", "The update operation failed, and the subaccount was not updated.") +
+					getFormattedValueAsTableRow("`UPDATE_DIRECTORY_TYPE_FAILED`", "The update of the directory type failed.") +
+					getFormattedValueAsTableRow("`UPDATE_ACCOUNT_TYPE_FAILED`", "The update of the account type failed.") +
+					getFormattedValueAsTableRow("`DELETING`", "Deleting the subaccount is in progress.") +
+					getFormattedValueAsTableRow("`DELETION_FAILED`", "The deletion of the subaccount failed, and the subaccount was not deleted.") +
+					getFormattedValueAsTableRow("`MOVING`", "Moving the subaccount is in progress.") +
+					getFormattedValueAsTableRow("`MOVE_FAILED`", "The moving of the subaccount failed.") +
+					getFormattedValueAsTableRow("`MOVING_TO_OTHER_GA`", "Moving the subaccount to another global account is in progress.") +
+					getFormattedValueAsTableRow("`MOVE_TO_OTHER_GA_FAILED`", "Moving the subaccount to another global account failed.") +
+					getFormattedValueAsTableRow("`PENDING_REVIEW`", "The processing operation has been stopped for reviewing and can be restarted by the operator.") +
+					getFormattedValueAsTableRow("`MIGRATING`", "Migrating the subaccount from Neo to Cloud Foundry.") +
+					getFormattedValueAsTableRow("`MIGRATED`", "The migration of the subaccount completed.") +
+					getFormattedValueAsTableRow("`MIGRATION_FAILED`", "The migration of the subaccount failed and the subaccount was not migrated.") +
+					getFormattedValueAsTableRow("`ROLLBACK_MIGRATION_PROCESSING`", "The migration of the subaccount was rolled back and the subaccount is not migrated.") +
+					getFormattedValueAsTableRow("`SUSPENSION_FAILED`", "The suspension operations failed."),
 				Computed: true,
 			},
 			"subdomain": schema.StringAttribute{
@@ -123,10 +125,12 @@ You must be assigned to the admin or viewer role of the global account, director
 				Computed:            true,
 			},
 			"usage": schema.StringAttribute{
-				MarkdownDescription: "Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: " +
-					"\n\t- `UNSET` Global account or subaccount admin has not set the production-relevancy flag (default value)." +
-					"\n\t- `NOT_USED_FOR_PRODUCTION` Subaccount is not used for production purposes." +
-					"\n\t- `USED_FOR_PRODUCTION` Subaccount is used for production purposes.",
+				MarkdownDescription: "Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: \n" +
+					getFormattedValueAsTableRow("value", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`UNSET`", "Global account or subaccount admin has not set the production-relevancy flag (default value).") +
+					getFormattedValueAsTableRow("`NOT_USED_FOR_PRODUCTION`", "The subaccount is not used for production purposes.") +
+					getFormattedValueAsTableRow("`USED_FOR_PRODUCTION`", "The subaccount is used for production purposes."),
 				Computed: true,
 			},
 		},
