@@ -38,9 +38,9 @@ func TestToGetFormattedValue(t *testing.T) {
 		},
 		{
 			value:            "",
-			descriptionValue: "Description of the value|\"",
+			descriptionValue: "Description of the value|",
 			description:      "happy path - description contains pipe, the pipe is escaped",
-			expects:          "\n  |  | Description of the value|\" | ",
+			expects:          "\n  |  | Description of the value\\| | ",
 		},
 		{
 			value:            "---",

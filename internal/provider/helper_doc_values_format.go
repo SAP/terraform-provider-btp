@@ -6,5 +6,5 @@ import (
 )
 
 func getFormattedValueAsTableRow(val string, description string) string {
-	return fmt.Sprint("\n  | ", strings.ReplaceAll(val, "|", "\\|"), " | ", description, " | ")
+	return fmt.Sprintf("\n  | %s | %s | ", strings.ReplaceAll(val, "|", "\\|"), strings.ReplaceAll(description, "|", "\\|"))
 }
