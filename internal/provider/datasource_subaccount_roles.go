@@ -53,7 +53,7 @@ func (ds *subaccountRolesDataSource) Configure(_ context.Context, req datasource
 
 func (ds *subaccountRolesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List all roles.
+		MarkdownDescription: `Gets all roles.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
@@ -90,7 +90,7 @@ __Further documentation:__
 							Computed:            true,
 						},
 						"read_only": schema.BoolAttribute{
-							MarkdownDescription: "Whether the role can be modified or not.",
+							MarkdownDescription: "Shows whether the role can be modified or not.",
 							Computed:            true,
 						},
 						"scopes": schema.ListNestedAttribute{
@@ -122,7 +122,7 @@ __Further documentation:__
 									},
 								},
 							},
-							MarkdownDescription: "Scopes available with this role.",
+							MarkdownDescription: "The scopes available with this role.",
 							Computed:            true,
 						},
 					},
