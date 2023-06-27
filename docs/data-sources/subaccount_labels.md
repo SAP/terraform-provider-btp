@@ -2,19 +2,19 @@
 page_title: "btp_subaccount_labels Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Get all the user-defined labels that are currently assigned to a specific subaccount.
+  Gets all the user-defined labels that are currently assigned to a specific subaccount.
   Tip:
-  You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories of which you are the directory admin.
+  You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories you are the directory admin.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_subaccount_labels (Data Source)
 
-Get all the user-defined labels that are currently assigned to a specific subaccount.
+Gets all the user-defined labels that are currently assigned to a specific subaccount.
 
 __Tip:__
-You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories of which you are the directory admin.
+You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories you are the directory admin.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>
