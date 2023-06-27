@@ -67,7 +67,7 @@ func (ds *subaccountEnvironmentInstancesDataSource) Configure(_ context.Context,
 
 func (ds *subaccountEnvironmentInstancesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List all the environment instances in a subaccount.
+		MarkdownDescription: `Gets all the environment instances in a subaccount.
 
 __Tip:__
 You must be assigned to the subaccount admin or viewer role.`,
@@ -96,7 +96,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"created_date": schema.StringAttribute{
-							MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+							MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 							Computed:            true,
 						},
 						"custom_labels": schema.MapAttribute{
@@ -114,7 +114,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"environment_type": schema.StringAttribute{
-							MarkdownDescription: "Type of the environment instance that is used.",
+							MarkdownDescription: "The type of the environment instance that is used.",
 							Computed:            true,
 						},
 						"labels": schema.StringAttribute{
@@ -126,11 +126,11 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"last_modified": schema.StringAttribute{
-							MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+							MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 							Computed:            true,
 						},
 						"name": schema.StringAttribute{
-							MarkdownDescription: "Name of the environment instance.",
+							MarkdownDescription: "The name of the environment instance.",
 							Computed:            true,
 						},
 						"operation": schema.StringAttribute{
@@ -142,34 +142,36 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"plan_id": schema.StringAttribute{
-							MarkdownDescription: "ID of the service plan for the environment instance in the corresponding service broker's catalog.",
+							MarkdownDescription: "The ID of the service plan for the environment instance in the corresponding service broker's catalog.",
 							Computed:            true,
 						},
 						"plan_name": schema.StringAttribute{
-							MarkdownDescription: "Name of the service plan for the environment instance in the corresponding service broker's catalog.",
+							MarkdownDescription: "The name of the service plan for the environment instance in the corresponding service broker's catalog.",
 							Computed:            true,
 						},
 						"platform_id": schema.StringAttribute{
-							MarkdownDescription: "ID of the platform for the environment instance in the corresponding service broker's catalog.",
+							MarkdownDescription: "The ID of the platform for the environment instance in the corresponding service broker's catalog.",
 							Computed:            true,
 						},
 						"service_id": schema.StringAttribute{
-							MarkdownDescription: "ID of the service for the environment instance in the corresponding service broker's catalog.",
+							MarkdownDescription: "The ID of the service for the environment instance in the corresponding service broker's catalog.",
 							Computed:            true,
 						},
 						"service_name": schema.StringAttribute{
-							MarkdownDescription: "Name of the service for the environment instance in the corresponding service broker's catalog.",
+							MarkdownDescription: "The name of the service for the environment instance in the corresponding service broker's catalog.",
 							Computed:            true,
 						},
 						"state": schema.StringAttribute{
-							MarkdownDescription: "Current state of the environment instance. Possible values are: " + // TODO describe states listed below
-								"\n\t - `OK`" +
-								"\n\t - `CREATING`" +
-								"\n\t - `CREATION_FAILED`" +
-								"\n\t - `DELETING`" +
-								"\n\t - `DELETION_FAILED`" +
-								"\n\t - `UPDATE_FAILED`" +
-								"\n\t - `UPDATING`",
+							MarkdownDescription: "The current state of the environment instance. Possible values are: \n" +
+								getFormattedValueAsTableRow("state", "description") +
+								getFormattedValueAsTableRow("---", "---") +
+								getFormattedValueAsTableRow("`OK`", "The CRUD operation or series of operations completed successfully.") +
+								getFormattedValueAsTableRow("`CREATING`", "Creating of the environment instance is in progress.") +
+								getFormattedValueAsTableRow("`CREATION_FAILED`", "The creation of the environment instance failed, and the environment instance was not created or was created but cannot be used.") +
+								getFormattedValueAsTableRow("`UPDATING`", "Updating of the environment instance is in progress.") +
+								getFormattedValueAsTableRow("`UPDATE_FAILED`", "The update of the environment instance failed, and  the environment instance was not updated.") +
+								getFormattedValueAsTableRow("`DELETING`", "Deleting of the environment instance is in progress.") +
+								getFormattedValueAsTableRow("`DELETION_FAILED`", "The deletion of the environment instance failed, and the environment instance was not deleted."),
 							Computed: true,
 						},
 						"tenant_id": schema.StringAttribute{
@@ -177,10 +179,12 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"type": schema.StringAttribute{
-							MarkdownDescription: "The last provisioning operation on the environment instance. Possible values are: " +
-								"\n\t - `Provision` Environment instance created." +
-								"\n\t - `Update` Environment instance changed." +
-								"\n\t - `Deprovision` Environment instance deleted.",
+							MarkdownDescription: "The last provisioning operation on the environment instance. Possible values are: \n" +
+								getFormattedValueAsTableRow("type", "description") +
+								getFormattedValueAsTableRow("---", "---") +
+								getFormattedValueAsTableRow("`Provision`", "The environment instance is created.") +
+								getFormattedValueAsTableRow("`Update`", "The environment instance is changed.") +
+								getFormattedValueAsTableRow("`Deprovision`", "The environment instance is deleted."),
 							Computed: true,
 						},
 					},
