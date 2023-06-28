@@ -139,9 +139,7 @@ func convertFirstLetterToUpperCase(stringToConvert string) (convertedString stri
 func TestProvider_HasResources(t *testing.T) {
 	expectedResources := []string{
 		"btp_directory",
-		/* TODO: switched off for phase 1
-		/"btp_directory_role",
-		*/
+		"btp_directory_role",
 		"btp_directory_role_collection",
 		"btp_directory_role_collection_assignment",
 		"btp_globalaccount_resource_provider",
