@@ -2,14 +2,14 @@
 page_title: "btp_subaccount_role Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Create a role in a subaccount.
+  Creates a role in a subaccount.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_subaccount_role (Resource)
 
-Create a role in a subaccount.
+Creates a role in a subaccount.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>
@@ -41,6 +41,6 @@ resource "btp_subaccount_role" "xsuaa_auditor" {
 
 ### Read-Only
 
-- `read_only` (Boolean) Whether the role can be modified or not.
+- `read_only` (Boolean) Shows whether the role can be modified or not.
 
 

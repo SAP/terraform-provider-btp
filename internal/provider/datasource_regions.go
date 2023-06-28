@@ -66,7 +66,7 @@ func (ds *regionsDataSource) Configure(_ context.Context, req datasource.Configu
 
 func (ds *regionsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get all the available regions for a global account.
+		MarkdownDescription: `Gets all the available regions for a global account.
 
 __Tip:__
 You must be assigned to the global account admin or viewer role.`,
@@ -100,13 +100,15 @@ You must be assigned to the global account admin or viewer role.`,
 							Computed:            true,
 						},
 						"iaas_provider": schema.StringAttribute{
-							MarkdownDescription: "The infrastructure provider for the data center. Possible values are: " +
-								"\n\t - `AWS` Amazon Web Services." +
-								"\n\t - `GCP` Google Cloud Platform." +
-								"\n\t - `AZURE` Microsoft Azure." +
-								"\n\t - `SAP` SAP BTP (Neo)." +
-								"\n\t - `ALI` Alibaba Cloud." +
-								"\n\t - `IBM` IBM Cloud.",
+							MarkdownDescription: "The infrastructure provider for the data center. Possible values are: \n" +
+								getFormattedValueAsTableRow("value", "description") +
+								getFormattedValueAsTableRow("---", "---") +
+								getFormattedValueAsTableRow("`AWS`", "Amazon Web Services.") +
+								getFormattedValueAsTableRow("`GCP`", "Google Cloud Platform.") +
+								getFormattedValueAsTableRow("`AZURE`", "Microsoft Azure.") +
+								getFormattedValueAsTableRow("`SAP`", "SAP BTP (Neo).") +
+								getFormattedValueAsTableRow("`ALI`", "Alibaba Cloud.") +
+								getFormattedValueAsTableRow("`IBM`", "AIBM Cloud."),
 							Computed: true,
 						},
 						"provisioning_service_url": schema.StringAttribute{

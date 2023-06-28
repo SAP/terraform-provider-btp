@@ -49,7 +49,7 @@ func (rs *subaccountRoleCollectionResource) Configure(_ context.Context, req res
 
 func (rs *subaccountRoleCollectionResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Create a role collection in a subaccount.
+		MarkdownDescription: `Creates a role collection in a subaccount.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,

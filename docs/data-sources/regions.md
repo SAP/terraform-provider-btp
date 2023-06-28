@@ -2,14 +2,14 @@
 page_title: "btp_regions Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Get all the available regions for a global account.
+  Gets all the available regions for a global account.
   Tip:
   You must be assigned to the global account admin or viewer role.
 ---
 
 # btp_regions (Data Source)
 
-Get all the available regions for a global account.
+Gets all the available regions for a global account.
 
 __Tip:__
 You must be assigned to the global account admin or viewer role.
@@ -36,12 +36,15 @@ Read-Only:
 - `domain` (String) The domain of the data center
 - `environment` (String) The environment that the data center supports. For example: Kubernetes, Cloud Foundry.
 - `iaas_provider` (String) The infrastructure provider for the data center. Possible values are: 
-	 - `AWS` Amazon Web Services.
-	 - `GCP` Google Cloud Platform.
-	 - `AZURE` Microsoft Azure.
-	 - `SAP` SAP BTP (Neo).
-	 - `ALI` Alibaba Cloud.
-	 - `IBM` IBM Cloud.
+
+  | value | description | 
+  | --- | --- | 
+  | `AWS` | Amazon Web Services. | 
+  | `GCP` | Google Cloud Platform. | 
+  | `AZURE` | Microsoft Azure. | 
+  | `SAP` | SAP BTP (Neo). | 
+  | `ALI` | Alibaba Cloud. | 
+  | `IBM` | AIBM Cloud. |
 - `id` (String) Technical name of the data center. Must be unique within the cloud deployment.
 - `name` (String) Descriptive name of the data center for customer-facing UIs.
 - `provisioning_service_url` (String) Provisioning service URL.

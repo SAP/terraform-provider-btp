@@ -58,7 +58,7 @@ func (ds *subaccountEnvironmentsDataSource) Configure(_ context.Context, req dat
 
 func (ds *subaccountEnvironmentsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List all the available environments for a subaccount.
+		MarkdownDescription: `Gets all the available environments for a subaccount.
 
 This includes the environments, such as Cloud Foundry, which are available by default to all subaccounts, and those restricted environments, such as Kyma, which are offered in the product catalog as service entitlements and whose plans have already been assigned by a global account admin to the subaccount.
 
@@ -97,7 +97,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"plan_name": schema.StringAttribute{
-							MarkdownDescription: "Name of the service plan for the available environment.",
+							MarkdownDescription: "The name of the service plan for the available environment.",
 							Computed:            true,
 						},
 						"plan_updateable": schema.BoolAttribute{
@@ -113,7 +113,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"service_name": schema.StringAttribute{
-							MarkdownDescription: "Name of the service offered in the catalog of the corresponding environment broker (for example: cloudfoundry).",
+							MarkdownDescription: "The name of the service offered in the catalog of the corresponding environment broker (for example: cloudfoundry).",
 							Computed:            true,
 						},
 						"schema_create": schema.StringAttribute{
@@ -125,7 +125,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"technical_key": schema.StringAttribute{
-							MarkdownDescription: "Technical key of the corresponding environment broker.",
+							MarkdownDescription: "The technical key of the corresponding environment broker.",
 							Computed:            true,
 						},
 					},

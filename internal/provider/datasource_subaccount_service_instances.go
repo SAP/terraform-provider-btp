@@ -58,7 +58,7 @@ func (ds *subaccountServiceInstancesDataSource) Configure(_ context.Context, req
 
 func (ds *subaccountServiceInstancesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List all service instances in a subaccount.`,
+		MarkdownDescription: `Gets all service instances in a subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -97,7 +97,7 @@ func (ds *subaccountServiceInstancesDataSource) Schema(_ context.Context, _ data
 							Computed:            true,
 						},
 						"serviceplan_id": schema.StringAttribute{
-							MarkdownDescription: "The ID of the serivce plan.",
+							MarkdownDescription: "The ID of the service plan.",
 							Computed:            true,
 						},
 						"platform_id": schema.StringAttribute{
@@ -110,22 +110,22 @@ func (ds *subaccountServiceInstancesDataSource) Schema(_ context.Context, _ data
 							Computed:            true,
 						},
 						"usable": schema.BoolAttribute{
-							MarkdownDescription: "Wheher the resource can be used.",
+							MarkdownDescription: "Whether the resource can be used.",
 							Computed:            true,
 						},
 						"created_date": schema.StringAttribute{
-							MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+							MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 							Computed:            true,
 						},
 						"last_modified": schema.StringAttribute{
-							MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+							MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 							Computed:            true,
 						},
 						"labels": schema.MapAttribute{
 							ElementType: types.SetType{
 								ElemType: types.StringType,
 							},
-							MarkdownDescription: "Set of words or phrases assigned to the service instance.",
+							MarkdownDescription: "The set of words or phrases assigned to the service instance.",
 							Computed:            true,
 						},
 					},

@@ -2,14 +2,14 @@
 page_title: "btp_subaccount_users Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  List all users.
+  Gets all users.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management
 ---
 
 # btp_subaccount_users (Data Source)
 
-List all users.
+Gets all users.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management>

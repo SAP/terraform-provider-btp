@@ -35,7 +35,7 @@ func (ds *subaccountTrustConfigurationDataSource) Configure(_ context.Context, r
 
 func (ds *subaccountTrustConfigurationDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a trust configuration.
+		MarkdownDescription: `Gets details about a trust configuration.
 
 __Tip:__
 You must be viewer or administrator of the subaccount.
@@ -82,11 +82,11 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"status": schema.StringAttribute{
-				MarkdownDescription: "Whether the identity provider is currently active or not.",
+				MarkdownDescription: "Shows whether the identity provider is currently active or not.",
 				Computed:            true,
 			},
 			"read_only": schema.BoolAttribute{
-				MarkdownDescription: "Whether the trust configuration can be modified.",
+				MarkdownDescription: "Shows whether the trust configuration can be modified.",
 				Computed:            true,
 			},
 		},

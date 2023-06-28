@@ -2,14 +2,14 @@
 page_title: "btp_subaccount_roles Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  List all roles.
+  Gets all roles.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_subaccount_roles (Data Source)
 
-List all roles.
+Gets all roles.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>
@@ -42,7 +42,7 @@ Read-Only:
 - `app_id` (String) The ID of the xsuaa application.
 - `description` (String) The description of the role.
 - `name` (String) The name of the role.
-- `read_only` (Boolean) Whether the role can be modified or not.
+- `read_only` (Boolean) Shows whether the role can be modified or not.
 - `role_template_name` (String) The name of the role template.
 - `scopes` (Attributes List) Scopes available with this role. (see [below for nested schema](#nestedatt--values--scopes))
 
