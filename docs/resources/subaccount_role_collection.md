@@ -58,4 +58,12 @@ Required:
 - `role_template_app_id` (String) The name of the referenced template app id.
 - `role_template_name` (String) The name of the referenced role template.
 
+## Import
 
+Import is supported using the following syntax:
+
+```terraform
+# terraform import btp_subaccount_role_collection.<resource_name> '<subaccount_id>,<name>'
+
+terraform import btp_subaccount_role_collection.custom_collection '6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f,Collection Name'
+```
