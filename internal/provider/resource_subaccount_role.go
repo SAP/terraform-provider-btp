@@ -165,7 +165,7 @@ func (rs *subaccountRoleResource) ImportState(ctx context.Context, req resource.
 	if len(idParts) != 4 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" || idParts[3] == "" {
 		resp.Diagnostics.AddError(
 			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount, name, role_template_name, app_id. Got: %q", req.ID),
+			fmt.Sprintf("Expected import identifier with format: subaccount_id, name, role_template_name, app_id. Got: %q", req.ID),
 		)
 		return
 	}
