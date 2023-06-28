@@ -43,6 +43,19 @@ resource "btp_directory_role" "dirrole" {
 
 - `id` (String, Deprecated) The ID of the directory.
 - `read_only` (Boolean) Whether the role can be modified or not.
+- `scopes` (Attributes List) Scopes available with this role. (see [below for nested schema](#nestedatt--scopes))
+
+<a id="nestedatt--scopes"></a>
+### Nested Schema for `scopes`
+
+Read-Only:
+
+- `custom_grant_as_authority_to_apps` (Set of String)
+- `custom_granted_apps` (Set of String)
+- `description` (String) The description of the scope.
+- `grant_as_authority_to_apps` (Set of String)
+- `granted_apps` (Set of String)
+- `name` (String) The name of the scope.
 
 ## Import
 

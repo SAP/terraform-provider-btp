@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
@@ -72,6 +73,38 @@ __Further documentation:__
 			},
 			"read_only": schema.BoolAttribute{
 				MarkdownDescription: "Whether the role can be modified or not.",
+				Computed:            true,
+			},
+			"scopes": schema.ListNestedAttribute{
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							MarkdownDescription: "The name of the scope.",
+							Computed:            true,
+						},
+						"description": schema.StringAttribute{
+							MarkdownDescription: "The description of the scope.",
+							Computed:            true,
+						},
+						"custom_grant_as_authority_to_apps": schema.SetAttribute{
+							ElementType: types.StringType,
+							Computed:    true,
+						},
+						"custom_granted_apps": schema.SetAttribute{
+							ElementType: types.StringType,
+							Computed:    true,
+						},
+						"grant_as_authority_to_apps": schema.SetAttribute{
+							ElementType: types.StringType,
+							Computed:    true,
+						},
+						"granted_apps": schema.SetAttribute{
+							ElementType: types.StringType,
+							Computed:    true,
+						},
+					},
+				},
+				MarkdownDescription: "Scopes available with this role.",
 				Computed:            true,
 			},
 		},
