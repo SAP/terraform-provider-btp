@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 
+	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 
 	"github.com/stretchr/testify/assert"
@@ -39,6 +40,7 @@ provider "btp" {
     globalaccount  = "terraformintcanary"
     username       = "john.doe@int.test"
     password       = "redacted"
+    idp            = ""
 }
     `, cliServerURL)
 }
@@ -62,11 +64,19 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 	hookRedactIntegrationUserCredentials := func(i *cassette.Interaction) error {
 		intUser := os.Getenv("BTP_USERNAME")
 		intUserPwd := os.Getenv("BTP_PASSWORD")
+		intUserIdp := os.Getenv("BTP_IDP")
 
 		firstName, lastName := getNameFromEmail(intUser)
 
 		if strings.Contains(i.Request.URL, "/login/") {
 			i.Request.Body = strings.ReplaceAll(i.Request.Body, intUserPwd, "redacted")
+			i.Request.Body = strings.ReplaceAll(i.Request.Body, "\"customIdp\":\""+intUserIdp+"\"", "\"customIdp\":\"\"")
+			i.Response.Body = strings.ReplaceAll(i.Response.Body, "\"issuer\":\""+intUserIdp+"\"", "\"issuer\":\"accounts.sap.com\"")
+			i.Response.Body = strings.ReplaceAll(i.Response.Body, "\"issuer\":\""+intUserIdp+".accounts400.ondemand.com\"", "\"issuer\":\"accounts.sap.com\"")
+		}
+
+		if _, exists := i.Request.Headers[http.CanonicalHeaderKey(btpcli.HeaderCLICustomIDP)]; exists {
+			i.Request.Headers.Set(btpcli.HeaderCLICustomIDP, "")
 		}
 
 		i.Request.Body = strings.ReplaceAll(i.Request.Body, intUser, "john.doe@int.test")

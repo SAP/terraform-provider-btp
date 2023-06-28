@@ -100,10 +100,23 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	client := btpcli.NewClientFacade(btpcli.NewV2ClientWithHttpClient(p.httpClient, u))
 	client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s", req.TerraformVersion, version.ProviderVersion)
 
+	// User may provide an idp to the provider
+	var idp string
+	if config.IdentityProvider.IsUnknown() {
+		resp.Diagnostics.AddWarning("Unable to create client", "Cannot use unknown value as identity provider")
+		return
+	}
+
+	if config.IdentityProvider.IsNull() {
+		idp = os.Getenv("BTP_IDP")
+	} else {
+		idp = config.IdentityProvider.ValueString()
+	}
+
 	// User must provide a username to the provider
 	var username string
 	if config.Username.IsUnknown() {
-		resp.Diagnostics.AddWarning("Unable to create client", "Cannot use unknown value as client_certificate")
+		resp.Diagnostics.AddWarning("Unable to create client", "Cannot use unknown value as username")
 		return
 	}
 
@@ -131,7 +144,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	if _, err = client.Login(ctx, btpcli.NewLoginRequestWithCustomIDP(config.IdentityProvider.ValueString(), config.GlobalAccount.ValueString(), username, password)); err != nil {
+	if _, err = client.Login(ctx, btpcli.NewLoginRequestWithCustomIDP(idp, config.GlobalAccount.ValueString(), username, password)); err != nil {
 		resp.Diagnostics.AddError("Unable to create Client", fmt.Sprintf("%s", err))
 		return
 	}
