@@ -72,26 +72,28 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"amount": schema.Int64Attribute{
-				MarkdownDescription: "Quota assigned to the subaccount.",
+				MarkdownDescription: "The quota assigned to the subaccount.",
 				Optional:            true,
 				Validators: []validator.Int64{
 					int64validator.Between(0, 2000000000),
 				},
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "The current state of the entitlement. Possible values are: " + // TODO describe states listed below
-					"\n\t - `OK`" +
-					"\n\t - `STARTED`" +
-					"\n\t - `PROCESSING`" +
-					"\n\t - `PROCESSING_FAILED`",
+				MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
+					getFormattedValueAsTableRow("state", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("OK", "") +
+					getFormattedValueAsTableRow("STARTED", "The processing operation started") +
+					getFormattedValueAsTableRow("PROCESSING", "The processing operation is in progress") +
+					getFormattedValueAsTableRow("PROCESSING_FAILED", "The processing operation failed"),
 				Computed: true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 		},

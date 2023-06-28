@@ -42,9 +42,9 @@ Read-Only:
 - `app_id` (String) The ID of the xsuaa application.
 - `description` (String) The description of the role.
 - `name` (String) The name of the role.
-- `read_only` (Boolean) Whether the role can be modified or not.
+- `read_only` (Boolean) Shows whether the role can be modified or not.
 - `role_template_name` (String) The name of the role template.
-- `scopes` (Attributes List) Scopes available with this role. (see [below for nested schema](#nestedatt--values--scopes))
+- `scopes` (Attributes List) The scopes available with this role. (see [below for nested schema](#nestedatt--values--scopes))
 
 <a id="nestedatt--values--scopes"></a>
 ### Nested Schema for `values.scopes`

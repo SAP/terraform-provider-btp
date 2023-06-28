@@ -122,7 +122,7 @@ __Further documentation:__
 									},
 								},
 							},
-							MarkdownDescription: "Scopes available with this role.",
+							MarkdownDescription: "The scopes available with this role.",
 							Computed:            true,
 						},
 					},

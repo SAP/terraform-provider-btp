@@ -38,7 +38,7 @@ func (ds *subaccountServiceBindingDataSource) Configure(_ context.Context, req d
 
 func (ds *subaccountServiceBindingDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a specific service binding, such as its access details. They are included in its 'credentials' property, and typically include access URLs and credentials.`,
+		MarkdownDescription: `Gets details about a specific service binding, such as its access details. They are included in its 'credentials' property, and typically include access URLs and credentials.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -65,7 +65,7 @@ func (ds *subaccountServiceBindingDataSource) Schema(_ context.Context, _ dataso
 				},
 			},
 			"ready": schema.BoolAttribute{
-				MarkdownDescription: "Whether the service binding is ready.",
+				MarkdownDescription: "Shows whether the service binding is ready.",
 				Computed:            true,
 			},
 			"service_instance_id": schema.StringAttribute{
@@ -83,7 +83,7 @@ func (ds *subaccountServiceBindingDataSource) Schema(_ context.Context, _ dataso
 				Computed:            true,
 			},
 			"credentials": schema.StringAttribute{
-				MarkdownDescription: "Credentials to access the binding.",
+				MarkdownDescription: "The credentials to access the binding.",
 				Computed:            true,
 				Sensitive:           true,
 			},
@@ -92,18 +92,20 @@ func (ds *subaccountServiceBindingDataSource) Schema(_ context.Context, _ dataso
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "Current state of the service binding. Possible values are: " + // TODO describe states listed below
-					"\n\t `in progress`" +
-					"\n\t `failed`" +
-					"\n\t `succeeded`",
+				MarkdownDescription: "The current state of the service binding. Possible values are: \n" +
+					getFormattedValueAsTableRow("state", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("in progress", "The operation or processing is in progress") +
+					getFormattedValueAsTableRow("failed", "The operation or processing failed") +
+					getFormattedValueAsTableRow("succeeded", "The operation or processing succeeded"),
 				Computed: true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"labels": schema.MapAttribute{

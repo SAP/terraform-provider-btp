@@ -36,7 +36,7 @@ Read-Only:
 
 - `description` (String) The description of the role collection.
 - `name` (String) The name of the role collection.
-- `read_only` (Boolean) Whether the role collection is read-only.
+- `read_only` (Boolean) Shows whether the role collection is read-only.
 - `roles` (Attributes Set) (see [below for nested schema](#nestedatt--values--roles))
 
 <a id="nestedatt--values--roles"></a>

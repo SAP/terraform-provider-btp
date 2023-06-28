@@ -32,7 +32,7 @@ func (rs *globalaccountRoleResource) Configure(_ context.Context, req resource.C
 
 func (rs *globalaccountRoleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Create a role in a global account.
+		MarkdownDescription: `Creates a role in a global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
@@ -55,7 +55,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"read_only": schema.BoolAttribute{
-				MarkdownDescription: "Whether the role can be modified or not.",
+				MarkdownDescription: "Shows whether the role can be modified or not.",
 				Computed:            true,
 			},
 		},

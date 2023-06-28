@@ -48,15 +48,15 @@ You must be assigned to the admin or viewer role of the global account, director
 				},
 			},
 			"beta_enabled": schema.BoolAttribute{
-				MarkdownDescription: "Whether the subaccount can use beta services and applications.",
+				MarkdownDescription: "Shows whether the subaccount can use beta services and applications.",
 				Computed:            true,
 			},
 			"created_by": schema.StringAttribute{
-				MarkdownDescription: "Details of the user that created the subaccount.",
+				MarkdownDescription: "The details of the user that created the subaccount.",
 				Computed:            true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
@@ -71,7 +71,7 @@ You must be assigned to the admin or viewer role of the global account, director
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"name": schema.StringAttribute{
@@ -125,7 +125,7 @@ You must be assigned to the admin or viewer role of the global account, director
 				Computed:            true,
 			},
 			"usage": schema.StringAttribute{
-				MarkdownDescription: "Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: \n" +
+				MarkdownDescription: "Shows whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: \n" +
 					getFormattedValueAsTableRow("value", "description") +
 					getFormattedValueAsTableRow("---", "---") +
 					getFormattedValueAsTableRow("`UNSET`", "Global account or subaccount admin has not set the production-relevancy flag (default value).") +

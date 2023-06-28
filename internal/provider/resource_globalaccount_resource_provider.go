@@ -38,7 +38,7 @@ func (rs *resourceGlobalaccountProviderResource) Configure(_ context.Context, re
 
 func (rs *resourceGlobalaccountProviderResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Create a resource provider instance to allow your global account to connect to your provider account on a non-SAP cloud vendor. Through this channel, you can then consume remote service resources that you already own and which are supported by SAP BTP.
+		MarkdownDescription: `Creates a resource provider instance to allow your global account to connect to your provider account on a non-SAP cloud vendor. Through this channel, you can then consume remote service resources that you already own and which are supported by SAP BTP.
 For example, if you are subscribed to Amazon Web Services (AWS) and have already purchased services, such as PostgreSQL, you can register the vendor as a resource provider in SAP BTP and consume this service across your subaccounts together with other services offered by SAP.
 
 The use of this functionality is subject to the availability of the supported non-SAP cloud vendors in your country/region.
@@ -52,8 +52,12 @@ __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/managing-resource-providers>`,
 		Attributes: map[string]schema.Attribute{
 			"resource_provider": schema.StringAttribute{
-				MarkdownDescription: "Provider of the requested resource. Possible values are: `AWS`, `AZURE`.",
-				Required:            true,
+				MarkdownDescription: "Provider of the requested resource. Possible values are: \n" +
+					getFormattedValueAsTableRow("value", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("AWS", "Amazon Web Services") +
+					getFormattedValueAsTableRow("AZURE", "Microsoft Azure"),
+				Required: true,
 			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Unique technical name of the resource provider.",

@@ -118,7 +118,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"labels": schema.StringAttribute{
-							MarkdownDescription: "Broker-specified key-value pairs that specify attributes of an environment instance.",
+							MarkdownDescription: "The Broker-specified key-value pairs that specify attributes of an environment instance.",
 							Computed:            true,
 						},
 						"landscape_label": schema.StringAttribute{
@@ -138,7 +138,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 							Computed:            true,
 						},
 						"parameters": schema.StringAttribute{
-							MarkdownDescription: "Configuration parameters for the environment instance.",
+							MarkdownDescription: "The configuration parameters for the environment instance.",
 							Computed:            true,
 						},
 						"plan_id": schema.StringAttribute{
@@ -180,7 +180,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 						},
 						"type": schema.StringAttribute{
 							MarkdownDescription: "The last provisioning operation on the environment instance. Possible values are: \n" +
-								getFormattedValueAsTableRow("type", "description") +
+								getFormattedValueAsTableRow("value", "description") +
 								getFormattedValueAsTableRow("---", "---") +
 								getFormattedValueAsTableRow("`Provision`", "The environment instance is created.") +
 								getFormattedValueAsTableRow("`Update`", "The environment instance is changed.") +

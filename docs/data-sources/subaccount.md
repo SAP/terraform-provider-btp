@@ -31,12 +31,12 @@ data "btp_subaccount" "my_account" {
 
 ### Read-Only
 
-- `beta_enabled` (Boolean) Whether the subaccount can use beta services and applications.
-- `created_by` (String) Details of the user that created the subaccount.
-- `created_date` (String) The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `beta_enabled` (Boolean) Shows whether the subaccount can use beta services and applications.
+- `created_by` (String) The details of the user that created the subaccount.
+- `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `description` (String) The description of the subaccount.
 - `labels` (Map of Set of String) Set of words or phrases assigned to the subaccount.
-- `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `name` (String) A descriptive name of the subaccount for customer-facing UIs.
 - `parent_features` (Set of String) The features of parent entity of the subaccount.
 - `parent_id` (String) The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.
@@ -69,7 +69,7 @@ data "btp_subaccount" "my_account" {
   | `ROLLBACK_MIGRATION_PROCESSING` | The migration of the subaccount was rolled back and the subaccount is not migrated. | 
   | `SUSPENSION_FAILED` | The suspension operations failed. |
 - `subdomain` (String) The subdomain that becomes part of the path used to access the authorization tenant of the subaccount. Must be unique within the defined region. Use only letters (a-z), digits (0-9), and hyphens (not at the start or end). Maximum length is 63 characters. Cannot be changed after the subaccount has been created.
-- `usage` (String) Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: 
+- `usage` (String) Shows whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: 
 
   | value | description | 
   | --- | --- | 

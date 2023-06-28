@@ -89,7 +89,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"name": schema.StringAttribute{
@@ -101,7 +101,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 				Computed:            true,
 			},
 			"parameters": schema.StringAttribute{
-				MarkdownDescription: "Configuration parameters for the environment instance.",
+				MarkdownDescription: "The configuration parameters for the environment instance.",
 				Computed:            true,
 			},
 			"plan_id": schema.StringAttribute{
@@ -125,7 +125,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "The current state of the environment instance. Possible values are: \n" + // TODO describe states listed below
+				MarkdownDescription: "The current state of the environment instance. Possible values are: \n" +
 					getFormattedValueAsTableRow("state", "description") +
 					getFormattedValueAsTableRow("---", "---") +
 					getFormattedValueAsTableRow("`OK`", "The CRUD operation or series of operations completed successfully.") +

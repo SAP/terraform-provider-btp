@@ -59,7 +59,7 @@ func (ds *subaccountServiceOfferingDataSource) Configure(_ context.Context, req 
 
 func (ds *subaccountServiceOfferingDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a specific service offering such as its ID, name, description, metadata, the associated service brokers, and more.`,
+		MarkdownDescription: `Gets details about a specific service offering such as its ID, name, description, metadata, the associated service brokers, and more.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -86,7 +86,7 @@ func (ds *subaccountServiceOfferingDataSource) Schema(_ context.Context, _ datas
 				},
 			},
 			"ready": schema.BoolAttribute{
-				MarkdownDescription: "Whether the service offering is ready to be advertised.",
+				MarkdownDescription: "Shows whether the service offering is ready to be advertised.",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
@@ -94,23 +94,23 @@ func (ds *subaccountServiceOfferingDataSource) Schema(_ context.Context, _ datas
 				Computed:            true,
 			},
 			"bindable": schema.BoolAttribute{
-				MarkdownDescription: "Whether the service offering is bindable.",
+				MarkdownDescription: "Shows whether the service offering is bindable.",
 				Computed:            true,
 			},
 			"instances_retrievable": schema.BoolAttribute{
-				MarkdownDescription: "Whether the service instances associated with the service offering can be retrieved.",
+				MarkdownDescription: "Shows whether the service instances associated with the service offering can be retrieved.",
 				Computed:            true,
 			},
 			"bindings_retrievable": schema.BoolAttribute{
-				MarkdownDescription: "Whether the bindings associated with the service offering can be retrieved.",
+				MarkdownDescription: "Shows whether the bindings associated with the service offering can be retrieved.",
 				Computed:            true,
 			},
 			"plan_updateable": schema.BoolAttribute{
-				MarkdownDescription: "Whether the offered plan can be updated.",
+				MarkdownDescription: "Shows whether the offered plan can be updated.",
 				Computed:            true,
 			},
 			"allow_context_updates": schema.BoolAttribute{
-				MarkdownDescription: "Whether the context for the service offering can be updated.",
+				MarkdownDescription: "Shows whether the context for the service offering can be updated.",
 				Computed:            true,
 			},
 			"tags": schema.SetAttribute{
@@ -131,11 +131,11 @@ func (ds *subaccountServiceOfferingDataSource) Schema(_ context.Context, _ datas
 				Computed:            true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 		},

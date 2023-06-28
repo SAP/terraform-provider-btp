@@ -56,7 +56,7 @@ func (ds *globalaccountRoleDataSource) Configure(_ context.Context, req datasour
 
 func (ds *globalaccountRoleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a specific global account role.`,
+		MarkdownDescription: `Gets details about a specific global account role.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
@@ -89,7 +89,7 @@ func (ds *globalaccountRoleDataSource) Schema(_ context.Context, _ datasource.Sc
 				Computed:            true,
 			},
 			"read_only": schema.BoolAttribute{
-				MarkdownDescription: "Whether the role can be modified or not.",
+				MarkdownDescription: "Shows whether the role can be modified or not.",
 				Computed:            true,
 			},
 			"scopes": schema.ListNestedAttribute{
@@ -121,7 +121,7 @@ func (ds *globalaccountRoleDataSource) Schema(_ context.Context, _ datasource.Sc
 						},
 					},
 				},
-				MarkdownDescription: "Scopes available with this role.",
+				MarkdownDescription: "The scopes available with this role.",
 				Computed:            true,
 			},
 		},

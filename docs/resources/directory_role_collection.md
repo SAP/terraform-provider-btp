@@ -2,14 +2,14 @@
 page_title: "btp_directory_role_collection Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Create a role collection in a directory.
+  Creates a role collection in a directory.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_directory_role_collection (Resource)
 
-Create a role collection in a directory.
+Creates a role collection in a directory.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>

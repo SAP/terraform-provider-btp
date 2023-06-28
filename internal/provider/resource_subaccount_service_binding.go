@@ -44,7 +44,7 @@ func (rs *subaccountServiceBindingResource) Configure(_ context.Context, req res
 
 func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Create a service binding between a service instance and an application.`,
+		MarkdownDescription: `Creates a service binding between a service instance and an application.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -85,12 +85,12 @@ func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource
 				Computed:            true,
 			},
 			"ready": schema.BoolAttribute{
-				MarkdownDescription: "Whether the service binding is ready.",
+				MarkdownDescription: "Shows whether the service binding is ready.",
 				Computed:            true,
 			},
 			"context": schema.MapAttribute{
 				ElementType:         types.StringType,
-				MarkdownDescription: "Contextual data for the resource.",
+				MarkdownDescription: "The contextual data for the resource.",
 				Computed:            true,
 			},
 			"bind_resource": schema.MapAttribute{
@@ -99,23 +99,25 @@ func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource
 				Computed:            true,
 			},
 			"credentials": schema.StringAttribute{
-				MarkdownDescription: "Credentials to access the binding.",
+				MarkdownDescription: "The credentials to access the binding.",
 				Computed:            true,
 				Sensitive:           true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "Current state of the service binding. Possible values are: " + // TODO describe states listed below
-					"\n\t `in progress`" +
-					"\n\t `failed`" +
-					"\n\t `succeeded`",
+				MarkdownDescription: "The current state of the service binding. Possible values are: \n" +
+					getFormattedValueAsTableRow("state", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("in progress", "The operation or processing is in progress") +
+					getFormattedValueAsTableRow("failed", "The operation or processing failed") +
+					getFormattedValueAsTableRow("succeeded", "The operation or processing succeeded"),
 				Computed: true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 		},

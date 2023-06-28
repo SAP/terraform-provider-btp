@@ -58,7 +58,7 @@ func (ds *subaccountServiceBindingsDataSource) Configure(_ context.Context, req 
 
 func (ds *subaccountServiceBindingsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List all service bindings in a subaccount.`,
+		MarkdownDescription: `Lists all service bindings in a subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -95,7 +95,7 @@ func (ds *subaccountServiceBindingsDataSource) Schema(_ context.Context, _ datas
 							Computed:            true,
 						},
 						"ready": schema.BoolAttribute{
-							MarkdownDescription: "Whether the service binding is ready.",
+							MarkdownDescription: "Shows whether the service binding is ready.",
 							Computed:            true,
 						},
 						"service_instance_id": schema.StringAttribute{
@@ -113,16 +113,16 @@ func (ds *subaccountServiceBindingsDataSource) Schema(_ context.Context, _ datas
 							Computed:            true,
 						},
 						"credentials": schema.StringAttribute{
-							MarkdownDescription: "Credentials to access the binding.",
+							MarkdownDescription: "The credentials to access the binding.",
 							Computed:            true,
 							Sensitive:           true,
 						},
 						"created_date": schema.StringAttribute{
-							MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+							MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 							Computed:            true,
 						},
 						"last_modified": schema.StringAttribute{
-							MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+							MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 							Computed:            true,
 						},
 						"labels": schema.MapAttribute{

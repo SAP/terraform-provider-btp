@@ -70,7 +70,7 @@ func (ds *globalaccountRoleCollectionsDataSource) Schema(_ context.Context, _ da
 							Computed:            true,
 						},
 						"read_only": schema.BoolAttribute{
-							MarkdownDescription: "Whether the role collection is read-only.",
+							MarkdownDescription: "Shows whether the role collection is read-only.",
 							Computed:            true,
 						},
 						"description": schema.StringAttribute{

@@ -38,7 +38,7 @@ func (ds *subaccountServiceInstanceDataSource) Configure(_ context.Context, req 
 
 func (ds *subaccountServiceInstanceDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a specific provisioned service instance such as its name, id, platform to which it belongs, the last operation performed, and more.`,
+		MarkdownDescription: `Gets details about a specific provisioned service instance such as its name, id, platform to which it belongs, the last operation performed, and more.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -65,7 +65,7 @@ func (ds *subaccountServiceInstanceDataSource) Schema(_ context.Context, _ datas
 				},
 			},
 			"parameters": schema.StringAttribute{
-				MarkdownDescription: "Configuration parameters for the service instance.",
+				MarkdownDescription: "The configuration parameters for the service instance.",
 				Computed:            true,
 			},
 			"ready": schema.BoolAttribute{
@@ -73,7 +73,7 @@ func (ds *subaccountServiceInstanceDataSource) Schema(_ context.Context, _ datas
 				Computed:            true,
 			},
 			"serviceplan_id": schema.StringAttribute{
-				MarkdownDescription: "The ID of the serivce plan.",
+				MarkdownDescription: "The ID of the service plan.",
 				Computed:            true,
 			},
 			"platform_id": schema.StringAttribute{
@@ -85,7 +85,7 @@ func (ds *subaccountServiceInstanceDataSource) Schema(_ context.Context, _ datas
 				Computed:            true,
 			},
 			"shared": schema.BoolAttribute{
-				MarkdownDescription: "Whether the service instance is shared.",
+				MarkdownDescription: "Shows whether the service instance is shared.",
 				Computed:            true,
 			},
 			"context": schema.MapAttribute{
@@ -94,19 +94,19 @@ func (ds *subaccountServiceInstanceDataSource) Schema(_ context.Context, _ datas
 				Computed:            true,
 			},
 			"usable": schema.BoolAttribute{
-				MarkdownDescription: "Wheher the resource can be used.",
+				MarkdownDescription: "Shows whether the resource can be used.",
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "Current state of the service instance.",
+				MarkdownDescription: "The current state of the service instance.",
 				Computed:            true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"labels": schema.MapAttribute{

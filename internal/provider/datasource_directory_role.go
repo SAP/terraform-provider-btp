@@ -76,7 +76,7 @@ func (ds *directoryRoleDataSource) Schema(_ context.Context, _ datasource.Schema
 				Computed:            true,
 			},
 			"read_only": schema.BoolAttribute{
-				MarkdownDescription: "Whether the role can be modified or not.",
+				MarkdownDescription: "Shows whether the role can be modified or not.",
 				Computed:            true,
 			},
 			"scopes": schema.ListNestedAttribute{
@@ -108,7 +108,7 @@ func (ds *directoryRoleDataSource) Schema(_ context.Context, _ datasource.Schema
 						},
 					},
 				},
-				MarkdownDescription: "Scopes available with this role.",
+				MarkdownDescription: "The scopes available with this role.",
 				Computed:            true,
 			},
 		},

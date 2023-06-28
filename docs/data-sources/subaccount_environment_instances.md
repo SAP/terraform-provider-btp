@@ -46,12 +46,12 @@ Read-Only:
 - `description` (String) The description of the environment instance.
 - `environment_type` (String) The type of the environment instance that is used.
 - `id` (String) The ID of the environment instance.
-- `labels` (String) Broker-specified key-value pairs that specify attributes of an environment instance.
+- `labels` (String) The Broker-specified key-value pairs that specify attributes of an environment instance.
 - `landscape_label` (String) The name of the landscape within the logged-in region on which the environment instance is created.
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `name` (String) The name of the environment instance.
 - `operation` (String) An identifier that represents the last operation. This ID is returned by the environment brokers.
-- `parameters` (String) Configuration parameters for the environment instance.
+- `parameters` (String) The configuration parameters for the environment instance.
 - `plan_id` (String) The ID of the service plan for the environment instance in the corresponding service broker's catalog.
 - `plan_name` (String) The name of the service plan for the environment instance in the corresponding service broker's catalog.
 - `platform_id` (String) The ID of the platform for the environment instance in the corresponding service broker's catalog.
@@ -71,7 +71,7 @@ Read-Only:
 - `tenant_id` (String) The ID of the tenant that owns the environment instance.
 - `type` (String) The last provisioning operation on the environment instance. Possible values are: 
 
-  | type | description | 
+  | value | description | 
   | --- | --- | 
   | `Provision` | The environment instance is created. | 
   | `Update` | The environment instance is changed. | 
