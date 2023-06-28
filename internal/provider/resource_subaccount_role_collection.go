@@ -203,7 +203,7 @@ func (rs *subaccountRoleCollectionResource) Delete(ctx context.Context, req reso
 func (rs *subaccountRoleCollectionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 4 || idParts[0] == "" || idParts[1] == "" {
+	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
 		resp.Diagnostics.AddError(
 			"Unexpected Import Identifier",
 			fmt.Sprintf("Expected import identifier with format: subaccount_id, name. Got: %q", req.ID),
