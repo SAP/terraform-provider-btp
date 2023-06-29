@@ -225,7 +225,7 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		args.Directory = parentID
 	}
 
-	if plan.BetaEnabled.IsUnknown() {
+	if !plan.BetaEnabled.IsUnknown() {
 		betaEnabled := plan.BetaEnabled.ValueBool()
 		args.BetaEnabled = betaEnabled
 	}

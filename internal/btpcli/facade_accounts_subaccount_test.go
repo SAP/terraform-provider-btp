@@ -91,12 +91,11 @@ func TestAccountsSubaccountFacade_Create(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
-				"displayName":       displayName,
-				"subdomain":         subdomain,
-				"region":            region,
-				"betaEnabled":       "false",
-				"usedForProduction": "false",
-				"globalAccount":     globalAccount,
+				"displayName":   displayName,
+				"subdomain":     subdomain,
+				"region":        region,
+				"betaEnabled":   "false",
+				"globalAccount": globalAccount,
 			})
 
 		}))

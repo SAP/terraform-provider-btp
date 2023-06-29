@@ -47,7 +47,7 @@ type SubaccountCreateInput struct { // TODO support all options
 	Labels            map[string][]string `btpcli:"labels"`
 	Region            string              `btpcli:"region"`
 	Subdomain         string              `btpcli:"subdomain"`
-	UsedForProduction bool                `btpcli:"usedForProduction"`
+	UsedForProduction string              `btpcli:"usedForProduction"`
 	Globalaccount     string              `btpcli:"globalAccount"`
 	//SubaccountAdmins  string `json:"subaccountAdmins"`
 }
