@@ -192,3 +192,11 @@ func (rs *directoryRoleCollectionAssignmentResource) Delete(ctx context.Context,
 		return
 	}
 }
+
+func (rs *directoryRoleCollectionAssignmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resp.Diagnostics.AddError(
+		"Import not supported",
+		"Import is not supported for this resource. Use the resource directory_role_collection instead.",
+	)
+	return
+}
