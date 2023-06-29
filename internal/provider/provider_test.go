@@ -54,7 +54,12 @@ func getProviders(httpClient *http.Client) map[string]func() (tfprotov6.Provider
 func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 	t.Helper()
 
-	rec, err := recorder.New(cassetteName)
+	rec, err := recorder.NewWithOptions(&recorder.Options{
+		CassetteName:       cassetteName,
+		Mode:               recorder.ModeRecordOnce,
+		SkipRequestLatency: true,
+		RealTransport:      http.DefaultTransport,
+	})
 
 	if err != nil {
 		t.Fatal()
