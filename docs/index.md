@@ -41,13 +41,13 @@ provider "btp" {
 - `username` (String) Your user name, usually an e-mail address.
 
 ## Get Started
+
 If you're not familiar with Terraform yet, see the [Fundamentals](https://developer.hashicorp.com/terraform/tutorials/cli) section with a lot of helpful tutorials. 
 
 To install the provider, create a Terraform configuration file `provider.tf` with the example above as content and execute `terraform init`. 
 
-Then you can create *.tf files for the resources and execute `terraform plan` and, if everything looks fine, execute `terraform apply`. 
+Then you can create *.tf files for the resources and execute `terraform plan` and, if everything looks fine, execute `terraform apply`.
 
 ## Best Practices
-For the best experience using this provider, we recommend applying the common best practices for Terraform adoption as described in the Hashicorp documentation. For example, see [Phases of Terraform Adoption](https://developer.hashicorp.com/well-architected-framework/operational-excellence/operational-excellence-terraform-maturity). 
 
-    
+For the best experience using the SAP BTP provider, we recommend applying the common best practices for Terraform adoption as described in the Hashicorp documentation. For example, see [Phases of Terraform Adoption](https://developer.hashicorp.com/well-architected-framework/operational-excellence/operational-excellence-terraform-maturity).
