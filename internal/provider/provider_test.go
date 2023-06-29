@@ -150,9 +150,7 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_directory_role_collection",
 		"btp_directory_role_collection_assignment",
 		"btp_globalaccount_resource_provider",
-		/* TODO: switched off for phase 1
 		"btp_globalaccount_role",
-		*/
 		"btp_globalaccount_role_collection",
 		"btp_globalaccount_role_collection_assignment",
 		"btp_globalaccount_trust_configuration",
