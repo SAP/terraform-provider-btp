@@ -58,4 +58,12 @@ Required:
 - `role_template_app_id` (String) The name of the referenced template app id.
 - `role_template_name` (String) The name of the referenced role template.
 
+## Import
 
+Import is supported using the following syntax:
+
+```terraform
+# terraform import btp_directory_role_collection.<resource_name> '<directory_id>,<name>'
+
+terraform import btp_directory_role_collection.directory_viewer '6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f,Directory Viewer'
+```
