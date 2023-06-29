@@ -3,7 +3,9 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 
@@ -32,7 +34,7 @@ func (rs *globalaccountRoleResource) Configure(_ context.Context, req resource.C
 
 func (rs *globalaccountRoleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Create a role in a global account.
+		MarkdownDescription: `Creates a role in a global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
@@ -55,7 +57,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"read_only": schema.BoolAttribute{
-				MarkdownDescription: "Whether the role can be modified or not.",
+				MarkdownDescription: "Shows whether the role can be modified or not.",
 				Computed:            true,
 			},
 		},
@@ -141,4 +143,21 @@ func (rs *globalaccountRoleResource) Delete(ctx context.Context, req resource.De
 		resp.Diagnostics.AddError("API Error Deleting Resource Role (Global Account)", fmt.Sprintf("%s", err))
 		return
 	}
+}
+
+func (rs *globalaccountRoleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	idParts := strings.Split(req.ID, ",")
+
+	if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
+		resp.Diagnostics.AddError(
+			"Unexpected Import Identifier",
+			fmt.Sprintf("Expected import identifier with format: name, role_template_name, app_id. Got: %q", req.ID),
+		)
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_template_name"), idParts[1])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_id"), idParts[2])...)
+
 }
