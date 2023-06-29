@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"regexp"
@@ -15,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 
+	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 
 	"github.com/stretchr/testify/assert"
@@ -64,6 +66,9 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 	if err != nil {
 		t.Fatal()
 	}
+
+	rec.SetMatcher(cliServerRequestMatcher(t))
+
 	hookRedactIntegrationUserCredentials := func(i *cassette.Interaction) error {
 		intUser := os.Getenv("BTP_USERNAME")
 		intUserPwd := os.Getenv("BTP_PASSWORD")
@@ -116,6 +121,31 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 	rec.AddHook(hookRedactTokensInHeader, recorder.BeforeSaveHook)
 
 	return rec
+}
+
+func cliServerRequestMatcher(t *testing.T) func(r *http.Request, i cassette.Request) bool {
+	return func(r *http.Request, i cassette.Request) bool {
+		if r.Method != i.Method || r.URL.String() != i.URL {
+			return false
+		}
+
+		subdomainHeaderKey := http.CanonicalHeaderKey(btpcli.HeaderCLISubdomain)
+		if r.Header.Get(subdomainHeaderKey) != i.Headers.Get(subdomainHeaderKey) {
+			return false
+		}
+
+		idpHeaderKey := http.CanonicalHeaderKey(btpcli.HeaderCLICustomIDP)
+		if r.Header.Get(idpHeaderKey) != i.Headers.Get(idpHeaderKey) {
+			return false
+		}
+
+		bytes, err := io.ReadAll(r.Body)
+		if err != nil {
+			t.Fatal("Unable to read body from request")
+		}
+		requestBody := string(bytes)
+		return requestBody == i.Body
+	}
 }
 
 func stopQuietly(rec *recorder.Recorder) {
