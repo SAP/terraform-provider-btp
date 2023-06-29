@@ -22,7 +22,7 @@ terraform {
 
 # Configure the BTP Provider
 provider "btp" {
-  globalaccount = "795b53bb-a3f0-4769-adf0-26173282a975"
+  globalaccount = "my-global-account-subdomain"
 }
 ```
 
@@ -31,7 +31,7 @@ provider "btp" {
 
 ### Required
 
-- `globalaccount` (String) The subdomain of the global account you want to log in to. To be found in the cockpit, in the global account view.
+- `globalaccount` (String) The subdomain of the global account in which you want to manage resources. To be found in the cockpit, in the global account view.
 
 ### Optional
 
@@ -40,6 +40,14 @@ provider "btp" {
 - `password` (String, Sensitive) Your password. Note that if two-factor authentication is enabled, concatenate your password, followed by the passcode, in a single string.
 - `username` (String) Your user name, usually an e-mail address.
 
-## Best Practices
+## Get Started
+If you're not familiar with Terraform yet, see the [Fundamentals](https://developer.hashicorp.com/terraform/tutorials/cli) section with a lot of helpful tutorials. 
 
-For the best experience using the SAP BTP provider, we recommend applying the common best practices for Terraform adoption as described in the [Hashicorp documentation](https://developer.hashicorp.com/well-architected-framework/operational-excellence/operational-excellence-terraform-maturity).
+To install the provider, create a Terraform configuration file `provider.tf` with the example above as content and execute `terraform init`. 
+
+Then you can create *.tf files for the resources and execute `terraform plan` and, if everything looks fine, execute `terraform apply`. 
+
+## Best Practices
+For the best experience using this provider, we recommend applying the common best practices for Terraform adoption as described in the Hashicorp documentation. For example, see [Phases of Terraform Adoption](https://developer.hashicorp.com/well-architected-framework/operational-excellence/operational-excellence-terraform-maturity). 
+
+    
