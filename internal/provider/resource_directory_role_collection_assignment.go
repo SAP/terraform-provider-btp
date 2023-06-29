@@ -198,5 +198,4 @@ func (rs *directoryRoleCollectionAssignmentResource) ImportState(ctx context.Con
 		"Import not supported",
 		"Import is not supported for this resource. Use the resource directory_role_collection instead.",
 	)
-	return
 }

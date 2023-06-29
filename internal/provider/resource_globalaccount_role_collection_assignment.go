@@ -187,5 +187,4 @@ func (rs *globalaccountRoleCollectionAssignmentResource) ImportState(ctx context
 		"Import not supported",
 		"Import is not supported for this resource. Use the resource globalaccount_role_collection instead.",
 	)
-	return
 }

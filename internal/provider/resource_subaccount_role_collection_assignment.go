@@ -199,5 +199,4 @@ func (rs *subaccountRoleCollectionAssignmentResource) ImportState(ctx context.Co
 		"Import not supported",
 		"Import is not supported for this resource. Use the resource subaccount_role_collection instead.",
 	)
-	return
 }
