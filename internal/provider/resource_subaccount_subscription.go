@@ -170,7 +170,7 @@ You must be assigned to the subaccount admin role.`,
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "Set of words or phrases assigned to the multitenant application subscription.",
+				MarkdownDescription: "The set of words or phrases assigned to the multitenant application subscription.",
 				Computed:            true,
 			},
 		},

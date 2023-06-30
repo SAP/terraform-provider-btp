@@ -82,10 +82,10 @@ __Further documentation:__
 				MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
 					getFormattedValueAsTableRow("state", "description") +
 					getFormattedValueAsTableRow("---", "---") +
-					getFormattedValueAsTableRow("OK", "") +
-					getFormattedValueAsTableRow("STARTED", "The processing operation started") +
-					getFormattedValueAsTableRow("PROCESSING", "The processing operation is in progress") +
-					getFormattedValueAsTableRow("PROCESSING_FAILED", "The processing operation failed"),
+					getFormattedValueAsTableRow("`OK`", "The CRUD operation or series of operations completed successfully.") +
+					getFormattedValueAsTableRow("`STARTED`", "The processing operation started") +
+					getFormattedValueAsTableRow("`PROCESSING`", "The processing operation is in progress") +
+					getFormattedValueAsTableRow("`PROCESSING_FAILED`", "The processing operation failed"),
 				Computed: true,
 			},
 			"last_modified": schema.StringAttribute{

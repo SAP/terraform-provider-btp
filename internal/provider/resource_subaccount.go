@@ -103,7 +103,7 @@ __Further documentation:__
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "Set of words or phrases assigned to the subaccount.",
+				MarkdownDescription: "The set of words or phrases assigned to the subaccount.",
 				Computed:            true,
 				Optional:            true,
 			},

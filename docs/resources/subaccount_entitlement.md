@@ -61,10 +61,10 @@ resource "btp_subaccount_entitlement" "uas_reporting" {
  
   | state | description | 
   | --- | --- | 
-  | OK |  | 
-  | STARTED | The processing operation started | 
-  | PROCESSING | The processing operation is in progress | 
-  | PROCESSING_FAILED | The processing operation failed |
+  | `OK` | The CRUD operation or series of operations completed successfully. | 
+  | `STARTED` | The processing operation started | 
+  | `PROCESSING` | The processing operation is in progress | 
+  | `PROCESSING_FAILED` | The processing operation failed |
 
 ## Import
 

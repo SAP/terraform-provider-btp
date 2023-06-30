@@ -2,7 +2,7 @@
 page_title: "btp_globalaccount_resource_provider Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Creates a resource provider instance to allow your global account to connect to your provider account on a non-SAP cloud vendor. Through this channel, you can then consume remote service resources that you already own and which are supported by SAP BTP.
+  Creates a resource provider instance to allow your global account to connect to your provider account on a non-SAP cloud vendor. Through this channel, you can consume remote service resources that you already own and are supported by SAP BTP.
   For example, if you are subscribed to Amazon Web Services (AWS) and have already purchased services, such as PostgreSQL, you can register the vendor as a resource provider in SAP BTP and consume this service across your subaccounts together with other services offered by SAP.
   The use of this functionality is subject to the availability of the supported non-SAP cloud vendors in your country/region.
   Tips:
@@ -15,7 +15,7 @@ description: |-
 
 # btp_globalaccount_resource_provider (Resource)
 
-Creates a resource provider instance to allow your global account to connect to your provider account on a non-SAP cloud vendor. Through this channel, you can then consume remote service resources that you already own and which are supported by SAP BTP.
+Creates a resource provider instance to allow your global account to connect to your provider account on a non-SAP cloud vendor. Through this channel, you can consume remote service resources that you already own and are supported by SAP BTP.
 For example, if you are subscribed to Amazon Web Services (AWS) and have already purchased services, such as PostgreSQL, you can register the vendor as a resource provider in SAP BTP and consume this service across your subaccounts together with other services offered by SAP.
 
 The use of this functionality is subject to the availability of the supported non-SAP cloud vendors in your country/region.
@@ -63,19 +63,19 @@ resource "btp_globalaccount_resource_provider" "aws" {
 
 ### Required
 
-- `id` (String) Unique technical name of the resource provider.
+- `id` (String) The unique technical name of the resource provider.
 - `parameters` (String, Sensitive) Any relevant information about the resource provider that is not provided by other parameter values.
 - `resource_provider` (String) Provider of the requested resource. Possible values are: 
 
   | value | description | 
   | --- | --- | 
-  | AWS | Amazon Web Services | 
-  | AZURE | Microsoft Azure |
+  | `AWS` | Amazon Web Services | 
+  | `AZURE` | Microsoft Azure |
 
 ### Read-Only
 
-- `description` (String) Description of the resource provider.
-- `display_name` (String) Descriptive name of the resource provider.
+- `description` (String) The description of the resource provider.
+- `display_name` (String) The descriptive name of the resource provider.
 
 ## Import
 
