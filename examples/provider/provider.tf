@@ -9,5 +9,5 @@ terraform {
 
 # Configure the BTP Provider
 provider "btp" {
-  globalaccount = "my-global-account-subdomain"
+  globalaccount = "my-global-account-subdomain-id"
 }
