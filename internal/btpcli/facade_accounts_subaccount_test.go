@@ -79,6 +79,7 @@ func TestAccountsSubaccountFacade_Get(t *testing.T) {
 func TestAccountsSubaccountFacade_Create(t *testing.T) {
 	command := "accounts/subaccount"
 
+	globalAccount := "795b53bb-a3f0-4769-adf0-26173282a975"
 	displayName := "my-account"
 	subdomain := "my-account-sub"
 	region := "eu30"
@@ -95,6 +96,7 @@ func TestAccountsSubaccountFacade_Create(t *testing.T) {
 				"region":            region,
 				"betaEnabled":       "false",
 				"usedForProduction": "false",
+				"globalAccount":     globalAccount,
 			})
 
 		}))
