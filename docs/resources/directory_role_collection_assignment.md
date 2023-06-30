@@ -2,12 +2,12 @@
 page_title: "btp_directory_role_collection_assignment Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Assigns a user to a role collection on directory level.
+  Assigns a user to a role collection on a directory level.
 ---
 
 # btp_directory_role_collection_assignment (Resource)
 
-Assigns a user to a role collection on directory level.
+Assigns a user to a role collection on a directory level.
 
 ## Example Usage
 
@@ -38,7 +38,7 @@ resource "btp_directory_role_collection_assignment" "directory_viewer_group" {
 ### Optional
 
 - `group_name` (String) The name of the group to assign.
-- `origin` (String) The identity provider that hosts the user or group. The default value is `ldap`.
+- `origin` (String) The identity provider that hosts the user or a group. The default value is `ldap`.
 - `user_name` (String) The username of the user to assign.
 
 ### Read-Only

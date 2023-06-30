@@ -57,7 +57,7 @@ resource "btp_subaccount" "my_project_on_azure" {
 
 - `beta_enabled` (Boolean) Shows whether the subaccount can use beta services and applications.
 - `description` (String) A description of the subaccount for customer-facing UIs.
-- `labels` (Map of Set of String) Set of words or phrases assigned to the subaccount.
+- `labels` (Map of Set of String) The set of words or phrases assigned to the subaccount.
 - `parent_id` (String) The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.
 
 ### Read-Only

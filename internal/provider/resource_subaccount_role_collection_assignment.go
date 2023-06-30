@@ -49,7 +49,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Configure(_ context.Contex
 
 func (rs *subaccountRoleCollectionAssignmentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Assigns a user to a role collection on subaccount level.`,
+		MarkdownDescription: `Assigns a user to a role collection on a subaccount level.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -98,7 +98,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Schema(_ context.Context, 
 				},
 			},
 			"origin": schema.StringAttribute{
-				MarkdownDescription: "The identity provider that hosts the user or group. The default value is `ldap`.",
+				MarkdownDescription: "The identity provider that hosts the user or a group. The default value is `ldap`.",
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString("ldap"),

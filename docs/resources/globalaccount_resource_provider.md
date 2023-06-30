@@ -69,8 +69,8 @@ resource "btp_globalaccount_resource_provider" "aws" {
 
   | value | description | 
   | --- | --- | 
-  | AWS | Amazon Web Services | 
-  | AZURE | Microsoft Azure |
+  | `AWS` | Amazon Web Services | 
+  | `AZURE` | Microsoft Azure |
 
 ### Read-Only
 

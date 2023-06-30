@@ -49,7 +49,7 @@ func (rs *directoryRoleCollectionAssignmentResource) Configure(_ context.Context
 
 func (rs *directoryRoleCollectionAssignmentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Assigns a user to a role collection on directory level.`,
+		MarkdownDescription: `Assigns a user to a role collection on a directory level.`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",
@@ -98,7 +98,7 @@ func (rs *directoryRoleCollectionAssignmentResource) Schema(_ context.Context, _
 				},
 			},
 			"origin": schema.StringAttribute{
-				MarkdownDescription: "The identity provider that hosts the user or group. The default value is `ldap`.",
+				MarkdownDescription: "The identity provider that hosts the user or a group. The default value is `ldap`.",
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString("ldap"),

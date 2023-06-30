@@ -101,7 +101,7 @@ __Further documentation:__
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "Set of words or phrases assigned to the environment instance.",
+				MarkdownDescription: "The set of words or phrases assigned to the environment instance.",
 				Computed:            true,
 			},
 			"dashboard_url": schema.StringAttribute{

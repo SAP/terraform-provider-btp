@@ -72,7 +72,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
 
 - `broker_id` (String) The ID of the associated environment broker.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
-- `custom_labels` (Map of Set of String) Set of words or phrases assigned to the environment instance.
+- `custom_labels` (Map of Set of String) The set of words or phrases assigned to the environment instance.
 - `dashboard_url` (String) The URL of the service dashboard, which is a web-based management user interface for the service instances.
 - `description` (String) The description of the environment instance.
 - `id` (String) The ID of the environment instance.
