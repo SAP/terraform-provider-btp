@@ -34,7 +34,7 @@ func (ds *globalaccountResourceProviderDataSource) Configure(_ context.Context, 
 
 func (ds *globalaccountResourceProviderDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a resource provider instance.
+		MarkdownDescription: `Gets details about a resource provider instance.
 
 __Tip:__
 You must be assigned to the global account admin or viewer role.
@@ -43,21 +43,25 @@ __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/managing-resource-providers>`,
 		Attributes: map[string]schema.Attribute{
 			"resource_provider": schema.StringAttribute{
-				MarkdownDescription: "Provider of the requested resource. Possible values are: `AWS`, `AZURE`.",
-				Required:            true,
+				MarkdownDescription: "The provider of the requested resource. Possible values are: \n" +
+					getFormattedValueAsTableRow("value", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("AWS", "Amazon Web Services") +
+					getFormattedValueAsTableRow("AZURE", "Microsoft Azure"),
+				Required: true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
 			"id": schema.StringAttribute{
-				MarkdownDescription: "Unique technical name of the resource provider.",
+				MarkdownDescription: "The unique technical name of the resource provider.",
 				Required:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
 			"display_name": schema.StringAttribute{
-				MarkdownDescription: "Descriptive name of the resource provider.",
+				MarkdownDescription: "The descriptive name of the resource provider.",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
@@ -65,7 +69,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"parameters": schema.StringAttribute{
-				MarkdownDescription: "Any relevant information about the resource provider that is not provided by other parameter values.",
+				MarkdownDescription: "Shows any relevant information about the resource provider that is not provided by other parameter values.",
 				Computed:            true,
 				Sensitive:           true,
 			},

@@ -41,7 +41,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:            true, // TODO validate URL
 			},
 			"globalaccount": schema.StringAttribute{
-				MarkdownDescription: "The subdomain of the global account you want to log in to. To be found in the cockpit, in the global account view.",
+				MarkdownDescription: "The subdomain of the global account in which you want to manage resources. To be found in the cockpit, in the global account view.",
 				Required:            true, // TODO validate UUID
 			},
 			"username": schema.StringAttribute{

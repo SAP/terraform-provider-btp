@@ -41,7 +41,7 @@ func (rs *subaccountServiceInstanceResource) Configure(_ context.Context, req re
 
 func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Create a new service instance.`,
+		MarkdownDescription: `Creates a new service instance.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -67,7 +67,7 @@ func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resourc
 				Optional:            true,
 			},
 			"parameters": schema.StringAttribute{
-				MarkdownDescription: "Configuration parameters for the service instance.",
+				MarkdownDescription: "The configuration parameters for the service instance.",
 				Optional:            true,
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
@@ -90,7 +90,7 @@ func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resourc
 				Computed:            true,
 			},
 			"shared": schema.BoolAttribute{
-				MarkdownDescription: "Whether the service instance is shared.",
+				MarkdownDescription: "Shows whether the service instance is shared.",
 				Computed:            true,
 			},
 			"context": schema.MapAttribute{
@@ -99,19 +99,19 @@ func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resourc
 				Computed:            true,
 			},
 			"usable": schema.BoolAttribute{
-				MarkdownDescription: "Whether the resource can be used.",
+				MarkdownDescription: "Shows whether the resource can be used.",
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "Current state of the service instance.",
+				MarkdownDescription: "The current state of the service instance.",
 				Computed:            true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 		},

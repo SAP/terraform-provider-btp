@@ -90,7 +90,7 @@ __Further documentation:__
 							Computed:            true,
 						},
 						"read_only": schema.BoolAttribute{
-							MarkdownDescription: "Whether the role can be modified or not.",
+							MarkdownDescription: "Shows whether the role can be modified or not.",
 							Computed:            true,
 						},
 						"scopes": schema.ListNestedAttribute{
@@ -122,7 +122,7 @@ __Further documentation:__
 									},
 								},
 							},
-							MarkdownDescription: "Scopes available with this role.",
+							MarkdownDescription: "The scopes available with this role.",
 							Computed:            true,
 						},
 					},

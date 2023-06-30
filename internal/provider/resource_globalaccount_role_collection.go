@@ -47,7 +47,7 @@ func (rs *globalaccountRoleCollectionResource) Configure(_ context.Context, req 
 
 func (rs *globalaccountRoleCollectionResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Create a role collection in a global account.
+		MarkdownDescription: `Creates a role collection in a global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,

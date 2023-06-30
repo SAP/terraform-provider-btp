@@ -59,7 +59,7 @@ func (ds *subaccountAppsDataSource) Configure(_ context.Context, req datasource.
 
 func (ds *subaccountAppsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List all apps.`,
+		MarkdownDescription: `Lists all apps.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -72,7 +72,7 @@ func (ds *subaccountAppsDataSource) Schema(_ context.Context, _ datasource.Schem
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
-							MarkdownDescription: "The application ID is the xsappname plus the identifier, which consists of an exclamation mark (!), an identifier for the plan underwhich the application is deployed, and an index number.",
+							MarkdownDescription: "The application ID is the xsappname plus the identifier, which consists of an exclamation mark (!), an identifier for the plan under which the application is deployed, and an index number.",
 							Computed:            true,
 						},
 						"authorities": schema.SetAttribute{

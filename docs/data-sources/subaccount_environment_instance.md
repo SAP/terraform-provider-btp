@@ -41,10 +41,10 @@ data "btp_subaccount_environment_instance" "cloudfoundry" {
 - `environment_type` (String) The type of the environment instance that is used.
 - `labels` (String) The set of words or phrases assigned to the environment instance.
 - `landscape_label` (String) The name of the landscape within the logged-in region on which the environment instance is created.
-- `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `name` (String) The name of the environment instance.
 - `operation` (String) An identifier that represents the last operation. This ID is returned by the environment brokers.
-- `parameters` (String) Configuration parameters for the environment instance.
+- `parameters` (String) The configuration parameters for the environment instance.
 - `plan_id` (String) The ID of the service plan for the environment instance in the corresponding service broker's catalog.
 - `plan_name` (String) The name of the service plan for the environment instance in the corresponding service broker's catalog.
 - `platform_id` (String) The ID of the platform for the environment instance in the corresponding service broker's catalog.

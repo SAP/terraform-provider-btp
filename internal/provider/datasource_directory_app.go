@@ -56,7 +56,7 @@ func (ds *directoryAppDataSource) Configure(_ context.Context, req datasource.Co
 
 func (ds *directoryAppDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a specific app.`,
+		MarkdownDescription: `Gets details about a specific app.`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",

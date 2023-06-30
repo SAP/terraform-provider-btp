@@ -102,7 +102,7 @@ __Further documentation:__
 						},
 					},
 				},
-				MarkdownDescription: "Trust configurations associated with the subaccount.",
+				MarkdownDescription: "The trust configurations associated with the subaccount.",
 				Computed:            true,
 			},
 		},

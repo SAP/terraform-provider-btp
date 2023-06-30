@@ -31,7 +31,7 @@ data "btp_globalaccount" "this" {}
 ### Read-Only
 
 - `commercial_model` (String) The type of the commercial contract that was signed.
-- `consumption_based` (Boolean) Whether the customer of the global account pays only for services that they actually use (consumption-based) or pays for subscribed services at a fixed cost irrespective of consumption (subscription-based).
+- `consumption_based` (Boolean) Shows whether the customer of the global account pays only for services that they actually use (consumption-based) or pays for subscribed services at a fixed cost irrespective of consumption (subscription-based).
 - `contract_status` (String) The status of the customer contract and its associated root global account. Possible values are: 
 
   | status | description | 
@@ -41,10 +41,13 @@ data "btp_globalaccount" "this" {}
   | `SUSPENDED` | For enterprise accounts, specifies that the customer's global account is currently in the grace period of the termination process. Access to the global account by the customer is blocked. No data is deleted until the deletion date is reached at the end of the grace period. For trial accounts, specifies that the account is suspended, and the account owner has not yet extended the trial period. |
 - `costobject_id` (String) The number or code of the cost center, internal order, or Work Breakdown Structure element that is charged for the creation and usage of the global account. The type of the cost object must be configured in `costobject_type`.
 - `costobject_type` (String) The type of accounting assignment object that is associated with the global account owner and used to charge for the creation and usage of the global account. The number or code of the specified cost object is defined in `costobject_id`. Possible values are: 
-	 - `COST_CENTER`
-	 - `INTERNAL_ORDER`
-	 - `WBS_ELEMENT`
-- `created_date` (String) The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+
+  | value | description | 
+  | --- | --- | 
+  | COST_CENTER | Cost Center | 
+  | INTERNAL_ORDER | Internal Order | 
+  | WBS_ELEMENT | WBS Element |
+- `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `crm_customer_id` (String) The ID of the customer as registered in the CRM system.
 - `crm_tenant_id` (String) The ID of the customer tenant as registered in the CRM system.
 - `description` (String) The description of the global account.
@@ -56,7 +59,7 @@ data "btp_globalaccount" "this" {}
   | `STANDARD` | The global account can be accessed from any geographic location. | 
   | `EU_ACCESS` | The global account can be accessed only within locations in the EU. |
 - `id` (String) The ID of the global account.
-- `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `license_type` (String) The type of license for the global account. The license type affects the scope of functions of the account. Possible values are: 
 
   | type | description | 

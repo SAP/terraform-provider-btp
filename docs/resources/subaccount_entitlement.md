@@ -49,19 +49,22 @@ resource "btp_subaccount_entitlement" "uas_reporting" {
 
 ### Optional
 
-- `amount` (Number) Quota assigned to the subaccount.
+- `amount` (Number) The quota assigned to the subaccount.
 
 ### Read-Only
 
-- `created_date` (String) The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `id` (String) The ID of the entitled service plan.
-- `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `plan_id` (String) The ID of the entitled service plan.
 - `state` (String) The current state of the entitlement. Possible values are: 
-	 - `OK`
-	 - `STARTED`
-	 - `PROCESSING`
-	 - `PROCESSING_FAILED`
+ 
+  | state | description | 
+  | --- | --- | 
+  | OK |  | 
+  | STARTED | The processing operation started | 
+  | PROCESSING | The processing operation is in progress | 
+  | PROCESSING_FAILED | The processing operation failed |
 
 ## Import
 

@@ -37,7 +37,7 @@ func (rs *subaccountTrustConfigurationResource) Configure(_ context.Context, req
 
 func (rs *subaccountTrustConfigurationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Establish trust from a subaccount to an Identity Authentication tenant.
+		MarkdownDescription: `Establishes trust from a subaccount to an Identity Authentication tenant.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>`,
@@ -93,11 +93,11 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"status": schema.StringAttribute{
-				MarkdownDescription: "Whether the identity provider is currently active or not.",
+				MarkdownDescription: "Shows whether the identity provider is currently active or not.",
 				Computed:            true,
 			},
 			"read_only": schema.BoolAttribute{
-				MarkdownDescription: "Whether the trust configuration can be modified.",
+				MarkdownDescription: "Shows whether the trust configuration can be modified.",
 				Computed:            true,
 			},
 		},

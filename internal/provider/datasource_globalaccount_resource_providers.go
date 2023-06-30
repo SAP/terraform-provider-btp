@@ -46,7 +46,7 @@ func (ds *globalaccountGlobalaccountResourceProvidersDataSource) Configure(_ con
 
 func (ds *globalaccountGlobalaccountResourceProvidersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List all the resource provider instances in a global account.
+		MarkdownDescription: `Lists all the resource provider instances in a global account.
 
 __Tip:__
 You must be assigned to the global account admin or viewer role.
@@ -58,15 +58,19 @@ __Further documentation:__
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"resource_provider": schema.StringAttribute{
-							MarkdownDescription: "Provider of the requested resource. Possible values are: `AWS`, `AZURE`.",
-							Computed:            true,
+							MarkdownDescription: "The provider of the requested resource. Possible values are: \n" +
+								getFormattedValueAsTableRow("value", "description") +
+								getFormattedValueAsTableRow("---", "---") +
+								getFormattedValueAsTableRow("AWS", "Amazon Web Services") +
+								getFormattedValueAsTableRow("AZURE", "Microsoft Azure"),
+							Computed: true,
 						},
 						"id": schema.StringAttribute{
-							MarkdownDescription: "Unique technical name of the resource provider.",
+							MarkdownDescription: "The unique technical name of the resource provider.",
 							Computed:            true,
 						},
 						"display_name": schema.StringAttribute{
-							MarkdownDescription: "Descriptive name of the resource provider.",
+							MarkdownDescription: "The descriptive name of the resource provider.",
 							Computed:            true,
 						},
 						"description": schema.StringAttribute{

@@ -51,7 +51,7 @@ __Further documentation:__
 				},
 			},
 			"created_by": schema.StringAttribute{
-				MarkdownDescription: "Details of the user that created the directory.",
+				MarkdownDescription: "The details of the user that created the directory.",
 				Computed:            true,
 			},
 			"created_date": schema.StringAttribute{
@@ -79,7 +79,7 @@ __Further documentation:__
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "Set of words or phrases assigned to the directory.",
+				MarkdownDescription: "The set of words or phrases assigned to the directory.",
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
@@ -116,7 +116,7 @@ __Further documentation:__
 				Computed: true,
 			},
 			"subdomain": schema.StringAttribute{
-				MarkdownDescription: "Applies only to directories that have the user authorization management feature enabled. The subdomain is part of the path used to access the authorization tenant of the directory.",
+				MarkdownDescription: "This applies only to directories that have the user authorization management feature enabled. The subdomain is part of the path used to access the authorization tenant of the directory.",
 				Computed:            true,
 			},
 		},

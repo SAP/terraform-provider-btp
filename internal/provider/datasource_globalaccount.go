@@ -79,7 +79,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"consumption_based": schema.BoolAttribute{
-				MarkdownDescription: "Whether the customer of the global account pays only for services that they actually use (consumption-based) or pays for subscribed services at a fixed cost irrespective of consumption (subscription-based).",
+				MarkdownDescription: "Shows whether the customer of the global account pays only for services that they actually use (consumption-based) or pays for subscribed services at a fixed cost irrespective of consumption (subscription-based).",
 				Computed:            true,
 			},
 			"contract_status": schema.StringAttribute{
@@ -96,10 +96,12 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"costobject_type": schema.StringAttribute{
-				MarkdownDescription: "The type of accounting assignment object that is associated with the global account owner and used to charge for the creation and usage of the global account. The number or code of the specified cost object is defined in `costobject_id`. Possible values are: " +
-					"\n\t - `COST_CENTER`" +
-					"\n\t - `INTERNAL_ORDER`" +
-					"\n\t - `WBS_ELEMENT`",
+				MarkdownDescription: "The type of accounting assignment object that is associated with the global account owner and used to charge for the creation and usage of the global account. The number or code of the specified cost object is defined in `costobject_id`. Possible values are: \n" +
+					getFormattedValueAsTableRow("value", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("COST_CENTER", "Cost Center") +
+					getFormattedValueAsTableRow("INTERNAL_ORDER", "Internal Order") +
+					getFormattedValueAsTableRow("WBS_ELEMENT", "WBS Element"),
 				Computed: true,
 			},
 			"crm_customer_id": schema.StringAttribute{
@@ -183,11 +185,11 @@ __Further documentation:__
 				Computed: true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"expiry_date": schema.StringAttribute{

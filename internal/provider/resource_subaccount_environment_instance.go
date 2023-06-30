@@ -41,7 +41,7 @@ func (rs *subaccountEnvironmentInstanceResource) Configure(_ context.Context, re
 
 func (rs *subaccountEnvironmentInstanceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Create an environment instance, such as a Cloud Foundry org, in a subaccount.
+		MarkdownDescription: `Creates an environment instance, such as a Cloud Foundry org, in a subaccount.
 
 __Tips:__
 * You must be assigned to the subaccount admin role.
@@ -60,19 +60,19 @@ __Further documentation:__
 				},
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "Name of the environment instance.",
+				MarkdownDescription: "The name of the environment instance.",
 				Required:            true,
 			},
 			"environment_type": schema.StringAttribute{
-				MarkdownDescription: "Type of the environment instance that is used.",
+				MarkdownDescription: "The type of the environment instance that is used.",
 				Required:            true,
 			},
 			"plan_name": schema.StringAttribute{
-				MarkdownDescription: "Name of the service plan for the environment instance in the corresponding service broker's catalog.",
+				MarkdownDescription: "The name of the service plan for the environment instance in the corresponding service broker's catalog.",
 				Required:            true,
 			},
 			"service_name": schema.StringAttribute{
-				MarkdownDescription: "Name of the service for the environment instance in the corresponding service broker's catalog.",
+				MarkdownDescription: "The name of the service for the environment instance in the corresponding service broker's catalog.",
 				Required:            true,
 			},
 			"landscape_label": schema.StringAttribute{
@@ -81,7 +81,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"parameters": schema.StringAttribute{
-				MarkdownDescription: "Configuration parameters for the environment instance.",
+				MarkdownDescription: "The configuration parameters for the environment instance.",
 				Optional:            true,
 				Computed:            true,
 			},
@@ -94,7 +94,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"custom_labels": schema.MapAttribute{
@@ -113,11 +113,11 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"labels": schema.StringAttribute{
-				MarkdownDescription: "Broker-specified key-value pairs that specify attributes of an environment instance.",
+				MarkdownDescription: "The Broker-specified key-value pairs that specify attributes of an environment instance.",
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"operation": schema.StringAttribute{
@@ -125,37 +125,40 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"plan_id": schema.StringAttribute{
-				MarkdownDescription: "ID of the service plan for the environment instance in the corresponding service broker's catalog.",
+				MarkdownDescription: "The ID of the service plan for the environment instance in the corresponding service broker's catalog.",
 				Computed:            true,
 			},
 			"platform_id": schema.StringAttribute{
-				MarkdownDescription: "ID of the platform for the environment instance in the corresponding service broker's catalog.",
+				MarkdownDescription: "The ID of the platform for the environment instance in the corresponding service broker's catalog.",
 				Computed:            true,
 			},
 			"service_id": schema.StringAttribute{
-				MarkdownDescription: "ID of the service for the environment instance in the corresponding service broker's catalog.",
+				MarkdownDescription: "The ID of the service for the environment instance in the corresponding service broker's catalog.",
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "Current state of the environment instance. Possible values are: " + // TODO describe states listed below
-					"\n\t - `OK`" +
-					"\n\t - `CREATING`" +
-					"\n\t - `CREATION_FAILED`" +
-					"\n\t - `DELETING`" +
-					"\n\t - `DELETION_FAILED`" +
-					"\n\t - `UPDATE_FAILED`" +
-					"\n\t - `UPDATING`",
-				Computed: true,
+				MarkdownDescription: "The current state of the environment instance. Possible values are: \n" +
+					getFormattedValueAsTableRow("state", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`OK`", "The CRUD operation or series of operations completed successfully.") +
+					getFormattedValueAsTableRow("`CREATING`", "Creating of the environment instance is in progress.") +
+					getFormattedValueAsTableRow("`CREATION_FAILED`", "The creation of the environment instance failed, and the environment instance was not created or was created but cannot be used.") +
+					getFormattedValueAsTableRow("`UPDATING`", "Updating of the environment instance is in progress.") +
+					getFormattedValueAsTableRow("`UPDATE_FAILED`", "The update of the environment instance failed, and  the environment instance was not updated.") +
+					getFormattedValueAsTableRow("`DELETING`", "Deleting of the environment instance is in progress.") +
+					getFormattedValueAsTableRow("`DELETION_FAILED`", "The deletion of the environment instance failed, and the environment instance was not deleted."), Computed: true,
 			},
 			"tenant_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the tenant that owns the environment instance.",
 				Computed:            true,
 			},
 			"type": schema.StringAttribute{
-				MarkdownDescription: "The last provisioning operation on the environment instance. Possible values are: " +
-					"\n\t - `Provision` Environment instance created." +
-					"\n\t - `Update` Environment instance changed." +
-					"\n\t - `Deprovision` Environment instance deleted.",
+				MarkdownDescription: "The last provisioning operation on the environment instance. Possible values are: \n" +
+					getFormattedValueAsTableRow("type", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`Provision`", "The environment instance is created.") +
+					getFormattedValueAsTableRow("`Update`", "The environment instance is changed.") +
+					getFormattedValueAsTableRow("`Deprovision`", "The environment instance is deleted."),
 				Computed: true,
 			},
 		},

@@ -56,7 +56,7 @@ func (ds *subaccountServicePlatformsDataSource) Configure(_ context.Context, req
 
 func (ds *subaccountServicePlatformsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `List all platforms in a subaccount that are registered for service consumption.`,
+		MarkdownDescription: `Lists all platforms in a subaccount that are registered for service consumption.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -87,7 +87,7 @@ func (ds *subaccountServicePlatformsDataSource) Schema(_ context.Context, _ data
 							Computed:            true,
 						},
 						"name": schema.StringAttribute{
-							MarkdownDescription: "The Name of the platform.",
+							MarkdownDescription: "The name of the platform.",
 							Optional:            true,
 							Computed:            true,
 						},
@@ -96,7 +96,7 @@ func (ds *subaccountServicePlatformsDataSource) Schema(_ context.Context, _ data
 							Computed:            true,
 						},
 						"ready": schema.BoolAttribute{
-							MarkdownDescription: "Whether the platform is ready for consumption.",
+							MarkdownDescription: "Shows whether the platform is ready for consumption.",
 							Computed:            true,
 						},
 						"type": schema.StringAttribute{
@@ -104,11 +104,11 @@ func (ds *subaccountServicePlatformsDataSource) Schema(_ context.Context, _ data
 							Computed:            true,
 						},
 						"created_date": schema.StringAttribute{
-							MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+							MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 							Computed:            true,
 						},
 						"last_modified": schema.StringAttribute{
-							MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+							MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 							Computed:            true,
 						},
 						"labels": schema.MapAttribute{

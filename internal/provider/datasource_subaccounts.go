@@ -97,7 +97,7 @@ You must be assigned to the admin or viewer role of the global account, director
 							Computed:            true,
 						},
 						"created_by": schema.StringAttribute{
-							MarkdownDescription: "Details of the user that created the subaccount.",
+							MarkdownDescription: "The details of the user that created the subaccount.",
 							Computed:            true,
 						},
 						"created_date": schema.StringAttribute{
@@ -170,7 +170,7 @@ You must be assigned to the admin or viewer role of the global account, director
 							Computed:            true,
 						},
 						"usage": schema.StringAttribute{
-							MarkdownDescription: "Shows Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: \n" +
+							MarkdownDescription: "Shows whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: \n" +
 								getFormattedValueAsTableRow("value", "description") +
 								getFormattedValueAsTableRow("---", "---") +
 								getFormattedValueAsTableRow("`UNSET`", "Global account or subaccount admin has not set the production-relevancy flag (default value).") +

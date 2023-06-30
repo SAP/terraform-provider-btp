@@ -52,7 +52,7 @@ func (ds *subaccountServiceBrokerDataSource) Configure(_ context.Context, req da
 
 func (ds *subaccountServiceBrokerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Get details about a specific service broker registered in a subaccount, such as its name, description, labels, and URL.`,
+		MarkdownDescription: `Gets details about a specific service broker registered in a subaccount, such as its name, description, labels, and URL.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -79,7 +79,7 @@ func (ds *subaccountServiceBrokerDataSource) Schema(_ context.Context, _ datasou
 				},
 			},
 			"ready": schema.BoolAttribute{
-				MarkdownDescription: "Whether the service broker is ready.",
+				MarkdownDescription: "Shows whether the service broker is ready.",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
@@ -91,11 +91,11 @@ func (ds *subaccountServiceBrokerDataSource) Schema(_ context.Context, _ datasou
 				Computed:            true,
 			},
 			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
 			"labels": schema.MapAttribute{

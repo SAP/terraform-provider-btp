@@ -110,7 +110,7 @@ func (ds *subaccountServiceInstancesDataSource) Schema(_ context.Context, _ data
 							Computed:            true,
 						},
 						"usable": schema.BoolAttribute{
-							MarkdownDescription: "Whether the resource can be used.",
+							MarkdownDescription: "Shows whether the resource can be used.",
 							Computed:            true,
 						},
 						"created_date": schema.StringAttribute{

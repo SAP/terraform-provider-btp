@@ -80,11 +80,11 @@ You must be assigned to the global account admin or viewer role.`,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
-							MarkdownDescription: "Technical name of the data center. Must be unique within the cloud deployment.",
+							MarkdownDescription: "The technical name of the data center. Must be unique within the cloud deployment.",
 							Computed:            true,
 						},
 						"name": schema.StringAttribute{
-							MarkdownDescription: "Descriptive name of the data center for customer-facing UIs.",
+							MarkdownDescription: "The descriptive name of the data center for customer-facing UIs.",
 							Computed:            true,
 						},
 						"region": schema.StringAttribute{
@@ -108,19 +108,19 @@ You must be assigned to the global account admin or viewer role.`,
 								getFormattedValueAsTableRow("`AZURE`", "Microsoft Azure.") +
 								getFormattedValueAsTableRow("`SAP`", "SAP BTP (Neo).") +
 								getFormattedValueAsTableRow("`ALI`", "Alibaba Cloud.") +
-								getFormattedValueAsTableRow("`IBM`", "AIBM Cloud."),
+								getFormattedValueAsTableRow("`IBM`", "IBM Cloud."),
 							Computed: true,
 						},
 						"provisioning_service_url": schema.StringAttribute{
-							MarkdownDescription: "Provisioning service URL.",
+							MarkdownDescription: "The provisioning service URL.",
 							Computed:            true,
 						},
 						"saas_registry_service_url": schema.StringAttribute{
-							MarkdownDescription: "Saas-Registry service URL.",
+							MarkdownDescription: "The aas-Registry service URL.",
 							Computed:            true,
 						},
 						"supports_trial": schema.BoolAttribute{
-							MarkdownDescription: "Whether the specified datacenter supports trial accounts.",
+							MarkdownDescription: "Shows whether the specified data center supports trial accounts.",
 							Computed:            true,
 						},
 					},

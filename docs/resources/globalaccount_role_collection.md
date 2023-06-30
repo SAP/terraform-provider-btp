@@ -2,14 +2,14 @@
 page_title: "btp_globalaccount_role_collection Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Create a role collection in a global account.
+  Creates a role collection in a global account.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_globalaccount_role_collection (Resource)
 
-Create a role collection in a global account.
+Creates a role collection in a global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>
