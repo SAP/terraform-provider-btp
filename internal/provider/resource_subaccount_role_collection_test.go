@@ -33,6 +33,12 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "2"),
 					),
 				},
+				{
+					ResourceName:      "btp_subaccount_role_collection.uut",
+					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,My new role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
 			},
 		})
 	})
