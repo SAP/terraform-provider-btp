@@ -38,7 +38,7 @@ func (rs *resourceGlobalaccountProviderResource) Configure(_ context.Context, re
 
 func (rs *resourceGlobalaccountProviderResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Creates a resource provider instance to allow your global account to connect to your provider account on a non-SAP cloud vendor. Through this channel, you can then consume remote service resources that you already own and which are supported by SAP BTP.
+		MarkdownDescription: `Creates a resource provider instance to allow your global account to connect to your provider account on a non-SAP cloud vendor. Through this channel, you can consume remote service resources that you already own and are supported by SAP BTP.
 For example, if you are subscribed to Amazon Web Services (AWS) and have already purchased services, such as PostgreSQL, you can register the vendor as a resource provider in SAP BTP and consume this service across your subaccounts together with other services offered by SAP.
 
 The use of this functionality is subject to the availability of the supported non-SAP cloud vendors in your country/region.
@@ -55,20 +55,20 @@ __Further documentation:__
 				MarkdownDescription: "Provider of the requested resource. Possible values are: \n" +
 					getFormattedValueAsTableRow("value", "description") +
 					getFormattedValueAsTableRow("---", "---") +
-					getFormattedValueAsTableRow("AWS", "Amazon Web Services") +
-					getFormattedValueAsTableRow("AZURE", "Microsoft Azure"),
+					getFormattedValueAsTableRow("`AWS`", "Amazon Web Services") +
+					getFormattedValueAsTableRow("`AZURE`", "Microsoft Azure"),
 				Required: true,
 			},
 			"id": schema.StringAttribute{
-				MarkdownDescription: "Unique technical name of the resource provider.",
+				MarkdownDescription: "The unique technical name of the resource provider.",
 				Required:            true,
 			},
 			"display_name": schema.StringAttribute{
-				MarkdownDescription: "Descriptive name of the resource provider.",
+				MarkdownDescription: "The descriptive name of the resource provider.",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "Description of the resource provider.",
+				MarkdownDescription: "The description of the resource provider.",
 				Computed:            true,
 			},
 			"parameters": schema.StringAttribute{
