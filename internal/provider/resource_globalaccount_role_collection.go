@@ -110,6 +110,9 @@ func (rs *globalaccountRoleCollectionResource) Read(ctx context.Context, req res
 	state.Name = types.StringValue(cliRes.Name)
 	state.Description = types.StringValue(cliRes.Description)
 
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	state.Id = state.Name
+
 	state.Roles = []globalaccountRoleCollectionRoleRefType{}
 	for _, role := range cliRes.RoleReferences {
 		state.Roles = append(state.Roles, globalaccountRoleCollectionRoleRefType{
@@ -139,6 +142,7 @@ func (rs *globalaccountRoleCollectionResource) Create(ctx context.Context, req r
 
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
 	plan.Id = types.StringValue(cliRes.Name)
 
 	for _, role := range plan.Roles {
