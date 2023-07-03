@@ -22,7 +22,7 @@ terraform {
 
 # Configure the BTP Provider
 provider "btp" {
-  globalaccount = "my-global-account-subdomain-id"
+  globalaccount = "my-global-account-subdomain"
 }
 ```
 
