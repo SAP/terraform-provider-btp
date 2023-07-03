@@ -112,6 +112,11 @@ __Further documentation:__
 				Optional:            true,
 				Computed:            true,
 			},
+			"used_for_production": schema.BoolAttribute{
+				MarkdownDescription: "Shows whether the subaccount has been setup for production purposes.",
+				Optional:            true,
+				Computed:            true,
+			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Computed:            true,
@@ -172,7 +177,7 @@ __Further documentation:__
 					getFormattedValueAsTableRow("`UNSET`", "Global account or subaccount admin has not set the production-relevancy flag (default value).") +
 					getFormattedValueAsTableRow("`NOT_USED_FOR_PRODUCTION`", "The subaccount is not used for production purposes.") +
 					getFormattedValueAsTableRow("`USED_FOR_PRODUCTION`", "The subaccount is used for production purposes."),
-				Optional: true,
+				Computed: true,
 			},
 		},
 	}
@@ -234,6 +239,11 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		var labels map[string][]string
 		plan.Labels.ElementsAs(ctx, &labels, false)
 		args.Labels = labels
+	}
+
+	if !plan.UsedForProduction.IsUnknown() {
+		usedForProduction := plan.UsedForProduction.ValueBool()
+		args.UsedForProduction = usedForProduction
 	}
 
 	cliRes, _, err := rs.cli.Accounts.Subaccount.Create(ctx, &args)
