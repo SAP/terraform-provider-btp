@@ -50,6 +50,28 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 		})
 	})
 
+	t.Run("error path - role collection import fails", func(t *testing.T) {
+		rec := setupVCR(t, "fixtures/resource_globalaccount_role_collection_assignment_import_error")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProvider() + hclResourceGlobalaccountRoleCollectionAssignment("uut", "Global Account Viewer", "jenny.doe@test.com"),
+				},
+				{
+					ResourceName:      "btp_globalaccount_role_collection_assignment.uut",
+					ImportStateId:     "anyID",
+					ImportState:       true,
+					ImportStateVerify: true,
+					ExpectError:       regexp.MustCompile(`Import not supported`),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - role_collection_name mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,

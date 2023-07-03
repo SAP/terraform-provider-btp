@@ -120,6 +120,9 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 		return
 	}
 
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	state.Id = state.RoleCollectionName
+
 	// This resource is not supposed to be read by definition. However nothing the user can do about that, hence no error message is raised via resp.Diagnostics.
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -147,6 +150,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Create(ctx context.Context
 		return
 	}
 
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
 	plan.Id = types.StringValue(plan.RoleCollectionName.ValueString())
 
 	diags = resp.State.Set(ctx, &plan)

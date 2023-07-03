@@ -51,6 +51,29 @@ func TestResourceDirectoryRoleCollectionAssignment(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - role collection import fails", func(t *testing.T) {
+		rec := setupVCR(t, "fixtures/resource_directory_role_collection_assignment_import_error")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProvider() + hclResourceDirectoryRoleCollectionAssignment("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer", "jenny.doe@test.com"),
+				},
+				{
+					ResourceName:      "btp_directory_role_collection_assignment.uut",
+					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9",
+					ImportState:       true,
+					ImportStateVerify: true,
+					ExpectError:       regexp.MustCompile(`Import not supported`),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - directory_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
