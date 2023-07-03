@@ -146,7 +146,6 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newDirectoryRoleResource,
 		newGlobalaccountRoleResource,
 		newSubaccountServiceBindingResource,
-		newSubaccountServiceInstanceResource,
 		newSubaccountSubscriptionResource,
 	}
 
@@ -168,6 +167,7 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newSubaccountRoleCollectionResource,
 		newSubaccountRoleCollectionAssignmentResource,
 		newSubaccountRoleResource,
+		newSubaccountServiceInstanceResource,
 		newSubaccountTrustConfigurationResource,
 	}, betaResources...)
 }
