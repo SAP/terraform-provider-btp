@@ -10,20 +10,21 @@ import (
 )
 
 type subaccountType struct {
-	ID             types.String `tfsdk:"id"`
-	BetaEnabled    types.Bool   `tfsdk:"beta_enabled"`
-	CreatedBy      types.String `tfsdk:"created_by"`
-	CreatedDate    types.String `tfsdk:"created_date"`
-	Description    types.String `tfsdk:"description"`
-	Labels         types.Map    `tfsdk:"labels"`
-	LastModified   types.String `tfsdk:"last_modified"`
-	Name           types.String `tfsdk:"name"`
-	ParentID       types.String `tfsdk:"parent_id"`
-	ParentFeatures types.Set    `tfsdk:"parent_features"`
-	Region         types.String `tfsdk:"region"`
-	State          types.String `tfsdk:"state"`
-	Subdomain      types.String `tfsdk:"subdomain"`
-	Usage          types.String `tfsdk:"usage"`
+	ID                types.String `tfsdk:"id"`
+	BetaEnabled       types.Bool   `tfsdk:"beta_enabled"`
+	CreatedBy         types.String `tfsdk:"created_by"`
+	CreatedDate       types.String `tfsdk:"created_date"`
+	Description       types.String `tfsdk:"description"`
+	Labels            types.Map    `tfsdk:"labels"`
+	LastModified      types.String `tfsdk:"last_modified"`
+	Name              types.String `tfsdk:"name"`
+	ParentID          types.String `tfsdk:"parent_id"`
+	ParentFeatures    types.Set    `tfsdk:"parent_features"`
+	Region            types.String `tfsdk:"region"`
+	State             types.String `tfsdk:"state"`
+	Subdomain         types.String `tfsdk:"subdomain"`
+	Usage             types.String `tfsdk:"usage"`
+	UsedForProduction types.Bool   `tfsdk:"used_for_production"`
 }
 
 func subaccountValueFrom(ctx context.Context, value cis.SubaccountResponseObject) (subaccountType, diag.Diagnostics) {

@@ -59,6 +59,7 @@ resource "btp_subaccount" "my_project_on_azure" {
 - `description` (String) A description of the subaccount for customer-facing UIs.
 - `labels` (Map of Set of String) The set of words or phrases assigned to the subaccount.
 - `parent_id` (String) The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.
+- `used_for_production` (Boolean) Shows whether the subaccount has been setup for production purposes.
 
 ### Read-Only
 
