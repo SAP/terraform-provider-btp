@@ -154,7 +154,7 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_subaccount",
 		"btp_subaccount_entitlement",
 		"btp_subaccount_environment_instance",
-		"btp_subaccount_role",
+		//"btp_subaccount_role",
 		"btp_subaccount_role_collection",
 		"btp_subaccount_role_collection_assignment",
 		/* TODO: switched off for phase 1
