@@ -143,6 +143,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 // Resources - Defines provider resources
 func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resource {
 	betaResources := []func() resource.Resource{
+		newDirectoryRoleResource,
 		newGlobalaccountRoleResource,
 		newSubaccountServiceBindingResource,
 		newSubaccountServiceInstanceResource,
@@ -155,7 +156,6 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 
 	return append([]func() resource.Resource{
 		newDirectoryResource,
-		newDirectoryRoleResource,
 		newDirectoryRoleCollectionResource,
 		newDirectoryRoleCollectionAssignmentResource,
 		newGlobalaccountResourceProviderResource,
