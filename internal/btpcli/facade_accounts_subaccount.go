@@ -48,11 +48,13 @@ type SubaccountCreateInput struct { // TODO support all options
 	Region            string              `btpcli:"region"`
 	Subdomain         string              `btpcli:"subdomain"`
 	UsedForProduction bool                `btpcli:"usedForProduction"`
-	//Globalaccount     string `json:"globalAccount"`
+	Globalaccount     string              `btpcli:"globalAccount"`
 	//SubaccountAdmins  string `json:"subaccountAdmins"`
 }
 
 func (f *accountsSubaccountFacade) Create(ctx context.Context, args *SubaccountCreateInput) (cis.SubaccountResponseObject, CommandResponse, error) {
+
+	args.Globalaccount = f.cliClient.GetGlobalAccountSubdomain()
 
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
