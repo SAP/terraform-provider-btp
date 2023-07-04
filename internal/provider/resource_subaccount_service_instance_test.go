@@ -30,7 +30,7 @@ type testDestinationInitData struct {
 
 type testParamsDestination struct {
 	HTML5RuntimeEnabled string                  `json:"HTML5Runtime_enable"`
-	InitData            testDestinationInitData `json:init_data`
+	InitData            testDestinationInitData `json:"init_data"`
 }
 
 func TestResourceSubaccountServiceInstance(t *testing.T) {

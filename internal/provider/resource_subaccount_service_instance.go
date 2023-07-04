@@ -69,6 +69,7 @@ func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resourc
 			"parameters": schema.StringAttribute{
 				MarkdownDescription: "The configuration parameters for the service instance.",
 				Optional:            true,
+				Sensitive:           true,
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
 				},
