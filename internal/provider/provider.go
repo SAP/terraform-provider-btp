@@ -49,7 +49,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:            true,
 			},
 			"password": schema.StringAttribute{
-				MarkdownDescription: "Your password. Note that if two-factor authentication is enabled, concatenate your password, followed by the passcode, in a single string.",
+				MarkdownDescription: "Your password. Note that two-factor authentication is not supported.",
 				Optional:            true,
 				Sensitive:           true,
 			},
@@ -145,6 +145,7 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 	betaResources := []func() resource.Resource{
 		newDirectoryRoleResource,
 		newGlobalaccountRoleResource,
+		newSubaccountRoleResource,
 		newSubaccountServiceBindingResource,
 		newSubaccountSubscriptionResource,
 	}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -291,6 +292,11 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 			subRes, comRes, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
 
 			if comRes.StatusCode == http.StatusNotFound || comRes.StatusCode == http.StatusForbidden {
+				return subRes, "DELETED", nil
+			}
+
+			//TODO: Temporary workaround for inconsistent response from server
+			if err != nil && strings.Contains(err.Error(), "Status: 404") {
 				return subRes, "DELETED", nil
 			}
 
