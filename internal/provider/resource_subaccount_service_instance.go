@@ -69,6 +69,7 @@ func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resourc
 			"parameters": schema.StringAttribute{
 				MarkdownDescription: "The configuration parameters for the service instance.",
 				Optional:            true,
+				Sensitive:           true,
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
 				},
@@ -272,11 +273,11 @@ func (rs *subaccountServiceInstanceResource) ImportState(ctx context.Context, re
 	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
 		resp.Diagnostics.AddError(
 			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount,service_instance_id. Got: %q", req.ID),
+			fmt.Sprintf("Expected import identifier with format: subaccount_id,id. Got: %q", req.ID),
 		)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
 }
