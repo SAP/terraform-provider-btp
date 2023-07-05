@@ -70,12 +70,18 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 
 		if strings.Contains(i.Request.URL, "/login/") {
 			i.Request.Body = strings.ReplaceAll(i.Request.Body, intUserPwd, "redacted")
+			// TODO #277 the custom idp and issuer values should be redacted to some special value
+			//      for now the custom idp is replaced by the empty string and the issuer by "accounts.sap.com" to keep
+			//      existing fixtures working that were recorded without selecting a custom idp during login
 			i.Request.Body = strings.ReplaceAll(i.Request.Body, "\"customIdp\":\""+intUserIdp+"\"", "\"customIdp\":\"\"")
 			i.Response.Body = strings.ReplaceAll(i.Response.Body, "\"issuer\":\""+intUserIdp+"\"", "\"issuer\":\"accounts.sap.com\"")
 			i.Response.Body = strings.ReplaceAll(i.Response.Body, "\"issuer\":\""+intUserIdp+".accounts400.ondemand.com\"", "\"issuer\":\"accounts.sap.com\"")
 		}
 
-		if _, exists := i.Request.Headers[http.CanonicalHeaderKey(btpcli.HeaderCLICustomIDP)]; exists {
+		if _, exists := i.Request.Headers[btpcli.HeaderCLICustomIDP]; exists {
+			// TODO #277 the custom idp header value should be redacted to some special value
+			//      for now the header is replaced by the empty string to keep existing fixtures working that were
+			//      recorded without selecting a custom idp during login
 			i.Request.Headers.Set(btpcli.HeaderCLICustomIDP, "")
 		}
 

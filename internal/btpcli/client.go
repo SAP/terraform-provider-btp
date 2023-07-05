@@ -34,16 +34,16 @@ func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL) *v2Clien
 }
 
 const (
-	HeaderCorrelationID              string = "X-CorrelationId"
+	HeaderCorrelationID              string = "X-Correlationid"
 	HeaderIDToken                    string = "X-Id-Token"
-	HeaderCLIFormat                  string = "X-CPCLI-Format"
-	HeaderCLIRefreshToken            string = "X-CPCLI-RefreshToken"
-	HeaderCLIReplacementRefreshToken string = "X-CPCLI-ReplacementRefreshtoken"
-	HeaderCLISubdomain               string = "X-CPCLI-Subdomain"
-	HeaderCLICustomIDP               string = "X-CPCLI-CustomIdp"
-	HeaderCLIBackendStatus           string = "X-CPCLI-Backend-Status"
-	HeaderCLIBackendMessage          string = "X-CPCLI-Backend-Message"
-	HeaderCLIBackendMediaType        string = "X-CPCLI-Backend-MediaType"
+	HeaderCLIFormat                  string = "X-Cpcli-Format"
+	HeaderCLIRefreshToken            string = "X-Cpcli-Refreshtoken"
+	HeaderCLIReplacementRefreshToken string = "X-Cpcli-Replacementrefreshtoken"
+	HeaderCLISubdomain               string = "X-Cpcli-Subdomain"
+	HeaderCLICustomIDP               string = "X-Cpcli-Customidp"
+	HeaderCLIBackendStatus           string = "X-Cpcli-Backend-Status"
+	HeaderCLIBackendMessage          string = "X-Cpcli-Backend-Message"
+	HeaderCLIBackendMediaType        string = "X-Cpcli-Backend-Mediatype"
 )
 
 const cliTargetProtocolVersion string = "v2.38.0"
