@@ -120,6 +120,9 @@ func (rs *directoryRoleCollectionAssignmentResource) Read(ctx context.Context, r
 		return
 	}
 
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	state.Id = types.StringValue(fmt.Sprintf("%s,%s,%s", state.DirectoryId.ValueString(), state.RoleCollectionName.ValueString(), state.Username.ValueString()))
+
 	// This resource is not supposed to be read by definition. However nothing the user can do about that, hence no error message is raised via resp.Diagnostics.
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -147,7 +150,8 @@ func (rs *directoryRoleCollectionAssignmentResource) Create(ctx context.Context,
 		return
 	}
 
-	plan.Id = types.StringValue(plan.RoleCollectionName.ValueString())
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	plan.Id = types.StringValue(fmt.Sprintf("%s,%s,%s", plan.DirectoryId.ValueString(), plan.RoleCollectionName.ValueString(), plan.Username.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -191,4 +195,11 @@ func (rs *directoryRoleCollectionAssignmentResource) Delete(ctx context.Context,
 		resp.Diagnostics.AddError("API Error Deleting Resource Role Collection Assignment (Directory)", fmt.Sprintf("%s", err))
 		return
 	}
+}
+
+func (rs *directoryRoleCollectionAssignmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resp.Diagnostics.AddError(
+		"Import not supported",
+		"Import is not supported for this resource. Use the resource directory_role_collection instead.",
+	)
 }
