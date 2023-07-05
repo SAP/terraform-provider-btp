@@ -120,7 +120,7 @@ func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resour
 	state.Description = types.StringValue(cliRes.Description)
 
 	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
-	state.Id = state.Name
+	state.Id = types.StringValue(fmt.Sprintf("%s,%s", state.SubaccountId.ValueString(), cliRes.Name))
 
 	state.Roles = []subaccountRoleCollectionRoleRefType{}
 	for _, role := range cliRes.RoleReferences {
@@ -160,7 +160,7 @@ func (rs *subaccountRoleCollectionResource) Create(ctx context.Context, req reso
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
 	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
-	plan.Id = types.StringValue(cliRes.Name)
+	plan.Id = types.StringValue(fmt.Sprintf("%s,%s", plan.SubaccountId.ValueString(), cliRes.Name))
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
