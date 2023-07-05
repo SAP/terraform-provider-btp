@@ -121,7 +121,7 @@ func (rs *directoryRoleCollectionType) Read(ctx context.Context, req resource.Re
 	state.Description = types.StringValue(cliRes.Description)
 
 	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
-	state.Id = state.Name
+	state.Id = types.StringValue(fmt.Sprintf("%s,%s", state.DirectoryId.ValueString(), state.Name))
 
 	state.Roles = []directoryRoleCollectionRoleRefType{}
 	for _, role := range cliRes.RoleReferences {
@@ -162,7 +162,7 @@ func (rs *directoryRoleCollectionType) Create(ctx context.Context, req resource.
 	plan.Description = types.StringValue(cliRes.Description)
 
 	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
-	plan.Id = plan.DirectoryId
+	plan.Id = types.StringValue(fmt.Sprintf("%s,%s", plan.DirectoryId.ValueString(), cliRes.Name))
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
