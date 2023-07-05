@@ -3,7 +3,9 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -117,6 +119,9 @@ func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resour
 	state.Name = types.StringValue(cliRes.Name)
 	state.Description = types.StringValue(cliRes.Description)
 
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	state.Id = types.StringValue(fmt.Sprintf("%s,%s", state.SubaccountId.ValueString(), cliRes.Name))
+
 	state.Roles = []subaccountRoleCollectionRoleRefType{}
 	for _, role := range cliRes.RoleReferences {
 		state.Roles = append(state.Roles, subaccountRoleCollectionRoleRefType{
@@ -154,7 +159,8 @@ func (rs *subaccountRoleCollectionResource) Create(ctx context.Context, req reso
 
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
-	plan.Id = types.StringValue(cliRes.Name)
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	plan.Id = types.StringValue(fmt.Sprintf("%s,%s", plan.SubaccountId.ValueString(), cliRes.Name))
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -196,4 +202,19 @@ func (rs *subaccountRoleCollectionResource) Delete(ctx context.Context, req reso
 		resp.Diagnostics.AddError("API Error Deleting Resource Role Collection (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+}
+
+func (rs *subaccountRoleCollectionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	idParts := strings.Split(req.ID, ",")
+
+	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
+		resp.Diagnostics.AddError(
+			"Unexpected Import Identifier",
+			fmt.Sprintf("Expected import identifier with format: subaccount_id, name. Got: %q", req.ID),
+		)
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
 }

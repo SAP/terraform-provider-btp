@@ -33,6 +33,38 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "2"),
 					),
 				},
+				{
+					ResourceName:      "btp_subaccount_role_collection.uut",
+					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,My new role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+	t.Run("error path - import with wrong key", func(t *testing.T) {
+		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection_import_error")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProvider() + hclResourceSubAccountRoleCollection("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "My new role collection", "Description of my new role collection"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "2"),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_role_collection.uut",
+					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+					ImportState:       true,
+					ImportStateVerify: true,
+					ExpectError:       regexp.MustCompile(`Expected import identifier with format: subaccount_id, name. Got:`),
+				},
 			},
 		})
 	})
