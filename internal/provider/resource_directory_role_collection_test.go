@@ -34,6 +34,12 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.#", "1"),
 					),
 				},
+				{
+					ResourceName:      "btp_directory_role_collection.uut",
+					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9,My own role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
 			},
 		})
 	})
@@ -55,6 +61,12 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.#", "1"),
 					),
 				},
+				{
+					ResourceName:      "btp_directory_role_collection.uut",
+					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9,My own role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
 			},
 		})
 	})
@@ -68,13 +80,41 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceDirectoryRoleCollectionWithMultipleRoles("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "This is my new role collection"),
+					Config: hclProvider() + hclResourceDirectoryRoleCollectionWithMultipleRoles("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My role collection", "This is my new role collection"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My role collection"),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "description", "This is my new role collection"),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.#", "2"),
 					),
+				},
+				{
+					ResourceName:      "btp_directory_role_collection.uut",
+					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9,My role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("error path - import fails", func(t *testing.T) {
+		rec := setupVCR(t, "fixtures/resource_directory_role_collection.error_import")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProvider() + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My special role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+				},
+				{
+					ResourceName:      "btp_directory_role_collection.uut",
+					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9",
+					ImportState:       true,
+					ImportStateVerify: true,
+					ExpectError:       regexp.MustCompile(`Expected import identifier with format: directory_id, name. Got:`),
 				},
 			},
 		})
