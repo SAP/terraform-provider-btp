@@ -225,7 +225,7 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		args.Directory = parentID
 	}
 
-	if plan.BetaEnabled.IsUnknown() {
+	if !plan.BetaEnabled.IsUnknown() {
 		betaEnabled := plan.BetaEnabled.ValueBool()
 		args.BetaEnabled = betaEnabled
 	}
@@ -278,12 +278,9 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 }
 
 func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state subaccountType
+	var plan subaccountType
 
 	diags := req.Plan.Get(ctx, &plan)
-	resp.Diagnostics.Append(diags...)
-
-	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 
 	if resp.Diagnostics.HasError() {
@@ -295,7 +292,7 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 		Description:  plan.Description.ValueString(),
 		Directory:    plan.ParentID.ValueString(),
 		DisplayName:  plan.Name.ValueString(),
-		SubaccountId: state.ID.ValueString(),
+		SubaccountId: plan.ID.ValueString(),
 	}
 
 	var labels map[string][]string
