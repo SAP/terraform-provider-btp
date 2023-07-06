@@ -290,7 +290,19 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	cliRes, _, err := rs.cli.Accounts.Subaccount.Update(ctx, state.ID.ValueString(), plan.Name.ValueString())
+	args := btpcli.SubaccountUpdateInput{
+		BetaEnabled:  plan.BetaEnabled.ValueBool(),
+		Description:  plan.Description.ValueString(),
+		Directory:    plan.ParentID.ValueString(),
+		DisplayName:  plan.Name.ValueString(),
+		SubaccountId: state.ID.ValueString(),
+	}
+
+	var labels map[string][]string
+	plan.Labels.ElementsAs(ctx, &labels, false)
+	args.Labels = labels
+
+	cliRes, _, err := rs.cli.Accounts.Subaccount.Update(ctx, &args)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Subaccount", fmt.Sprintf("%s", err))
 		return

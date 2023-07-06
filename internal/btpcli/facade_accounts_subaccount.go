@@ -52,6 +52,16 @@ type SubaccountCreateInput struct { // TODO support all options
 	//SubaccountAdmins  string `json:"subaccountAdmins"`
 }
 
+type SubaccountUpdateInput struct {
+	BetaEnabled  bool                `btpcli:"betaEnabled"`
+	Description  string              `btpcli:"description"`
+	Directory    string              `btpcli:"directoryID"`
+	DisplayName  string              `btpcli:"displayName"`
+	Labels       map[string][]string `btpcli:"labels"`
+	SubaccountId string              `btpcli:"subaccount"`
+	//	UsedForProduction bool                `btpcli:"usedForProduction"`
+}
+
 func (f *accountsSubaccountFacade) Create(ctx context.Context, args *SubaccountCreateInput) (cis.SubaccountResponseObject, CommandResponse, error) {
 
 	args.Globalaccount = f.cliClient.GetGlobalAccountSubdomain()
@@ -65,11 +75,15 @@ func (f *accountsSubaccountFacade) Create(ctx context.Context, args *SubaccountC
 	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *accountsSubaccountFacade) Update(ctx context.Context, subaccountId string, displayName string) (cis.SubaccountResponseObject, CommandResponse, error) { // TODO switch to object
-	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), map[string]string{
-		"subaccount":  subaccountId,
-		"displayName": displayName,
-	}))
+func (f *accountsSubaccountFacade) Update(ctx context.Context, args *SubaccountUpdateInput) (cis.SubaccountResponseObject, CommandResponse, error) { // TODO switch to object
+
+	params, err := tfutils.ToBTPCLIParamsMap(args)
+
+	if err != nil {
+		return cis.SubaccountResponseObject{}, CommandResponse{}, err
+	}
+
+	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
 }
 
 func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId string) (cis.SubaccountResponseObject, CommandResponse, error) {
