@@ -37,6 +37,7 @@ type subaccountServicePlanValueConfig struct {
 type subaccountServicePlansDataSourceConfig struct {
 	/* INPUT */
 	SubaccountId types.String `tfsdk:"subaccount_id"`
+	Id           types.String `tfsdk:"id"`
 	Environment  types.String `tfsdk:"environment"`
 	FieldsFilter types.String `tfsdk:"fields_filter"`
 	LabelsFilter types.String `tfsdk:"labels_filter"`
@@ -70,6 +71,11 @@ func (ds *subaccountServicePlansDataSource) Schema(_ context.Context, _ datasour
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the subaccount.",
+				Computed:            true,
 			},
 			"environment": schema.StringAttribute{
 				MarkdownDescription: "Filter the response on the environment (sapbtp, kubernetes, cloudfoundry).",
@@ -174,6 +180,7 @@ func (ds *subaccountServicePlansDataSource) Read(ctx context.Context, req dataso
 		return
 	}
 
+	data.Id = data.SubaccountId
 	data.Values = []subaccountServicePlanValueConfig{}
 
 	for _, item := range cliRes {
