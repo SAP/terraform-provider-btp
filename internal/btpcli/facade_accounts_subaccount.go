@@ -53,12 +53,13 @@ type SubaccountCreateInput struct { // TODO support all options
 }
 
 type SubaccountUpdateInput struct {
-	BetaEnabled  bool                `btpcli:"betaEnabled"`
-	Description  string              `btpcli:"description"`
-	Directory    string              `btpcli:"directoryID"`
-	DisplayName  string              `btpcli:"displayName"`
-	Labels       map[string][]string `btpcli:"labels"`
-	SubaccountId string              `btpcli:"subaccount"`
+	BetaEnabled   bool                `btpcli:"betaEnabled"`
+	Description   string              `btpcli:"description"`
+	Directory     string              `btpcli:"directoryID"`
+	DisplayName   string              `btpcli:"displayName"`
+	Labels        map[string][]string `btpcli:"labels"`
+	SubaccountId  string              `btpcli:"subaccount"`
+	Globalaccount string              `btpcli:"globalAccount"`
 	//	UsedForProduction bool                `btpcli:"usedForProduction"`
 }
 
@@ -76,6 +77,8 @@ func (f *accountsSubaccountFacade) Create(ctx context.Context, args *SubaccountC
 }
 
 func (f *accountsSubaccountFacade) Update(ctx context.Context, args *SubaccountUpdateInput) (cis.SubaccountResponseObject, CommandResponse, error) { // TODO switch to object
+
+	args.Globalaccount = f.cliClient.GetGlobalAccountSubdomain()
 
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
