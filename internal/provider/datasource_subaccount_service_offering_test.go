@@ -71,7 +71,7 @@ func TestDataSourceSubaccountServiceoffering(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountIdName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "standard"),
+					Config:      hclProvider() + hclDatasourceSubaccountServiceOfferingIdName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "standard"),
 					ExpectError: regexp.MustCompile(`Error: Invalid Attribute Combination`),
 				},
 			},
@@ -112,7 +112,7 @@ data "btp_subaccount_service_offering" "%s" {
 	return fmt.Sprintf(template, resourceName, subaccountId, offeringName)
 }
 
-func hclDatasourceSubaccountIdName(resourceName string, subaccountId string, offeringId string, offeringName string) string {
+func hclDatasourceSubaccountServiceOfferingIdName(resourceName string, subaccountId string, offeringId string, offeringName string) string {
 	template := `
 data "btp_subaccount_service_offering" "%s" {
     subaccount_id = "%s"
