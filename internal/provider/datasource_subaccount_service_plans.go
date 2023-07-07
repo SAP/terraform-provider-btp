@@ -85,14 +85,14 @@ func (ds *subaccountServicePlansDataSource) Schema(_ context.Context, _ datasour
 				},
 			},
 			"fields_filter": schema.StringAttribute{
-				MarkdownDescription: "Filters the response based on the label query.",
+				MarkdownDescription: "Filters the response based on the field query.",
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
 			"labels_filter": schema.StringAttribute{
-				MarkdownDescription: "Filters the response based on the field query.",
+				MarkdownDescription: "Filters the response based on the labels query.",
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
