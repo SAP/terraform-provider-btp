@@ -44,6 +44,7 @@ data "btp_subaccount_service_instances" "by_label" {
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the subaccount.
 - `values` (Attributes List) (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>

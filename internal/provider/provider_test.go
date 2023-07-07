@@ -37,6 +37,8 @@ func hclProviderWithCLIServerURL(cliServerURL string) string {
 provider "btp" {
     cli_server_url = "%s"
     globalaccount  = "terraformintcanary"
+    username       = "john.doe@int.test"
+    password       = "redacted"
 }
     `, cliServerURL)
 }

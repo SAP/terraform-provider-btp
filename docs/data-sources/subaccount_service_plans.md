@@ -46,11 +46,12 @@ data "btp_subaccount_service_plans" "labeled" {
 ### Optional
 
 - `environment` (String) Filter the response on the environment (sapbtp, kubernetes, cloudfoundry).
-- `fields_filter` (String) Filters the response based on the label query.
-- `labels_filter` (String) Filters the response based on the field query.
+- `fields_filter` (String) Filters the response based on the field query.
+- `labels_filter` (String) Filters the response based on the labels query.
 
 ### Read-Only
 
+- `id` (String, Deprecated) The ID of the subaccount.
 - `values` (Attributes List) (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
