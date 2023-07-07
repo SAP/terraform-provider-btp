@@ -76,6 +76,8 @@ func (p *btpcliProvider) Metadata(_ context.Context, _ provider.MetadataRequest,
 }
 
 func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+	const unableToCreateClient = "unableToCreateClient"
+
 	// Retrieve provider data from configuration
 	var config providerData
 	diags := req.Config.Get(ctx, &config)
@@ -93,17 +95,30 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	u, err := url.Parse(selectedCLIServerURL) // TODO move to NewV2Client
 
 	if err != nil {
-		resp.Diagnostics.AddError("Unable to create Client", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 		return
 	}
 
 	client := btpcli.NewClientFacade(btpcli.NewV2ClientWithHttpClient(p.httpClient, u))
 	client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s", req.TerraformVersion, version.ProviderVersion)
 
+	// User may provide an idp to the provider
+	var idp string
+	if config.IdentityProvider.IsUnknown() {
+		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as identity provider")
+		return
+	}
+
+	if config.IdentityProvider.IsNull() {
+		idp = os.Getenv("BTP_IDP")
+	} else {
+		idp = config.IdentityProvider.ValueString()
+	}
+
 	// User must provide a username to the provider
 	var username string
 	if config.Username.IsUnknown() {
-		resp.Diagnostics.AddWarning("Unable to create client", "Cannot use unknown value as client_certificate")
+		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as username")
 		return
 	}
 
@@ -116,7 +131,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	// User must provide a password to the provider
 	var password string
 	if config.Password.IsUnknown() {
-		resp.Diagnostics.AddWarning("Unable to create client", "Cannot use unknown value as password")
+		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as password")
 		return
 	}
 
@@ -127,12 +142,12 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	if len(username) == 0 || len(password) == 0 {
-		resp.Diagnostics.AddError("Unable to create Client", "globalaccount, username and password must be given.")
+		resp.Diagnostics.AddError(unableToCreateClient, "globalaccount, username and password must be given.")
 		return
 	}
 
-	if _, err = client.Login(ctx, btpcli.NewLoginRequestWithCustomIDP(config.IdentityProvider.ValueString(), config.GlobalAccount.ValueString(), username, password)); err != nil {
-		resp.Diagnostics.AddError("Unable to create Client", fmt.Sprintf("%s", err))
+	if _, err = client.Login(ctx, btpcli.NewLoginRequestWithCustomIDP(idp, config.GlobalAccount.ValueString(), username, password)); err != nil {
+		resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 		return
 	}
 
