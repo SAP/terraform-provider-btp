@@ -107,14 +107,6 @@ data "btp_subaccount_service_plan" "%s" {
 	return fmt.Sprintf(template, resourceName, subaccountId, planName, offeringName)
 }
 
-func hclDatasourceSubaccountPlanWoIdAndName(resourceName string, subaccountId string) string {
-	template := `
-data "btp_subaccount_service_plan" "%s" {
-    subaccount_id = "%s" 
-}`
-	return fmt.Sprintf(template, resourceName, subaccountId)
-}
-
 func hclDatasourceSubaccountPlanWoOffering(resourceName string, subaccountId string, planName string) string {
 	template := `
 data "btp_subaccount_service_plan" "%s" {

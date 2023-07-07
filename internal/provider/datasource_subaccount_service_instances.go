@@ -34,6 +34,7 @@ type subaccountServiceInstancesValueConfig struct {
 type subaccountServiceInstancesDataSourceConfig struct {
 	/* INPUT */
 	SubaccountId types.String `tfsdk:"subaccount_id"`
+	Id           types.String `tfsdk:"id"`
 	FieldsFilter types.String `tfsdk:"fields_filter"`
 	LabelsFilter types.String `tfsdk:"labels_filter"`
 	/* OUTPUT */
@@ -66,6 +67,11 @@ func (ds *subaccountServiceInstancesDataSource) Schema(_ context.Context, _ data
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the subaccount.",
+				Computed:            true,
 			},
 			"fields_filter": schema.StringAttribute{
 				MarkdownDescription: "Filters the instances based on their fields. For example, to list all instances that are usable, use \"usable eq 'true'\".",
@@ -160,6 +166,7 @@ func (ds *subaccountServiceInstancesDataSource) Read(ctx context.Context, req da
 		return
 	}
 
+	data.Id = data.SubaccountId
 	data.Values = []subaccountServiceInstancesValueConfig{}
 	for _, serviceInstance := range cliRes {
 		val := subaccountServiceInstancesValueConfig{
