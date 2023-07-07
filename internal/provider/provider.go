@@ -162,7 +162,6 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newGlobalaccountRoleResource,
 		newSubaccountRoleResource,
 		newSubaccountServiceBindingResource,
-		newSubaccountSubscriptionResource,
 	}
 
 	if !p.betaFeaturesEnabled {
@@ -183,6 +182,7 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newSubaccountRoleCollectionResource,
 		newSubaccountRoleCollectionAssignmentResource,
 		newSubaccountServiceInstanceResource,
+		newSubaccountSubscriptionResource,
 		newSubaccountTrustConfigurationResource,
 	}, betaResources...)
 }

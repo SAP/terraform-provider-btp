@@ -39,9 +39,6 @@ func hclProviderWithCLIServerURL(cliServerURL string) string {
 provider "btp" {
     cli_server_url = "%s"
     globalaccount  = "terraformintcanary"
-    username       = "john.doe@int.test"
-    password       = "redacted"
-    idp            = ""
 }
     `, cliServerURL)
 }
@@ -193,9 +190,7 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_directory_role_collection",
 		"btp_directory_role_collection_assignment",
 		"btp_globalaccount_resource_provider",
-		/* TODO: switched off for phase 1
-		"btp_globalaccount_role",
-		*/
+		//"btp_globalaccount_role",
 		"btp_globalaccount_role_collection",
 		"btp_globalaccount_role_collection_assignment",
 		"btp_globalaccount_trust_configuration",
@@ -208,8 +203,8 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_subaccount_service_instance",
 		/* TODO: switched off for phase 1
 		"btp_subaccount_service_binding",
-		"btp_subaccount_subscription",
 		*/
+		"btp_subaccount_subscription",
 		"btp_subaccount_trust_configuration",
 	}
 
@@ -230,7 +225,7 @@ func TestProvider_HasResources(t *testing.T) {
 func TestProvider_HasDatasources(t *testing.T) {
 	expectedDataSources := []string{
 		"btp_directory",
-		/*TODO: Switched off for phase 1
+		/*TODO: Depending on customer feedback
 		"btp_directory_app",
 		"btp_directory_apps",
 		*/
@@ -243,12 +238,12 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_directory_user",
 		"btp_directory_users",
 		"btp_globalaccount",
-		/*TODO: Switched off for phase 1
+		/*TODO: Depending on customer feedback
 		"btp_globalaccount_app",
 		"btp_globalaccount_apps",
 		*/
 		"btp_globalaccount_entitlements",
-		/*TODO: Switched off for phase 1
+		/*TODO: Depending on customer feedback
 		"btp_globalaccount_resource_provider",
 		"btp_globalaccount_resource_providers",
 		*/
@@ -262,7 +257,7 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_globalaccount_users",
 		"btp_regions",
 		"btp_subaccount",
-		/*TODO: Switched off for phase 1
+		/*TODO:
 		"btp_subaccount_app",
 		"btp_subaccount_apps",
 		*/
@@ -275,7 +270,7 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_role_collection",
 		"btp_subaccount_role_collections",
 		"btp_subaccount_roles",
-		/*TODO: Switched off for phase 1
+		/*TODO:
 		"btp_subaccount_service_binding",
 		"btp_subaccount_service_bindings",
 		"btp_subaccount_service_broker",
