@@ -3,7 +3,6 @@ package provider
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 	"testing"
 
@@ -54,8 +53,8 @@ func hclResourceSubaccountEnvironmentInstanceCF(resourceName string, subaccountI
 		InstanceName: orgName,
 		Users: []cfUsers{
 			{
-				Id:    os.Getenv("BTP_USERNAME"),
-				Email: os.Getenv("BTP_USERNAME"),
+				Id:    "john.doe@int.test",
+				Email: "john.doe@int.test",
 			},
 		},
 	}
