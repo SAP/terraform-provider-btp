@@ -116,8 +116,11 @@ func TestAccountsSubaccountFacade_Create(t *testing.T) {
 func TestAccountsSubaccountFacade_Update(t *testing.T) {
 	command := "accounts/subaccount"
 
+	globalAccount := "795b53bb-a3f0-4769-adf0-26173282a975"
+
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	displayName := "my-account"
+	description := "My Account Description"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
 		var srvCalled bool
@@ -126,14 +129,21 @@ func TestAccountsSubaccountFacade_Update(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionUpdate, map[string]string{
-				"subaccount":  subaccountId,
-				"displayName": displayName,
+				"subaccount":    subaccountId,
+				"displayName":   displayName,
+				"description":   description,
+				"betaEnabled":   "false",
+				"globalAccount": globalAccount,
 			})
 
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Accounts.Subaccount.Update(context.TODO(), subaccountId, displayName)
+		_, res, err := uut.Accounts.Subaccount.Update(context.TODO(), &SubaccountUpdateInput{
+			SubaccountId: subaccountId,
+			DisplayName:  displayName,
+			Description:  description,
+		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
