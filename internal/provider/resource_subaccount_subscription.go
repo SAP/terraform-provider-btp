@@ -193,11 +193,19 @@ func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource
 		return
 	}
 
-	updatedState, diags := subaccountSubscriptionValueFrom(ctx, cliRes)
-	updatedState.Parameters = state.Parameters
+	newState, diags := subaccountSubscriptionValueFrom(ctx, cliRes)
+
+	if newState.Parameters.IsNull() && !state.Parameters.IsNull() {
+		// The parameters are not returned by the API so we transfer the existing state to the read result if not existing
+		newState.Parameters = state.Parameters
+	} else if newState.Parameters.IsNull() && state.Parameters.IsNull() {
+		// During import both vlaues might be emty, so we need to apply the default value form the schema
+		newState.Parameters = types.StringValue("{}")
+	}
+
 	resp.Diagnostics.Append(diags...)
 
-	diags = resp.State.Set(ctx, &updatedState)
+	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -285,7 +293,7 @@ func (rs *subaccountSubscriptionResource) ImportState(ctx context.Context, req r
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_name"), idParts[1])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
 }
