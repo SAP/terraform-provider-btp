@@ -34,6 +34,7 @@ func TestAccountsDirectoryFacade_Get(t *testing.T) {
 
 func TestAccountsDirectoryFacade_Create(t *testing.T) {
 	command := "accounts/directory"
+	globalAccount := "795b53bb-a3f0-4769-adf0-26173282a975"
 
 	displayName := "my-directory"
 	description := "a description"
@@ -47,14 +48,14 @@ func TestAccountsDirectoryFacade_Create(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
-				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
-				"displayName":   "my-directory",
+				"globalAccount": globalAccount,
+				"displayName":   displayName,
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Accounts.Directory.Create(context.TODO(), &DirectoryCreateInput{
-			DisplayName: "my-directory",
+			DisplayName: displayName,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -68,11 +69,12 @@ func TestAccountsDirectoryFacade_Create(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
-				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
+				"globalAccount": globalAccount,
 				"displayName":   displayName,
 				"description":   description,
 				"subdomain":     subdomain,
 				"parentID":      parentId,
+				"labels":        "{}",
 			})
 		}))
 		defer srv.Close()
@@ -82,6 +84,45 @@ func TestAccountsDirectoryFacade_Create(t *testing.T) {
 			Description: &description,
 			Subdomain:   &subdomain,
 			ParentID:    &parentId,
+			Labels:      map[string][]string{},
+		})
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestAccountsDirectoryFacade_Update(t *testing.T) {
+	command := "accounts/directory"
+	globalAccount := "795b53bb-a3f0-4769-adf0-26173282a975"
+
+	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	displayName := "my-directory"
+	description := "a description"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"globalAccount": globalAccount,
+				"directoryID":   directoryId,
+				"displayName":   displayName,
+				"description":   description,
+				"labels":        "{}",
+			})
+
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Accounts.Directory.Update(context.TODO(), &DirectoryUpdateInput{
+			DirectoryId: directoryId,
+			DisplayName: &displayName,
+			Description: &description,
+			Labels:      map[string][]string{},
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
