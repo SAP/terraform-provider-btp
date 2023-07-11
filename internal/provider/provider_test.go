@@ -110,15 +110,26 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 			i.Response.Body = i.Response.Body[:indexOfExternalId+14] + "I000000" + i.Response.Body[indexOfExternalId+21:]
 		}
 
+		if strings.Contains(i.Response.Body, "clientid") {
+			reClientSecretVariant1 := regexp.MustCompile(`"clientid":"(.*?)"`)
+			i.Response.Body = reClientSecretVariant1.ReplaceAllString(i.Response.Body, `clientid":"redacted"`)
+		}
+
 		if strings.Contains(i.Response.Body, "clientsecret") {
-			reVariant1 := regexp.MustCompile(`"clientsecret":\s*([^",]+)`)
-			reVariant1.ReplaceAllString(i.Response.Body, "\"clientsecret\": \"redacted\"")
+			reClientSecretVariant1 := regexp.MustCompile(`"clientsecret":"(.*?)"`)
+			i.Response.Body = reClientSecretVariant1.ReplaceAllString(i.Response.Body, `clientsecret":"redacted"`)
+		}
+
+		if strings.Contains(i.Response.Body, "client_id") {
+			reClientSecretVariant2 := regexp.MustCompile(`"client_id":"(.*?)"`)
+			i.Response.Body = reClientSecretVariant2.ReplaceAllString(i.Response.Body, `"client_id":"redacted"`)
 		}
 
 		if strings.Contains(i.Response.Body, "client_secret") {
-			reVariant2 := regexp.MustCompile(`"client_secret":\s*([^",]+)`)
-			reVariant2.ReplaceAllString(i.Response.Body, "\"client_secret\": \"redacted\"")
+			reClientSecretVariant2 := regexp.MustCompile(`"client_secret":"(.*?)"`)
+			i.Response.Body = reClientSecretVariant2.ReplaceAllString(i.Response.Body, `"client_secret":"redacted"`)
 		}
+
 		return nil
 	}
 
