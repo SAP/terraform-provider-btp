@@ -208,8 +208,6 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newSubaccountServicePlansDataSource,
 		newSubaccountServicePlatformDataSource,
 		newSubaccountServicePlatformsDataSource,
-		newSubaccountSubscriptionDataSource,
-		newSubaccountSubscriptionsDataSource,
 	}
 
 	if !p.betaFeaturesEnabled {
@@ -254,6 +252,8 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newSubaccountUserDataSource,
 		newSubaccountUsersDataSource,
 		newSubaccountsDataSource,
+		newSubaccountSubscriptionDataSource,
+		newSubaccountSubscriptionsDataSource,
 		newWhoamiDataSource,
 	}, betaDataSources...)
 }

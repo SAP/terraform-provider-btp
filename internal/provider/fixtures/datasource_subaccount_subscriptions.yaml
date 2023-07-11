@@ -1,0 +1,1145 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - fdce7487-e4c7-010b-3643-61ae9d7c8a99
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:05 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 1d9efc20-08bc-456f-5a2c-c1cc307bf56f
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 520.0602ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - c6081873-5927-7660-1dc8-edd9bf47f75a
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Tue, 11 Jul 2023 06:37:05 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 157b5ab1-095a-4c4a-6139-e2921228e00a
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 189.8388ms
+    - id: 2
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - c6081873-5927-7660-1dc8-edd9bf47f75a
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"applications":[{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"mdo-one-mds-master","commercialAppName":"mdo-one-mds-master","appId":"mdo-one-mds-master!t46510","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Master Data Integration (Orchestration)","description":"Master data application that allows master data replication according to predetermined master data distribution models. SAP Master Data Orchestration can only be used in combination with the SAP Master Data Integration service.","shortDescription":"Orchestrate master data distribution","iconBase64":"PHN2ZyBpZD0icGxhY2Vob2xkZXIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDU2IDU2Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzA1M2I3MDt9LmNscy0ye2ZpbGw6IzBhNmVkMTt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPnBsYWNlaG9sZGVyPC90aXRsZT48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik00Ni45NTMsMjAuNTg4YTQuMzYzLDQuMzYzLDAsMCwwLTEuODM3LS40NTksMy4yOTEsMy4yOTEsMCwwLDAtMy40LDMuMzc2LDQuMDg0LDQuMDg0LDAsMCwwLC45LDIuNjI1LDMuMDExLDMuMDExLDAsMCwwLDIuNSwxLjEyNiwzLjA4NSwzLjA4NSwwLDAsMCwxLjQ2Mi0uMzc1LDcuNTEyLDcuNTEyLDAsMCwwLDEuMzItLjg5MSwxMC4xMzUsMTAuMTM1LDAsMCwxLDEuMjI2LS44OTEsMi4yNywyLjI3LDAsMCwxLDEuMTc5LS4zNzVBMS41LDEuNSwwLDAsMSw1MiwyNi40MTJWMzkuMDcxYTIuODQzLDIuODQzLDAsMCwxLS41NzYsMiwyLjkyNiwyLjkyNiwwLDAsMS0yLjE1OS42MjZxLTIuOTIzLDAtNC4zODUuMDQ3dC0yLjEyMi4wNDdINDEuOTFhMy4zMjEsMy4zMjEsMCwwLDAsLjYuNjQ0LDUuNzE3LDUuNzE3LDAsMCwxLDIuMDc0LDQuMjIsNS4wNTQsNS4wNTQsMCwwLDEtMS42NSwzLjc1MUE1LjMzMSw1LjMzMSwwLDAsMSwzOS4xMTgsNTJhNS42LDUuNiwwLDAsMS00LjA1NS0xLjU0Nyw1LjA3MSw1LjA3MSwwLDAsMS0xLjYtMy44LDQuODYyLDQuODYyLDAsMCwxLC41MTktMi4zLDExLjQwNywxMS40MDcsMCwwLDEsMS41MTYtMS45NywyLjMzMywyLjMzMywwLDAsMCwuNDc1LS42OUgyOC4zM2ExLjM5NCwxLjM5NCwwLDAsMS0xLjA4NC0uNDY5LDIuMDExLDIuMDExLDAsMCwxLS41MTktMS4wMzJWMTUuOTA5YTEuOCwxLjgsMCwwLDEsLjQyNC0xLjE3MiwxLjQ0NCwxLjQ0NCwwLDAsMSwxLjE3OS0uNTE2aDcuNzMzYTEuOTQ5LDEuOTQ5LDAsMCwwLS4zNzctLjU2MmwtLjgtMS4xNzFhOC43ODgsOC43ODgsMCwwLDEtLjg0Ny0xLjUsNC43ODMsNC43ODMsMCwwLDEtLjQwNi0xLjY3NkE1LjM0OCw1LjM0OCwwLDAsMSwzOS4wODEsNGE1LjU1Miw1LjU1MiwwLDAsMSwzLjc5LDEuNTUzQTQuNjM1LDQuNjM1LDAsMCwxLDQ0LjU1LDkuMzQ1Yy0uMDI4LDEuNjg4LTIuMDIzLDQuMTI1LTIuMjQxLDQuMzc1YTEuNTc2LDEuNTc2LDAsMCwwLS4zLjVoNy4yNjFBMi42NSwyLjY1LDAsMCwxLDUyLDE2Ljg0N3Y0LjEyNnEwLDEuNzgyLTEuNywxLjc4MmExLjc0MywxLjc0MywwLDAsMS0xLjMxOS0uNTQ5QTEzLjE1MiwxMy4xNTIsMCwwLDAsNDYuOTUzLDIwLjU4OFpNMjguMzMsMzkuMDcxYS41ODIuNTgyLDAsMCwwLC42Ni42NTdoNy4xNjdhMS41NzksMS41NzksMCwwLDEsMS43OTIsMS43ODEsMi4yMzgsMi4yMzgsMCwwLDEtLjM4NywxLjI1NGMtLjI4My40MDgtLjU4Mi44MTMtLjksMS4yMTlzLS42MTMuODMtLjksMS4yNjZhMi41NDYsMi41NDYsMCwwLDAtLjQyNCwxLjQwNywzLjExNSwzLjExNSwwLDAsMCwxLjEzMSwyLjUzMiw0LjAyMiw0LjAyMiwwLDAsMCwyLjY0MS45MzgsMy43NzYsMy43NzYsMCwwLDAsMi40NTItLjkzOEEzLjExNSwzLjExNSwwLDAsMCw0Mi43LDQ2LjY1NWEyLjU0NiwyLjU0NiwwLDAsMC0uNDI0LTEuNDA3LDEyLjUxMywxMi41MTMsMCwwLDAtLjk0My0xLjI2NnEtLjUxOS0uNjA5LS45NDMtMS4xNzJhMi4yNjEsMi4yNjEsMCwwLDEtLjQ2Mi0xLjMsMS42MTQsMS42MTQsMCwwLDEsLjU2Ni0xLjMxMywyLjAwNiwyLjAwNiwwLDAsMSwxLjMyLS40NjhoNy40NXEuOTQyLDAsLjk0My0uNjU3VjI2LjUwNmExLjYwOSwxLjYwOSwwLDAsMC0uNzA3LjQyMnEtLjUxOS40MjEtMS4xNzkuODlhMTEuMDY5LDExLjA2OSwwLDAsMS0xLjUwOS44OTEsMy43NywzLjc3LDAsMCwxLTEuNy40MjIsNS40NSw1LjQ1LDAsMCwxLTMuNjc4LTEuNSw0LjI1LDQuMjUsMCwwLDEtMS4yMjYtMS44NzYsNy4wNTMsNy4wNTMsMCwwLDEtLjM3Ny0yLjI1LDUuMTY2LDUuMTY2LDAsMCwxLDEuNi0zLjcsNS4wMDksNS4wMDksMCwwLDEsMy42NzgtMS42NDEsNC44ODQsNC44ODQsMCwwLDEsMi4zNTcuNTE1QTcuNTg3LDcuNTg3LDAsMCwxLDQ5LjUxOCwyMC4yYy41MDYuNTg4Ljc4NS42MjQuNzg1LjYyNFYxNi44NDdhLjU0NC41NDQsMCwwLDAtLjMzMS0uNDY5LDEuNDIyLDEuNDIyLDAsMCwwLS43MDctLjE4N2gtNy40NWEyLjE0NywyLjE0NywwLDAsMS0xLjMyLS40MjIsMS41ODcsMS41ODcsMCwwLDEtLjU2Ni0xLjM2LDIuMDY3LDIuMDY3LDAsMCwxLC40MjUtMS4xNzJxLjQyNS0uNjA5Ljk0My0xLjIxOWExMi4yMjIsMTIuMjIyLDAsMCwwLC45NDMtMS4yNjYsMi41NDEsMi41NDEsMCwwLDAsLjQyNC0xLjQwNywzLjExOCwzLjExOCwwLDAsMC0xLjEzMi0yLjUzMiwzLjc3MSwzLjc3MSwwLDAsMC0yLjQ1MS0uOTM4LDMuODM5LDMuODM5LDAsMCwwLTIuNTk0LjkzOEEzLjE3OCwzLjE3OCwwLDAsMCwzNS40LDkuMzQ1YTIuNzc2LDIuNzc2LDAsMCwwLC40MjQsMS40NTQsMTAuMDM3LDEwLjAzNywwLDAsMCwuOSwxLjI2NWwuODQ5LDEuMjJhMi45MDksMi45MDksMCwwLDEsLjQ3MSwxLjEyNSwxLjYyNSwxLjYyNSwwLDAsMS0uNTE4LDEuMzYsMS45NTYsMS45NTYsMCwwLDEtMS4yNzQuNDIySDI5LjA4NHEtLjc1NSwwLS43NTQuNjU2Wm0yMy42NywwYTIuNywyLjcsMCwwLDEtLjU3NiwyLDIuNjc1LDIuNjc1LDAsMCwxLTIuMTU5LjYyNiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTM3LjE0NywzMS4wNzRhMy4zMjgsMy4zMjgsMCwwLDAtMi44NzgtMS4zNiw0LjQ0NSw0LjQ0NSwwLDAsMC0yLjEyLjQyMiw2LjE4NSw2LjE4NSwwLDAsMC0xLjE3OC44OTFxLS41NjcuNDcxLTEuMTMyLjg5MWMtLjM3My4yNzgtLjgwOC43NzMtMS4zLjc3NkgyNi43MjdWMTYuNDZhMy4zMzUsMy4zMzUsMCwwLDAtLjM3Ny0xLjUsMS40MzYsMS40MzYsMCwwLDAtMS40MTUtLjc1MUgxOS4yNzdjLS41LDAtLjc1NC4yNTEtLjc1NC44NDRhMS45MDcsMS45MDcsMCwwLDAsLjM3NywxLjEyNiw5LjE0Niw5LjE0NiwwLDAsMCwuOTQzLDEuMTI1LDUuMzQxLDUuMzQxLDAsMCwxLC45NDMsMS4yNjYsMy4yMzYsMy4yMzYsMCwwLDEsLjM3NywxLjU0Nyw0LjQ1NCw0LjQ1NCwwLDAsMS0xLjI3MywzLjE0MSw0LjA0OSw0LjA0OSwwLDAsMS0zLjA2NSwxLjM2LDMuOSwzLjksMCwwLDEtMy4wMTgtMS4zNiw0LjU0Nyw0LjU0NywwLDAsMS0xLjIyNS0zLjE0MSwyLjkzNiwyLjkzNiwwLDAsMSwuNDI0LTEuNTQ3LDEzLjU0OCwxMy41NDgsMCwwLDEsLjktMS4zMTNjLjMxNC0uNDA2LjYyNy0uNzgxLjk0My0xLjEyNWExLjU4OCwxLjU4OCwwLDAsMCwuNDcxLTEuMDc5cTAtLjg0My0xLjAzNy0uODQ0SDUuN2ExLjU4NywxLjU4NywwLDAsMC0xLjIyNi41MTZBMS44MDYsMS44MDYsMCwwLDAsNCwxNS45OTFWMzkuOWExLjgsMS44LDAsMCwwLC40NzEsMS4yNjYsMS41ODMsMS41ODMsMCwwLDAsMS4yMjYuNTE2aDguNDg4Yy42OTEsMCwxLjAzNS4yMzgsMS4wMzcuNzVhMS41NDcsMS41NDcsMCwwLDEtLjQyMi45NDRMMTMuODA3LDQ0LjVhNi41NDksNi41NDksMCwwLDAtLjk5LDEuMjY2LDMuMTE2LDMuMTE2LDAsMCwwLS40MjQsMS42NDEsNC4yMzcsNC4yMzcsMCwwLDAsMS4zNjcsMy40Nyw0Ljc5MSw0Ljc5MSwwLDAsMCw2LjIyNC0uMDQ3LDQuNTE3LDQuNTE3LDAsMCwwLDEuNDQ1LTMuMjgzLDMuNjMxLDMuNjMxLDAsMCwwLS41MTQtMS44ODljLS4yMTUtLjMwNy0uOTc4LTEuMTU4LS45NzgtMS4xNThMMTguOSw0My4zNzNhMS40OTIsMS40OTIsMCwwLDEtLjM3Ny0uOTM4cTAtLjc1Ljg0OC0uNzVoNS42NThxMS4yMjYsMCwxLjctMS41VjM1LjM0MUgyOC4zNWMuNTU3LDAsMS4wNTQuNTE5LDEuNDg5LjhhMTIuMjkxLDEyLjI5MSwwLDAsMSwxLjIyNi44OTFxLjU2NS40NjksMS4xNzkuODlhMy43ODYsMy43ODYsMCwwLDAsMS44MTYuNDIyLDMuMjU2LDMuMjU2LDAsMCwwLDMuMDg3LTEuNDA2LDUuMTE5LDUuMTE5LDAsMCwwLC45OS0zQTQuNzg4LDQuNzg4LDAsMCwwLDM3LjE0NywzMS4wNzRaIi8+PC9zdmc+","category":"Extension Suite - Development Efficiency","categoryDisplayName":"Extension Suite - Development Efficiency","globalAccountId":"2342216e-8a13-4aab-894e-11e5280a90f9","tenantId":"ac38918a-900c-4d3c-92f3-398883d3c5e7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/docs/SAP_MASTER_DATA_INTEGRATION/8ce78b673ef04cc1bcfeb01c93ef7885/0bed505b149b4ec6af24bf503a45708b.html?locale\u003den-US\u0026version\u003dCLOUD"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"cf-eu10-canary"}]},"incidentTrackingComponent":"LOD-MDM-ORC"},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"cias","commercialAppName":"cias","appId":"cias!b74866","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"planDescription":"Plan to use the Cloud Integration Automation Service - UI Application","additionalPlanFeatures":[],"displayName":"Cloud Integration Automation Service","description":"Cloud Integration Automation service provides you a guided workflow to integrate SAP cloud solutions to On-Premise and other SAP Cloud solutions. The guided workflow contains instructions for manual and automated tasks to enable a simpler and faster integration configuration setup","shortDescription":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions","iconBase64":"PHN2ZyBpZD0iY2xvdWQtaW50ZWdyYXRpb24tYXV0b21hdGlvbi1zZXJ2aWNlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTEzLjc1LDQwYTYuNzIzLDYuNzIzLDAsMCwwLDYuNzUsNi43NUgyMlY0OUgyMC41YTguNzMsOC43MywwLDAsMS0zLjUxNi0uNyw5LjE1OCw5LjE1OCwwLDAsMS0yLjg0Ny0xLjkzNEE4Ljk2OCw4Ljk2OCwwLDAsMSwxMi4yLDQzLjQ4LDguNzY3LDguNzY3LDAsMCwxLDExLjUsNDBsLjA3LTEuMTI1TDguOTY5LDQxLjlhMS4xLDEuMSwwLDAsMS0xLjYxNywwLDEuMDI1LDEuMDI1LDAsMCwxLDAtMS41NDZsMy42NTYtNC4yMTlhMi4zODIsMi4zODIsMCwwLDEsMy4yMzQsMGwzLjcyNyw0LjIxOWEuOTY4Ljk2OCwwLDAsMSwwLDEuNTQ2LDEuMDM3LDEuMDM3LDAsMCwxLTEuNjE3LDBMMTMuODIsMzguODc1WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1LjI1LDE2QTYuNzIzLDYuNzIzLDAsMCwwLDM4LjUsOS4yNUgzN1Y3aDEuNWE4LjczLDguNzMsMCwwLDEsMy41MTYuNyw5LjE1OCw5LjE1OCwwLDAsMSwyLjg0NywxLjkzNEE4Ljk2OCw4Ljk2OCwwLDAsMSw0Ni44LDEyLjUyLDguNzY3LDguNzY3LDAsMCwxLDQ3LjUsMTZsLS4wNywxLjEyNSwyLjYtMy4wMjNhMS4xLDEuMSwwLDAsMSwxLjYxNywwLDEuMDI1LDEuMDI1LDAsMCwxLDAsMS41NDZsLTMuNjU2LDQuMjE5YTIuMzgyLDIuMzgyLDAsMCwxLTMuMjM0LDBsLTMuNzI3LTQuMjE5YS45NjguOTY4LDAsMCwxLDAtMS41NDYsMS4wMzcsMS4wMzcsMCwwLDEsMS42MTcsMGwyLjUzMiwzLjAyM1oiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMy4yNSwzMy43NSw0NS43NSw0MGwtMTIuNSw2LjI1VjMzLjc1TTMyLjQwNiwzMWExLjM0OSwxLjM0OSwwLDAsMC0uOTg0LjQyMkExLjQ2MSwxLjQ2MSwwLDAsMCwzMSwzMi41VjQ3LjU5NGExLjMwNywxLjMwNywwLDAsMCwuNDIyLDEuMDMxLDEuNDM0LDEuNDM0LDAsMCwwLC45ODQuMzc1LDEuNjYxLDEuNjYxLDAsMCwwLC43NS0uMTg4TDQ4LjI1LDQxLjI2NmExLjQ0NCwxLjQ0NCwwLDAsMCwwLTIuNTMyTDMzLjE1NiwzMS4xODhhMS42NzQsMS42NzQsMCwwLDAtLjc1LS4xODhaIi8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjcuNTQ0LDE0LjA3MWE0LjgsNC44LDAsMCwwLTcuMTgyLTMuMTExQTYuMDU5LDYuMDU5LDAsMCwwLDE0LjM2OCw3QzcuMzc1LDcsOCwxNC4wNzEsOCwxNC4wNzFBNS41ODIsNS41ODIsMCwwLDAsOS44MDUsMjVIMjUuMTE0QTUuODIxLDUuODIxLDAsMCwwLDMxLDE5LjI2Niw1LjY3NSw1LjY3NSwwLDAsMCwyNy41NDQsMTQuMDcxWm0tMi40Myw4LjM1OEg5LjgwNWEzLjA4MiwzLjA4MiwwLDAsMS0zLjEtMy4wMzUsMy42MzIsMy42MzIsMCwwLDEsMi4xNi0yLjg4YzEuNTc4LS42MjUsMi4wMTktLjM5NCwxLjgzNi0yLjY0OGE1LjE2Miw1LjE2MiwwLDAsMSwxLjA1My0zLjQ0NiwzLjU1NywzLjU1NywwLDAsMSwyLjYxOS0uODQ5LDMuMzQ4LDMuMzQ4LDAsMCwxLDMuNDgzLDIuMzE1Yy45NzksMi40MzksMS43OTMsMi43MDksMy4zNDYsMS40NjFhMi4zNzcsMi4zNzcsMCwwLDEsMS42MjItLjUxLDIuMSwyLjEsMCwwLDEsMi4wNzksMS43Yy4xNTksMS41ODYuMjcsMS40NjYsMS41MTIsMS44NzhhMy4xMjgsMy4xMjgsMCwwLDEsMS44OSwyLjg1NEEzLjE3NywzLjE3NywwLDAsMSwyNS4xMTQsMjIuNDI5WiIvPjwvc3ZnPg\u003d\u003d","globalAccountId":"772a1555-53bf-4bc2-b4ab-fbc18f972b0b","tenantId":"172e334b-4f52-490b-8c3c-c15c775ea815","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"true","propagateLocale":"true","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Cloud%2520Integration%2520Automation%2520Service/Latest/en-US"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"cf-eu10"},{"key":"cf-eu12"}],"CFService":{"name":"cias","description":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions","metadata":{"displayName":"Cloud Integration Automation Service"},"plans":[{"technicalName":"standard","name":"standard","description":"Plan to use the Cloud Integration Automation Service - UI Application","metadata":{"bullets":[]}}]}},"incidentTrackingComponent":"BC-INS-CIT-RT"},{"subscriptionUrl":"https://integration-test-services-4ie3yr1a.content-agent.cfapps.eu12.hana.ondemand.com","subscribedTenantId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscribedSubaccountId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscriptionGUID":"60c44e9d-2696-4b8f-91ea-9efcd3c23ffb","state":"SUBSCRIBED","authenticationProvider":"XSUAA","appName":"content-agent-ui","commercialAppName":"content-agent-ui","appId":"cas-ui-xsuaa-prod!t216","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Content Agent","description":"Content Agent UI","category":"Integration Suite","categoryDisplayName":"Integration Suite","globalAccountId":"d39f31d1-c84d-448e-bc18-d3571e6e2d6c","tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","quota":1,"labels":{"test":["label"]},"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Integration Suite"}]},"modifiedDate":"Jul 11, 2023, 5:43:09 AM","createdDate":"Jul 11, 2023, 5:43:06 AM"},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"feature-flags-dashboard","commercialAppName":"feature-flags-dashboard","appId":"feature-flags!b18","planName":"dashboard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Feature Flags","description":"View and manage Feature Flags Service instances. Get information about flags status, usage and history. Also perform tasks, such as enabling, disabling, adding and removing flags.","category":"Foundation / Cross Services","categoryDisplayName":"Foundation / Cross Services","globalAccountId":"1aa6ae00-fe52-1993-65ff-3613845a7961","tenantId":"fflags-cf-eu12","quota":1,"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Foundation / Cross Services"}]}},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"auditlog-viewer","commercialAppName":"auditlog-viewer","appId":"auditlog-viewer!t49","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Audit Log Viewer Service","description":"SAP Audit Log Viewer service for SAP BTP helps to view and manage audit logs.","shortDescription":"View and manage audit logs.","iconBase64":"PHN2ZyBpZD0iYXVkaXRsb2ctbWFuYWdlbWVudCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNTYgNTYiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojNWE3YTk0O30uY2xzLTJ7ZmlsbDojMDA5MmQxO308L3N0eWxlPjwvZGVmcz48dGl0bGU+YXVkaXRsb2ctbWFuYWdlbWVudDwvdGl0bGU+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDAuNjA4LDEwLjg0M0EyLjk3LDIuOTcsMCwwLDAsMzguNSwxMEgzMi4yMThhNS4yNzYsNS4yNzYsMCwwLDAtMS4zNTktMS45MjEsNC4xLDQuMSwwLDAsMC0yLjItLjk4NSw1Ljg1Miw1Ljg1MiwwLDAsMC0yLjEwOS0yLjI0OUE1LjY2MSw1LjY2MSwwLDAsMCwyMy41LDRhNS45LDUuOSwwLDAsMC0zLjA5My44NDQsNS43MjEsNS43MjEsMCwwLDAtMi4xNTYsMi4yNDksNC4yNzEsNC4yNzEsMCwwLDAtMi4xNTYuOTg1QTQuMjIyLDQuMjIyLDAsMCwwLDE0Ljc4MywxMEg4LjVhMi44ODgsMi44ODgsMCwwLDAtMywzVjQ5YTIuODg4LDIuODg4LDAsMCwwLDMsM2gyN1Y0OUg4LjVWMTNoNi4yODFhNi41MTYsNi41MTYsMCwwLDAsLjkzNywxLjg3NUEzLjAxOCwzLjAxOCwwLDAsMCwxOC4xNTcsMTZIMjguODQ0YTIuOTMsMi45MywwLDAsMCwyLjM0My0xLjEyNUE0LjY0OCw0LjY0OCwwLDAsMCwzMi4yMTgsMTNIMzguNVYyNWgzVjEzQTIuODQ2LDIuODQ2LDAsMCwwLDQwLjYwOCwxMC44NDNaTTI4LDEzSDE5YTEuMzI1LDEuMzI1LDAsMCwxLTEuNS0xLjVBMS4zMjUsMS4zMjUsMCwwLDEsMTksMTBoMS41YTIuODg2LDIuODg2LDAsMCwxLDMtMywyLjk3LDIuOTcsMCwwLDEsMi4xMS44NDNBMi44NTEsMi44NTEsMCwwLDEsMjYuNSwxMEgyOGExLjMyNywxLjMyNywwLDAsMSwxLjUsMS41QTEuMzI2LDEuMzI2LDAsMCwxLDI4LDEzWiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTM3LjkyOCwzMy44NzdjLS4xMDYtLjIzLS4yMzEtLjQ2OS0uMzcyLS43MTdsMS4yNzUtMS4yNzRMMzcuNjEsMzAuNjY1bC0xLjI3NSwxLjI3NEE2LjQ2Myw2LjQ2MywwLDAsMCwzNC44LDMxLjNWMjkuNUgzMy4xdjEuOGE3Ljc0Nyw3Ljc0NywwLDAsMC0xLjQzNC42MzdsLTEuMzI3LTEuMjc0LTEuMTY4LDEuMjIxLDEuMjc0LDEuMjc0YTMuMzc1LDMuMzc1LDAsMCwwLS42MzcsMS40ODdIMjh2MS43aDEuOGEzLjUyLDMuNTIsMCwwLDAsLjYzNywxLjQ4NkwyOS4xNjgsMzkuMTZsMS4xNjgsMS4xNjgsMS4zMjctMS4yNzRhMy41MDksMy41MDksMCwwLDAsMS40MzQuNjM2VjQxLjVoMS43VjM5LjY5YTQuNDU0LDQuNDU0LDAsMCwwLDEuNTM5LS42MzZsMS4yNzUsMS4yNzQsMS4yMjEtMS4xNjgtMS4yNzUtMS4zMjhhNS44NjksNS44NjksMCwwLDAsLjYzOC0xLjQ4Nkg0MHYtMS43aC0xLjhBNC41MDgsNC41MDgsMCwwLDAsMzcuOTI4LDMzLjg3N1pNMzUuOCwzNy4zMjhhMi41LDIuNSwwLDAsMS0zLjYxLDAsMi41NDMsMi41NDMsMCwwLDEtLjc0My0xLjgzMiwyLjM2OSwyLjM2OSwwLDAsMSwuNzQzLTEuNzc4LDIuNjMsMi42MywwLDAsMSwzLjYxLDAsMi4zNzQsMi4zNzQsMCwwLDEsLjc0NCwxLjc3OEEyLjU0OCwyLjU0OCwwLDAsMSwzNS44LDM3LjMyOFoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMTUuMDg2IDIyLjU4MiAxMy4yNTQgMjAuNzUgMTEuNTAyIDIyLjU4MiAxNS4wODYgMjYuMTY1IDE2LjkxNyAyNC4zMzQgMjAuNTAxIDIwLjc1IDE4LjY2OSAxOC45OTggMTUuMDg2IDIyLjU4MiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxNS4wODYgMzQuNTg2IDEzLjI1NCAzMi43NTQgMTEuNTAyIDM0LjU4NiAxNS4wODYgMzguMTcgMTYuOTE3IDM2LjMzOCAyMC41MDEgMzIuNzU0IDE4LjY2OSAzMS4wMDIgMTUuMDg2IDM0LjU4NiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTQ5LjkzNyw0OS4zODRsLTcuNjYtNy42NmExMC4xMTIsMTAuMTEyLDAsMCwwLDEuNTg4LTIuODk1LDEwLjMwOCwxMC4zMDgsMCwwLDAtLjI4LTcuNDI3LDEwLjU0OSwxMC41NDksMCwwLDAtNS41NTgtNS41NTgsMTAuMjQsMTAuMjQsMCwwLDAtOC4xMjgsMEExMC41NDksMTAuNTQ5LDAsMCwwLDI0LjM0MSwzMS40YTEwLjIzNywxMC4yMzcsMCwwLDAsMCw4LjEyN0ExMC41NDksMTAuNTQ5LDAsMCwwLDI5LjksNDUuMDg3YTkuOTg3LDkuOTg3LDAsMCwwLDQuMDY0Ljg0MSwxMC4zMjEsMTAuMzIxLDAsMCwwLDYuMjU5LTIuMDU1bDcuNjYsNy42NmExLjM2NCwxLjM2NCwwLDAsMCwyLjA1NSwwQTEuMzEsMS4zMSwwLDAsMCw0OS45MzcsNDkuMzg0Wm0tMTAuNy04LjY0MWE3LjQ0MSw3LjQ0MSwwLDAsMS0xMC41NTYsMCw3LjQ0Myw3LjQ0MywwLDAsMSwwLTEwLjU1Niw3LjQ0Myw3LjQ0MywwLDAsMSwxMC41NTYsMCw3LjQ0Myw3LjQ0MywwLDAsMSwwLDEwLjU1NloiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yNSwyMy41aDlhMS41LDEuNSwwLDEsMCwwLTNIMjVhMS41LDEuNSwwLDEsMCwwLDNaIi8+PC9zdmc+","globalAccountId":"0b50832a-69bb-473e-b2ba-f37300d545db","tenantId":"cf-eu12-auditlog-viewer","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/e3baa5f1a0c64c44aac8ab3ea3d1b500.html"}],"serviceCategories":[{"name":"Data and Analytics"}],"regionInformation":[{"key":"cf-eu10-canary"}]},"incidentTrackingComponent":"BC-NEO-AUDITLOG"},{"subscriptionUrl":"https://integration-test-services-4ie3yr1a.dt.cpp.cfapps.eu12.hana.ondemand.com","subscribedTenantId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscribedSubaccountId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscriptionGUID":"f1a85532-2d3b-40fd-bd30-d89242684c9e","state":"SUBSCRIBED","authenticationProvider":"XSUAA","appName":"PortalApplication","commercialAppName":"PortalApplication","appId":"portal-cf-dt-approuter!t164","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Cloud Portal Service","description":"SAP Cloud Portal service lets you build digital experience portals for employees, customers, and partners. You can streamline access to business data so that your employees can execute their daily business tasks securely, from any device.","shortDescription":"Create role based, multi-channel sites to access business apps and content.","iconBase64":"PHN2ZyBpZD0icG9ydGFsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5wb3J0YWw8L3RpdGxlPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1Ljg0LDIzLjk2MmE4LjQ4OSw4LjQ4OSwwLDAsMC0xMi43ODMtNS43MTNBMTAuNzQ3LDEwLjc0NywwLDAsMCwyMi40MSwxMUMxMCwxMSwxMS4wOSwyMy45ODgsMTEuMDksMjMuOTg4QTEwLjI1NywxMC4yNTcsMCwwLDAsMTQuMjg1LDQ0SDIyVjI5aDlWNDRINDEuNWExMC40ODYsMTAuNDg2LDAsMCwwLDQuMzQtMjAuMDM4Wk00MS41LDQxSDM0VjI2SDE5VjQxSDE0LjI4NWE3LjI1Nyw3LjI1NywwLDAsMS0yLjI1OC0xNC4xNjJsMi4yNzktLjc2OC0uMjMyLTIuMzg5YzAtLjA0Mi0uMzc5LTQuMjM3LDIuMDEtNy4wMTNDMTcuNDYxLDE1LjA2OCwxOSwxNCwyMi40NjUsMTRjMi41MzUsMCw2LjQxNywyLjE4Niw3Ljk5NCw1LjMzOWwxLjE3NiwyLjg3MSwyLjQyNC0xLjMxOEE3LjYsNy42LDAsMCwxLDM3LjQ0OSwyMGE1LjU0Niw1LjU0NiwwLDAsMSw1LjQ0Myw0LjUxOGwuMjg4LDEuNTI4LDEuNDE1LjY0NkE3LjQ4Niw3LjQ4NiwwLDAsMSw0MS41LDQxWiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxOS4wMDYgNDQgMjIuMDA2IDQ0IDIyLjAwNiAyOSAzMS4wMDYgMjkgMzEuMDA2IDQ0IDM0LjAwNiA0NCAzNC4wMDYgMjYgMTkuMDA2IDI2IDE5LjAwNiA0NCIvPjwvc3ZnPg\u003d\u003d","category":"SaaS Applications","categoryDisplayName":"SaaS Applications","globalAccountId":"SA0225001210","tenantId":"6897360f-7e35-411b-87e7-f3b501f4f9a7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","inventoryIds":[{"key":"SERVICE-2"},{"key":"SERVICE-134"}],"serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Portal_Service/1.0/en-US"}],"serviceCategories":[{"name":"Application Development and Automation"}],"regionInformation":[{"key":"cf-eu10-canary"},{"key":"cf-eu10"},{"key":"neo-eu1-canary"}]},"incidentTrackingComponent":"EP-CPP-OPS","modifiedDate":"Jul 11, 2023, 6:24:52 AM","createdDate":"Jul 11, 2023, 6:24:37 AM"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:06 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 4614448d-603e-4c60-4a44-620268315df2
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 520.591ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 2d9c1272-37b8-79dc-748b-14a91bd9e7c6
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:06 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - b128d52f-4ef3-4869-7858-8eb92a059141
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 391.3863ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 31c6c0ad-69e5-08a3-74ba-eaa1c680019b
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Tue, 11 Jul 2023 06:37:07 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 2b855c59-8438-48de-4eae-502d7ddb4f52
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 212.4909ms
+    - id: 5
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 31c6c0ad-69e5-08a3-74ba-eaa1c680019b
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"applications":[{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"mdo-one-mds-master","commercialAppName":"mdo-one-mds-master","appId":"mdo-one-mds-master!t46510","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Master Data Integration (Orchestration)","description":"Master data application that allows master data replication according to predetermined master data distribution models. SAP Master Data Orchestration can only be used in combination with the SAP Master Data Integration service.","shortDescription":"Orchestrate master data distribution","iconBase64":"PHN2ZyBpZD0icGxhY2Vob2xkZXIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDU2IDU2Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzA1M2I3MDt9LmNscy0ye2ZpbGw6IzBhNmVkMTt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPnBsYWNlaG9sZGVyPC90aXRsZT48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik00Ni45NTMsMjAuNTg4YTQuMzYzLDQuMzYzLDAsMCwwLTEuODM3LS40NTksMy4yOTEsMy4yOTEsMCwwLDAtMy40LDMuMzc2LDQuMDg0LDQuMDg0LDAsMCwwLC45LDIuNjI1LDMuMDExLDMuMDExLDAsMCwwLDIuNSwxLjEyNiwzLjA4NSwzLjA4NSwwLDAsMCwxLjQ2Mi0uMzc1LDcuNTEyLDcuNTEyLDAsMCwwLDEuMzItLjg5MSwxMC4xMzUsMTAuMTM1LDAsMCwxLDEuMjI2LS44OTEsMi4yNywyLjI3LDAsMCwxLDEuMTc5LS4zNzVBMS41LDEuNSwwLDAsMSw1MiwyNi40MTJWMzkuMDcxYTIuODQzLDIuODQzLDAsMCwxLS41NzYsMiwyLjkyNiwyLjkyNiwwLDAsMS0yLjE1OS42MjZxLTIuOTIzLDAtNC4zODUuMDQ3dC0yLjEyMi4wNDdINDEuOTFhMy4zMjEsMy4zMjEsMCwwLDAsLjYuNjQ0LDUuNzE3LDUuNzE3LDAsMCwxLDIuMDc0LDQuMjIsNS4wNTQsNS4wNTQsMCwwLDEtMS42NSwzLjc1MUE1LjMzMSw1LjMzMSwwLDAsMSwzOS4xMTgsNTJhNS42LDUuNiwwLDAsMS00LjA1NS0xLjU0Nyw1LjA3MSw1LjA3MSwwLDAsMS0xLjYtMy44LDQuODYyLDQuODYyLDAsMCwxLC41MTktMi4zLDExLjQwNywxMS40MDcsMCwwLDEsMS41MTYtMS45NywyLjMzMywyLjMzMywwLDAsMCwuNDc1LS42OUgyOC4zM2ExLjM5NCwxLjM5NCwwLDAsMS0xLjA4NC0uNDY5LDIuMDExLDIuMDExLDAsMCwxLS41MTktMS4wMzJWMTUuOTA5YTEuOCwxLjgsMCwwLDEsLjQyNC0xLjE3MiwxLjQ0NCwxLjQ0NCwwLDAsMSwxLjE3OS0uNTE2aDcuNzMzYTEuOTQ5LDEuOTQ5LDAsMCwwLS4zNzctLjU2MmwtLjgtMS4xNzFhOC43ODgsOC43ODgsMCwwLDEtLjg0Ny0xLjUsNC43ODMsNC43ODMsMCwwLDEtLjQwNi0xLjY3NkE1LjM0OCw1LjM0OCwwLDAsMSwzOS4wODEsNGE1LjU1Miw1LjU1MiwwLDAsMSwzLjc5LDEuNTUzQTQuNjM1LDQuNjM1LDAsMCwxLDQ0LjU1LDkuMzQ1Yy0uMDI4LDEuNjg4LTIuMDIzLDQuMTI1LTIuMjQxLDQuMzc1YTEuNTc2LDEuNTc2LDAsMCwwLS4zLjVoNy4yNjFBMi42NSwyLjY1LDAsMCwxLDUyLDE2Ljg0N3Y0LjEyNnEwLDEuNzgyLTEuNywxLjc4MmExLjc0MywxLjc0MywwLDAsMS0xLjMxOS0uNTQ5QTEzLjE1MiwxMy4xNTIsMCwwLDAsNDYuOTUzLDIwLjU4OFpNMjguMzMsMzkuMDcxYS41ODIuNTgyLDAsMCwwLC42Ni42NTdoNy4xNjdhMS41NzksMS41NzksMCwwLDEsMS43OTIsMS43ODEsMi4yMzgsMi4yMzgsMCwwLDEtLjM4NywxLjI1NGMtLjI4My40MDgtLjU4Mi44MTMtLjksMS4yMTlzLS42MTMuODMtLjksMS4yNjZhMi41NDYsMi41NDYsMCwwLDAtLjQyNCwxLjQwNywzLjExNSwzLjExNSwwLDAsMCwxLjEzMSwyLjUzMiw0LjAyMiw0LjAyMiwwLDAsMCwyLjY0MS45MzgsMy43NzYsMy43NzYsMCwwLDAsMi40NTItLjkzOEEzLjExNSwzLjExNSwwLDAsMCw0Mi43LDQ2LjY1NWEyLjU0NiwyLjU0NiwwLDAsMC0uNDI0LTEuNDA3LDEyLjUxMywxMi41MTMsMCwwLDAtLjk0My0xLjI2NnEtLjUxOS0uNjA5LS45NDMtMS4xNzJhMi4yNjEsMi4yNjEsMCwwLDEtLjQ2Mi0xLjMsMS42MTQsMS42MTQsMCwwLDEsLjU2Ni0xLjMxMywyLjAwNiwyLjAwNiwwLDAsMSwxLjMyLS40NjhoNy40NXEuOTQyLDAsLjk0My0uNjU3VjI2LjUwNmExLjYwOSwxLjYwOSwwLDAsMC0uNzA3LjQyMnEtLjUxOS40MjEtMS4xNzkuODlhMTEuMDY5LDExLjA2OSwwLDAsMS0xLjUwOS44OTEsMy43NywzLjc3LDAsMCwxLTEuNy40MjIsNS40NSw1LjQ1LDAsMCwxLTMuNjc4LTEuNSw0LjI1LDQuMjUsMCwwLDEtMS4yMjYtMS44NzYsNy4wNTMsNy4wNTMsMCwwLDEtLjM3Ny0yLjI1LDUuMTY2LDUuMTY2LDAsMCwxLDEuNi0zLjcsNS4wMDksNS4wMDksMCwwLDEsMy42NzgtMS42NDEsNC44ODQsNC44ODQsMCwwLDEsMi4zNTcuNTE1QTcuNTg3LDcuNTg3LDAsMCwxLDQ5LjUxOCwyMC4yYy41MDYuNTg4Ljc4NS42MjQuNzg1LjYyNFYxNi44NDdhLjU0NC41NDQsMCwwLDAtLjMzMS0uNDY5LDEuNDIyLDEuNDIyLDAsMCwwLS43MDctLjE4N2gtNy40NWEyLjE0NywyLjE0NywwLDAsMS0xLjMyLS40MjIsMS41ODcsMS41ODcsMCwwLDEtLjU2Ni0xLjM2LDIuMDY3LDIuMDY3LDAsMCwxLC40MjUtMS4xNzJxLjQyNS0uNjA5Ljk0My0xLjIxOWExMi4yMjIsMTIuMjIyLDAsMCwwLC45NDMtMS4yNjYsMi41NDEsMi41NDEsMCwwLDAsLjQyNC0xLjQwNywzLjExOCwzLjExOCwwLDAsMC0xLjEzMi0yLjUzMiwzLjc3MSwzLjc3MSwwLDAsMC0yLjQ1MS0uOTM4LDMuODM5LDMuODM5LDAsMCwwLTIuNTk0LjkzOEEzLjE3OCwzLjE3OCwwLDAsMCwzNS40LDkuMzQ1YTIuNzc2LDIuNzc2LDAsMCwwLC40MjQsMS40NTQsMTAuMDM3LDEwLjAzNywwLDAsMCwuOSwxLjI2NWwuODQ5LDEuMjJhMi45MDksMi45MDksMCwwLDEsLjQ3MSwxLjEyNSwxLjYyNSwxLjYyNSwwLDAsMS0uNTE4LDEuMzYsMS45NTYsMS45NTYsMCwwLDEtMS4yNzQuNDIySDI5LjA4NHEtLjc1NSwwLS43NTQuNjU2Wm0yMy42NywwYTIuNywyLjcsMCwwLDEtLjU3NiwyLDIuNjc1LDIuNjc1LDAsMCwxLTIuMTU5LjYyNiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTM3LjE0NywzMS4wNzRhMy4zMjgsMy4zMjgsMCwwLDAtMi44NzgtMS4zNiw0LjQ0NSw0LjQ0NSwwLDAsMC0yLjEyLjQyMiw2LjE4NSw2LjE4NSwwLDAsMC0xLjE3OC44OTFxLS41NjcuNDcxLTEuMTMyLjg5MWMtLjM3My4yNzgtLjgwOC43NzMtMS4zLjc3NkgyNi43MjdWMTYuNDZhMy4zMzUsMy4zMzUsMCwwLDAtLjM3Ny0xLjUsMS40MzYsMS40MzYsMCwwLDAtMS40MTUtLjc1MUgxOS4yNzdjLS41LDAtLjc1NC4yNTEtLjc1NC44NDRhMS45MDcsMS45MDcsMCwwLDAsLjM3NywxLjEyNiw5LjE0Niw5LjE0NiwwLDAsMCwuOTQzLDEuMTI1LDUuMzQxLDUuMzQxLDAsMCwxLC45NDMsMS4yNjYsMy4yMzYsMy4yMzYsMCwwLDEsLjM3NywxLjU0Nyw0LjQ1NCw0LjQ1NCwwLDAsMS0xLjI3MywzLjE0MSw0LjA0OSw0LjA0OSwwLDAsMS0zLjA2NSwxLjM2LDMuOSwzLjksMCwwLDEtMy4wMTgtMS4zNiw0LjU0Nyw0LjU0NywwLDAsMS0xLjIyNS0zLjE0MSwyLjkzNiwyLjkzNiwwLDAsMSwuNDI0LTEuNTQ3LDEzLjU0OCwxMy41NDgsMCwwLDEsLjktMS4zMTNjLjMxNC0uNDA2LjYyNy0uNzgxLjk0My0xLjEyNWExLjU4OCwxLjU4OCwwLDAsMCwuNDcxLTEuMDc5cTAtLjg0My0xLjAzNy0uODQ0SDUuN2ExLjU4NywxLjU4NywwLDAsMC0xLjIyNi41MTZBMS44MDYsMS44MDYsMCwwLDAsNCwxNS45OTFWMzkuOWExLjgsMS44LDAsMCwwLC40NzEsMS4yNjYsMS41ODMsMS41ODMsMCwwLDAsMS4yMjYuNTE2aDguNDg4Yy42OTEsMCwxLjAzNS4yMzgsMS4wMzcuNzVhMS41NDcsMS41NDcsMCwwLDEtLjQyMi45NDRMMTMuODA3LDQ0LjVhNi41NDksNi41NDksMCwwLDAtLjk5LDEuMjY2LDMuMTE2LDMuMTE2LDAsMCwwLS40MjQsMS42NDEsNC4yMzcsNC4yMzcsMCwwLDAsMS4zNjcsMy40Nyw0Ljc5MSw0Ljc5MSwwLDAsMCw2LjIyNC0uMDQ3LDQuNTE3LDQuNTE3LDAsMCwwLDEuNDQ1LTMuMjgzLDMuNjMxLDMuNjMxLDAsMCwwLS41MTQtMS44ODljLS4yMTUtLjMwNy0uOTc4LTEuMTU4LS45NzgtMS4xNThMMTguOSw0My4zNzNhMS40OTIsMS40OTIsMCwwLDEtLjM3Ny0uOTM4cTAtLjc1Ljg0OC0uNzVoNS42NThxMS4yMjYsMCwxLjctMS41VjM1LjM0MUgyOC4zNWMuNTU3LDAsMS4wNTQuNTE5LDEuNDg5LjhhMTIuMjkxLDEyLjI5MSwwLDAsMSwxLjIyNi44OTFxLjU2NS40NjksMS4xNzkuODlhMy43ODYsMy43ODYsMCwwLDAsMS44MTYuNDIyLDMuMjU2LDMuMjU2LDAsMCwwLDMuMDg3LTEuNDA2LDUuMTE5LDUuMTE5LDAsMCwwLC45OS0zQTQuNzg4LDQuNzg4LDAsMCwwLDM3LjE0NywzMS4wNzRaIi8+PC9zdmc+","category":"Extension Suite - Development Efficiency","categoryDisplayName":"Extension Suite - Development Efficiency","globalAccountId":"2342216e-8a13-4aab-894e-11e5280a90f9","tenantId":"ac38918a-900c-4d3c-92f3-398883d3c5e7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/docs/SAP_MASTER_DATA_INTEGRATION/8ce78b673ef04cc1bcfeb01c93ef7885/0bed505b149b4ec6af24bf503a45708b.html?locale\u003den-US\u0026version\u003dCLOUD"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"cf-eu10-canary"}]},"incidentTrackingComponent":"LOD-MDM-ORC"},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"cias","commercialAppName":"cias","appId":"cias!b74866","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"planDescription":"Plan to use the Cloud Integration Automation Service - UI Application","additionalPlanFeatures":[],"displayName":"Cloud Integration Automation Service","description":"Cloud Integration Automation service provides you a guided workflow to integrate SAP cloud solutions to On-Premise and other SAP Cloud solutions. The guided workflow contains instructions for manual and automated tasks to enable a simpler and faster integration configuration setup","shortDescription":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions","iconBase64":"PHN2ZyBpZD0iY2xvdWQtaW50ZWdyYXRpb24tYXV0b21hdGlvbi1zZXJ2aWNlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTEzLjc1LDQwYTYuNzIzLDYuNzIzLDAsMCwwLDYuNzUsNi43NUgyMlY0OUgyMC41YTguNzMsOC43MywwLDAsMS0zLjUxNi0uNyw5LjE1OCw5LjE1OCwwLDAsMS0yLjg0Ny0xLjkzNEE4Ljk2OCw4Ljk2OCwwLDAsMSwxMi4yLDQzLjQ4LDguNzY3LDguNzY3LDAsMCwxLDExLjUsNDBsLjA3LTEuMTI1TDguOTY5LDQxLjlhMS4xLDEuMSwwLDAsMS0xLjYxNywwLDEuMDI1LDEuMDI1LDAsMCwxLDAtMS41NDZsMy42NTYtNC4yMTlhMi4zODIsMi4zODIsMCwwLDEsMy4yMzQsMGwzLjcyNyw0LjIxOWEuOTY4Ljk2OCwwLDAsMSwwLDEuNTQ2LDEuMDM3LDEuMDM3LDAsMCwxLTEuNjE3LDBMMTMuODIsMzguODc1WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1LjI1LDE2QTYuNzIzLDYuNzIzLDAsMCwwLDM4LjUsOS4yNUgzN1Y3aDEuNWE4LjczLDguNzMsMCwwLDEsMy41MTYuNyw5LjE1OCw5LjE1OCwwLDAsMSwyLjg0NywxLjkzNEE4Ljk2OCw4Ljk2OCwwLDAsMSw0Ni44LDEyLjUyLDguNzY3LDguNzY3LDAsMCwxLDQ3LjUsMTZsLS4wNywxLjEyNSwyLjYtMy4wMjNhMS4xLDEuMSwwLDAsMSwxLjYxNywwLDEuMDI1LDEuMDI1LDAsMCwxLDAsMS41NDZsLTMuNjU2LDQuMjE5YTIuMzgyLDIuMzgyLDAsMCwxLTMuMjM0LDBsLTMuNzI3LTQuMjE5YS45NjguOTY4LDAsMCwxLDAtMS41NDYsMS4wMzcsMS4wMzcsMCwwLDEsMS42MTcsMGwyLjUzMiwzLjAyM1oiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMy4yNSwzMy43NSw0NS43NSw0MGwtMTIuNSw2LjI1VjMzLjc1TTMyLjQwNiwzMWExLjM0OSwxLjM0OSwwLDAsMC0uOTg0LjQyMkExLjQ2MSwxLjQ2MSwwLDAsMCwzMSwzMi41VjQ3LjU5NGExLjMwNywxLjMwNywwLDAsMCwuNDIyLDEuMDMxLDEuNDM0LDEuNDM0LDAsMCwwLC45ODQuMzc1LDEuNjYxLDEuNjYxLDAsMCwwLC43NS0uMTg4TDQ4LjI1LDQxLjI2NmExLjQ0NCwxLjQ0NCwwLDAsMCwwLTIuNTMyTDMzLjE1NiwzMS4xODhhMS42NzQsMS42NzQsMCwwLDAtLjc1LS4xODhaIi8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjcuNTQ0LDE0LjA3MWE0LjgsNC44LDAsMCwwLTcuMTgyLTMuMTExQTYuMDU5LDYuMDU5LDAsMCwwLDE0LjM2OCw3QzcuMzc1LDcsOCwxNC4wNzEsOCwxNC4wNzFBNS41ODIsNS41ODIsMCwwLDAsOS44MDUsMjVIMjUuMTE0QTUuODIxLDUuODIxLDAsMCwwLDMxLDE5LjI2Niw1LjY3NSw1LjY3NSwwLDAsMCwyNy41NDQsMTQuMDcxWm0tMi40Myw4LjM1OEg5LjgwNWEzLjA4MiwzLjA4MiwwLDAsMS0zLjEtMy4wMzUsMy42MzIsMy42MzIsMCwwLDEsMi4xNi0yLjg4YzEuNTc4LS42MjUsMi4wMTktLjM5NCwxLjgzNi0yLjY0OGE1LjE2Miw1LjE2MiwwLDAsMSwxLjA1My0zLjQ0NiwzLjU1NywzLjU1NywwLDAsMSwyLjYxOS0uODQ5LDMuMzQ4LDMuMzQ4LDAsMCwxLDMuNDgzLDIuMzE1Yy45NzksMi40MzksMS43OTMsMi43MDksMy4zNDYsMS40NjFhMi4zNzcsMi4zNzcsMCwwLDEsMS42MjItLjUxLDIuMSwyLjEsMCwwLDEsMi4wNzksMS43Yy4xNTksMS41ODYuMjcsMS40NjYsMS41MTIsMS44NzhhMy4xMjgsMy4xMjgsMCwwLDEsMS44OSwyLjg1NEEzLjE3NywzLjE3NywwLDAsMSwyNS4xMTQsMjIuNDI5WiIvPjwvc3ZnPg\u003d\u003d","globalAccountId":"772a1555-53bf-4bc2-b4ab-fbc18f972b0b","tenantId":"172e334b-4f52-490b-8c3c-c15c775ea815","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"true","propagateLocale":"true","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Cloud%2520Integration%2520Automation%2520Service/Latest/en-US"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"cf-eu10"},{"key":"cf-eu12"}],"CFService":{"name":"cias","description":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions","metadata":{"displayName":"Cloud Integration Automation Service"},"plans":[{"technicalName":"standard","name":"standard","description":"Plan to use the Cloud Integration Automation Service - UI Application","metadata":{"bullets":[]}}]}},"incidentTrackingComponent":"BC-INS-CIT-RT"},{"subscriptionUrl":"https://integration-test-services-4ie3yr1a.content-agent.cfapps.eu12.hana.ondemand.com","subscribedTenantId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscribedSubaccountId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscriptionGUID":"60c44e9d-2696-4b8f-91ea-9efcd3c23ffb","state":"SUBSCRIBED","authenticationProvider":"XSUAA","appName":"content-agent-ui","commercialAppName":"content-agent-ui","appId":"cas-ui-xsuaa-prod!t216","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Content Agent","description":"Content Agent UI","category":"Integration Suite","categoryDisplayName":"Integration Suite","globalAccountId":"d39f31d1-c84d-448e-bc18-d3571e6e2d6c","tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","quota":1,"labels":{"test":["label"]},"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Integration Suite"}]},"modifiedDate":"Jul 11, 2023, 5:43:09 AM","createdDate":"Jul 11, 2023, 5:43:06 AM"},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"feature-flags-dashboard","commercialAppName":"feature-flags-dashboard","appId":"feature-flags!b18","planName":"dashboard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Feature Flags","description":"View and manage Feature Flags Service instances. Get information about flags status, usage and history. Also perform tasks, such as enabling, disabling, adding and removing flags.","category":"Foundation / Cross Services","categoryDisplayName":"Foundation / Cross Services","globalAccountId":"1aa6ae00-fe52-1993-65ff-3613845a7961","tenantId":"fflags-cf-eu12","quota":1,"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Foundation / Cross Services"}]}},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"auditlog-viewer","commercialAppName":"auditlog-viewer","appId":"auditlog-viewer!t49","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Audit Log Viewer Service","description":"SAP Audit Log Viewer service for SAP BTP helps to view and manage audit logs.","shortDescription":"View and manage audit logs.","iconBase64":"PHN2ZyBpZD0iYXVkaXRsb2ctbWFuYWdlbWVudCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNTYgNTYiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojNWE3YTk0O30uY2xzLTJ7ZmlsbDojMDA5MmQxO308L3N0eWxlPjwvZGVmcz48dGl0bGU+YXVkaXRsb2ctbWFuYWdlbWVudDwvdGl0bGU+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDAuNjA4LDEwLjg0M0EyLjk3LDIuOTcsMCwwLDAsMzguNSwxMEgzMi4yMThhNS4yNzYsNS4yNzYsMCwwLDAtMS4zNTktMS45MjEsNC4xLDQuMSwwLDAsMC0yLjItLjk4NSw1Ljg1Miw1Ljg1MiwwLDAsMC0yLjEwOS0yLjI0OUE1LjY2MSw1LjY2MSwwLDAsMCwyMy41LDRhNS45LDUuOSwwLDAsMC0zLjA5My44NDQsNS43MjEsNS43MjEsMCwwLDAtMi4xNTYsMi4yNDksNC4yNzEsNC4yNzEsMCwwLDAtMi4xNTYuOTg1QTQuMjIyLDQuMjIyLDAsMCwwLDE0Ljc4MywxMEg4LjVhMi44ODgsMi44ODgsMCwwLDAtMywzVjQ5YTIuODg4LDIuODg4LDAsMCwwLDMsM2gyN1Y0OUg4LjVWMTNoNi4yODFhNi41MTYsNi41MTYsMCwwLDAsLjkzNywxLjg3NUEzLjAxOCwzLjAxOCwwLDAsMCwxOC4xNTcsMTZIMjguODQ0YTIuOTMsMi45MywwLDAsMCwyLjM0My0xLjEyNUE0LjY0OCw0LjY0OCwwLDAsMCwzMi4yMTgsMTNIMzguNVYyNWgzVjEzQTIuODQ2LDIuODQ2LDAsMCwwLDQwLjYwOCwxMC44NDNaTTI4LDEzSDE5YTEuMzI1LDEuMzI1LDAsMCwxLTEuNS0xLjVBMS4zMjUsMS4zMjUsMCwwLDEsMTksMTBoMS41YTIuODg2LDIuODg2LDAsMCwxLDMtMywyLjk3LDIuOTcsMCwwLDEsMi4xMS44NDNBMi44NTEsMi44NTEsMCwwLDEsMjYuNSwxMEgyOGExLjMyNywxLjMyNywwLDAsMSwxLjUsMS41QTEuMzI2LDEuMzI2LDAsMCwxLDI4LDEzWiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTM3LjkyOCwzMy44NzdjLS4xMDYtLjIzLS4yMzEtLjQ2OS0uMzcyLS43MTdsMS4yNzUtMS4yNzRMMzcuNjEsMzAuNjY1bC0xLjI3NSwxLjI3NEE2LjQ2Myw2LjQ2MywwLDAsMCwzNC44LDMxLjNWMjkuNUgzMy4xdjEuOGE3Ljc0Nyw3Ljc0NywwLDAsMC0xLjQzNC42MzdsLTEuMzI3LTEuMjc0LTEuMTY4LDEuMjIxLDEuMjc0LDEuMjc0YTMuMzc1LDMuMzc1LDAsMCwwLS42MzcsMS40ODdIMjh2MS43aDEuOGEzLjUyLDMuNTIsMCwwLDAsLjYzNywxLjQ4NkwyOS4xNjgsMzkuMTZsMS4xNjgsMS4xNjgsMS4zMjctMS4yNzRhMy41MDksMy41MDksMCwwLDAsMS40MzQuNjM2VjQxLjVoMS43VjM5LjY5YTQuNDU0LDQuNDU0LDAsMCwwLDEuNTM5LS42MzZsMS4yNzUsMS4yNzQsMS4yMjEtMS4xNjgtMS4yNzUtMS4zMjhhNS44NjksNS44NjksMCwwLDAsLjYzOC0xLjQ4Nkg0MHYtMS43aC0xLjhBNC41MDgsNC41MDgsMCwwLDAsMzcuOTI4LDMzLjg3N1pNMzUuOCwzNy4zMjhhMi41LDIuNSwwLDAsMS0zLjYxLDAsMi41NDMsMi41NDMsMCwwLDEtLjc0My0xLjgzMiwyLjM2OSwyLjM2OSwwLDAsMSwuNzQzLTEuNzc4LDIuNjMsMi42MywwLDAsMSwzLjYxLDAsMi4zNzQsMi4zNzQsMCwwLDEsLjc0NCwxLjc3OEEyLjU0OCwyLjU0OCwwLDAsMSwzNS44LDM3LjMyOFoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMTUuMDg2IDIyLjU4MiAxMy4yNTQgMjAuNzUgMTEuNTAyIDIyLjU4MiAxNS4wODYgMjYuMTY1IDE2LjkxNyAyNC4zMzQgMjAuNTAxIDIwLjc1IDE4LjY2OSAxOC45OTggMTUuMDg2IDIyLjU4MiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxNS4wODYgMzQuNTg2IDEzLjI1NCAzMi43NTQgMTEuNTAyIDM0LjU4NiAxNS4wODYgMzguMTcgMTYuOTE3IDM2LjMzOCAyMC41MDEgMzIuNzU0IDE4LjY2OSAzMS4wMDIgMTUuMDg2IDM0LjU4NiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTQ5LjkzNyw0OS4zODRsLTcuNjYtNy42NmExMC4xMTIsMTAuMTEyLDAsMCwwLDEuNTg4LTIuODk1LDEwLjMwOCwxMC4zMDgsMCwwLDAtLjI4LTcuNDI3LDEwLjU0OSwxMC41NDksMCwwLDAtNS41NTgtNS41NTgsMTAuMjQsMTAuMjQsMCwwLDAtOC4xMjgsMEExMC41NDksMTAuNTQ5LDAsMCwwLDI0LjM0MSwzMS40YTEwLjIzNywxMC4yMzcsMCwwLDAsMCw4LjEyN0ExMC41NDksMTAuNTQ5LDAsMCwwLDI5LjksNDUuMDg3YTkuOTg3LDkuOTg3LDAsMCwwLDQuMDY0Ljg0MSwxMC4zMjEsMTAuMzIxLDAsMCwwLDYuMjU5LTIuMDU1bDcuNjYsNy42NmExLjM2NCwxLjM2NCwwLDAsMCwyLjA1NSwwQTEuMzEsMS4zMSwwLDAsMCw0OS45MzcsNDkuMzg0Wm0tMTAuNy04LjY0MWE3LjQ0MSw3LjQ0MSwwLDAsMS0xMC41NTYsMCw3LjQ0Myw3LjQ0MywwLDAsMSwwLTEwLjU1Niw3LjQ0Myw3LjQ0MywwLDAsMSwxMC41NTYsMCw3LjQ0Myw3LjQ0MywwLDAsMSwwLDEwLjU1NloiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yNSwyMy41aDlhMS41LDEuNSwwLDEsMCwwLTNIMjVhMS41LDEuNSwwLDEsMCwwLDNaIi8+PC9zdmc+","globalAccountId":"0b50832a-69bb-473e-b2ba-f37300d545db","tenantId":"cf-eu12-auditlog-viewer","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/e3baa5f1a0c64c44aac8ab3ea3d1b500.html"}],"serviceCategories":[{"name":"Data and Analytics"}],"regionInformation":[{"key":"cf-eu10-canary"}]},"incidentTrackingComponent":"BC-NEO-AUDITLOG"},{"subscriptionUrl":"https://integration-test-services-4ie3yr1a.dt.cpp.cfapps.eu12.hana.ondemand.com","subscribedTenantId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscribedSubaccountId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscriptionGUID":"f1a85532-2d3b-40fd-bd30-d89242684c9e","state":"SUBSCRIBED","authenticationProvider":"XSUAA","appName":"PortalApplication","commercialAppName":"PortalApplication","appId":"portal-cf-dt-approuter!t164","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Cloud Portal Service","description":"SAP Cloud Portal service lets you build digital experience portals for employees, customers, and partners. You can streamline access to business data so that your employees can execute their daily business tasks securely, from any device.","shortDescription":"Create role based, multi-channel sites to access business apps and content.","iconBase64":"PHN2ZyBpZD0icG9ydGFsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5wb3J0YWw8L3RpdGxlPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1Ljg0LDIzLjk2MmE4LjQ4OSw4LjQ4OSwwLDAsMC0xMi43ODMtNS43MTNBMTAuNzQ3LDEwLjc0NywwLDAsMCwyMi40MSwxMUMxMCwxMSwxMS4wOSwyMy45ODgsMTEuMDksMjMuOTg4QTEwLjI1NywxMC4yNTcsMCwwLDAsMTQuMjg1LDQ0SDIyVjI5aDlWNDRINDEuNWExMC40ODYsMTAuNDg2LDAsMCwwLDQuMzQtMjAuMDM4Wk00MS41LDQxSDM0VjI2SDE5VjQxSDE0LjI4NWE3LjI1Nyw3LjI1NywwLDAsMS0yLjI1OC0xNC4xNjJsMi4yNzktLjc2OC0uMjMyLTIuMzg5YzAtLjA0Mi0uMzc5LTQuMjM3LDIuMDEtNy4wMTNDMTcuNDYxLDE1LjA2OCwxOSwxNCwyMi40NjUsMTRjMi41MzUsMCw2LjQxNywyLjE4Niw3Ljk5NCw1LjMzOWwxLjE3NiwyLjg3MSwyLjQyNC0xLjMxOEE3LjYsNy42LDAsMCwxLDM3LjQ0OSwyMGE1LjU0Niw1LjU0NiwwLDAsMSw1LjQ0Myw0LjUxOGwuMjg4LDEuNTI4LDEuNDE1LjY0NkE3LjQ4Niw3LjQ4NiwwLDAsMSw0MS41LDQxWiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxOS4wMDYgNDQgMjIuMDA2IDQ0IDIyLjAwNiAyOSAzMS4wMDYgMjkgMzEuMDA2IDQ0IDM0LjAwNiA0NCAzNC4wMDYgMjYgMTkuMDA2IDI2IDE5LjAwNiA0NCIvPjwvc3ZnPg\u003d\u003d","category":"SaaS Applications","categoryDisplayName":"SaaS Applications","globalAccountId":"SA0225001210","tenantId":"6897360f-7e35-411b-87e7-f3b501f4f9a7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","inventoryIds":[{"key":"SERVICE-2"},{"key":"SERVICE-134"}],"serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Portal_Service/1.0/en-US"}],"serviceCategories":[{"name":"Application Development and Automation"}],"regionInformation":[{"key":"cf-eu10-canary"},{"key":"cf-eu10"},{"key":"neo-eu1-canary"}]},"incidentTrackingComponent":"EP-CPP-OPS","modifiedDate":"Jul 11, 2023, 6:24:52 AM","createdDate":"Jul 11, 2023, 6:24:37 AM"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:07 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - e2a52838-8da6-4bde-4d23-daa08e36953a
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 417.6252ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - ca4944df-4746-df63-fe16-fcb22fbe8a99
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:08 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - cf7c46f1-abb6-449a-6125-e987b93df83d
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 326.2304ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 93a7d9ff-5cfb-3066-e10e-ef46a5d7d969
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Tue, 11 Jul 2023 06:37:08 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 1b094f5f-ccfc-4281-5935-8fb3adbe1edd
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 219.9289ms
+    - id: 8
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 93a7d9ff-5cfb-3066-e10e-ef46a5d7d969
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"applications":[{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"mdo-one-mds-master","commercialAppName":"mdo-one-mds-master","appId":"mdo-one-mds-master!t46510","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Master Data Integration (Orchestration)","description":"Master data application that allows master data replication according to predetermined master data distribution models. SAP Master Data Orchestration can only be used in combination with the SAP Master Data Integration service.","shortDescription":"Orchestrate master data distribution","iconBase64":"PHN2ZyBpZD0icGxhY2Vob2xkZXIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDU2IDU2Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzA1M2I3MDt9LmNscy0ye2ZpbGw6IzBhNmVkMTt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPnBsYWNlaG9sZGVyPC90aXRsZT48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik00Ni45NTMsMjAuNTg4YTQuMzYzLDQuMzYzLDAsMCwwLTEuODM3LS40NTksMy4yOTEsMy4yOTEsMCwwLDAtMy40LDMuMzc2LDQuMDg0LDQuMDg0LDAsMCwwLC45LDIuNjI1LDMuMDExLDMuMDExLDAsMCwwLDIuNSwxLjEyNiwzLjA4NSwzLjA4NSwwLDAsMCwxLjQ2Mi0uMzc1LDcuNTEyLDcuNTEyLDAsMCwwLDEuMzItLjg5MSwxMC4xMzUsMTAuMTM1LDAsMCwxLDEuMjI2LS44OTEsMi4yNywyLjI3LDAsMCwxLDEuMTc5LS4zNzVBMS41LDEuNSwwLDAsMSw1MiwyNi40MTJWMzkuMDcxYTIuODQzLDIuODQzLDAsMCwxLS41NzYsMiwyLjkyNiwyLjkyNiwwLDAsMS0yLjE1OS42MjZxLTIuOTIzLDAtNC4zODUuMDQ3dC0yLjEyMi4wNDdINDEuOTFhMy4zMjEsMy4zMjEsMCwwLDAsLjYuNjQ0LDUuNzE3LDUuNzE3LDAsMCwxLDIuMDc0LDQuMjIsNS4wNTQsNS4wNTQsMCwwLDEtMS42NSwzLjc1MUE1LjMzMSw1LjMzMSwwLDAsMSwzOS4xMTgsNTJhNS42LDUuNiwwLDAsMS00LjA1NS0xLjU0Nyw1LjA3MSw1LjA3MSwwLDAsMS0xLjYtMy44LDQuODYyLDQuODYyLDAsMCwxLC41MTktMi4zLDExLjQwNywxMS40MDcsMCwwLDEsMS41MTYtMS45NywyLjMzMywyLjMzMywwLDAsMCwuNDc1LS42OUgyOC4zM2ExLjM5NCwxLjM5NCwwLDAsMS0xLjA4NC0uNDY5LDIuMDExLDIuMDExLDAsMCwxLS41MTktMS4wMzJWMTUuOTA5YTEuOCwxLjgsMCwwLDEsLjQyNC0xLjE3MiwxLjQ0NCwxLjQ0NCwwLDAsMSwxLjE3OS0uNTE2aDcuNzMzYTEuOTQ5LDEuOTQ5LDAsMCwwLS4zNzctLjU2MmwtLjgtMS4xNzFhOC43ODgsOC43ODgsMCwwLDEtLjg0Ny0xLjUsNC43ODMsNC43ODMsMCwwLDEtLjQwNi0xLjY3NkE1LjM0OCw1LjM0OCwwLDAsMSwzOS4wODEsNGE1LjU1Miw1LjU1MiwwLDAsMSwzLjc5LDEuNTUzQTQuNjM1LDQuNjM1LDAsMCwxLDQ0LjU1LDkuMzQ1Yy0uMDI4LDEuNjg4LTIuMDIzLDQuMTI1LTIuMjQxLDQuMzc1YTEuNTc2LDEuNTc2LDAsMCwwLS4zLjVoNy4yNjFBMi42NSwyLjY1LDAsMCwxLDUyLDE2Ljg0N3Y0LjEyNnEwLDEuNzgyLTEuNywxLjc4MmExLjc0MywxLjc0MywwLDAsMS0xLjMxOS0uNTQ5QTEzLjE1MiwxMy4xNTIsMCwwLDAsNDYuOTUzLDIwLjU4OFpNMjguMzMsMzkuMDcxYS41ODIuNTgyLDAsMCwwLC42Ni42NTdoNy4xNjdhMS41NzksMS41NzksMCwwLDEsMS43OTIsMS43ODEsMi4yMzgsMi4yMzgsMCwwLDEtLjM4NywxLjI1NGMtLjI4My40MDgtLjU4Mi44MTMtLjksMS4yMTlzLS42MTMuODMtLjksMS4yNjZhMi41NDYsMi41NDYsMCwwLDAtLjQyNCwxLjQwNywzLjExNSwzLjExNSwwLDAsMCwxLjEzMSwyLjUzMiw0LjAyMiw0LjAyMiwwLDAsMCwyLjY0MS45MzgsMy43NzYsMy43NzYsMCwwLDAsMi40NTItLjkzOEEzLjExNSwzLjExNSwwLDAsMCw0Mi43LDQ2LjY1NWEyLjU0NiwyLjU0NiwwLDAsMC0uNDI0LTEuNDA3LDEyLjUxMywxMi41MTMsMCwwLDAtLjk0My0xLjI2NnEtLjUxOS0uNjA5LS45NDMtMS4xNzJhMi4yNjEsMi4yNjEsMCwwLDEtLjQ2Mi0xLjMsMS42MTQsMS42MTQsMCwwLDEsLjU2Ni0xLjMxMywyLjAwNiwyLjAwNiwwLDAsMSwxLjMyLS40NjhoNy40NXEuOTQyLDAsLjk0My0uNjU3VjI2LjUwNmExLjYwOSwxLjYwOSwwLDAsMC0uNzA3LjQyMnEtLjUxOS40MjEtMS4xNzkuODlhMTEuMDY5LDExLjA2OSwwLDAsMS0xLjUwOS44OTEsMy43NywzLjc3LDAsMCwxLTEuNy40MjIsNS40NSw1LjQ1LDAsMCwxLTMuNjc4LTEuNSw0LjI1LDQuMjUsMCwwLDEtMS4yMjYtMS44NzYsNy4wNTMsNy4wNTMsMCwwLDEtLjM3Ny0yLjI1LDUuMTY2LDUuMTY2LDAsMCwxLDEuNi0zLjcsNS4wMDksNS4wMDksMCwwLDEsMy42NzgtMS42NDEsNC44ODQsNC44ODQsMCwwLDEsMi4zNTcuNTE1QTcuNTg3LDcuNTg3LDAsMCwxLDQ5LjUxOCwyMC4yYy41MDYuNTg4Ljc4NS42MjQuNzg1LjYyNFYxNi44NDdhLjU0NC41NDQsMCwwLDAtLjMzMS0uNDY5LDEuNDIyLDEuNDIyLDAsMCwwLS43MDctLjE4N2gtNy40NWEyLjE0NywyLjE0NywwLDAsMS0xLjMyLS40MjIsMS41ODcsMS41ODcsMCwwLDEtLjU2Ni0xLjM2LDIuMDY3LDIuMDY3LDAsMCwxLC40MjUtMS4xNzJxLjQyNS0uNjA5Ljk0My0xLjIxOWExMi4yMjIsMTIuMjIyLDAsMCwwLC45NDMtMS4yNjYsMi41NDEsMi41NDEsMCwwLDAsLjQyNC0xLjQwNywzLjExOCwzLjExOCwwLDAsMC0xLjEzMi0yLjUzMiwzLjc3MSwzLjc3MSwwLDAsMC0yLjQ1MS0uOTM4LDMuODM5LDMuODM5LDAsMCwwLTIuNTk0LjkzOEEzLjE3OCwzLjE3OCwwLDAsMCwzNS40LDkuMzQ1YTIuNzc2LDIuNzc2LDAsMCwwLC40MjQsMS40NTQsMTAuMDM3LDEwLjAzNywwLDAsMCwuOSwxLjI2NWwuODQ5LDEuMjJhMi45MDksMi45MDksMCwwLDEsLjQ3MSwxLjEyNSwxLjYyNSwxLjYyNSwwLDAsMS0uNTE4LDEuMzYsMS45NTYsMS45NTYsMCwwLDEtMS4yNzQuNDIySDI5LjA4NHEtLjc1NSwwLS43NTQuNjU2Wm0yMy42NywwYTIuNywyLjcsMCwwLDEtLjU3NiwyLDIuNjc1LDIuNjc1LDAsMCwxLTIuMTU5LjYyNiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTM3LjE0NywzMS4wNzRhMy4zMjgsMy4zMjgsMCwwLDAtMi44NzgtMS4zNiw0LjQ0NSw0LjQ0NSwwLDAsMC0yLjEyLjQyMiw2LjE4NSw2LjE4NSwwLDAsMC0xLjE3OC44OTFxLS41NjcuNDcxLTEuMTMyLjg5MWMtLjM3My4yNzgtLjgwOC43NzMtMS4zLjc3NkgyNi43MjdWMTYuNDZhMy4zMzUsMy4zMzUsMCwwLDAtLjM3Ny0xLjUsMS40MzYsMS40MzYsMCwwLDAtMS40MTUtLjc1MUgxOS4yNzdjLS41LDAtLjc1NC4yNTEtLjc1NC44NDRhMS45MDcsMS45MDcsMCwwLDAsLjM3NywxLjEyNiw5LjE0Niw5LjE0NiwwLDAsMCwuOTQzLDEuMTI1LDUuMzQxLDUuMzQxLDAsMCwxLC45NDMsMS4yNjYsMy4yMzYsMy4yMzYsMCwwLDEsLjM3NywxLjU0Nyw0LjQ1NCw0LjQ1NCwwLDAsMS0xLjI3MywzLjE0MSw0LjA0OSw0LjA0OSwwLDAsMS0zLjA2NSwxLjM2LDMuOSwzLjksMCwwLDEtMy4wMTgtMS4zNiw0LjU0Nyw0LjU0NywwLDAsMS0xLjIyNS0zLjE0MSwyLjkzNiwyLjkzNiwwLDAsMSwuNDI0LTEuNTQ3LDEzLjU0OCwxMy41NDgsMCwwLDEsLjktMS4zMTNjLjMxNC0uNDA2LjYyNy0uNzgxLjk0My0xLjEyNWExLjU4OCwxLjU4OCwwLDAsMCwuNDcxLTEuMDc5cTAtLjg0My0xLjAzNy0uODQ0SDUuN2ExLjU4NywxLjU4NywwLDAsMC0xLjIyNi41MTZBMS44MDYsMS44MDYsMCwwLDAsNCwxNS45OTFWMzkuOWExLjgsMS44LDAsMCwwLC40NzEsMS4yNjYsMS41ODMsMS41ODMsMCwwLDAsMS4yMjYuNTE2aDguNDg4Yy42OTEsMCwxLjAzNS4yMzgsMS4wMzcuNzVhMS41NDcsMS41NDcsMCwwLDEtLjQyMi45NDRMMTMuODA3LDQ0LjVhNi41NDksNi41NDksMCwwLDAtLjk5LDEuMjY2LDMuMTE2LDMuMTE2LDAsMCwwLS40MjQsMS42NDEsNC4yMzcsNC4yMzcsMCwwLDAsMS4zNjcsMy40Nyw0Ljc5MSw0Ljc5MSwwLDAsMCw2LjIyNC0uMDQ3LDQuNTE3LDQuNTE3LDAsMCwwLDEuNDQ1LTMuMjgzLDMuNjMxLDMuNjMxLDAsMCwwLS41MTQtMS44ODljLS4yMTUtLjMwNy0uOTc4LTEuMTU4LS45NzgtMS4xNThMMTguOSw0My4zNzNhMS40OTIsMS40OTIsMCwwLDEtLjM3Ny0uOTM4cTAtLjc1Ljg0OC0uNzVoNS42NThxMS4yMjYsMCwxLjctMS41VjM1LjM0MUgyOC4zNWMuNTU3LDAsMS4wNTQuNTE5LDEuNDg5LjhhMTIuMjkxLDEyLjI5MSwwLDAsMSwxLjIyNi44OTFxLjU2NS40NjksMS4xNzkuODlhMy43ODYsMy43ODYsMCwwLDAsMS44MTYuNDIyLDMuMjU2LDMuMjU2LDAsMCwwLDMuMDg3LTEuNDA2LDUuMTE5LDUuMTE5LDAsMCwwLC45OS0zQTQuNzg4LDQuNzg4LDAsMCwwLDM3LjE0NywzMS4wNzRaIi8+PC9zdmc+","category":"Extension Suite - Development Efficiency","categoryDisplayName":"Extension Suite - Development Efficiency","globalAccountId":"2342216e-8a13-4aab-894e-11e5280a90f9","tenantId":"ac38918a-900c-4d3c-92f3-398883d3c5e7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/docs/SAP_MASTER_DATA_INTEGRATION/8ce78b673ef04cc1bcfeb01c93ef7885/0bed505b149b4ec6af24bf503a45708b.html?locale\u003den-US\u0026version\u003dCLOUD"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"cf-eu10-canary"}]},"incidentTrackingComponent":"LOD-MDM-ORC"},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"cias","commercialAppName":"cias","appId":"cias!b74866","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"planDescription":"Plan to use the Cloud Integration Automation Service - UI Application","additionalPlanFeatures":[],"displayName":"Cloud Integration Automation Service","description":"Cloud Integration Automation service provides you a guided workflow to integrate SAP cloud solutions to On-Premise and other SAP Cloud solutions. The guided workflow contains instructions for manual and automated tasks to enable a simpler and faster integration configuration setup","shortDescription":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions","iconBase64":"PHN2ZyBpZD0iY2xvdWQtaW50ZWdyYXRpb24tYXV0b21hdGlvbi1zZXJ2aWNlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTEzLjc1LDQwYTYuNzIzLDYuNzIzLDAsMCwwLDYuNzUsNi43NUgyMlY0OUgyMC41YTguNzMsOC43MywwLDAsMS0zLjUxNi0uNyw5LjE1OCw5LjE1OCwwLDAsMS0yLjg0Ny0xLjkzNEE4Ljk2OCw4Ljk2OCwwLDAsMSwxMi4yLDQzLjQ4LDguNzY3LDguNzY3LDAsMCwxLDExLjUsNDBsLjA3LTEuMTI1TDguOTY5LDQxLjlhMS4xLDEuMSwwLDAsMS0xLjYxNywwLDEuMDI1LDEuMDI1LDAsMCwxLDAtMS41NDZsMy42NTYtNC4yMTlhMi4zODIsMi4zODIsMCwwLDEsMy4yMzQsMGwzLjcyNyw0LjIxOWEuOTY4Ljk2OCwwLDAsMSwwLDEuNTQ2LDEuMDM3LDEuMDM3LDAsMCwxLTEuNjE3LDBMMTMuODIsMzguODc1WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1LjI1LDE2QTYuNzIzLDYuNzIzLDAsMCwwLDM4LjUsOS4yNUgzN1Y3aDEuNWE4LjczLDguNzMsMCwwLDEsMy41MTYuNyw5LjE1OCw5LjE1OCwwLDAsMSwyLjg0NywxLjkzNEE4Ljk2OCw4Ljk2OCwwLDAsMSw0Ni44LDEyLjUyLDguNzY3LDguNzY3LDAsMCwxLDQ3LjUsMTZsLS4wNywxLjEyNSwyLjYtMy4wMjNhMS4xLDEuMSwwLDAsMSwxLjYxNywwLDEuMDI1LDEuMDI1LDAsMCwxLDAsMS41NDZsLTMuNjU2LDQuMjE5YTIuMzgyLDIuMzgyLDAsMCwxLTMuMjM0LDBsLTMuNzI3LTQuMjE5YS45NjguOTY4LDAsMCwxLDAtMS41NDYsMS4wMzcsMS4wMzcsMCwwLDEsMS42MTcsMGwyLjUzMiwzLjAyM1oiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMy4yNSwzMy43NSw0NS43NSw0MGwtMTIuNSw2LjI1VjMzLjc1TTMyLjQwNiwzMWExLjM0OSwxLjM0OSwwLDAsMC0uOTg0LjQyMkExLjQ2MSwxLjQ2MSwwLDAsMCwzMSwzMi41VjQ3LjU5NGExLjMwNywxLjMwNywwLDAsMCwuNDIyLDEuMDMxLDEuNDM0LDEuNDM0LDAsMCwwLC45ODQuMzc1LDEuNjYxLDEuNjYxLDAsMCwwLC43NS0uMTg4TDQ4LjI1LDQxLjI2NmExLjQ0NCwxLjQ0NCwwLDAsMCwwLTIuNTMyTDMzLjE1NiwzMS4xODhhMS42NzQsMS42NzQsMCwwLDAtLjc1LS4xODhaIi8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjcuNTQ0LDE0LjA3MWE0LjgsNC44LDAsMCwwLTcuMTgyLTMuMTExQTYuMDU5LDYuMDU5LDAsMCwwLDE0LjM2OCw3QzcuMzc1LDcsOCwxNC4wNzEsOCwxNC4wNzFBNS41ODIsNS41ODIsMCwwLDAsOS44MDUsMjVIMjUuMTE0QTUuODIxLDUuODIxLDAsMCwwLDMxLDE5LjI2Niw1LjY3NSw1LjY3NSwwLDAsMCwyNy41NDQsMTQuMDcxWm0tMi40Myw4LjM1OEg5LjgwNWEzLjA4MiwzLjA4MiwwLDAsMS0zLjEtMy4wMzUsMy42MzIsMy42MzIsMCwwLDEsMi4xNi0yLjg4YzEuNTc4LS42MjUsMi4wMTktLjM5NCwxLjgzNi0yLjY0OGE1LjE2Miw1LjE2MiwwLDAsMSwxLjA1My0zLjQ0NiwzLjU1NywzLjU1NywwLDAsMSwyLjYxOS0uODQ5LDMuMzQ4LDMuMzQ4LDAsMCwxLDMuNDgzLDIuMzE1Yy45NzksMi40MzksMS43OTMsMi43MDksMy4zNDYsMS40NjFhMi4zNzcsMi4zNzcsMCwwLDEsMS42MjItLjUxLDIuMSwyLjEsMCwwLDEsMi4wNzksMS43Yy4xNTksMS41ODYuMjcsMS40NjYsMS41MTIsMS44NzhhMy4xMjgsMy4xMjgsMCwwLDEsMS44OSwyLjg1NEEzLjE3NywzLjE3NywwLDAsMSwyNS4xMTQsMjIuNDI5WiIvPjwvc3ZnPg\u003d\u003d","globalAccountId":"772a1555-53bf-4bc2-b4ab-fbc18f972b0b","tenantId":"172e334b-4f52-490b-8c3c-c15c775ea815","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"true","propagateLocale":"true","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Cloud%2520Integration%2520Automation%2520Service/Latest/en-US"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"cf-eu10"},{"key":"cf-eu12"}],"CFService":{"name":"cias","description":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions","metadata":{"displayName":"Cloud Integration Automation Service"},"plans":[{"technicalName":"standard","name":"standard","description":"Plan to use the Cloud Integration Automation Service - UI Application","metadata":{"bullets":[]}}]}},"incidentTrackingComponent":"BC-INS-CIT-RT"},{"subscriptionUrl":"https://integration-test-services-4ie3yr1a.content-agent.cfapps.eu12.hana.ondemand.com","subscribedTenantId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscribedSubaccountId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscriptionGUID":"60c44e9d-2696-4b8f-91ea-9efcd3c23ffb","state":"SUBSCRIBED","authenticationProvider":"XSUAA","appName":"content-agent-ui","commercialAppName":"content-agent-ui","appId":"cas-ui-xsuaa-prod!t216","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Content Agent","description":"Content Agent UI","category":"Integration Suite","categoryDisplayName":"Integration Suite","globalAccountId":"d39f31d1-c84d-448e-bc18-d3571e6e2d6c","tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","quota":1,"labels":{"test":["label"]},"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Integration Suite"}]},"modifiedDate":"Jul 11, 2023, 5:43:09 AM","createdDate":"Jul 11, 2023, 5:43:06 AM"},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"feature-flags-dashboard","commercialAppName":"feature-flags-dashboard","appId":"feature-flags!b18","planName":"dashboard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Feature Flags","description":"View and manage Feature Flags Service instances. Get information about flags status, usage and history. Also perform tasks, such as enabling, disabling, adding and removing flags.","category":"Foundation / Cross Services","categoryDisplayName":"Foundation / Cross Services","globalAccountId":"1aa6ae00-fe52-1993-65ff-3613845a7961","tenantId":"fflags-cf-eu12","quota":1,"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Foundation / Cross Services"}]}},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"auditlog-viewer","commercialAppName":"auditlog-viewer","appId":"auditlog-viewer!t49","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Audit Log Viewer Service","description":"SAP Audit Log Viewer service for SAP BTP helps to view and manage audit logs.","shortDescription":"View and manage audit logs.","iconBase64":"PHN2ZyBpZD0iYXVkaXRsb2ctbWFuYWdlbWVudCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNTYgNTYiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojNWE3YTk0O30uY2xzLTJ7ZmlsbDojMDA5MmQxO308L3N0eWxlPjwvZGVmcz48dGl0bGU+YXVkaXRsb2ctbWFuYWdlbWVudDwvdGl0bGU+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDAuNjA4LDEwLjg0M0EyLjk3LDIuOTcsMCwwLDAsMzguNSwxMEgzMi4yMThhNS4yNzYsNS4yNzYsMCwwLDAtMS4zNTktMS45MjEsNC4xLDQuMSwwLDAsMC0yLjItLjk4NSw1Ljg1Miw1Ljg1MiwwLDAsMC0yLjEwOS0yLjI0OUE1LjY2MSw1LjY2MSwwLDAsMCwyMy41LDRhNS45LDUuOSwwLDAsMC0zLjA5My44NDQsNS43MjEsNS43MjEsMCwwLDAtMi4xNTYsMi4yNDksNC4yNzEsNC4yNzEsMCwwLDAtMi4xNTYuOTg1QTQuMjIyLDQuMjIyLDAsMCwwLDE0Ljc4MywxMEg4LjVhMi44ODgsMi44ODgsMCwwLDAtMywzVjQ5YTIuODg4LDIuODg4LDAsMCwwLDMsM2gyN1Y0OUg4LjVWMTNoNi4yODFhNi41MTYsNi41MTYsMCwwLDAsLjkzNywxLjg3NUEzLjAxOCwzLjAxOCwwLDAsMCwxOC4xNTcsMTZIMjguODQ0YTIuOTMsMi45MywwLDAsMCwyLjM0My0xLjEyNUE0LjY0OCw0LjY0OCwwLDAsMCwzMi4yMTgsMTNIMzguNVYyNWgzVjEzQTIuODQ2LDIuODQ2LDAsMCwwLDQwLjYwOCwxMC44NDNaTTI4LDEzSDE5YTEuMzI1LDEuMzI1LDAsMCwxLTEuNS0xLjVBMS4zMjUsMS4zMjUsMCwwLDEsMTksMTBoMS41YTIuODg2LDIuODg2LDAsMCwxLDMtMywyLjk3LDIuOTcsMCwwLDEsMi4xMS44NDNBMi44NTEsMi44NTEsMCwwLDEsMjYuNSwxMEgyOGExLjMyNywxLjMyNywwLDAsMSwxLjUsMS41QTEuMzI2LDEuMzI2LDAsMCwxLDI4LDEzWiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTM3LjkyOCwzMy44NzdjLS4xMDYtLjIzLS4yMzEtLjQ2OS0uMzcyLS43MTdsMS4yNzUtMS4yNzRMMzcuNjEsMzAuNjY1bC0xLjI3NSwxLjI3NEE2LjQ2Myw2LjQ2MywwLDAsMCwzNC44LDMxLjNWMjkuNUgzMy4xdjEuOGE3Ljc0Nyw3Ljc0NywwLDAsMC0xLjQzNC42MzdsLTEuMzI3LTEuMjc0LTEuMTY4LDEuMjIxLDEuMjc0LDEuMjc0YTMuMzc1LDMuMzc1LDAsMCwwLS42MzcsMS40ODdIMjh2MS43aDEuOGEzLjUyLDMuNTIsMCwwLDAsLjYzNywxLjQ4NkwyOS4xNjgsMzkuMTZsMS4xNjgsMS4xNjgsMS4zMjctMS4yNzRhMy41MDksMy41MDksMCwwLDAsMS40MzQuNjM2VjQxLjVoMS43VjM5LjY5YTQuNDU0LDQuNDU0LDAsMCwwLDEuNTM5LS42MzZsMS4yNzUsMS4yNzQsMS4yMjEtMS4xNjgtMS4yNzUtMS4zMjhhNS44NjksNS44NjksMCwwLDAsLjYzOC0xLjQ4Nkg0MHYtMS43aC0xLjhBNC41MDgsNC41MDgsMCwwLDAsMzcuOTI4LDMzLjg3N1pNMzUuOCwzNy4zMjhhMi41LDIuNSwwLDAsMS0zLjYxLDAsMi41NDMsMi41NDMsMCwwLDEtLjc0My0xLjgzMiwyLjM2OSwyLjM2OSwwLDAsMSwuNzQzLTEuNzc4LDIuNjMsMi42MywwLDAsMSwzLjYxLDAsMi4zNzQsMi4zNzQsMCwwLDEsLjc0NCwxLjc3OEEyLjU0OCwyLjU0OCwwLDAsMSwzNS44LDM3LjMyOFoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMTUuMDg2IDIyLjU4MiAxMy4yNTQgMjAuNzUgMTEuNTAyIDIyLjU4MiAxNS4wODYgMjYuMTY1IDE2LjkxNyAyNC4zMzQgMjAuNTAxIDIwLjc1IDE4LjY2OSAxOC45OTggMTUuMDg2IDIyLjU4MiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxNS4wODYgMzQuNTg2IDEzLjI1NCAzMi43NTQgMTEuNTAyIDM0LjU4NiAxNS4wODYgMzguMTcgMTYuOTE3IDM2LjMzOCAyMC41MDEgMzIuNzU0IDE4LjY2OSAzMS4wMDIgMTUuMDg2IDM0LjU4NiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTQ5LjkzNyw0OS4zODRsLTcuNjYtNy42NmExMC4xMTIsMTAuMTEyLDAsMCwwLDEuNTg4LTIuODk1LDEwLjMwOCwxMC4zMDgsMCwwLDAtLjI4LTcuNDI3LDEwLjU0OSwxMC41NDksMCwwLDAtNS41NTgtNS41NTgsMTAuMjQsMTAuMjQsMCwwLDAtOC4xMjgsMEExMC41NDksMTAuNTQ5LDAsMCwwLDI0LjM0MSwzMS40YTEwLjIzNywxMC4yMzcsMCwwLDAsMCw4LjEyN0ExMC41NDksMTAuNTQ5LDAsMCwwLDI5LjksNDUuMDg3YTkuOTg3LDkuOTg3LDAsMCwwLDQuMDY0Ljg0MSwxMC4zMjEsMTAuMzIxLDAsMCwwLDYuMjU5LTIuMDU1bDcuNjYsNy42NmExLjM2NCwxLjM2NCwwLDAsMCwyLjA1NSwwQTEuMzEsMS4zMSwwLDAsMCw0OS45MzcsNDkuMzg0Wm0tMTAuNy04LjY0MWE3LjQ0MSw3LjQ0MSwwLDAsMS0xMC41NTYsMCw3LjQ0Myw3LjQ0MywwLDAsMSwwLTEwLjU1Niw3LjQ0Myw3LjQ0MywwLDAsMSwxMC41NTYsMCw3LjQ0Myw3LjQ0MywwLDAsMSwwLDEwLjU1NloiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yNSwyMy41aDlhMS41LDEuNSwwLDEsMCwwLTNIMjVhMS41LDEuNSwwLDEsMCwwLDNaIi8+PC9zdmc+","globalAccountId":"0b50832a-69bb-473e-b2ba-f37300d545db","tenantId":"cf-eu12-auditlog-viewer","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/e3baa5f1a0c64c44aac8ab3ea3d1b500.html"}],"serviceCategories":[{"name":"Data and Analytics"}],"regionInformation":[{"key":"cf-eu10-canary"}]},"incidentTrackingComponent":"BC-NEO-AUDITLOG"},{"subscriptionUrl":"https://integration-test-services-4ie3yr1a.dt.cpp.cfapps.eu12.hana.ondemand.com","subscribedTenantId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscribedSubaccountId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscriptionGUID":"f1a85532-2d3b-40fd-bd30-d89242684c9e","state":"SUBSCRIBED","authenticationProvider":"XSUAA","appName":"PortalApplication","commercialAppName":"PortalApplication","appId":"portal-cf-dt-approuter!t164","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Cloud Portal Service","description":"SAP Cloud Portal service lets you build digital experience portals for employees, customers, and partners. You can streamline access to business data so that your employees can execute their daily business tasks securely, from any device.","shortDescription":"Create role based, multi-channel sites to access business apps and content.","iconBase64":"PHN2ZyBpZD0icG9ydGFsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5wb3J0YWw8L3RpdGxlPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1Ljg0LDIzLjk2MmE4LjQ4OSw4LjQ4OSwwLDAsMC0xMi43ODMtNS43MTNBMTAuNzQ3LDEwLjc0NywwLDAsMCwyMi40MSwxMUMxMCwxMSwxMS4wOSwyMy45ODgsMTEuMDksMjMuOTg4QTEwLjI1NywxMC4yNTcsMCwwLDAsMTQuMjg1LDQ0SDIyVjI5aDlWNDRINDEuNWExMC40ODYsMTAuNDg2LDAsMCwwLDQuMzQtMjAuMDM4Wk00MS41LDQxSDM0VjI2SDE5VjQxSDE0LjI4NWE3LjI1Nyw3LjI1NywwLDAsMS0yLjI1OC0xNC4xNjJsMi4yNzktLjc2OC0uMjMyLTIuMzg5YzAtLjA0Mi0uMzc5LTQuMjM3LDIuMDEtNy4wMTNDMTcuNDYxLDE1LjA2OCwxOSwxNCwyMi40NjUsMTRjMi41MzUsMCw2LjQxNywyLjE4Niw3Ljk5NCw1LjMzOWwxLjE3NiwyLjg3MSwyLjQyNC0xLjMxOEE3LjYsNy42LDAsMCwxLDM3LjQ0OSwyMGE1LjU0Niw1LjU0NiwwLDAsMSw1LjQ0Myw0LjUxOGwuMjg4LDEuNTI4LDEuNDE1LjY0NkE3LjQ4Niw3LjQ4NiwwLDAsMSw0MS41LDQxWiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxOS4wMDYgNDQgMjIuMDA2IDQ0IDIyLjAwNiAyOSAzMS4wMDYgMjkgMzEuMDA2IDQ0IDM0LjAwNiA0NCAzNC4wMDYgMjYgMTkuMDA2IDI2IDE5LjAwNiA0NCIvPjwvc3ZnPg\u003d\u003d","category":"SaaS Applications","categoryDisplayName":"SaaS Applications","globalAccountId":"SA0225001210","tenantId":"6897360f-7e35-411b-87e7-f3b501f4f9a7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","inventoryIds":[{"key":"SERVICE-2"},{"key":"SERVICE-134"}],"serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Portal_Service/1.0/en-US"}],"serviceCategories":[{"name":"Application Development and Automation"}],"regionInformation":[{"key":"cf-eu10-canary"},{"key":"cf-eu10"},{"key":"neo-eu1-canary"}]},"incidentTrackingComponent":"EP-CPP-OPS","modifiedDate":"Jul 11, 2023, 6:24:52 AM","createdDate":"Jul 11, 2023, 6:24:37 AM"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:08 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 060e9f09-5669-4eac-69cf-3873181c8abf
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 391.5009ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 2a819ba6-e899-c09f-b0e6-8ff22df9ec0c
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:09 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 0dff911a-62d7-4d35-6921-aa4e634f1724
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 324.0031ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 8768edab-fa6c-7dc8-50cd-29b2272910b3
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Tue, 11 Jul 2023 06:37:09 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - 269370da-096b-4a0a-41ba-aee0639c63b0
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 199.4616ms
+    - id: 11
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 8768edab-fa6c-7dc8-50cd-29b2272910b3
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"applications":[{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"mdo-one-mds-master","commercialAppName":"mdo-one-mds-master","appId":"mdo-one-mds-master!t46510","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Master Data Integration (Orchestration)","description":"Master data application that allows master data replication according to predetermined master data distribution models. SAP Master Data Orchestration can only be used in combination with the SAP Master Data Integration service.","shortDescription":"Orchestrate master data distribution","iconBase64":"PHN2ZyBpZD0icGxhY2Vob2xkZXIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDU2IDU2Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzA1M2I3MDt9LmNscy0ye2ZpbGw6IzBhNmVkMTt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPnBsYWNlaG9sZGVyPC90aXRsZT48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik00Ni45NTMsMjAuNTg4YTQuMzYzLDQuMzYzLDAsMCwwLTEuODM3LS40NTksMy4yOTEsMy4yOTEsMCwwLDAtMy40LDMuMzc2LDQuMDg0LDQuMDg0LDAsMCwwLC45LDIuNjI1LDMuMDExLDMuMDExLDAsMCwwLDIuNSwxLjEyNiwzLjA4NSwzLjA4NSwwLDAsMCwxLjQ2Mi0uMzc1LDcuNTEyLDcuNTEyLDAsMCwwLDEuMzItLjg5MSwxMC4xMzUsMTAuMTM1LDAsMCwxLDEuMjI2LS44OTEsMi4yNywyLjI3LDAsMCwxLDEuMTc5LS4zNzVBMS41LDEuNSwwLDAsMSw1MiwyNi40MTJWMzkuMDcxYTIuODQzLDIuODQzLDAsMCwxLS41NzYsMiwyLjkyNiwyLjkyNiwwLDAsMS0yLjE1OS42MjZxLTIuOTIzLDAtNC4zODUuMDQ3dC0yLjEyMi4wNDdINDEuOTFhMy4zMjEsMy4zMjEsMCwwLDAsLjYuNjQ0LDUuNzE3LDUuNzE3LDAsMCwxLDIuMDc0LDQuMjIsNS4wNTQsNS4wNTQsMCwwLDEtMS42NSwzLjc1MUE1LjMzMSw1LjMzMSwwLDAsMSwzOS4xMTgsNTJhNS42LDUuNiwwLDAsMS00LjA1NS0xLjU0Nyw1LjA3MSw1LjA3MSwwLDAsMS0xLjYtMy44LDQuODYyLDQuODYyLDAsMCwxLC41MTktMi4zLDExLjQwNywxMS40MDcsMCwwLDEsMS41MTYtMS45NywyLjMzMywyLjMzMywwLDAsMCwuNDc1LS42OUgyOC4zM2ExLjM5NCwxLjM5NCwwLDAsMS0xLjA4NC0uNDY5LDIuMDExLDIuMDExLDAsMCwxLS41MTktMS4wMzJWMTUuOTA5YTEuOCwxLjgsMCwwLDEsLjQyNC0xLjE3MiwxLjQ0NCwxLjQ0NCwwLDAsMSwxLjE3OS0uNTE2aDcuNzMzYTEuOTQ5LDEuOTQ5LDAsMCwwLS4zNzctLjU2MmwtLjgtMS4xNzFhOC43ODgsOC43ODgsMCwwLDEtLjg0Ny0xLjUsNC43ODMsNC43ODMsMCwwLDEtLjQwNi0xLjY3NkE1LjM0OCw1LjM0OCwwLDAsMSwzOS4wODEsNGE1LjU1Miw1LjU1MiwwLDAsMSwzLjc5LDEuNTUzQTQuNjM1LDQuNjM1LDAsMCwxLDQ0LjU1LDkuMzQ1Yy0uMDI4LDEuNjg4LTIuMDIzLDQuMTI1LTIuMjQxLDQuMzc1YTEuNTc2LDEuNTc2LDAsMCwwLS4zLjVoNy4yNjFBMi42NSwyLjY1LDAsMCwxLDUyLDE2Ljg0N3Y0LjEyNnEwLDEuNzgyLTEuNywxLjc4MmExLjc0MywxLjc0MywwLDAsMS0xLjMxOS0uNTQ5QTEzLjE1MiwxMy4xNTIsMCwwLDAsNDYuOTUzLDIwLjU4OFpNMjguMzMsMzkuMDcxYS41ODIuNTgyLDAsMCwwLC42Ni42NTdoNy4xNjdhMS41NzksMS41NzksMCwwLDEsMS43OTIsMS43ODEsMi4yMzgsMi4yMzgsMCwwLDEtLjM4NywxLjI1NGMtLjI4My40MDgtLjU4Mi44MTMtLjksMS4yMTlzLS42MTMuODMtLjksMS4yNjZhMi41NDYsMi41NDYsMCwwLDAtLjQyNCwxLjQwNywzLjExNSwzLjExNSwwLDAsMCwxLjEzMSwyLjUzMiw0LjAyMiw0LjAyMiwwLDAsMCwyLjY0MS45MzgsMy43NzYsMy43NzYsMCwwLDAsMi40NTItLjkzOEEzLjExNSwzLjExNSwwLDAsMCw0Mi43LDQ2LjY1NWEyLjU0NiwyLjU0NiwwLDAsMC0uNDI0LTEuNDA3LDEyLjUxMywxMi41MTMsMCwwLDAtLjk0My0xLjI2NnEtLjUxOS0uNjA5LS45NDMtMS4xNzJhMi4yNjEsMi4yNjEsMCwwLDEtLjQ2Mi0xLjMsMS42MTQsMS42MTQsMCwwLDEsLjU2Ni0xLjMxMywyLjAwNiwyLjAwNiwwLDAsMSwxLjMyLS40NjhoNy40NXEuOTQyLDAsLjk0My0uNjU3VjI2LjUwNmExLjYwOSwxLjYwOSwwLDAsMC0uNzA3LjQyMnEtLjUxOS40MjEtMS4xNzkuODlhMTEuMDY5LDExLjA2OSwwLDAsMS0xLjUwOS44OTEsMy43NywzLjc3LDAsMCwxLTEuNy40MjIsNS40NSw1LjQ1LDAsMCwxLTMuNjc4LTEuNSw0LjI1LDQuMjUsMCwwLDEtMS4yMjYtMS44NzYsNy4wNTMsNy4wNTMsMCwwLDEtLjM3Ny0yLjI1LDUuMTY2LDUuMTY2LDAsMCwxLDEuNi0zLjcsNS4wMDksNS4wMDksMCwwLDEsMy42NzgtMS42NDEsNC44ODQsNC44ODQsMCwwLDEsMi4zNTcuNTE1QTcuNTg3LDcuNTg3LDAsMCwxLDQ5LjUxOCwyMC4yYy41MDYuNTg4Ljc4NS42MjQuNzg1LjYyNFYxNi44NDdhLjU0NC41NDQsMCwwLDAtLjMzMS0uNDY5LDEuNDIyLDEuNDIyLDAsMCwwLS43MDctLjE4N2gtNy40NWEyLjE0NywyLjE0NywwLDAsMS0xLjMyLS40MjIsMS41ODcsMS41ODcsMCwwLDEtLjU2Ni0xLjM2LDIuMDY3LDIuMDY3LDAsMCwxLC40MjUtMS4xNzJxLjQyNS0uNjA5Ljk0My0xLjIxOWExMi4yMjIsMTIuMjIyLDAsMCwwLC45NDMtMS4yNjYsMi41NDEsMi41NDEsMCwwLDAsLjQyNC0xLjQwNywzLjExOCwzLjExOCwwLDAsMC0xLjEzMi0yLjUzMiwzLjc3MSwzLjc3MSwwLDAsMC0yLjQ1MS0uOTM4LDMuODM5LDMuODM5LDAsMCwwLTIuNTk0LjkzOEEzLjE3OCwzLjE3OCwwLDAsMCwzNS40LDkuMzQ1YTIuNzc2LDIuNzc2LDAsMCwwLC40MjQsMS40NTQsMTAuMDM3LDEwLjAzNywwLDAsMCwuOSwxLjI2NWwuODQ5LDEuMjJhMi45MDksMi45MDksMCwwLDEsLjQ3MSwxLjEyNSwxLjYyNSwxLjYyNSwwLDAsMS0uNTE4LDEuMzYsMS45NTYsMS45NTYsMCwwLDEtMS4yNzQuNDIySDI5LjA4NHEtLjc1NSwwLS43NTQuNjU2Wm0yMy42NywwYTIuNywyLjcsMCwwLDEtLjU3NiwyLDIuNjc1LDIuNjc1LDAsMCwxLTIuMTU5LjYyNiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTM3LjE0NywzMS4wNzRhMy4zMjgsMy4zMjgsMCwwLDAtMi44NzgtMS4zNiw0LjQ0NSw0LjQ0NSwwLDAsMC0yLjEyLjQyMiw2LjE4NSw2LjE4NSwwLDAsMC0xLjE3OC44OTFxLS41NjcuNDcxLTEuMTMyLjg5MWMtLjM3My4yNzgtLjgwOC43NzMtMS4zLjc3NkgyNi43MjdWMTYuNDZhMy4zMzUsMy4zMzUsMCwwLDAtLjM3Ny0xLjUsMS40MzYsMS40MzYsMCwwLDAtMS40MTUtLjc1MUgxOS4yNzdjLS41LDAtLjc1NC4yNTEtLjc1NC44NDRhMS45MDcsMS45MDcsMCwwLDAsLjM3NywxLjEyNiw5LjE0Niw5LjE0NiwwLDAsMCwuOTQzLDEuMTI1LDUuMzQxLDUuMzQxLDAsMCwxLC45NDMsMS4yNjYsMy4yMzYsMy4yMzYsMCwwLDEsLjM3NywxLjU0Nyw0LjQ1NCw0LjQ1NCwwLDAsMS0xLjI3MywzLjE0MSw0LjA0OSw0LjA0OSwwLDAsMS0zLjA2NSwxLjM2LDMuOSwzLjksMCwwLDEtMy4wMTgtMS4zNiw0LjU0Nyw0LjU0NywwLDAsMS0xLjIyNS0zLjE0MSwyLjkzNiwyLjkzNiwwLDAsMSwuNDI0LTEuNTQ3LDEzLjU0OCwxMy41NDgsMCwwLDEsLjktMS4zMTNjLjMxNC0uNDA2LjYyNy0uNzgxLjk0My0xLjEyNWExLjU4OCwxLjU4OCwwLDAsMCwuNDcxLTEuMDc5cTAtLjg0My0xLjAzNy0uODQ0SDUuN2ExLjU4NywxLjU4NywwLDAsMC0xLjIyNi41MTZBMS44MDYsMS44MDYsMCwwLDAsNCwxNS45OTFWMzkuOWExLjgsMS44LDAsMCwwLC40NzEsMS4yNjYsMS41ODMsMS41ODMsMCwwLDAsMS4yMjYuNTE2aDguNDg4Yy42OTEsMCwxLjAzNS4yMzgsMS4wMzcuNzVhMS41NDcsMS41NDcsMCwwLDEtLjQyMi45NDRMMTMuODA3LDQ0LjVhNi41NDksNi41NDksMCwwLDAtLjk5LDEuMjY2LDMuMTE2LDMuMTE2LDAsMCwwLS40MjQsMS42NDEsNC4yMzcsNC4yMzcsMCwwLDAsMS4zNjcsMy40Nyw0Ljc5MSw0Ljc5MSwwLDAsMCw2LjIyNC0uMDQ3LDQuNTE3LDQuNTE3LDAsMCwwLDEuNDQ1LTMuMjgzLDMuNjMxLDMuNjMxLDAsMCwwLS41MTQtMS44ODljLS4yMTUtLjMwNy0uOTc4LTEuMTU4LS45NzgtMS4xNThMMTguOSw0My4zNzNhMS40OTIsMS40OTIsMCwwLDEtLjM3Ny0uOTM4cTAtLjc1Ljg0OC0uNzVoNS42NThxMS4yMjYsMCwxLjctMS41VjM1LjM0MUgyOC4zNWMuNTU3LDAsMS4wNTQuNTE5LDEuNDg5LjhhMTIuMjkxLDEyLjI5MSwwLDAsMSwxLjIyNi44OTFxLjU2NS40NjksMS4xNzkuODlhMy43ODYsMy43ODYsMCwwLDAsMS44MTYuNDIyLDMuMjU2LDMuMjU2LDAsMCwwLDMuMDg3LTEuNDA2LDUuMTE5LDUuMTE5LDAsMCwwLC45OS0zQTQuNzg4LDQuNzg4LDAsMCwwLDM3LjE0NywzMS4wNzRaIi8+PC9zdmc+","category":"Extension Suite - Development Efficiency","categoryDisplayName":"Extension Suite - Development Efficiency","globalAccountId":"2342216e-8a13-4aab-894e-11e5280a90f9","tenantId":"ac38918a-900c-4d3c-92f3-398883d3c5e7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/docs/SAP_MASTER_DATA_INTEGRATION/8ce78b673ef04cc1bcfeb01c93ef7885/0bed505b149b4ec6af24bf503a45708b.html?locale\u003den-US\u0026version\u003dCLOUD"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"cf-eu10-canary"}]},"incidentTrackingComponent":"LOD-MDM-ORC"},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"cias","commercialAppName":"cias","appId":"cias!b74866","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"planDescription":"Plan to use the Cloud Integration Automation Service - UI Application","additionalPlanFeatures":[],"displayName":"Cloud Integration Automation Service","description":"Cloud Integration Automation service provides you a guided workflow to integrate SAP cloud solutions to On-Premise and other SAP Cloud solutions. The guided workflow contains instructions for manual and automated tasks to enable a simpler and faster integration configuration setup","shortDescription":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions","iconBase64":"PHN2ZyBpZD0iY2xvdWQtaW50ZWdyYXRpb24tYXV0b21hdGlvbi1zZXJ2aWNlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTEzLjc1LDQwYTYuNzIzLDYuNzIzLDAsMCwwLDYuNzUsNi43NUgyMlY0OUgyMC41YTguNzMsOC43MywwLDAsMS0zLjUxNi0uNyw5LjE1OCw5LjE1OCwwLDAsMS0yLjg0Ny0xLjkzNEE4Ljk2OCw4Ljk2OCwwLDAsMSwxMi4yLDQzLjQ4LDguNzY3LDguNzY3LDAsMCwxLDExLjUsNDBsLjA3LTEuMTI1TDguOTY5LDQxLjlhMS4xLDEuMSwwLDAsMS0xLjYxNywwLDEuMDI1LDEuMDI1LDAsMCwxLDAtMS41NDZsMy42NTYtNC4yMTlhMi4zODIsMi4zODIsMCwwLDEsMy4yMzQsMGwzLjcyNyw0LjIxOWEuOTY4Ljk2OCwwLDAsMSwwLDEuNTQ2LDEuMDM3LDEuMDM3LDAsMCwxLTEuNjE3LDBMMTMuODIsMzguODc1WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1LjI1LDE2QTYuNzIzLDYuNzIzLDAsMCwwLDM4LjUsOS4yNUgzN1Y3aDEuNWE4LjczLDguNzMsMCwwLDEsMy41MTYuNyw5LjE1OCw5LjE1OCwwLDAsMSwyLjg0NywxLjkzNEE4Ljk2OCw4Ljk2OCwwLDAsMSw0Ni44LDEyLjUyLDguNzY3LDguNzY3LDAsMCwxLDQ3LjUsMTZsLS4wNywxLjEyNSwyLjYtMy4wMjNhMS4xLDEuMSwwLDAsMSwxLjYxNywwLDEuMDI1LDEuMDI1LDAsMCwxLDAsMS41NDZsLTMuNjU2LDQuMjE5YTIuMzgyLDIuMzgyLDAsMCwxLTMuMjM0LDBsLTMuNzI3LTQuMjE5YS45NjguOTY4LDAsMCwxLDAtMS41NDYsMS4wMzcsMS4wMzcsMCwwLDEsMS42MTcsMGwyLjUzMiwzLjAyM1oiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMy4yNSwzMy43NSw0NS43NSw0MGwtMTIuNSw2LjI1VjMzLjc1TTMyLjQwNiwzMWExLjM0OSwxLjM0OSwwLDAsMC0uOTg0LjQyMkExLjQ2MSwxLjQ2MSwwLDAsMCwzMSwzMi41VjQ3LjU5NGExLjMwNywxLjMwNywwLDAsMCwuNDIyLDEuMDMxLDEuNDM0LDEuNDM0LDAsMCwwLC45ODQuMzc1LDEuNjYxLDEuNjYxLDAsMCwwLC43NS0uMTg4TDQ4LjI1LDQxLjI2NmExLjQ0NCwxLjQ0NCwwLDAsMCwwLTIuNTMyTDMzLjE1NiwzMS4xODhhMS42NzQsMS42NzQsMCwwLDAtLjc1LS4xODhaIi8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjcuNTQ0LDE0LjA3MWE0LjgsNC44LDAsMCwwLTcuMTgyLTMuMTExQTYuMDU5LDYuMDU5LDAsMCwwLDE0LjM2OCw3QzcuMzc1LDcsOCwxNC4wNzEsOCwxNC4wNzFBNS41ODIsNS41ODIsMCwwLDAsOS44MDUsMjVIMjUuMTE0QTUuODIxLDUuODIxLDAsMCwwLDMxLDE5LjI2Niw1LjY3NSw1LjY3NSwwLDAsMCwyNy41NDQsMTQuMDcxWm0tMi40Myw4LjM1OEg5LjgwNWEzLjA4MiwzLjA4MiwwLDAsMS0zLjEtMy4wMzUsMy42MzIsMy42MzIsMCwwLDEsMi4xNi0yLjg4YzEuNTc4LS42MjUsMi4wMTktLjM5NCwxLjgzNi0yLjY0OGE1LjE2Miw1LjE2MiwwLDAsMSwxLjA1My0zLjQ0NiwzLjU1NywzLjU1NywwLDAsMSwyLjYxOS0uODQ5LDMuMzQ4LDMuMzQ4LDAsMCwxLDMuNDgzLDIuMzE1Yy45NzksMi40MzksMS43OTMsMi43MDksMy4zNDYsMS40NjFhMi4zNzcsMi4zNzcsMCwwLDEsMS42MjItLjUxLDIuMSwyLjEsMCwwLDEsMi4wNzksMS43Yy4xNTksMS41ODYuMjcsMS40NjYsMS41MTIsMS44NzhhMy4xMjgsMy4xMjgsMCwwLDEsMS44OSwyLjg1NEEzLjE3NywzLjE3NywwLDAsMSwyNS4xMTQsMjIuNDI5WiIvPjwvc3ZnPg\u003d\u003d","globalAccountId":"772a1555-53bf-4bc2-b4ab-fbc18f972b0b","tenantId":"172e334b-4f52-490b-8c3c-c15c775ea815","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"true","propagateLocale":"true","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Cloud%2520Integration%2520Automation%2520Service/Latest/en-US"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"cf-eu10"},{"key":"cf-eu12"}],"CFService":{"name":"cias","description":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions","metadata":{"displayName":"Cloud Integration Automation Service"},"plans":[{"technicalName":"standard","name":"standard","description":"Plan to use the Cloud Integration Automation Service - UI Application","metadata":{"bullets":[]}}]}},"incidentTrackingComponent":"BC-INS-CIT-RT"},{"subscriptionUrl":"https://integration-test-services-4ie3yr1a.content-agent.cfapps.eu12.hana.ondemand.com","subscribedTenantId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscribedSubaccountId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscriptionGUID":"60c44e9d-2696-4b8f-91ea-9efcd3c23ffb","state":"SUBSCRIBED","authenticationProvider":"XSUAA","appName":"content-agent-ui","commercialAppName":"content-agent-ui","appId":"cas-ui-xsuaa-prod!t216","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Content Agent","description":"Content Agent UI","category":"Integration Suite","categoryDisplayName":"Integration Suite","globalAccountId":"d39f31d1-c84d-448e-bc18-d3571e6e2d6c","tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","quota":1,"labels":{"test":["label"]},"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Integration Suite"}]},"modifiedDate":"Jul 11, 2023, 5:43:09 AM","createdDate":"Jul 11, 2023, 5:43:06 AM"},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"feature-flags-dashboard","commercialAppName":"feature-flags-dashboard","appId":"feature-flags!b18","planName":"dashboard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Feature Flags","description":"View and manage Feature Flags Service instances. Get information about flags status, usage and history. Also perform tasks, such as enabling, disabling, adding and removing flags.","category":"Foundation / Cross Services","categoryDisplayName":"Foundation / Cross Services","globalAccountId":"1aa6ae00-fe52-1993-65ff-3613845a7961","tenantId":"fflags-cf-eu12","quota":1,"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Foundation / Cross Services"}]}},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"auditlog-viewer","commercialAppName":"auditlog-viewer","appId":"auditlog-viewer!t49","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Audit Log Viewer Service","description":"SAP Audit Log Viewer service for SAP BTP helps to view and manage audit logs.","shortDescription":"View and manage audit logs.","iconBase64":"PHN2ZyBpZD0iYXVkaXRsb2ctbWFuYWdlbWVudCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNTYgNTYiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojNWE3YTk0O30uY2xzLTJ7ZmlsbDojMDA5MmQxO308L3N0eWxlPjwvZGVmcz48dGl0bGU+YXVkaXRsb2ctbWFuYWdlbWVudDwvdGl0bGU+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDAuNjA4LDEwLjg0M0EyLjk3LDIuOTcsMCwwLDAsMzguNSwxMEgzMi4yMThhNS4yNzYsNS4yNzYsMCwwLDAtMS4zNTktMS45MjEsNC4xLDQuMSwwLDAsMC0yLjItLjk4NSw1Ljg1Miw1Ljg1MiwwLDAsMC0yLjEwOS0yLjI0OUE1LjY2MSw1LjY2MSwwLDAsMCwyMy41LDRhNS45LDUuOSwwLDAsMC0zLjA5My44NDQsNS43MjEsNS43MjEsMCwwLDAtMi4xNTYsMi4yNDksNC4yNzEsNC4yNzEsMCwwLDAtMi4xNTYuOTg1QTQuMjIyLDQuMjIyLDAsMCwwLDE0Ljc4MywxMEg4LjVhMi44ODgsMi44ODgsMCwwLDAtMywzVjQ5YTIuODg4LDIuODg4LDAsMCwwLDMsM2gyN1Y0OUg4LjVWMTNoNi4yODFhNi41MTYsNi41MTYsMCwwLDAsLjkzNywxLjg3NUEzLjAxOCwzLjAxOCwwLDAsMCwxOC4xNTcsMTZIMjguODQ0YTIuOTMsMi45MywwLDAsMCwyLjM0My0xLjEyNUE0LjY0OCw0LjY0OCwwLDAsMCwzMi4yMTgsMTNIMzguNVYyNWgzVjEzQTIuODQ2LDIuODQ2LDAsMCwwLDQwLjYwOCwxMC44NDNaTTI4LDEzSDE5YTEuMzI1LDEuMzI1LDAsMCwxLTEuNS0xLjVBMS4zMjUsMS4zMjUsMCwwLDEsMTksMTBoMS41YTIuODg2LDIuODg2LDAsMCwxLDMtMywyLjk3LDIuOTcsMCwwLDEsMi4xMS44NDNBMi44NTEsMi44NTEsMCwwLDEsMjYuNSwxMEgyOGExLjMyNywxLjMyNywwLDAsMSwxLjUsMS41QTEuMzI2LDEuMzI2LDAsMCwxLDI4LDEzWiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTM3LjkyOCwzMy44NzdjLS4xMDYtLjIzLS4yMzEtLjQ2OS0uMzcyLS43MTdsMS4yNzUtMS4yNzRMMzcuNjEsMzAuNjY1bC0xLjI3NSwxLjI3NEE2LjQ2Myw2LjQ2MywwLDAsMCwzNC44LDMxLjNWMjkuNUgzMy4xdjEuOGE3Ljc0Nyw3Ljc0NywwLDAsMC0xLjQzNC42MzdsLTEuMzI3LTEuMjc0LTEuMTY4LDEuMjIxLDEuMjc0LDEuMjc0YTMuMzc1LDMuMzc1LDAsMCwwLS42MzcsMS40ODdIMjh2MS43aDEuOGEzLjUyLDMuNTIsMCwwLDAsLjYzNywxLjQ4NkwyOS4xNjgsMzkuMTZsMS4xNjgsMS4xNjgsMS4zMjctMS4yNzRhMy41MDksMy41MDksMCwwLDAsMS40MzQuNjM2VjQxLjVoMS43VjM5LjY5YTQuNDU0LDQuNDU0LDAsMCwwLDEuNTM5LS42MzZsMS4yNzUsMS4yNzQsMS4yMjEtMS4xNjgtMS4yNzUtMS4zMjhhNS44NjksNS44NjksMCwwLDAsLjYzOC0xLjQ4Nkg0MHYtMS43aC0xLjhBNC41MDgsNC41MDgsMCwwLDAsMzcuOTI4LDMzLjg3N1pNMzUuOCwzNy4zMjhhMi41LDIuNSwwLDAsMS0zLjYxLDAsMi41NDMsMi41NDMsMCwwLDEtLjc0My0xLjgzMiwyLjM2OSwyLjM2OSwwLDAsMSwuNzQzLTEuNzc4LDIuNjMsMi42MywwLDAsMSwzLjYxLDAsMi4zNzQsMi4zNzQsMCwwLDEsLjc0NCwxLjc3OEEyLjU0OCwyLjU0OCwwLDAsMSwzNS44LDM3LjMyOFoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMTUuMDg2IDIyLjU4MiAxMy4yNTQgMjAuNzUgMTEuNTAyIDIyLjU4MiAxNS4wODYgMjYuMTY1IDE2LjkxNyAyNC4zMzQgMjAuNTAxIDIwLjc1IDE4LjY2OSAxOC45OTggMTUuMDg2IDIyLjU4MiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxNS4wODYgMzQuNTg2IDEzLjI1NCAzMi43NTQgMTEuNTAyIDM0LjU4NiAxNS4wODYgMzguMTcgMTYuOTE3IDM2LjMzOCAyMC41MDEgMzIuNzU0IDE4LjY2OSAzMS4wMDIgMTUuMDg2IDM0LjU4NiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTQ5LjkzNyw0OS4zODRsLTcuNjYtNy42NmExMC4xMTIsMTAuMTEyLDAsMCwwLDEuNTg4LTIuODk1LDEwLjMwOCwxMC4zMDgsMCwwLDAtLjI4LTcuNDI3LDEwLjU0OSwxMC41NDksMCwwLDAtNS41NTgtNS41NTgsMTAuMjQsMTAuMjQsMCwwLDAtOC4xMjgsMEExMC41NDksMTAuNTQ5LDAsMCwwLDI0LjM0MSwzMS40YTEwLjIzNywxMC4yMzcsMCwwLDAsMCw4LjEyN0ExMC41NDksMTAuNTQ5LDAsMCwwLDI5LjksNDUuMDg3YTkuOTg3LDkuOTg3LDAsMCwwLDQuMDY0Ljg0MSwxMC4zMjEsMTAuMzIxLDAsMCwwLDYuMjU5LTIuMDU1bDcuNjYsNy42NmExLjM2NCwxLjM2NCwwLDAsMCwyLjA1NSwwQTEuMzEsMS4zMSwwLDAsMCw0OS45MzcsNDkuMzg0Wm0tMTAuNy04LjY0MWE3LjQ0MSw3LjQ0MSwwLDAsMS0xMC41NTYsMCw3LjQ0Myw3LjQ0MywwLDAsMSwwLTEwLjU1Niw3LjQ0Myw3LjQ0MywwLDAsMSwxMC41NTYsMCw3LjQ0Myw3LjQ0MywwLDAsMSwwLDEwLjU1NloiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yNSwyMy41aDlhMS41LDEuNSwwLDEsMCwwLTNIMjVhMS41LDEuNSwwLDEsMCwwLDNaIi8+PC9zdmc+","globalAccountId":"0b50832a-69bb-473e-b2ba-f37300d545db","tenantId":"cf-eu12-auditlog-viewer","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/e3baa5f1a0c64c44aac8ab3ea3d1b500.html"}],"serviceCategories":[{"name":"Data and Analytics"}],"regionInformation":[{"key":"cf-eu10-canary"}]},"incidentTrackingComponent":"BC-NEO-AUDITLOG"},{"subscriptionUrl":"https://integration-test-services-4ie3yr1a.dt.cpp.cfapps.eu12.hana.ondemand.com","subscribedTenantId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscribedSubaccountId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscriptionGUID":"f1a85532-2d3b-40fd-bd30-d89242684c9e","state":"SUBSCRIBED","authenticationProvider":"XSUAA","appName":"PortalApplication","commercialAppName":"PortalApplication","appId":"portal-cf-dt-approuter!t164","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Cloud Portal Service","description":"SAP Cloud Portal service lets you build digital experience portals for employees, customers, and partners. You can streamline access to business data so that your employees can execute their daily business tasks securely, from any device.","shortDescription":"Create role based, multi-channel sites to access business apps and content.","iconBase64":"PHN2ZyBpZD0icG9ydGFsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5wb3J0YWw8L3RpdGxlPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1Ljg0LDIzLjk2MmE4LjQ4OSw4LjQ4OSwwLDAsMC0xMi43ODMtNS43MTNBMTAuNzQ3LDEwLjc0NywwLDAsMCwyMi40MSwxMUMxMCwxMSwxMS4wOSwyMy45ODgsMTEuMDksMjMuOTg4QTEwLjI1NywxMC4yNTcsMCwwLDAsMTQuMjg1LDQ0SDIyVjI5aDlWNDRINDEuNWExMC40ODYsMTAuNDg2LDAsMCwwLDQuMzQtMjAuMDM4Wk00MS41LDQxSDM0VjI2SDE5VjQxSDE0LjI4NWE3LjI1Nyw3LjI1NywwLDAsMS0yLjI1OC0xNC4xNjJsMi4yNzktLjc2OC0uMjMyLTIuMzg5YzAtLjA0Mi0uMzc5LTQuMjM3LDIuMDEtNy4wMTNDMTcuNDYxLDE1LjA2OCwxOSwxNCwyMi40NjUsMTRjMi41MzUsMCw2LjQxNywyLjE4Niw3Ljk5NCw1LjMzOWwxLjE3NiwyLjg3MSwyLjQyNC0xLjMxOEE3LjYsNy42LDAsMCwxLDM3LjQ0OSwyMGE1LjU0Niw1LjU0NiwwLDAsMSw1LjQ0Myw0LjUxOGwuMjg4LDEuNTI4LDEuNDE1LjY0NkE3LjQ4Niw3LjQ4NiwwLDAsMSw0MS41LDQxWiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxOS4wMDYgNDQgMjIuMDA2IDQ0IDIyLjAwNiAyOSAzMS4wMDYgMjkgMzEuMDA2IDQ0IDM0LjAwNiA0NCAzNC4wMDYgMjYgMTkuMDA2IDI2IDE5LjAwNiA0NCIvPjwvc3ZnPg\u003d\u003d","category":"SaaS Applications","categoryDisplayName":"SaaS Applications","globalAccountId":"SA0225001210","tenantId":"6897360f-7e35-411b-87e7-f3b501f4f9a7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","inventoryIds":[{"key":"SERVICE-2"},{"key":"SERVICE-134"}],"serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Portal_Service/1.0/en-US"}],"serviceCategories":[{"name":"Application Development and Automation"}],"regionInformation":[{"key":"cf-eu10-canary"},{"key":"cf-eu10"},{"key":"neo-eu1-canary"}]},"incidentTrackingComponent":"EP-CPP-OPS","modifiedDate":"Jul 11, 2023, 6:24:52 AM","createdDate":"Jul 11, 2023, 6:24:37 AM"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:09 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - de141465-114d-40de-65ca-0e24a0c2acf9
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 444.0147ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 175dae15-607a-e63d-f567-9ee004200663
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:10 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 72fd1881-abfb-4d64-576b-2e060c069626
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 381.6492ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - d0974504-837b-d465-313a-35cb91f3d1a9
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Tue, 11 Jul 2023 06:37:10 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - f032ec2d-77a6-4d51-7089-2c2b721bde76
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 315.6278ms
+    - id: 14
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - d0974504-837b-d465-313a-35cb91f3d1a9
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"applications":[{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"mdo-one-mds-master","commercialAppName":"mdo-one-mds-master","appId":"mdo-one-mds-master!t46510","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Master Data Integration (Orchestration)","description":"Master data application that allows master data replication according to predetermined master data distribution models. SAP Master Data Orchestration can only be used in combination with the SAP Master Data Integration service.","shortDescription":"Orchestrate master data distribution","iconBase64":"PHN2ZyBpZD0icGxhY2Vob2xkZXIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDU2IDU2Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzA1M2I3MDt9LmNscy0ye2ZpbGw6IzBhNmVkMTt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPnBsYWNlaG9sZGVyPC90aXRsZT48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik00Ni45NTMsMjAuNTg4YTQuMzYzLDQuMzYzLDAsMCwwLTEuODM3LS40NTksMy4yOTEsMy4yOTEsMCwwLDAtMy40LDMuMzc2LDQuMDg0LDQuMDg0LDAsMCwwLC45LDIuNjI1LDMuMDExLDMuMDExLDAsMCwwLDIuNSwxLjEyNiwzLjA4NSwzLjA4NSwwLDAsMCwxLjQ2Mi0uMzc1LDcuNTEyLDcuNTEyLDAsMCwwLDEuMzItLjg5MSwxMC4xMzUsMTAuMTM1LDAsMCwxLDEuMjI2LS44OTEsMi4yNywyLjI3LDAsMCwxLDEuMTc5LS4zNzVBMS41LDEuNSwwLDAsMSw1MiwyNi40MTJWMzkuMDcxYTIuODQzLDIuODQzLDAsMCwxLS41NzYsMiwyLjkyNiwyLjkyNiwwLDAsMS0yLjE1OS42MjZxLTIuOTIzLDAtNC4zODUuMDQ3dC0yLjEyMi4wNDdINDEuOTFhMy4zMjEsMy4zMjEsMCwwLDAsLjYuNjQ0LDUuNzE3LDUuNzE3LDAsMCwxLDIuMDc0LDQuMjIsNS4wNTQsNS4wNTQsMCwwLDEtMS42NSwzLjc1MUE1LjMzMSw1LjMzMSwwLDAsMSwzOS4xMTgsNTJhNS42LDUuNiwwLDAsMS00LjA1NS0xLjU0Nyw1LjA3MSw1LjA3MSwwLDAsMS0xLjYtMy44LDQuODYyLDQuODYyLDAsMCwxLC41MTktMi4zLDExLjQwNywxMS40MDcsMCwwLDEsMS41MTYtMS45NywyLjMzMywyLjMzMywwLDAsMCwuNDc1LS42OUgyOC4zM2ExLjM5NCwxLjM5NCwwLDAsMS0xLjA4NC0uNDY5LDIuMDExLDIuMDExLDAsMCwxLS41MTktMS4wMzJWMTUuOTA5YTEuOCwxLjgsMCwwLDEsLjQyNC0xLjE3MiwxLjQ0NCwxLjQ0NCwwLDAsMSwxLjE3OS0uNTE2aDcuNzMzYTEuOTQ5LDEuOTQ5LDAsMCwwLS4zNzctLjU2MmwtLjgtMS4xNzFhOC43ODgsOC43ODgsMCwwLDEtLjg0Ny0xLjUsNC43ODMsNC43ODMsMCwwLDEtLjQwNi0xLjY3NkE1LjM0OCw1LjM0OCwwLDAsMSwzOS4wODEsNGE1LjU1Miw1LjU1MiwwLDAsMSwzLjc5LDEuNTUzQTQuNjM1LDQuNjM1LDAsMCwxLDQ0LjU1LDkuMzQ1Yy0uMDI4LDEuNjg4LTIuMDIzLDQuMTI1LTIuMjQxLDQuMzc1YTEuNTc2LDEuNTc2LDAsMCwwLS4zLjVoNy4yNjFBMi42NSwyLjY1LDAsMCwxLDUyLDE2Ljg0N3Y0LjEyNnEwLDEuNzgyLTEuNywxLjc4MmExLjc0MywxLjc0MywwLDAsMS0xLjMxOS0uNTQ5QTEzLjE1MiwxMy4xNTIsMCwwLDAsNDYuOTUzLDIwLjU4OFpNMjguMzMsMzkuMDcxYS41ODIuNTgyLDAsMCwwLC42Ni42NTdoNy4xNjdhMS41NzksMS41NzksMCwwLDEsMS43OTIsMS43ODEsMi4yMzgsMi4yMzgsMCwwLDEtLjM4NywxLjI1NGMtLjI4My40MDgtLjU4Mi44MTMtLjksMS4yMTlzLS42MTMuODMtLjksMS4yNjZhMi41NDYsMi41NDYsMCwwLDAtLjQyNCwxLjQwNywzLjExNSwzLjExNSwwLDAsMCwxLjEzMSwyLjUzMiw0LjAyMiw0LjAyMiwwLDAsMCwyLjY0MS45MzgsMy43NzYsMy43NzYsMCwwLDAsMi40NTItLjkzOEEzLjExNSwzLjExNSwwLDAsMCw0Mi43LDQ2LjY1NWEyLjU0NiwyLjU0NiwwLDAsMC0uNDI0LTEuNDA3LDEyLjUxMywxMi41MTMsMCwwLDAtLjk0My0xLjI2NnEtLjUxOS0uNjA5LS45NDMtMS4xNzJhMi4yNjEsMi4yNjEsMCwwLDEtLjQ2Mi0xLjMsMS42MTQsMS42MTQsMCwwLDEsLjU2Ni0xLjMxMywyLjAwNiwyLjAwNiwwLDAsMSwxLjMyLS40NjhoNy40NXEuOTQyLDAsLjk0My0uNjU3VjI2LjUwNmExLjYwOSwxLjYwOSwwLDAsMC0uNzA3LjQyMnEtLjUxOS40MjEtMS4xNzkuODlhMTEuMDY5LDExLjA2OSwwLDAsMS0xLjUwOS44OTEsMy43NywzLjc3LDAsMCwxLTEuNy40MjIsNS40NSw1LjQ1LDAsMCwxLTMuNjc4LTEuNSw0LjI1LDQuMjUsMCwwLDEtMS4yMjYtMS44NzYsNy4wNTMsNy4wNTMsMCwwLDEtLjM3Ny0yLjI1LDUuMTY2LDUuMTY2LDAsMCwxLDEuNi0zLjcsNS4wMDksNS4wMDksMCwwLDEsMy42NzgtMS42NDEsNC44ODQsNC44ODQsMCwwLDEsMi4zNTcuNTE1QTcuNTg3LDcuNTg3LDAsMCwxLDQ5LjUxOCwyMC4yYy41MDYuNTg4Ljc4NS42MjQuNzg1LjYyNFYxNi44NDdhLjU0NC41NDQsMCwwLDAtLjMzMS0uNDY5LDEuNDIyLDEuNDIyLDAsMCwwLS43MDctLjE4N2gtNy40NWEyLjE0NywyLjE0NywwLDAsMS0xLjMyLS40MjIsMS41ODcsMS41ODcsMCwwLDEtLjU2Ni0xLjM2LDIuMDY3LDIuMDY3LDAsMCwxLC40MjUtMS4xNzJxLjQyNS0uNjA5Ljk0My0xLjIxOWExMi4yMjIsMTIuMjIyLDAsMCwwLC45NDMtMS4yNjYsMi41NDEsMi41NDEsMCwwLDAsLjQyNC0xLjQwNywzLjExOCwzLjExOCwwLDAsMC0xLjEzMi0yLjUzMiwzLjc3MSwzLjc3MSwwLDAsMC0yLjQ1MS0uOTM4LDMuODM5LDMuODM5LDAsMCwwLTIuNTk0LjkzOEEzLjE3OCwzLjE3OCwwLDAsMCwzNS40LDkuMzQ1YTIuNzc2LDIuNzc2LDAsMCwwLC40MjQsMS40NTQsMTAuMDM3LDEwLjAzNywwLDAsMCwuOSwxLjI2NWwuODQ5LDEuMjJhMi45MDksMi45MDksMCwwLDEsLjQ3MSwxLjEyNSwxLjYyNSwxLjYyNSwwLDAsMS0uNTE4LDEuMzYsMS45NTYsMS45NTYsMCwwLDEtMS4yNzQuNDIySDI5LjA4NHEtLjc1NSwwLS43NTQuNjU2Wm0yMy42NywwYTIuNywyLjcsMCwwLDEtLjU3NiwyLDIuNjc1LDIuNjc1LDAsMCwxLTIuMTU5LjYyNiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTM3LjE0NywzMS4wNzRhMy4zMjgsMy4zMjgsMCwwLDAtMi44NzgtMS4zNiw0LjQ0NSw0LjQ0NSwwLDAsMC0yLjEyLjQyMiw2LjE4NSw2LjE4NSwwLDAsMC0xLjE3OC44OTFxLS41NjcuNDcxLTEuMTMyLjg5MWMtLjM3My4yNzgtLjgwOC43NzMtMS4zLjc3NkgyNi43MjdWMTYuNDZhMy4zMzUsMy4zMzUsMCwwLDAtLjM3Ny0xLjUsMS40MzYsMS40MzYsMCwwLDAtMS40MTUtLjc1MUgxOS4yNzdjLS41LDAtLjc1NC4yNTEtLjc1NC44NDRhMS45MDcsMS45MDcsMCwwLDAsLjM3NywxLjEyNiw5LjE0Niw5LjE0NiwwLDAsMCwuOTQzLDEuMTI1LDUuMzQxLDUuMzQxLDAsMCwxLC45NDMsMS4yNjYsMy4yMzYsMy4yMzYsMCwwLDEsLjM3NywxLjU0Nyw0LjQ1NCw0LjQ1NCwwLDAsMS0xLjI3MywzLjE0MSw0LjA0OSw0LjA0OSwwLDAsMS0zLjA2NSwxLjM2LDMuOSwzLjksMCwwLDEtMy4wMTgtMS4zNiw0LjU0Nyw0LjU0NywwLDAsMS0xLjIyNS0zLjE0MSwyLjkzNiwyLjkzNiwwLDAsMSwuNDI0LTEuNTQ3LDEzLjU0OCwxMy41NDgsMCwwLDEsLjktMS4zMTNjLjMxNC0uNDA2LjYyNy0uNzgxLjk0My0xLjEyNWExLjU4OCwxLjU4OCwwLDAsMCwuNDcxLTEuMDc5cTAtLjg0My0xLjAzNy0uODQ0SDUuN2ExLjU4NywxLjU4NywwLDAsMC0xLjIyNi41MTZBMS44MDYsMS44MDYsMCwwLDAsNCwxNS45OTFWMzkuOWExLjgsMS44LDAsMCwwLC40NzEsMS4yNjYsMS41ODMsMS41ODMsMCwwLDAsMS4yMjYuNTE2aDguNDg4Yy42OTEsMCwxLjAzNS4yMzgsMS4wMzcuNzVhMS41NDcsMS41NDcsMCwwLDEtLjQyMi45NDRMMTMuODA3LDQ0LjVhNi41NDksNi41NDksMCwwLDAtLjk5LDEuMjY2LDMuMTE2LDMuMTE2LDAsMCwwLS40MjQsMS42NDEsNC4yMzcsNC4yMzcsMCwwLDAsMS4zNjcsMy40Nyw0Ljc5MSw0Ljc5MSwwLDAsMCw2LjIyNC0uMDQ3LDQuNTE3LDQuNTE3LDAsMCwwLDEuNDQ1LTMuMjgzLDMuNjMxLDMuNjMxLDAsMCwwLS41MTQtMS44ODljLS4yMTUtLjMwNy0uOTc4LTEuMTU4LS45NzgtMS4xNThMMTguOSw0My4zNzNhMS40OTIsMS40OTIsMCwwLDEtLjM3Ny0uOTM4cTAtLjc1Ljg0OC0uNzVoNS42NThxMS4yMjYsMCwxLjctMS41VjM1LjM0MUgyOC4zNWMuNTU3LDAsMS4wNTQuNTE5LDEuNDg5LjhhMTIuMjkxLDEyLjI5MSwwLDAsMSwxLjIyNi44OTFxLjU2NS40NjksMS4xNzkuODlhMy43ODYsMy43ODYsMCwwLDAsMS44MTYuNDIyLDMuMjU2LDMuMjU2LDAsMCwwLDMuMDg3LTEuNDA2LDUuMTE5LDUuMTE5LDAsMCwwLC45OS0zQTQuNzg4LDQuNzg4LDAsMCwwLDM3LjE0NywzMS4wNzRaIi8+PC9zdmc+","category":"Extension Suite - Development Efficiency","categoryDisplayName":"Extension Suite - Development Efficiency","globalAccountId":"2342216e-8a13-4aab-894e-11e5280a90f9","tenantId":"ac38918a-900c-4d3c-92f3-398883d3c5e7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/docs/SAP_MASTER_DATA_INTEGRATION/8ce78b673ef04cc1bcfeb01c93ef7885/0bed505b149b4ec6af24bf503a45708b.html?locale\u003den-US\u0026version\u003dCLOUD"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"cf-eu10-canary"}]},"incidentTrackingComponent":"LOD-MDM-ORC"},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"cias","commercialAppName":"cias","appId":"cias!b74866","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"planDescription":"Plan to use the Cloud Integration Automation Service - UI Application","additionalPlanFeatures":[],"displayName":"Cloud Integration Automation Service","description":"Cloud Integration Automation service provides you a guided workflow to integrate SAP cloud solutions to On-Premise and other SAP Cloud solutions. The guided workflow contains instructions for manual and automated tasks to enable a simpler and faster integration configuration setup","shortDescription":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions","iconBase64":"PHN2ZyBpZD0iY2xvdWQtaW50ZWdyYXRpb24tYXV0b21hdGlvbi1zZXJ2aWNlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTEzLjc1LDQwYTYuNzIzLDYuNzIzLDAsMCwwLDYuNzUsNi43NUgyMlY0OUgyMC41YTguNzMsOC43MywwLDAsMS0zLjUxNi0uNyw5LjE1OCw5LjE1OCwwLDAsMS0yLjg0Ny0xLjkzNEE4Ljk2OCw4Ljk2OCwwLDAsMSwxMi4yLDQzLjQ4LDguNzY3LDguNzY3LDAsMCwxLDExLjUsNDBsLjA3LTEuMTI1TDguOTY5LDQxLjlhMS4xLDEuMSwwLDAsMS0xLjYxNywwLDEuMDI1LDEuMDI1LDAsMCwxLDAtMS41NDZsMy42NTYtNC4yMTlhMi4zODIsMi4zODIsMCwwLDEsMy4yMzQsMGwzLjcyNyw0LjIxOWEuOTY4Ljk2OCwwLDAsMSwwLDEuNTQ2LDEuMDM3LDEuMDM3LDAsMCwxLTEuNjE3LDBMMTMuODIsMzguODc1WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1LjI1LDE2QTYuNzIzLDYuNzIzLDAsMCwwLDM4LjUsOS4yNUgzN1Y3aDEuNWE4LjczLDguNzMsMCwwLDEsMy41MTYuNyw5LjE1OCw5LjE1OCwwLDAsMSwyLjg0NywxLjkzNEE4Ljk2OCw4Ljk2OCwwLDAsMSw0Ni44LDEyLjUyLDguNzY3LDguNzY3LDAsMCwxLDQ3LjUsMTZsLS4wNywxLjEyNSwyLjYtMy4wMjNhMS4xLDEuMSwwLDAsMSwxLjYxNywwLDEuMDI1LDEuMDI1LDAsMCwxLDAsMS41NDZsLTMuNjU2LDQuMjE5YTIuMzgyLDIuMzgyLDAsMCwxLTMuMjM0LDBsLTMuNzI3LTQuMjE5YS45NjguOTY4LDAsMCwxLDAtMS41NDYsMS4wMzcsMS4wMzcsMCwwLDEsMS42MTcsMGwyLjUzMiwzLjAyM1oiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMy4yNSwzMy43NSw0NS43NSw0MGwtMTIuNSw2LjI1VjMzLjc1TTMyLjQwNiwzMWExLjM0OSwxLjM0OSwwLDAsMC0uOTg0LjQyMkExLjQ2MSwxLjQ2MSwwLDAsMCwzMSwzMi41VjQ3LjU5NGExLjMwNywxLjMwNywwLDAsMCwuNDIyLDEuMDMxLDEuNDM0LDEuNDM0LDAsMCwwLC45ODQuMzc1LDEuNjYxLDEuNjYxLDAsMCwwLC43NS0uMTg4TDQ4LjI1LDQxLjI2NmExLjQ0NCwxLjQ0NCwwLDAsMCwwLTIuNTMyTDMzLjE1NiwzMS4xODhhMS42NzQsMS42NzQsMCwwLDAtLjc1LS4xODhaIi8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjcuNTQ0LDE0LjA3MWE0LjgsNC44LDAsMCwwLTcuMTgyLTMuMTExQTYuMDU5LDYuMDU5LDAsMCwwLDE0LjM2OCw3QzcuMzc1LDcsOCwxNC4wNzEsOCwxNC4wNzFBNS41ODIsNS41ODIsMCwwLDAsOS44MDUsMjVIMjUuMTE0QTUuODIxLDUuODIxLDAsMCwwLDMxLDE5LjI2Niw1LjY3NSw1LjY3NSwwLDAsMCwyNy41NDQsMTQuMDcxWm0tMi40Myw4LjM1OEg5LjgwNWEzLjA4MiwzLjA4MiwwLDAsMS0zLjEtMy4wMzUsMy42MzIsMy42MzIsMCwwLDEsMi4xNi0yLjg4YzEuNTc4LS42MjUsMi4wMTktLjM5NCwxLjgzNi0yLjY0OGE1LjE2Miw1LjE2MiwwLDAsMSwxLjA1My0zLjQ0NiwzLjU1NywzLjU1NywwLDAsMSwyLjYxOS0uODQ5LDMuMzQ4LDMuMzQ4LDAsMCwxLDMuNDgzLDIuMzE1Yy45NzksMi40MzksMS43OTMsMi43MDksMy4zNDYsMS40NjFhMi4zNzcsMi4zNzcsMCwwLDEsMS42MjItLjUxLDIuMSwyLjEsMCwwLDEsMi4wNzksMS43Yy4xNTksMS41ODYuMjcsMS40NjYsMS41MTIsMS44NzhhMy4xMjgsMy4xMjgsMCwwLDEsMS44OSwyLjg1NEEzLjE3NywzLjE3NywwLDAsMSwyNS4xMTQsMjIuNDI5WiIvPjwvc3ZnPg\u003d\u003d","globalAccountId":"772a1555-53bf-4bc2-b4ab-fbc18f972b0b","tenantId":"172e334b-4f52-490b-8c3c-c15c775ea815","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"true","propagateLocale":"true","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Cloud%2520Integration%2520Automation%2520Service/Latest/en-US"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"cf-eu10"},{"key":"cf-eu12"}],"CFService":{"name":"cias","description":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions","metadata":{"displayName":"Cloud Integration Automation Service"},"plans":[{"technicalName":"standard","name":"standard","description":"Plan to use the Cloud Integration Automation Service - UI Application","metadata":{"bullets":[]}}]}},"incidentTrackingComponent":"BC-INS-CIT-RT"},{"subscriptionUrl":"https://integration-test-services-4ie3yr1a.content-agent.cfapps.eu12.hana.ondemand.com","subscribedTenantId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscribedSubaccountId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscriptionGUID":"60c44e9d-2696-4b8f-91ea-9efcd3c23ffb","state":"SUBSCRIBED","authenticationProvider":"XSUAA","appName":"content-agent-ui","commercialAppName":"content-agent-ui","appId":"cas-ui-xsuaa-prod!t216","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Content Agent","description":"Content Agent UI","category":"Integration Suite","categoryDisplayName":"Integration Suite","globalAccountId":"d39f31d1-c84d-448e-bc18-d3571e6e2d6c","tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","quota":1,"labels":{"test":["label"]},"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Integration Suite"}]},"modifiedDate":"Jul 11, 2023, 5:43:09 AM","createdDate":"Jul 11, 2023, 5:43:06 AM"},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"feature-flags-dashboard","commercialAppName":"feature-flags-dashboard","appId":"feature-flags!b18","planName":"dashboard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Feature Flags","description":"View and manage Feature Flags Service instances. Get information about flags status, usage and history. Also perform tasks, such as enabling, disabling, adding and removing flags.","category":"Foundation / Cross Services","categoryDisplayName":"Foundation / Cross Services","globalAccountId":"1aa6ae00-fe52-1993-65ff-3613845a7961","tenantId":"fflags-cf-eu12","quota":1,"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Foundation / Cross Services"}]}},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"auditlog-viewer","commercialAppName":"auditlog-viewer","appId":"auditlog-viewer!t49","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Audit Log Viewer Service","description":"SAP Audit Log Viewer service for SAP BTP helps to view and manage audit logs.","shortDescription":"View and manage audit logs.","iconBase64":"PHN2ZyBpZD0iYXVkaXRsb2ctbWFuYWdlbWVudCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNTYgNTYiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojNWE3YTk0O30uY2xzLTJ7ZmlsbDojMDA5MmQxO308L3N0eWxlPjwvZGVmcz48dGl0bGU+YXVkaXRsb2ctbWFuYWdlbWVudDwvdGl0bGU+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDAuNjA4LDEwLjg0M0EyLjk3LDIuOTcsMCwwLDAsMzguNSwxMEgzMi4yMThhNS4yNzYsNS4yNzYsMCwwLDAtMS4zNTktMS45MjEsNC4xLDQuMSwwLDAsMC0yLjItLjk4NSw1Ljg1Miw1Ljg1MiwwLDAsMC0yLjEwOS0yLjI0OUE1LjY2MSw1LjY2MSwwLDAsMCwyMy41LDRhNS45LDUuOSwwLDAsMC0zLjA5My44NDQsNS43MjEsNS43MjEsMCwwLDAtMi4xNTYsMi4yNDksNC4yNzEsNC4yNzEsMCwwLDAtMi4xNTYuOTg1QTQuMjIyLDQuMjIyLDAsMCwwLDE0Ljc4MywxMEg4LjVhMi44ODgsMi44ODgsMCwwLDAtMywzVjQ5YTIuODg4LDIuODg4LDAsMCwwLDMsM2gyN1Y0OUg4LjVWMTNoNi4yODFhNi41MTYsNi41MTYsMCwwLDAsLjkzNywxLjg3NUEzLjAxOCwzLjAxOCwwLDAsMCwxOC4xNTcsMTZIMjguODQ0YTIuOTMsMi45MywwLDAsMCwyLjM0My0xLjEyNUE0LjY0OCw0LjY0OCwwLDAsMCwzMi4yMTgsMTNIMzguNVYyNWgzVjEzQTIuODQ2LDIuODQ2LDAsMCwwLDQwLjYwOCwxMC44NDNaTTI4LDEzSDE5YTEuMzI1LDEuMzI1LDAsMCwxLTEuNS0xLjVBMS4zMjUsMS4zMjUsMCwwLDEsMTksMTBoMS41YTIuODg2LDIuODg2LDAsMCwxLDMtMywyLjk3LDIuOTcsMCwwLDEsMi4xMS44NDNBMi44NTEsMi44NTEsMCwwLDEsMjYuNSwxMEgyOGExLjMyNywxLjMyNywwLDAsMSwxLjUsMS41QTEuMzI2LDEuMzI2LDAsMCwxLDI4LDEzWiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTM3LjkyOCwzMy44NzdjLS4xMDYtLjIzLS4yMzEtLjQ2OS0uMzcyLS43MTdsMS4yNzUtMS4yNzRMMzcuNjEsMzAuNjY1bC0xLjI3NSwxLjI3NEE2LjQ2Myw2LjQ2MywwLDAsMCwzNC44LDMxLjNWMjkuNUgzMy4xdjEuOGE3Ljc0Nyw3Ljc0NywwLDAsMC0xLjQzNC42MzdsLTEuMzI3LTEuMjc0LTEuMTY4LDEuMjIxLDEuMjc0LDEuMjc0YTMuMzc1LDMuMzc1LDAsMCwwLS42MzcsMS40ODdIMjh2MS43aDEuOGEzLjUyLDMuNTIsMCwwLDAsLjYzNywxLjQ4NkwyOS4xNjgsMzkuMTZsMS4xNjgsMS4xNjgsMS4zMjctMS4yNzRhMy41MDksMy41MDksMCwwLDAsMS40MzQuNjM2VjQxLjVoMS43VjM5LjY5YTQuNDU0LDQuNDU0LDAsMCwwLDEuNTM5LS42MzZsMS4yNzUsMS4yNzQsMS4yMjEtMS4xNjgtMS4yNzUtMS4zMjhhNS44NjksNS44NjksMCwwLDAsLjYzOC0xLjQ4Nkg0MHYtMS43aC0xLjhBNC41MDgsNC41MDgsMCwwLDAsMzcuOTI4LDMzLjg3N1pNMzUuOCwzNy4zMjhhMi41LDIuNSwwLDAsMS0zLjYxLDAsMi41NDMsMi41NDMsMCwwLDEtLjc0My0xLjgzMiwyLjM2OSwyLjM2OSwwLDAsMSwuNzQzLTEuNzc4LDIuNjMsMi42MywwLDAsMSwzLjYxLDAsMi4zNzQsMi4zNzQsMCwwLDEsLjc0NCwxLjc3OEEyLjU0OCwyLjU0OCwwLDAsMSwzNS44LDM3LjMyOFoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMTUuMDg2IDIyLjU4MiAxMy4yNTQgMjAuNzUgMTEuNTAyIDIyLjU4MiAxNS4wODYgMjYuMTY1IDE2LjkxNyAyNC4zMzQgMjAuNTAxIDIwLjc1IDE4LjY2OSAxOC45OTggMTUuMDg2IDIyLjU4MiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxNS4wODYgMzQuNTg2IDEzLjI1NCAzMi43NTQgMTEuNTAyIDM0LjU4NiAxNS4wODYgMzguMTcgMTYuOTE3IDM2LjMzOCAyMC41MDEgMzIuNzU0IDE4LjY2OSAzMS4wMDIgMTUuMDg2IDM0LjU4NiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTQ5LjkzNyw0OS4zODRsLTcuNjYtNy42NmExMC4xMTIsMTAuMTEyLDAsMCwwLDEuNTg4LTIuODk1LDEwLjMwOCwxMC4zMDgsMCwwLDAtLjI4LTcuNDI3LDEwLjU0OSwxMC41NDksMCwwLDAtNS41NTgtNS41NTgsMTAuMjQsMTAuMjQsMCwwLDAtOC4xMjgsMEExMC41NDksMTAuNTQ5LDAsMCwwLDI0LjM0MSwzMS40YTEwLjIzNywxMC4yMzcsMCwwLDAsMCw4LjEyN0ExMC41NDksMTAuNTQ5LDAsMCwwLDI5LjksNDUuMDg3YTkuOTg3LDkuOTg3LDAsMCwwLDQuMDY0Ljg0MSwxMC4zMjEsMTAuMzIxLDAsMCwwLDYuMjU5LTIuMDU1bDcuNjYsNy42NmExLjM2NCwxLjM2NCwwLDAsMCwyLjA1NSwwQTEuMzEsMS4zMSwwLDAsMCw0OS45MzcsNDkuMzg0Wm0tMTAuNy04LjY0MWE3LjQ0MSw3LjQ0MSwwLDAsMS0xMC41NTYsMCw3LjQ0Myw3LjQ0MywwLDAsMSwwLTEwLjU1Niw3LjQ0Myw3LjQ0MywwLDAsMSwxMC41NTYsMCw3LjQ0Myw3LjQ0MywwLDAsMSwwLDEwLjU1NloiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yNSwyMy41aDlhMS41LDEuNSwwLDEsMCwwLTNIMjVhMS41LDEuNSwwLDEsMCwwLDNaIi8+PC9zdmc+","globalAccountId":"0b50832a-69bb-473e-b2ba-f37300d545db","tenantId":"cf-eu12-auditlog-viewer","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/e3baa5f1a0c64c44aac8ab3ea3d1b500.html"}],"serviceCategories":[{"name":"Data and Analytics"}],"regionInformation":[{"key":"cf-eu10-canary"}]},"incidentTrackingComponent":"BC-NEO-AUDITLOG"},{"subscriptionUrl":"https://integration-test-services-4ie3yr1a.dt.cpp.cfapps.eu12.hana.ondemand.com","subscribedTenantId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscribedSubaccountId":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","subscriptionGUID":"f1a85532-2d3b-40fd-bd30-d89242684c9e","state":"SUBSCRIBED","authenticationProvider":"XSUAA","appName":"PortalApplication","commercialAppName":"PortalApplication","appId":"portal-cf-dt-approuter!t164","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"displayName":"Cloud Portal Service","description":"SAP Cloud Portal service lets you build digital experience portals for employees, customers, and partners. You can streamline access to business data so that your employees can execute their daily business tasks securely, from any device.","shortDescription":"Create role based, multi-channel sites to access business apps and content.","iconBase64":"PHN2ZyBpZD0icG9ydGFsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5wb3J0YWw8L3RpdGxlPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1Ljg0LDIzLjk2MmE4LjQ4OSw4LjQ4OSwwLDAsMC0xMi43ODMtNS43MTNBMTAuNzQ3LDEwLjc0NywwLDAsMCwyMi40MSwxMUMxMCwxMSwxMS4wOSwyMy45ODgsMTEuMDksMjMuOTg4QTEwLjI1NywxMC4yNTcsMCwwLDAsMTQuMjg1LDQ0SDIyVjI5aDlWNDRINDEuNWExMC40ODYsMTAuNDg2LDAsMCwwLDQuMzQtMjAuMDM4Wk00MS41LDQxSDM0VjI2SDE5VjQxSDE0LjI4NWE3LjI1Nyw3LjI1NywwLDAsMS0yLjI1OC0xNC4xNjJsMi4yNzktLjc2OC0uMjMyLTIuMzg5YzAtLjA0Mi0uMzc5LTQuMjM3LDIuMDEtNy4wMTNDMTcuNDYxLDE1LjA2OCwxOSwxNCwyMi40NjUsMTRjMi41MzUsMCw2LjQxNywyLjE4Niw3Ljk5NCw1LjMzOWwxLjE3NiwyLjg3MSwyLjQyNC0xLjMxOEE3LjYsNy42LDAsMCwxLDM3LjQ0OSwyMGE1LjU0Niw1LjU0NiwwLDAsMSw1LjQ0Myw0LjUxOGwuMjg4LDEuNTI4LDEuNDE1LjY0NkE3LjQ4Niw3LjQ4NiwwLDAsMSw0MS41LDQxWiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxOS4wMDYgNDQgMjIuMDA2IDQ0IDIyLjAwNiAyOSAzMS4wMDYgMjkgMzEuMDA2IDQ0IDM0LjAwNiA0NCAzNC4wMDYgMjYgMTkuMDA2IDI2IDE5LjAwNiA0NCIvPjwvc3ZnPg\u003d\u003d","category":"SaaS Applications","categoryDisplayName":"SaaS Applications","globalAccountId":"SA0225001210","tenantId":"6897360f-7e35-411b-87e7-f3b501f4f9a7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","inventoryIds":[{"key":"SERVICE-2"},{"key":"SERVICE-134"}],"serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Portal_Service/1.0/en-US"}],"serviceCategories":[{"name":"Application Development and Automation"}],"regionInformation":[{"key":"cf-eu10-canary"},{"key":"cf-eu10"},{"key":"neo-eu1-canary"}]},"incidentTrackingComponent":"EP-CPP-OPS","modifiedDate":"Jul 11, 2023, 6:24:52 AM","createdDate":"Jul 11, 2023, 6:24:37 AM"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:10 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 0e962d4a-bff4-47fe-4390-6a75168e21b9
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 379.9971ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 88ca68cf-ef3f-d619-7188-af8bff30eab7
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 06:37:11 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 132d071a-1977-441b-5cab-8c08df2aceb1
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 353.7824ms
