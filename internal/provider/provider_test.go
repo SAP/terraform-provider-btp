@@ -112,12 +112,12 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 
 		if strings.Contains(i.Response.Body, "clientid") {
 			reClientSecretVariant1 := regexp.MustCompile(`"clientid":"(.*?)"`)
-			i.Response.Body = reClientSecretVariant1.ReplaceAllString(i.Response.Body, `clientid":"redacted"`)
+			i.Response.Body = reClientSecretVariant1.ReplaceAllString(i.Response.Body, `"clientid":"redacted"`)
 		}
 
 		if strings.Contains(i.Response.Body, "clientsecret") {
 			reClientSecretVariant1 := regexp.MustCompile(`"clientsecret":"(.*?)"`)
-			i.Response.Body = reClientSecretVariant1.ReplaceAllString(i.Response.Body, `clientsecret":"redacted"`)
+			i.Response.Body = reClientSecretVariant1.ReplaceAllString(i.Response.Body, `"clientsecret":"redacted"`)
 		}
 
 		if strings.Contains(i.Response.Body, "client_id") {

@@ -20,7 +20,7 @@ func TestDataSourceSubaccountServiceBindings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountSubscriptions("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProvider() + hclDatasourceSubaccountServiceBindings("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_bindings.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_bindings.uut", "values.#", "3"),
@@ -48,7 +48,7 @@ func TestDataSourceSubaccountServiceBindings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountSubscriptions("uut", "this-is-not-a-uuid"),
+					Config:      hclProvider() + hclDatasourceSubaccountServiceBindings("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -56,7 +56,7 @@ func TestDataSourceSubaccountServiceBindings(t *testing.T) {
 	})
 }
 
-func hclDatasourceSubaccountSubscriptions(resourceName string, subaccountId string) string {
+func hclDatasourceSubaccountServiceBindings(resourceName string, subaccountId string) string {
 	template := `data "btp_subaccount_service_bindings" "%s" {
 	subaccount_id = "%s"
 }`
