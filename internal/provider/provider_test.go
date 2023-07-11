@@ -260,10 +260,8 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_globalaccount_users",
 		"btp_regions",
 		"btp_subaccount",
-		/*TODO:
 		"btp_subaccount_app",
 		"btp_subaccount_apps",
-		*/
 		"btp_subaccount_entitlements",
 		"btp_subaccount_environment_instance",
 		"btp_subaccount_environment_instances",
@@ -286,9 +284,9 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_service_plans",
 		"btp_subaccount_service_platform",
 		"btp_subaccount_service_platforms",
+		*/
 		"btp_subaccount_subscription",
 		"btp_subaccount_subscriptions",
-		*/
 		"btp_subaccount_trust_configuration",
 		"btp_subaccount_trust_configurations",
 		"btp_subaccount_user",

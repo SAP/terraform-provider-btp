@@ -37,6 +37,7 @@ type subaccountAppsValue struct {
 type subaccountAppsDataSourceConfig struct {
 	/* INPUT */
 	SubaccountId types.String `tfsdk:"subaccount_id"`
+	Id           types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values []subaccountAppsValue `tfsdk:"values"`
 }
@@ -67,6 +68,11 @@ func (ds *subaccountAppsDataSource) Schema(_ context.Context, _ datasource.Schem
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the subaccount.",
+				Computed:            true,
 			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
@@ -168,6 +174,7 @@ func (ds *subaccountAppsDataSource) Read(ctx context.Context, req datasource.Rea
 		return
 	}
 
+	data.Id = data.SubaccountId
 	data.Values = []subaccountAppsValue{}
 	for _, app := range cliRes {
 		appVal := subaccountAppsValue{}
