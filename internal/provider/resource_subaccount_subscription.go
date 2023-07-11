@@ -72,6 +72,7 @@ You must be assigned to the subaccount admin role.`,
 				Default:             stringdefault.StaticString(`{}`),
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					stringplanmodifier.UseStateForUnknown(),
 				},
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
@@ -199,7 +200,7 @@ func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource
 		// The parameters are not returned by the API so we transfer the existing state to the read result if not existing
 		newState.Parameters = state.Parameters
 	} else if newState.Parameters.IsNull() && state.Parameters.IsNull() {
-		// During import both vlaues might be emty, so we need to apply the default value form the schema
+		// During the import of the resource both values might be empty, so we need to apply the default value form the schema if not existing
 		newState.Parameters = types.StringValue("{}")
 	}
 
