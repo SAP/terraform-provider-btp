@@ -84,7 +84,7 @@ __Further documentation:__
 				Optional:            true,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+					stringplanmodifier.RequiresReplaceIfConfigured(),
 				},
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(regexp.MustCompile("^[a-z0-9](?:[a-z0-9|-]{0,61}[a-z0-9])?$"), "must only contain letters (a-z), digits (0-9), and hyphens (not at the start or end)"),
@@ -101,6 +101,9 @@ __Further documentation:__
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"created_by": schema.StringAttribute{
 				MarkdownDescription: "The details of the user that created the directory.",
@@ -256,19 +259,62 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Updating Resource Directory", "Update is not yet implemented.")
+	args := btpcli.DirectoryUpdateInput{
+		DirectoryId: plan.ID.ValueString(),
+	}
 
-	/*TODO: cliRes, err := rs.cli.Execute(ctx, btpcli.Update, rs.command, plan)
+	if !plan.Name.IsUnknown() {
+		displayName := plan.Name.ValueString()
+		args.DisplayName = &displayName
+	}
+
+	if !plan.Description.IsUnknown() {
+		description := plan.Description.ValueString()
+		args.Description = &description
+	}
+
+	if !plan.Labels.IsUnknown() {
+		var labels map[string][]string
+		plan.Labels.ElementsAs(ctx, &labels, false)
+		args.Labels = labels
+	}
+
+	cliRes, _, err := rs.cli.Accounts.Directory.Update(ctx, &args)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Directory", fmt.Sprintf("%s", err))
 		return
-	}*/
+	}
+
+	plan, diags = directoryValueFrom(ctx, cliRes)
+	resp.Diagnostics.Append(diags...)
+
+	createStateConf := &tfutils.StateChangeConf{
+		Pending: []string{cis.StateUpdating, cis.StateStarted},
+		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
+		Refresh: func() (interface{}, string, error) {
+			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
+
+			if err != nil {
+				return subRes, "", err
+			}
+
+			return subRes, subRes.EntityState, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	updatedRes, err := createStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Creating Resource Directory", fmt.Sprintf("%s", err))
+	}
+
+	plan, diags = directoryValueFrom(ctx, updatedRes.(cis.DirectoryResponseObject))
+	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
 }
 
 func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
