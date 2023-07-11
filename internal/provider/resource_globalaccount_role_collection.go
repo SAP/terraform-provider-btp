@@ -3,7 +3,9 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 
@@ -108,6 +110,9 @@ func (rs *globalaccountRoleCollectionResource) Read(ctx context.Context, req res
 	state.Name = types.StringValue(cliRes.Name)
 	state.Description = types.StringValue(cliRes.Description)
 
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	state.Id = state.Name
+
 	state.Roles = []globalaccountRoleCollectionRoleRefType{}
 	for _, role := range cliRes.RoleReferences {
 		state.Roles = append(state.Roles, globalaccountRoleCollectionRoleRefType{
@@ -137,6 +142,7 @@ func (rs *globalaccountRoleCollectionResource) Create(ctx context.Context, req r
 
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
 	plan.Id = types.StringValue(cliRes.Name)
 
 	for _, role := range plan.Roles {
@@ -187,4 +193,19 @@ func (rs *globalaccountRoleCollectionResource) Delete(ctx context.Context, req r
 		resp.Diagnostics.AddError("API Error Deleting Resource Role Collection (Global Account)", fmt.Sprintf("%s", err))
 		return
 	}
+}
+
+func (rs *globalaccountRoleCollectionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	idParts := strings.Split(req.ID, ",")
+
+	if len(idParts) != 1 || idParts[0] == "" {
+		resp.Diagnostics.AddError(
+			"Unexpected Import Identifier",
+			fmt.Sprintf("Expected import identifier with format: name. Got: %q", req.ID),
+		)
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[0])...)
+
 }
