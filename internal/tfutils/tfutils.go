@@ -96,7 +96,7 @@ func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 			}
 
 			value = field.Elem().Interface().(string)
-		case "map[string][]string": // TODO would be nice to have `enodethisasjson` tag, instead of an explicit typemapping
+		case "map[string][]string": // TODO would be nice to have `encodethisasjson` tag, instead of an explicit type mapping
 
 			if field.IsNil() {
 				continue
