@@ -17,7 +17,7 @@ type UserReference struct {
 	FamilyName string `json:"familyName,omitempty"`
 	Origin     string `json:"origin,omitempty"`
 
-	// FIXME additional fields not mentioned in the swagger file
+	// TODO additional fields not mentioned in the swagger file
 	Verified                   bool     `json:"verified,omitempty"`
 	LegacyVerificationBehavior bool     `json:"legacyVerificationBehavior,omitempty"`
 	PasswordChangeRequired     bool     `json:"passwordChangeRequired,omitempty"`
