@@ -43,7 +43,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProvider() + hclDatasourceGlobalaccountRoleCollection("uut", "fuh"),
-					ExpectError: regexp.MustCompile(`API Error Reading Resource Role Collection`),
+					ExpectError: regexp.MustCompile(`API Error Reading Resource Role Collection \(Global Account\)`),
 				},
 			},
 		})
