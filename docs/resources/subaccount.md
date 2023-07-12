@@ -59,6 +59,13 @@ resource "btp_subaccount" "my_project_on_azure" {
 - `description` (String) A description of the subaccount for customer-facing UIs.
 - `labels` (Map of Set of String) The set of words or phrases assigned to the subaccount.
 - `parent_id` (String) The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.
+- `usage` (String) Shows whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: 
+
+  | value | description | 
+  | --- | --- | 
+  | `UNSET` | Global account or subaccount admin has not set the production-relevancy flag (default value). | 
+  | `NOT_USED_FOR_PRODUCTION` | The subaccount is not used for production purposes. | 
+  | `USED_FOR_PRODUCTION` | The subaccount is used for production purposes. |
 
 ### Read-Only
 
@@ -94,13 +101,6 @@ resource "btp_subaccount" "my_project_on_azure" {
   | `MIGRATION_FAILED` | The migration of the subaccount failed and the subaccount was not migrated. | 
   | `ROLLBACK_MIGRATION_PROCESSING` | The migration of the subaccount was rolled back and the subaccount is not migrated. | 
   | `SUSPENSION_FAILED` | The suspension operations failed. |
-- `usage` (String) Shows whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: 
-
-  | value | description | 
-  | --- | --- | 
-  | `UNSET` | Global account or subaccount admin has not set the production-relevancy flag (default value). | 
-  | `NOT_USED_FOR_PRODUCTION` | The subaccount is not used for production purposes. | 
-  | `USED_FOR_PRODUCTION` | The subaccount is used for production purposes. |
 
 ## Import
 
