@@ -32,8 +32,8 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 			},
 		})
 	})
-	// FIXME https://github.com/SAP/terraform-provider-btp/issues/160
-	/*t.Run("happy path - role collection not available", func(t *testing.T) {
+
+	t.Run("error path - role collection not available", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_not_available")
 		defer stopQuietly(rec)
 
@@ -42,16 +42,13 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountRoleCollection("uut", "fuh"),
-					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", ""),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "read_only", "false"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "0"),
-					),
+					Config:      hclProvider() + hclDatasourceGlobalaccountRoleCollection("uut", "fuh"),
+					ExpectError: regexp.MustCompile(`API Error Reading Resource Role Collection`),
 				},
 			},
 		})
-	})*/
+	})
+
 	t.Run("error path - name must not be empty", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
