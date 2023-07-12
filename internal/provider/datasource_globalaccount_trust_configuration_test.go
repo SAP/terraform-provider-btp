@@ -61,8 +61,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 			},
 		})
 	})
-	// FIXME https://github.com/SAP/terraform-provider-btp/issues/167
-	/*t.Run("happy path - custom idp - not existing", func(t *testing.T) {
+	t.Run("error path - custom idp - not existing", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.custom_idp_not_existing")
 		defer stopQuietly(rec)
 
@@ -71,21 +70,12 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountTrustConfiguration("uut", "fuh"),
-					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "id", ""),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "description", ""),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "identity_provider", ""),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "name", ""),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "protocol", ""),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "read_only", "false"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "status", ""),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "type", ""),
-					),
+					Config:      hclProvider() + hclDatasourceGlobalaccountTrustConfiguration("uut", "fuh"),
+					ExpectError: regexp.MustCompile(`API Error Reading Resource Trust Configuration \(Global Account\)`),
 				},
 			},
 		})
-	})*/
+	})
 	t.Run("error path - origin must not be empty", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
