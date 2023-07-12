@@ -68,6 +68,7 @@ func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource
 				Default:             stringdefault.StaticString(`{}`),
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					stringplanmodifier.UseStateForUnknown(),
 				},
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
@@ -141,7 +142,15 @@ func (rs *subaccountServiceBindingResource) Read(ctx context.Context, req resour
 	}
 
 	updatedState, diags := subaccountServiceBindingValueFrom(ctx, cliRes)
-	updatedState.Parameters = state.Parameters
+
+	if updatedState.Parameters.IsNull() && !state.Parameters.IsNull() {
+		// The parameters are not returned by the API so we transfer the existing state to the read result if not existing
+		updatedState.Parameters = state.Parameters
+	} else if updatedState.Parameters.IsNull() && state.Parameters.IsNull() {
+		// During the import of the resource both values might be empty, so we need to apply the default value form the schema if not existing
+		updatedState.Parameters = types.StringValue("{}")
+	}
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedState)
@@ -242,6 +251,6 @@ func (rs *subaccountServiceBindingResource) ImportState(ctx context.Context, req
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
 }
