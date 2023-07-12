@@ -53,14 +53,14 @@ type SubaccountCreateInput struct { // TODO support all options
 }
 
 type SubaccountUpdateInput struct {
-	BetaEnabled   bool                `btpcli:"betaEnabled"`
-	Description   string              `btpcli:"description"`
-	Directory     string              `btpcli:"directoryID"`
-	DisplayName   string              `btpcli:"displayName"`
-	Labels        map[string][]string `btpcli:"labels"`
-	SubaccountId  string              `btpcli:"subaccount"`
-	Globalaccount string              `btpcli:"globalAccount"`
-	//	UsedForProduction bool                `btpcli:"usedForProduction"`
+	BetaEnabled       bool                `btpcli:"betaEnabled"`
+	Description       string              `btpcli:"description"`
+	Directory         string              `btpcli:"directoryID"`
+	DisplayName       string              `btpcli:"displayName"`
+	Labels            map[string][]string `btpcli:"labels"`
+	SubaccountId      string              `btpcli:"subaccount"`
+	Globalaccount     string              `btpcli:"globalAccount"`
+	UsedForProduction bool                `btpcli:"usedForProduction"`
 }
 
 func (f *accountsSubaccountFacade) Create(ctx context.Context, args *SubaccountCreateInput) (cis.SubaccountResponseObject, CommandResponse, error) {
