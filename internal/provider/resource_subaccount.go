@@ -173,6 +173,14 @@ __Further documentation:__
 					getFormattedValueAsTableRow("`NOT_USED_FOR_PRODUCTION`", "The subaccount is not used for production purposes.") +
 					getFormattedValueAsTableRow("`USED_FOR_PRODUCTION`", "The subaccount is used for production purposes."),
 				Computed: true,
+				Optional: true,
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"USED_FOR_PRODUCTION",
+						"NOT_USED_FOR_PRODUCTION",
+						"UNSET",
+					}...),
+				},
 			},
 		},
 	}
@@ -234,6 +242,11 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		var labels map[string][]string
 		plan.Labels.ElementsAs(ctx, &labels, false)
 		args.Labels = labels
+	}
+
+	if !plan.Usage.IsUnknown() && !plan.Usage.IsNull() {
+		usedForProduction := plan.Usage.ValueString()
+		args.UsedForProduction = usedForProduction
 	}
 
 	cliRes, _, err := rs.cli.Accounts.Subaccount.Create(ctx, &args)
@@ -298,6 +311,17 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 	var labels map[string][]string
 	plan.Labels.ElementsAs(ctx, &labels, false)
 	args.Labels = labels
+
+	// Specifically in BTP CLI's update subcommand, usage is specified as a boolean
+	// As shown in the cli's documentation
+	// --used-for-production [BOOL]
+	// So we modify the input arg here
+	if !plan.Usage.IsUnknown() && !plan.Usage.IsNull() {
+		if !plan.Usage.Equal(types.StringValue("UNSET")) {
+			usedForProduction := plan.Usage.ValueString()
+			args.UsedForProduction = (usedForProduction == "USED_FOR_PRODUCTION")
+		}
+	}
 
 	cliRes, _, err := rs.cli.Accounts.Subaccount.Update(ctx, &args)
 	if err != nil {
