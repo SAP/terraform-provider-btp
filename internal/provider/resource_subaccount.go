@@ -244,10 +244,18 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		args.Labels = labels
 	}
 
-	if !plan.Usage.IsUnknown() && !plan.Usage.IsNull() {
-		usedForProduction := plan.Usage.ValueString()
-		args.UsedForProduction = usedForProduction
+	// The BTP CLI and CIS use different parameters for the subaccount usage
+	// To trigger the right state we must distinguish how to set the value in CREATE scenarios
+	// Options: "" == ignored in CREATE request, "true" == boolean true in CREATE request, "false" == boolean false in CREATE request
+	/*if plan.Usage.IsUnknown() || plan.Usage.IsNull() {
+		// No usage explicitly requested
+		args.UsedForProduction = ""
+	} else {
+		// Explicit setting of usage requested
+
 	}
+	*/
+	args.UsedForProduction = mapUsageToUsedForProduction(plan.Usage.ValueString())
 
 	cliRes, _, err := rs.cli.Accounts.Subaccount.Create(ctx, &args)
 
@@ -312,16 +320,7 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 	plan.Labels.ElementsAs(ctx, &labels, false)
 	args.Labels = labels
 
-	// Specifically in BTP CLI's update subcommand, usage is specified as a boolean
-	// As shown in the cli's documentation
-	// --used-for-production [BOOL]
-	// So we modify the input arg here
-	if !plan.Usage.IsUnknown() && !plan.Usage.IsNull() {
-		if !plan.Usage.Equal(types.StringValue("UNSET")) {
-			usedForProduction := plan.Usage.ValueString()
-			args.UsedForProduction = (usedForProduction == "USED_FOR_PRODUCTION")
-		}
-	}
+	args.UsedForProduction = mapUsageToUsedForProduction(plan.Usage.ValueString())
 
 	cliRes, _, err := rs.cli.Accounts.Subaccount.Update(ctx, &args)
 	if err != nil {
@@ -384,4 +383,19 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 
 func (rs *subaccountResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func mapUsageToUsedForProduction(subaccountUsage string) string {
+	// The BTP CLI and CIS use different parameters for the subaccount usage
+	// To trigger the right usage creation in CREATE and avoid unwanted state changes in UPDATE  we must distinguish if and how to set the value
+	// Options: "" == ignored in request, "true" == boolean true in request, "false" == boolean false in request
+	switch subaccountUsage {
+	case "UNSET":
+		return "false"
+	case "NOT_USED_FOR_PRODUCTION":
+		return "false"
+	case "USED_FOR_PRODUCTION":
+		return "true"
+	}
+	return ""
 }

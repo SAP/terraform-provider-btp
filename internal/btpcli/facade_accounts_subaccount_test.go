@@ -129,12 +129,11 @@ func TestAccountsSubaccountFacade_Update(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionUpdate, map[string]string{
-				"subaccount":        subaccountId,
-				"displayName":       displayName,
-				"description":       description,
-				"betaEnabled":       "false",
-				"globalAccount":     globalAccount,
-				"usedForProduction": "false",
+				"subaccount":    subaccountId,
+				"displayName":   displayName,
+				"description":   description,
+				"betaEnabled":   "false",
+				"globalAccount": globalAccount,
 			})
 
 		}))

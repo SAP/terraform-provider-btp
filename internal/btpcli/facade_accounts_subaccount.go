@@ -59,8 +59,8 @@ type SubaccountUpdateInput struct {
 	DisplayName       string              `btpcli:"displayName"`
 	Labels            map[string][]string `btpcli:"labels"`
 	SubaccountId      string              `btpcli:"subaccount"`
+	UsedForProduction string              `btpcli:"usedForProduction"`
 	Globalaccount     string              `btpcli:"globalAccount"`
-	UsedForProduction bool                `btpcli:"usedForProduction"`
 }
 
 func (f *accountsSubaccountFacade) Create(ctx context.Context, args *SubaccountCreateInput) (cis.SubaccountResponseObject, CommandResponse, error) {
@@ -80,6 +80,7 @@ func (f *accountsSubaccountFacade) Update(ctx context.Context, args *SubaccountU
 
 	args.Globalaccount = f.cliClient.GetGlobalAccountSubdomain()
 
+	// Mapping of all params except for usedForProduction
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
