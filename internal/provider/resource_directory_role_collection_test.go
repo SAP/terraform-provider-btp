@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-// Needed for JSON mapping - fails with data types of globalaccountRoleCollectionRoleRef struc
+// Needed for JSON mapping - fails with data types of directoryRoleCollectionRoleRefType struct
 type directoryRoleCollectionRoleRefTestType struct {
 	Name              string `json:"name"`
 	RoleTemplateAppId string `json:"role_template_app_id"`
@@ -80,7 +80,21 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceDirectoryRoleCollectionWithMultipleRoles("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My role collection", "This is my new role collection"),
+					Config: hclProvider() + hclResourceDirectoryRoleCollection(
+						"uut",
+						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
+						"My role collection",
+						"This is my new role collection",
+						directoryRoleCollectionRoleRefTestType{
+							Name:              "Directory Viewer",
+							RoleTemplateAppId: "cis-central!b13",
+							RoleTemplateName:  "Directory_Viewer",
+						},
+						directoryRoleCollectionRoleRefTestType{
+							Name:              "Directory Usage Reporting Viewer",
+							RoleTemplateAppId: "uas!b10418",
+							RoleTemplateName:  "Directory_Usage_Reporting_Viewer",
+						}),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My role collection"),
@@ -91,6 +105,67 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 				{
 					ResourceName:      "btp_directory_role_collection.uut",
 					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9,My role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - update", func(t *testing.T) {
+		rec := setupVCR(t, "fixtures/resource_directory_role_collection.update")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProvider() + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.#", "1"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.0.name", "Directory Viewer"),
+					),
+				},
+				{
+					Config: hclProvider() + hclResourceDirectoryRoleCollection(
+						"uut",
+						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
+						"My own role collection",
+						"This is my updated role collection",
+						directoryRoleCollectionRoleRefTestType{
+							Name:              "Directory Viewer",
+							RoleTemplateAppId: "cis-central!b13",
+							RoleTemplateName:  "Directory_Viewer",
+						},
+						directoryRoleCollectionRoleRefTestType{
+							Name:              "Directory Usage Reporting Viewer",
+							RoleTemplateAppId: "uas!b10418",
+							RoleTemplateName:  "Directory_Usage_Reporting_Viewer",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "description", "This is my updated role collection"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.#", "2"),
+					),
+				},
+				{
+					Config: hclProvider() + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Usage Reporting Viewer", "uas!b10418", "Directory_Usage_Reporting_Viewer"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.#", "1"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.0.name", "Directory Usage Reporting Viewer"),
+					),
+				},
+				{
+					ResourceName:      "btp_directory_role_collection.uut",
+					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9,My own role collection",
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -195,20 +270,10 @@ func hclResourceDirectoryRoleCollectionWithDescription(resourceName string, dire
     }`, resourceName, directoryId, roleCollectionName, roleCollectionDescription, string(rolesJson))
 }
 
-func hclResourceDirectoryRoleCollectionWithMultipleRoles(resourceName string, directoryId string, roleCollectionName string, roleCollectionDescription string) string {
-	roles := []directoryRoleCollectionRoleRefTestType{}
-
-	roles = append(roles, directoryRoleCollectionRoleRefTestType{
-		Name:              "Directory Viewer",
-		RoleTemplateAppId: "cis-central!b13",
-		RoleTemplateName:  "Directory_Viewer",
-	},
-		directoryRoleCollectionRoleRefTestType{
-			Name:              "Directory Usage Reporting Viewer",
-			RoleTemplateAppId: "uas!b10418",
-			RoleTemplateName:  "Directory_Usage_Reporting_Viewer",
-		},
-	)
+func hclResourceDirectoryRoleCollection(resourceName string, directoryId string, roleCollectionName string, roleCollectionDescription string, roles ...directoryRoleCollectionRoleRefTestType) string {
+	if roles == nil {
+		roles = []directoryRoleCollectionRoleRefTestType{}
+	}
 	rolesJson, _ := json.Marshal(roles)
 
 	return fmt.Sprintf(`resource "btp_directory_role_collection" "%s" {

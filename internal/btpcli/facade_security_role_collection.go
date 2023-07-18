@@ -39,6 +39,14 @@ func (f *securityRoleCollectionFacade) CreateByGlobalAccount(ctx context.Context
 	}))
 }
 
+func (f *securityRoleCollectionFacade) UpdateByGlobalAccount(ctx context.Context, roleCollectionName string, description string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
+	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), map[string]string{
+		"globalAccount":      f.cliClient.GetGlobalAccountSubdomain(),
+		"roleCollectionName": roleCollectionName,
+		"description":        description,
+	}))
+}
+
 func (f *securityRoleCollectionFacade) DeleteByGlobalAccount(ctx context.Context, roleCollectionName string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
 	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"globalAccount":      f.cliClient.GetGlobalAccountSubdomain(),
@@ -67,6 +75,14 @@ func (f *securityRoleCollectionFacade) CreateBySubaccount(ctx context.Context, s
 	}))
 }
 
+func (f *securityRoleCollectionFacade) UpdateBySubaccount(ctx context.Context, subaccountId string, roleCollectionName string, description string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
+	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), map[string]string{
+		"subaccount":         subaccountId,
+		"roleCollectionName": roleCollectionName,
+		"description":        description,
+	}))
+}
+
 func (f *securityRoleCollectionFacade) DeleteBySubaccount(ctx context.Context, subaccountId string, roleCollectionName string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
 	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"subaccount":         subaccountId,
@@ -89,6 +105,14 @@ func (f *securityRoleCollectionFacade) GetByDirectory(ctx context.Context, direc
 
 func (f *securityRoleCollectionFacade) CreateByDirectory(ctx context.Context, directoryId string, roleCollectionName string, description string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
 	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewCreateRequest(f.getCommand(), map[string]string{
+		"directory":          directoryId,
+		"roleCollectionName": roleCollectionName,
+		"description":        description,
+	}))
+}
+
+func (f *securityRoleCollectionFacade) UpdateByDirectory(ctx context.Context, directoryId string, roleCollectionName string, description string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
+	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), map[string]string{
 		"directory":          directoryId,
 		"roleCollectionName": roleCollectionName,
 		"description":        description,
