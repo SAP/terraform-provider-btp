@@ -3,6 +3,9 @@ package provider
 import (
 	"context"
 	"fmt"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -22,6 +25,15 @@ type globalaccountRoleCollectionRoleRefType struct {
 	Name              types.String `tfsdk:"name"`
 	RoleTemplateAppId types.String `tfsdk:"role_template_app_id"`
 	RoleTemplateName  types.String `tfsdk:"role_template_name"`
+}
+
+// TODO This predicate is planned to be replaced by letting the globalaccountRoleCollectionRoleRefType implement
+// TODO terraform's attr.Value interface and move this code to its Equal method (see also tfutils.SetDifference).
+// TODO This will allow to use types.Set instead of a slice for globalaccountRoleCollectionType.Roles below.
+func gaRoleRefIsEqual(roleA, roleB globalaccountRoleCollectionRoleRefType) bool {
+	return roleA.Name.Equal(roleB.Name) &&
+		roleA.RoleTemplateAppId.Equal(roleB.RoleTemplateAppId) &&
+		roleA.RoleTemplateName.Equal(roleB.RoleTemplateName)
 }
 
 type globalaccountRoleCollectionType struct {
@@ -57,11 +69,17 @@ __Further documentation:__
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `name` attribute instead",
 				MarkdownDescription: "The ID of the role collection.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "The description of the role collection.",
@@ -149,7 +167,7 @@ func (rs *globalaccountRoleCollectionResource) Create(ctx context.Context, req r
 		_, err := rs.cli.Security.Role.AddByGlobalAccount(ctx, plan.Name.ValueString(), role.Name.ValueString(), role.RoleTemplateAppId.ValueString(), role.RoleTemplateName.ValueString())
 
 		if err != nil {
-			resp.Diagnostics.AddError("API Error Assigning Role To Role Collection (Global Account)", fmt.Sprintf("%s", err))
+			resp.Diagnostics.AddError("API Error Adding Role To Role Collection (Global Account)", fmt.Sprintf("%s", err))
 		}
 	}
 
@@ -158,22 +176,60 @@ func (rs *globalaccountRoleCollectionResource) Create(ctx context.Context, req r
 }
 
 func (rs *globalaccountRoleCollectionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var state globalaccountRoleCollectionType
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	var plan globalaccountRoleCollectionType
-	diags := req.Plan.Get(ctx, &plan)
+	diags = req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Updating Resource Role Collection (Global Account)", "Update is not yet implemented.")
-
-	/*TODO cliRes, err := rs.cli.Execute(ctx, btpcli.Update, rs.command, plan)
+	_, _, err := rs.cli.Security.RoleCollection.UpdateByGlobalAccount(ctx, plan.Name.ValueString(), plan.Description.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Role Collection (Global Account)", fmt.Sprintf("%s", err))
 		return
-	}*/
+	}
 
-	diags = resp.State.Set(ctx, plan)
+	toBeRemoved := tfutils.SetDifference(state.Roles, plan.Roles, gaRoleRefIsEqual)
+	for _, role := range toBeRemoved {
+		_, err := rs.cli.Security.Role.RemoveByGlobalAccount(ctx, plan.Name.ValueString(), role.Name.ValueString(), role.RoleTemplateAppId.ValueString(), role.RoleTemplateName.ValueString())
+
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Removing Role From Role Collection (Global Account)", fmt.Sprintf("%s", err))
+		}
+	}
+
+	toBeAdded := tfutils.SetDifference(plan.Roles, state.Roles, gaRoleRefIsEqual)
+	for _, role := range toBeAdded {
+		_, err := rs.cli.Security.Role.AddByGlobalAccount(ctx, plan.Name.ValueString(), role.Name.ValueString(), role.RoleTemplateAppId.ValueString(), role.RoleTemplateName.ValueString())
+
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Adding Role From Role Collection (Global Account)", fmt.Sprintf("%s", err))
+		}
+	}
+
+	cliRes, _, err := rs.cli.Security.RoleCollection.GetByGlobalAccount(ctx, plan.Name.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Reading Resource Role Collection (Global Account)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	state.Description = types.StringValue(cliRes.Description)
+	state.Roles = []globalaccountRoleCollectionRoleRefType{}
+	for _, role := range cliRes.RoleReferences {
+		state.Roles = append(state.Roles, globalaccountRoleCollectionRoleRefType{
+			RoleTemplateName:  types.StringValue(role.RoleTemplateName),
+			RoleTemplateAppId: types.StringValue(role.RoleTemplateAppId),
+			Name:              types.StringValue(role.Name),
+		})
+	}
+
+	diags = resp.State.Set(ctx, state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

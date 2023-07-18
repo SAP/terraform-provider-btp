@@ -11,6 +11,7 @@ import (
 const btpcliTag = "btpcli"
 
 type any interface{}
+type equalityPredicate[E any] func(E, E) bool
 
 func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 	out := map[string]string{}
@@ -117,4 +118,27 @@ func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 	}
 
 	return out, nil
+}
+
+// TODO This is a utility function to compute to be removed and to be added substructures in resource configurations.
+// TODO This is required since terraform only computes required CRUD operations on resource level. Changes in inner
+// TODO configurations need to be computed based on the state and plan data by the update operation of a provider.
+// TODO Should the terraform plugin framework support this functionality in the future, e.g. as a part of the Set
+// TODO datatype, we can remove this code.
+func SetDifference[S ~[]E, E any](setA, setB S, isEqual equalityPredicate[E]) (result S) {
+	for _, element := range setA {
+		if !setContains(setB, element, isEqual) {
+			result = append(result, element)
+		}
+	}
+	return
+}
+
+func setContains[S ~[]E, E any](set S, element E, isEqual equalityPredicate[E]) bool {
+	for _, setElement := range set {
+		if isEqual(setElement, element) {
+			return true
+		}
+	}
+	return false
 }

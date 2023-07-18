@@ -248,6 +248,92 @@ func TestSecurityRoleCollectionFacade_CreateByDirectory(t *testing.T) {
 	})
 }
 
+func TestSecurityRoleCollectionFacade_UpdateByGlobalAccount(t *testing.T) {
+	command := "security/role-collection"
+
+	roleCollectionName := "my own rolecollection"
+	description := "This is the updated description of my own rolecollection"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"globalAccount":      "795b53bb-a3f0-4769-adf0-26173282a975",
+				"roleCollectionName": roleCollectionName,
+				"description":        description,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.RoleCollection.UpdateByGlobalAccount(context.TODO(), roleCollectionName, description)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestSecurityRoleCollectionFacade_UpdateBySubaccount(t *testing.T) {
+	command := "security/role-collection"
+
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	roleCollectionName := "my own rolecollection"
+	description := "This is the updated description of my own rolecollection"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"subaccount":         subaccountId,
+				"roleCollectionName": roleCollectionName,
+				"description":        description,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.RoleCollection.UpdateBySubaccount(context.TODO(), subaccountId, roleCollectionName, description)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestSecurityRoleCollectionFacade_UpdateByDirectory(t *testing.T) {
+	command := "security/role-collection"
+
+	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	roleCollectionName := "my own rolecollection"
+	description := "This is the updated description of my own rolecollection"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"directory":          directoryId,
+				"roleCollectionName": roleCollectionName,
+				"description":        description,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.RoleCollection.UpdateByDirectory(context.TODO(), directoryId, roleCollectionName, description)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
 func TestSecurityRoleCollectionFacade_DeleteByGlobalAccount(t *testing.T) {
 	command := "security/role-collection"
 
