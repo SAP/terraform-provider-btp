@@ -162,7 +162,6 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newGlobalaccountRoleResource,
 		newSubaccountRoleResource,
 		newSubaccountServiceBindingResource,
-		newSubaccountSubscriptionResource,
 	}
 
 	if !p.betaFeaturesEnabled {
@@ -183,6 +182,7 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newSubaccountRoleCollectionResource,
 		newSubaccountRoleCollectionAssignmentResource,
 		newSubaccountServiceInstanceResource,
+		newSubaccountSubscriptionResource,
 		newSubaccountTrustConfigurationResource,
 	}, betaResources...)
 }
@@ -196,16 +196,12 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newGlobalaccountAppsDataSource,
 		newGlobalaccountResourceProviderDataSource,
 		newGlobalaccountResourceProvidersDataSource,
-		newSubaccountAppDataSource,
-		newSubaccountAppsDataSource,
 		newSubaccountServiceBrokerDataSource,
 		newSubaccountServiceBrokersDataSource,
 		newSubaccountServiceBindingDataSource,
 		newSubaccountServiceBindingsDataSource,
 		newSubaccountServicePlatformDataSource,
 		newSubaccountServicePlatformsDataSource,
-		newSubaccountSubscriptionDataSource,
-		newSubaccountSubscriptionsDataSource,
 	}
 
 	if !p.betaFeaturesEnabled {
@@ -234,6 +230,8 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newGlobalaccountUsersDataSource,
 		newRegionsDataSource,
 		newSubaccountDataSource,
+		newSubaccountAppDataSource,
+		newSubaccountAppsDataSource,
 		newSubaccountEntitlementsDataSource,
 		newSubaccountEnvironmentInstanceDataSource,
 		newSubaccountEnvironmentInstancesDataSource,
@@ -254,6 +252,8 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newSubaccountUserDataSource,
 		newSubaccountUsersDataSource,
 		newSubaccountsDataSource,
+		newSubaccountSubscriptionDataSource,
+		newSubaccountSubscriptionsDataSource,
 		newWhoamiDataSource,
 	}, betaDataSources...)
 }

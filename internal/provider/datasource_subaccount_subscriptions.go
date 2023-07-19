@@ -54,6 +54,7 @@ type subaccountSubscriptionsValue struct {
 type subaccountSubscriptionsDataSourceConfig struct {
 	/* INPUT */
 	SubaccountId types.String `tfsdk:"subaccount_id"`
+	Id           types.String `tfsdk:"id"`
 	/* OUTPUT */
 	Values []subaccountSubscriptionsValue `tfsdk:"values"`
 }
@@ -86,6 +87,11 @@ You must be assigned to the subaccount admin or viewer role.`,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the subaccount.",
+				Computed:            true,
 			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
@@ -242,6 +248,7 @@ func (ds *subaccountSubscriptionsDataSource) Read(ctx context.Context, req datas
 		return
 	}
 
+	data.Id = data.SubaccountId
 	data.Values = []subaccountSubscriptionsValue{}
 
 	for _, subscription := range cliRes {
