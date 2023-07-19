@@ -71,7 +71,7 @@ func (ds *regionsDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 __Tip:__
 You must be assigned to the global account admin or viewer role.`,
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
 				MarkdownDescription: "The ID of the global account.",
 				Computed:            true,

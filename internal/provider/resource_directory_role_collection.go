@@ -3,10 +3,11 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -76,7 +77,7 @@ __Further documentation:__
 					uuidvalidator.ValidUUID(),
 				},
 			},
-			"id": schema.StringAttribute{
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `directory_id` attribute instead",
 				MarkdownDescription: "The ID of the directory.",
 				Computed:            true,

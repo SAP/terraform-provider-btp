@@ -69,7 +69,7 @@ To view all the resources a global account:
 * Target only the global account in the command line.
 * You must be assigned to either the global account admin or global account viewers role.`,
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
 				MarkdownDescription: "The ID of the global account.",
 				Computed:            true,
