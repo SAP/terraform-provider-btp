@@ -173,6 +173,14 @@ __Further documentation:__
 					getFormattedValueAsTableRow("`NOT_USED_FOR_PRODUCTION`", "The subaccount is not used for production purposes.") +
 					getFormattedValueAsTableRow("`USED_FOR_PRODUCTION`", "The subaccount is used for production purposes."),
 				Computed: true,
+				Optional: true,
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"USED_FOR_PRODUCTION",
+						"NOT_USED_FOR_PRODUCTION",
+						"UNSET",
+					}...),
+				},
 			},
 		},
 	}
@@ -235,6 +243,19 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		plan.Labels.ElementsAs(ctx, &labels, false)
 		args.Labels = labels
 	}
+
+	// The BTP CLI and CIS use different parameters for the subaccount usage
+	// To trigger the right state we must distinguish how to set the value in CREATE scenarios
+	// Options: "" == ignored in CREATE request, "true" == boolean true in CREATE request, "false" == boolean false in CREATE request
+	/*if plan.Usage.IsUnknown() || plan.Usage.IsNull() {
+		// No usage explicitly requested
+		args.UsedForProduction = ""
+	} else {
+		// Explicit setting of usage requested
+
+	}
+	*/
+	args.UsedForProduction = mapUsageToUsedForProduction(plan.Usage.ValueString())
 
 	cliRes, _, err := rs.cli.Accounts.Subaccount.Create(ctx, &args)
 
@@ -299,6 +320,8 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 	plan.Labels.ElementsAs(ctx, &labels, false)
 	args.Labels = labels
 
+	args.UsedForProduction = mapUsageToUsedForProduction(plan.Usage.ValueString())
+
 	cliRes, _, err := rs.cli.Accounts.Subaccount.Update(ctx, &args)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Subaccount", fmt.Sprintf("%s", err))
@@ -360,4 +383,19 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 
 func (rs *subaccountResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func mapUsageToUsedForProduction(subaccountUsage string) string {
+	// The BTP CLI and CIS use different parameters for the subaccount usage
+	// To trigger the right usage creation in CREATE and avoid unwanted state changes in UPDATE  we must distinguish if and how to set the value
+	// Options: "" == ignored in request, "true" == boolean true in request, "false" == boolean false in request
+	switch subaccountUsage {
+	case "UNSET":
+		return ""
+	case "NOT_USED_FOR_PRODUCTION":
+		return "false"
+	case "USED_FOR_PRODUCTION":
+		return "true"
+	}
+	return ""
 }
