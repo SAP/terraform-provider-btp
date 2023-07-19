@@ -61,8 +61,7 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			},
 		})
 	})
-	// FIXME https://github.com/SAP/terraform-provider-btp/issues/167
-	/*t.Run("happy path", func(t *testing.T) {
+	t.Run("error path - custom idp not existing", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/datasource_subaccount_trust_configuration.custom_idp_not_existing")
 		defer stopQuietly(rec)
 
@@ -71,21 +70,12 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountTrustConfiguration("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "fuh"),
-					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "id", ""),
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "description", ""),
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "identity_provider", ""),
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "name", ""),
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "protocol", ""),
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "read_only", "false"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "status", ""),
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "type", ""),
-					),
+					Config:      hclProvider() + hclDatasourceSubaccountTrustConfiguration("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "fuh"),
+					ExpectError: regexp.MustCompile(`API Error Reading Resource Trust Configuration \(Subaccount\)`),
 				},
 			},
 		})
-	})*/
+	})
 	t.Run("error path - origin must not be empty", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,

@@ -1,7 +1,6 @@
 package saas_manager_service
 
 import (
-	"strconv"
 	"strings"
 	"time"
 )
@@ -14,12 +13,15 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 		*t = Time{}
 		return nil
 	}
-	i, err := strconv.ParseInt(s, 10, 64)
+
+	layout := "Jan 2, 2006, 3:04:05 PM"
+
+	timeString, err := time.Parse(layout, s)
 	if err != nil {
 		return err
 	}
 
-	*t = Time(time.UnixMilli(i).UTC())
+	*t = Time(timeString.UTC())
 
 	return nil
 }

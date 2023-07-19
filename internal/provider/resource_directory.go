@@ -307,7 +307,7 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Creating Resource Directory", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("API Error Updating Resource Directory", fmt.Sprintf("%s", err))
 	}
 
 	plan, diags = directoryValueFrom(ctx, updatedRes.(cis.DirectoryResponseObject))

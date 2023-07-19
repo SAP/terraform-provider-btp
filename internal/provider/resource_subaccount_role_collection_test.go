@@ -26,7 +26,21 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubAccountRoleCollection("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "My new role collection", "Description of my new role collection"),
+					Config: hclProvider() + hclResourceSubAccountRoleCollection(
+						"uut",
+						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"My new role collection",
+						"Description of my new role collection",
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Subaccount Viewer",
+							RoleTemplateAppId: "cis-local!b2",
+							RoleTemplateName:  "Subaccount_Viewer",
+						},
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Destination Viewer",
+							RoleTemplateAppId: "destination-xsappname!b9",
+							RoleTemplateName:  "Destination_Viewer",
+						}),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
@@ -42,8 +56,67 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("happy path - update", func(t *testing.T) {
+		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection.update")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProvider() + hclResourceSubAccountRoleCollection(
+						"uut",
+						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"My new role collection",
+						"Description of my new role collection",
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Subaccount Viewer",
+							RoleTemplateAppId: "cis-local!b2",
+							RoleTemplateName:  "Subaccount_Viewer",
+						},
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Destination Viewer",
+							RoleTemplateAppId: "destination-xsappname!b9",
+							RoleTemplateName:  "Destination_Viewer",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "2"),
+					),
+				},
+				{
+					Config: hclProvider() + hclResourceSubAccountRoleCollection(
+						"uut",
+						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"My new role collection",
+						"Description of my new role collection",
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Subaccount Service Auditor",
+							RoleTemplateAppId: "service-manager!b3",
+							RoleTemplateName:  "Subaccount_Service_Auditor",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.0.name", "Subaccount Service Auditor"),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_role_collection.uut",
+					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,My new role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
 	t.Run("error path - import with wrong key", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection_import_error")
+		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection.import_error")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -55,7 +128,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
-						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "2"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "0"),
 					),
 				},
 				{
@@ -97,22 +170,10 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 
 }
 
-func hclResourceSubAccountRoleCollection(resourceName string, subaccountId string, displayName string, description string) string {
-
-	roles := []subaccountRoleCollectionRoleRefTestType{}
-
-	roles = append(roles, subaccountRoleCollectionRoleRefTestType{
-		Name:              "Subaccount Viewer",
-		RoleTemplateAppId: "cis-local!b2",
-		RoleTemplateName:  "Subaccount_Viewer",
-	},
-		subaccountRoleCollectionRoleRefTestType{
-			Name:              "Destination Viewer",
-			RoleTemplateAppId: "destination-xsappname!b9",
-			RoleTemplateName:  "Destination_Viewer",
-		},
-	)
-
+func hclResourceSubAccountRoleCollection(resourceName string, subaccountId string, displayName string, description string, roles ...subaccountRoleCollectionRoleRefTestType) string {
+	if roles == nil {
+		roles = []subaccountRoleCollectionRoleRefTestType{}
+	}
 	rolesJson, _ := json.Marshal(roles)
 
 	return fmt.Sprintf(`resource "btp_subaccount_role_collection" "%s" {

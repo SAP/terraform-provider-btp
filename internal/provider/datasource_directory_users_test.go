@@ -49,26 +49,21 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 			},
 		})
 	})
-	// FIXME ends in unmarshal error
-	/*
-	   t.Run("error path - non existing idp", func(t *testing.T) {
-	       rec := setupVCR(t, "fixtures/datasource_directory_users.non_existing_idp")
-	       defer stopQuietly(rec)
+	t.Run("error path - non existing idp", func(t *testing.T) {
+		rec := setupVCR(t, "fixtures/datasource_directory_users.non_existing_idp")
+		defer stopQuietly(rec)
 
-	       resource.Test(t, resource.TestCase{
-	           IsUnitTest:               true,
-	           ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
-	           Steps: []resource.TestStep{
-	               {
-	                   Config: hclProvider() + hclDatasourceDirectoryUsersWithCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "this-doesnt-exist"),
-	                   Check: resource.ComposeAggregateTestCheckFunc(
-	                       resource.TestCheckResourceAttr("data.btp_directory_users.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
-	                       resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "2"),
-	                   ),
-	               },
-	           },
-	       })
-	   })*/
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProvider() + hclDatasourceDirectoryUsersWithCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "this-doesnt-exist"),
+					ExpectError: regexp.MustCompile(`API Error Reading Resource Users \(Directory\)`),
+				},
+			},
+		})
+	})
 	t.Run("error path - directory_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,

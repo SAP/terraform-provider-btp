@@ -1,0 +1,1145 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - e94d2a59-7b02-0b84-7022-b673d91c0d17
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:10 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - f7d28106-d728-426e-71a9-3c92bed3455f
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 574.3785ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 898ae207-fde5-f524-a5cc-61f1d7d0e38f
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/app?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Tue, 11 Jul 2023 07:54:10 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/app?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - a3cdac6e-4b83-4eb2-6b19-8aa2c016c7bb
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 231.34ms
+    - id: 2
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/app?list
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 898ae207-fde5-f524-a5cc-61f1d7d0e38f
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/app?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"appid":"abap-business-service!b1312","serviceinstanceid":"42e515ba-0989-494e-a413-fdeb168df57c","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"af0e3cb4-0c9c-4bd7-b403-5bbcdadf5ebd","xsappname":"abap-business-service","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","x509","instance-secret"]},"tenant-mode":"dedicated"},{"appid":"ans-xsuaa!b72","serviceinstanceid":"a88b09be-6412-4c52-8bd9-1acabc63e26e","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"685e7b2e-842d-461f-84ba-131964838468","xsappname":"ans-xsuaa","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"auditlog!b14","serviceinstanceid":"eb930e00-7414-470b-be79-77fc8b1197ea","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cf-eu12-sap","xsappname":"auditlog","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials","password","user_token","client_x509","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"cam-integration!t1","serviceinstanceid":"1e2c3e0a-2adb-46c3-a91c-53d8b73f86df","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"sap-uaa","xsappname":"cam-integration","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["x509"]},"tenant-mode":"shared"},{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","xsappname":"cas-ui-xsuaa-prod","attributes":[],"oauth2-configuration":{"token-validity":90000,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"cis-local!b2","serviceinstanceid":"c6372bca-1380-4010-905f-7775547fbebd","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Management of your environments and subscriptions to multitenant applications.","masterAppId":null,"tenantId":"sap-provisioning","xsappname":"cis-local","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"shared"},{"appid":"cockpit!t24","serviceinstanceid":"15dcbb85-75dd-4fb6-bc71-39ccb84f2760","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cockpit","xsappname":"cockpit","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"cockpit_xsuaa-api!t24","serviceinstanceid":"9925f4e2-a237-4ee9-9023-0615ecd8c8f1","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cockpit","xsappname":"cockpit_xsuaa-api","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"connectivity!b10","serviceinstanceid":"630eff1d-05dc-4e27-a260-9d6d9d914a7b","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"sap-connectivity","xsappname":"connectivity","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["ias-corporate-idp-token"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"cpcli!t23","serviceinstanceid":"1354785f-7a0f-438d-ab00-a2bad3666528","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"SAPcpcli","xsappname":"cpcli","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["instance-secret","binding-secret","x509"]},"tenant-mode":"shared"},{"appid":"destination-xsappname!b9","serviceinstanceid":"b8ccc844-593a-4ed6-8a5a-cb8a5e3f5141","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service.","masterAppId":null,"tenantId":"sap-destination-configuration","xsappname":"destination-xsappname","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections","ias-corporate-idp-token"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"launchpad-utilities!b164","serviceinstanceid":"b4fcba7e-5ba1-4d0e-b1f3-f99022cdb588","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"6897360f-7e35-411b-87e7-f3b501f4f9a7","xsappname":"launchpad-utilities","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"dedicated"},{"appid":"service-manager!b3","serviceinstanceid":"84fd49bf-328c-429a-a06d-53b6e22e65d4","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Service Manager","masterAppId":null,"tenantId":"svcmgr-cf-eu12","xsappname":"service-manager","attributes":[],"oauth2-configuration":{"token-validity":1800,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","x509","instance-secret"]},"tenant-mode":"dedicated"},{"appid":"spc-integration!t1","serviceinstanceid":"dae35f45-8e5d-4f58-b499-ca3865fa640c","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"add-scope","masterAppId":null,"tenantId":"sap-uaa","xsappname":"spc-integration","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["x509"]},"tenant-mode":"shared"},{"appid":"xsuaa!t1","serviceinstanceid":"df0d1304-3275-492c-a944-c5de7ad0786a","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Administration of authorizations, trusted identity providers, and users.","masterAppId":null,"tenantId":"sap-uaa","xsappname":"xsuaa","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:11 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - f1792adc-a91a-4867-541a-6745d26b7ab7
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 274.2116ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 7e40f2de-8ab6-822c-4e05-a2edf04cd257
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:11 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - c7ddaf24-74cc-485f-4470-a86436244949
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 375.5209ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 4cb5335b-57fe-81e2-4941-812e57e3d1bc
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/app?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Tue, 11 Jul 2023 07:54:11 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/app?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - bfa0ec21-e3f4-4b22-49ca-fdcdd33525a4
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 174.378ms
+    - id: 5
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/app?list
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 4cb5335b-57fe-81e2-4941-812e57e3d1bc
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/app?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"appid":"abap-business-service!b1312","serviceinstanceid":"42e515ba-0989-494e-a413-fdeb168df57c","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"af0e3cb4-0c9c-4bd7-b403-5bbcdadf5ebd","xsappname":"abap-business-service","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","x509","instance-secret"]},"tenant-mode":"dedicated"},{"appid":"ans-xsuaa!b72","serviceinstanceid":"a88b09be-6412-4c52-8bd9-1acabc63e26e","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"685e7b2e-842d-461f-84ba-131964838468","xsappname":"ans-xsuaa","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"auditlog!b14","serviceinstanceid":"eb930e00-7414-470b-be79-77fc8b1197ea","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cf-eu12-sap","xsappname":"auditlog","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials","password","user_token","client_x509","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"cam-integration!t1","serviceinstanceid":"1e2c3e0a-2adb-46c3-a91c-53d8b73f86df","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"sap-uaa","xsappname":"cam-integration","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["x509"]},"tenant-mode":"shared"},{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","xsappname":"cas-ui-xsuaa-prod","attributes":[],"oauth2-configuration":{"token-validity":90000,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"cis-local!b2","serviceinstanceid":"c6372bca-1380-4010-905f-7775547fbebd","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Management of your environments and subscriptions to multitenant applications.","masterAppId":null,"tenantId":"sap-provisioning","xsappname":"cis-local","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"shared"},{"appid":"cockpit!t24","serviceinstanceid":"15dcbb85-75dd-4fb6-bc71-39ccb84f2760","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cockpit","xsappname":"cockpit","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"cockpit_xsuaa-api!t24","serviceinstanceid":"9925f4e2-a237-4ee9-9023-0615ecd8c8f1","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cockpit","xsappname":"cockpit_xsuaa-api","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"connectivity!b10","serviceinstanceid":"630eff1d-05dc-4e27-a260-9d6d9d914a7b","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"sap-connectivity","xsappname":"connectivity","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["ias-corporate-idp-token"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"cpcli!t23","serviceinstanceid":"1354785f-7a0f-438d-ab00-a2bad3666528","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"SAPcpcli","xsappname":"cpcli","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["instance-secret","binding-secret","x509"]},"tenant-mode":"shared"},{"appid":"destination-xsappname!b9","serviceinstanceid":"b8ccc844-593a-4ed6-8a5a-cb8a5e3f5141","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service.","masterAppId":null,"tenantId":"sap-destination-configuration","xsappname":"destination-xsappname","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections","ias-corporate-idp-token"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"launchpad-utilities!b164","serviceinstanceid":"b4fcba7e-5ba1-4d0e-b1f3-f99022cdb588","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"6897360f-7e35-411b-87e7-f3b501f4f9a7","xsappname":"launchpad-utilities","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"dedicated"},{"appid":"service-manager!b3","serviceinstanceid":"84fd49bf-328c-429a-a06d-53b6e22e65d4","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Service Manager","masterAppId":null,"tenantId":"svcmgr-cf-eu12","xsappname":"service-manager","attributes":[],"oauth2-configuration":{"token-validity":1800,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","x509","instance-secret"]},"tenant-mode":"dedicated"},{"appid":"spc-integration!t1","serviceinstanceid":"dae35f45-8e5d-4f58-b499-ca3865fa640c","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"add-scope","masterAppId":null,"tenantId":"sap-uaa","xsappname":"spc-integration","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["x509"]},"tenant-mode":"shared"},{"appid":"xsuaa!t1","serviceinstanceid":"df0d1304-3275-492c-a944-c5de7ad0786a","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Administration of authorizations, trusted identity providers, and users.","masterAppId":null,"tenantId":"sap-uaa","xsappname":"xsuaa","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:11 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 9e5f5dad-7b47-4382-4113-5985afb973b1
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 162.2161ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 280eafd6-0e1a-ed47-74d2-b138ed8202e1
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:14 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - eef6c973-0580-457c-72d6-402d617aacf2
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.3948741s
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 31b210d6-b42a-1087-6f98-8f74bf731cdc
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/app?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Tue, 11 Jul 2023 07:54:14 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/app?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - d5a7ae6b-fed1-4223-47ca-071a115919d9
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 202.6793ms
+    - id: 8
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/app?list
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 31b210d6-b42a-1087-6f98-8f74bf731cdc
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/app?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"appid":"abap-business-service!b1312","serviceinstanceid":"42e515ba-0989-494e-a413-fdeb168df57c","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"af0e3cb4-0c9c-4bd7-b403-5bbcdadf5ebd","xsappname":"abap-business-service","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","x509","instance-secret"]},"tenant-mode":"dedicated"},{"appid":"ans-xsuaa!b72","serviceinstanceid":"a88b09be-6412-4c52-8bd9-1acabc63e26e","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"685e7b2e-842d-461f-84ba-131964838468","xsappname":"ans-xsuaa","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"auditlog!b14","serviceinstanceid":"eb930e00-7414-470b-be79-77fc8b1197ea","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cf-eu12-sap","xsappname":"auditlog","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials","password","user_token","client_x509","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"cam-integration!t1","serviceinstanceid":"1e2c3e0a-2adb-46c3-a91c-53d8b73f86df","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"sap-uaa","xsappname":"cam-integration","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["x509"]},"tenant-mode":"shared"},{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","xsappname":"cas-ui-xsuaa-prod","attributes":[],"oauth2-configuration":{"token-validity":90000,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"cis-local!b2","serviceinstanceid":"c6372bca-1380-4010-905f-7775547fbebd","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Management of your environments and subscriptions to multitenant applications.","masterAppId":null,"tenantId":"sap-provisioning","xsappname":"cis-local","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"shared"},{"appid":"cockpit!t24","serviceinstanceid":"15dcbb85-75dd-4fb6-bc71-39ccb84f2760","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cockpit","xsappname":"cockpit","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"cockpit_xsuaa-api!t24","serviceinstanceid":"9925f4e2-a237-4ee9-9023-0615ecd8c8f1","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cockpit","xsappname":"cockpit_xsuaa-api","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"connectivity!b10","serviceinstanceid":"630eff1d-05dc-4e27-a260-9d6d9d914a7b","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"sap-connectivity","xsappname":"connectivity","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["ias-corporate-idp-token"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"cpcli!t23","serviceinstanceid":"1354785f-7a0f-438d-ab00-a2bad3666528","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"SAPcpcli","xsappname":"cpcli","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["instance-secret","binding-secret","x509"]},"tenant-mode":"shared"},{"appid":"destination-xsappname!b9","serviceinstanceid":"b8ccc844-593a-4ed6-8a5a-cb8a5e3f5141","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service.","masterAppId":null,"tenantId":"sap-destination-configuration","xsappname":"destination-xsappname","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections","ias-corporate-idp-token"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"launchpad-utilities!b164","serviceinstanceid":"b4fcba7e-5ba1-4d0e-b1f3-f99022cdb588","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"6897360f-7e35-411b-87e7-f3b501f4f9a7","xsappname":"launchpad-utilities","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"dedicated"},{"appid":"service-manager!b3","serviceinstanceid":"84fd49bf-328c-429a-a06d-53b6e22e65d4","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Service Manager","masterAppId":null,"tenantId":"svcmgr-cf-eu12","xsappname":"service-manager","attributes":[],"oauth2-configuration":{"token-validity":1800,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","x509","instance-secret"]},"tenant-mode":"dedicated"},{"appid":"spc-integration!t1","serviceinstanceid":"dae35f45-8e5d-4f58-b499-ca3865fa640c","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"add-scope","masterAppId":null,"tenantId":"sap-uaa","xsappname":"spc-integration","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["x509"]},"tenant-mode":"shared"},{"appid":"xsuaa!t1","serviceinstanceid":"df0d1304-3275-492c-a944-c5de7ad0786a","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Administration of authorizations, trusted identity providers, and users.","masterAppId":null,"tenantId":"sap-uaa","xsappname":"xsuaa","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:14 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 76f497a4-db0f-489f-4fa0-d82f889176a2
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 148.3039ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 06ff1ba7-53ca-e2e5-ce77-e69c7b1439be
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:15 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - d07553de-a6c1-40d7-50d8-5f58f1c35dc4
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 366.8262ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 0cc918d9-ce42-3e94-b3d5-e390c53cbb75
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/app?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Tue, 11 Jul 2023 07:54:15 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/app?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - beef1f8d-cf85-47e2-53c1-f894dd05a70c
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 301.0897ms
+    - id: 11
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/app?list
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 0cc918d9-ce42-3e94-b3d5-e390c53cbb75
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/app?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"appid":"abap-business-service!b1312","serviceinstanceid":"42e515ba-0989-494e-a413-fdeb168df57c","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"af0e3cb4-0c9c-4bd7-b403-5bbcdadf5ebd","xsappname":"abap-business-service","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","x509","instance-secret"]},"tenant-mode":"dedicated"},{"appid":"ans-xsuaa!b72","serviceinstanceid":"a88b09be-6412-4c52-8bd9-1acabc63e26e","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"685e7b2e-842d-461f-84ba-131964838468","xsappname":"ans-xsuaa","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"auditlog!b14","serviceinstanceid":"eb930e00-7414-470b-be79-77fc8b1197ea","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cf-eu12-sap","xsappname":"auditlog","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials","password","user_token","client_x509","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"cam-integration!t1","serviceinstanceid":"1e2c3e0a-2adb-46c3-a91c-53d8b73f86df","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"sap-uaa","xsappname":"cam-integration","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["x509"]},"tenant-mode":"shared"},{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","xsappname":"cas-ui-xsuaa-prod","attributes":[],"oauth2-configuration":{"token-validity":90000,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"cis-local!b2","serviceinstanceid":"c6372bca-1380-4010-905f-7775547fbebd","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Management of your environments and subscriptions to multitenant applications.","masterAppId":null,"tenantId":"sap-provisioning","xsappname":"cis-local","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"shared"},{"appid":"cockpit!t24","serviceinstanceid":"15dcbb85-75dd-4fb6-bc71-39ccb84f2760","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cockpit","xsappname":"cockpit","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"cockpit_xsuaa-api!t24","serviceinstanceid":"9925f4e2-a237-4ee9-9023-0615ecd8c8f1","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cockpit","xsappname":"cockpit_xsuaa-api","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"connectivity!b10","serviceinstanceid":"630eff1d-05dc-4e27-a260-9d6d9d914a7b","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"sap-connectivity","xsappname":"connectivity","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["ias-corporate-idp-token"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"cpcli!t23","serviceinstanceid":"1354785f-7a0f-438d-ab00-a2bad3666528","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"SAPcpcli","xsappname":"cpcli","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["instance-secret","binding-secret","x509"]},"tenant-mode":"shared"},{"appid":"destination-xsappname!b9","serviceinstanceid":"b8ccc844-593a-4ed6-8a5a-cb8a5e3f5141","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service.","masterAppId":null,"tenantId":"sap-destination-configuration","xsappname":"destination-xsappname","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections","ias-corporate-idp-token"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"launchpad-utilities!b164","serviceinstanceid":"b4fcba7e-5ba1-4d0e-b1f3-f99022cdb588","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"6897360f-7e35-411b-87e7-f3b501f4f9a7","xsappname":"launchpad-utilities","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"dedicated"},{"appid":"service-manager!b3","serviceinstanceid":"84fd49bf-328c-429a-a06d-53b6e22e65d4","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Service Manager","masterAppId":null,"tenantId":"svcmgr-cf-eu12","xsappname":"service-manager","attributes":[],"oauth2-configuration":{"token-validity":1800,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","x509","instance-secret"]},"tenant-mode":"dedicated"},{"appid":"spc-integration!t1","serviceinstanceid":"dae35f45-8e5d-4f58-b499-ca3865fa640c","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"add-scope","masterAppId":null,"tenantId":"sap-uaa","xsappname":"spc-integration","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["x509"]},"tenant-mode":"shared"},{"appid":"xsuaa!t1","serviceinstanceid":"df0d1304-3275-492c-a944-c5de7ad0786a","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Administration of authorizations, trusted identity providers, and users.","masterAppId":null,"tenantId":"sap-uaa","xsappname":"xsuaa","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:15 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 16696b4d-ee42-42a6-53d2-218d72ae5150
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 161.3126ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - a642e086-406e-5d41-ab46-51e3f43e15e3
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:16 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 35c819df-b0a8-47c1-6e8b-bdd5ec47bc4c
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 406.5304ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 1b21d4be-d67e-4adb-dccc-c1535ec7dce1
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/app?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
+            Date:
+                - Tue, 11 Jul 2023 07:54:16 GMT
+            Expires:
+                - "0"
+            Location:
+                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/app?list
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Frame-Options:
+                - DENY
+            X-Id-Token:
+                - redacted
+            X-Vcap-Request-Id:
+                - b196f0f4-1553-4600-79d2-d210e000af96
+            X-Xss-Protection:
+                - "0"
+        status: 307 Temporary Redirect
+        code: 307
+        duration: 234.0366ms
+    - id: 14
+      request:
+        proto: ""
+        proto_major: 0
+        proto_minor: 0
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: ""
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            Referer:
+                - https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/app?list
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - 1b21d4be-d67e-4adb-dccc-c1535ec7dce1
+            X-Cpcli-Customidp:
+                - ""
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Subdomain:
+                - integration-test-services-4ie3yr1a
+            X-Id-Token:
+                - redacted
+        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.38.0/security/app?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '[{"appid":"abap-business-service!b1312","serviceinstanceid":"42e515ba-0989-494e-a413-fdeb168df57c","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"af0e3cb4-0c9c-4bd7-b403-5bbcdadf5ebd","xsappname":"abap-business-service","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","x509","instance-secret"]},"tenant-mode":"dedicated"},{"appid":"ans-xsuaa!b72","serviceinstanceid":"a88b09be-6412-4c52-8bd9-1acabc63e26e","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"685e7b2e-842d-461f-84ba-131964838468","xsappname":"ans-xsuaa","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"auditlog!b14","serviceinstanceid":"eb930e00-7414-470b-be79-77fc8b1197ea","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cf-eu12-sap","xsappname":"auditlog","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials","password","user_token","client_x509","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"cam-integration!t1","serviceinstanceid":"1e2c3e0a-2adb-46c3-a91c-53d8b73f86df","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"sap-uaa","xsappname":"cam-integration","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["x509"]},"tenant-mode":"shared"},{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","xsappname":"cas-ui-xsuaa-prod","attributes":[],"oauth2-configuration":{"token-validity":90000,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"cis-local!b2","serviceinstanceid":"c6372bca-1380-4010-905f-7775547fbebd","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Management of your environments and subscriptions to multitenant applications.","masterAppId":null,"tenantId":"sap-provisioning","xsappname":"cis-local","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"shared"},{"appid":"cockpit!t24","serviceinstanceid":"15dcbb85-75dd-4fb6-bc71-39ccb84f2760","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cockpit","xsappname":"cockpit","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"cockpit_xsuaa-api!t24","serviceinstanceid":"9925f4e2-a237-4ee9-9023-0615ecd8c8f1","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"cockpit","xsappname":"cockpit_xsuaa-api","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"},{"appid":"connectivity!b10","serviceinstanceid":"630eff1d-05dc-4e27-a260-9d6d9d914a7b","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"sap-connectivity","xsappname":"connectivity","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["ias-corporate-idp-token"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"cpcli!t23","serviceinstanceid":"1354785f-7a0f-438d-ab00-a2bad3666528","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"SAPcpcli","xsappname":"cpcli","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["instance-secret","binding-secret","x509"]},"tenant-mode":"shared"},{"appid":"destination-xsappname!b9","serviceinstanceid":"b8ccc844-593a-4ed6-8a5a-cb8a5e3f5141","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Retrieve and manage destination configurations, associated certificates, and signing keys for SAML assertions issued by the Destination service.","masterAppId":null,"tenantId":"sap-destination-configuration","xsappname":"destination-xsappname","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections","ias-corporate-idp-token"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","instance-secret","x509"]},"tenant-mode":"dedicated"},{"appid":"launchpad-utilities!b164","serviceinstanceid":"b4fcba7e-5ba1-4d0e-b1f3-f99022cdb588","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":null,"masterAppId":null,"tenantId":"6897360f-7e35-411b-87e7-f3b501f4f9a7","xsappname":"launchpad-utilities","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"dedicated"},{"appid":"service-manager!b3","serviceinstanceid":"84fd49bf-328c-429a-a06d-53b6e22e65d4","planId":"HWEgt9/jJGFjzT8j+/x9pGivrAuKbUMUK8PgWEx3cLY=","planName":"broker","orgId":null,"spaceId":null,"userName":null,"description":"Service Manager","masterAppId":null,"tenantId":"svcmgr-cf-eu12","xsappname":"service-manager","attributes":[],"oauth2-configuration":{"token-validity":1800,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["binding-secret","x509","instance-secret"]},"tenant-mode":"dedicated"},{"appid":"spc-integration!t1","serviceinstanceid":"dae35f45-8e5d-4f58-b499-ca3865fa640c","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"add-scope","masterAppId":null,"tenantId":"sap-uaa","xsappname":"spc-integration","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["client_credentials"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[],"credential-types":["x509"]},"tenant-mode":"shared"},{"appid":"xsuaa!t1","serviceinstanceid":"df0d1304-3275-492c-a944-c5de7ad0786a","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Administration of authorizations, trusted identity providers, and users.","masterAppId":null,"tenantId":"sap-uaa","xsappname":"xsuaa","attributes":[],"oauth2-configuration":{"token-validity":0,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":[]},"tenant-mode":"shared"}]'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:16 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Cpcli-Refreshtoken:
+                - redacted
+            X-Cpcli-Replacementrefreshtoken:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - d69672a0-fca0-4794-53d7-83a8b28e0a46
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 293.5756ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: cpcli.cf.sap.hana.ondemand.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"redacted"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.5.2 terraform-provider-btp/dev
+            X-Correlationid:
+                - d9dc457d-755a-9daf-c318-74b1bebf6aff
+            X-Cpcli-Format:
+                - json
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"issuer":"accounts.sap.com","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 11 Jul 2023 07:54:17 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 118cdbc4-2b5e-4496-7717-3f0cf0b8db1f
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 380.7298ms

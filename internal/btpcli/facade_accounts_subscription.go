@@ -19,7 +19,7 @@ func (f *accountsSubscriptionFacade) getCommand() string {
 }
 
 func (f *accountsSubscriptionFacade) List(ctx context.Context, subaccountId string) ([]saas_manager_service.EntitledApplicationsResponseObject, CommandResponse, error) {
-	type wrapper struct { // FIXME should be in types package
+	type wrapper struct { // TODO should be in types package
 		Applications []saas_manager_service.EntitledApplicationsResponseObject `json:"applications"`
 	}
 

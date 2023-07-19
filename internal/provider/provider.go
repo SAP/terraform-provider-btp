@@ -161,7 +161,6 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newDirectoryRoleResource,
 		newGlobalaccountRoleResource,
 		newSubaccountRoleResource,
-		newSubaccountSubscriptionResource,
 	}
 
 	if !p.betaFeaturesEnabled {
@@ -170,19 +169,20 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 
 	return append([]func() resource.Resource{
 		newDirectoryResource,
-		newDirectoryRoleCollectionResource,
 		newDirectoryRoleCollectionAssignmentResource,
+		newDirectoryRoleCollectionResource,
 		newGlobalaccountResourceProviderResource,
-		newGlobalaccountRoleCollectionResource,
 		newGlobalaccountRoleCollectionAssignmentResource,
+		newGlobalaccountRoleCollectionResource,
 		newGlobalaccountTrustConfigurationResource,
 		newSubaccountEntitlementResource,
 		newSubaccountEnvironmentInstanceResource,
 		newSubaccountResource,
-		newSubaccountRoleCollectionResource,
 		newSubaccountRoleCollectionAssignmentResource,
+		newSubaccountRoleCollectionResource,
 		newSubaccountServiceBindingResource,
 		newSubaccountServiceInstanceResource,
+		newSubaccountSubscriptionResource,
 		newSubaccountTrustConfigurationResource,
 	}, betaResources...)
 }
@@ -196,14 +196,10 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newGlobalaccountAppsDataSource,
 		newGlobalaccountResourceProviderDataSource,
 		newGlobalaccountResourceProvidersDataSource,
-		newSubaccountAppDataSource,
-		newSubaccountAppsDataSource,
 		newSubaccountServiceBrokerDataSource,
 		newSubaccountServiceBrokersDataSource,
 		newSubaccountServicePlatformDataSource,
 		newSubaccountServicePlatformsDataSource,
-		newSubaccountSubscriptionDataSource,
-		newSubaccountSubscriptionsDataSource,
 	}
 
 	if !p.betaFeaturesEnabled {
@@ -231,6 +227,8 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newGlobalaccountUserDataSource,
 		newGlobalaccountUsersDataSource,
 		newRegionsDataSource,
+		newSubaccountAppDataSource,
+		newSubaccountAppsDataSource,
 		newSubaccountDataSource,
 		newSubaccountEntitlementsDataSource,
 		newSubaccountEnvironmentInstanceDataSource,
@@ -249,6 +247,8 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newSubaccountServiceOfferingsDataSource,
 		newSubaccountServicePlanDataSource,
 		newSubaccountServicePlansDataSource,
+		newSubaccountSubscriptionDataSource,
+		newSubaccountSubscriptionsDataSource,
 		newSubaccountTrustConfigurationDataSource,
 		newSubaccountTrustConfigurationsDataSource,
 		newSubaccountUserDataSource,

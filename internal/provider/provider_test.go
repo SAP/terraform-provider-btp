@@ -225,9 +225,7 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_subaccount_role_collection_assignment",
 		"btp_subaccount_service_instance",
 		"btp_subaccount_service_binding",
-		/* TODO: switched off for phase 1
 		"btp_subaccount_subscription",
-		*/
 		"btp_subaccount_trust_configuration",
 	}
 
@@ -248,7 +246,7 @@ func TestProvider_HasResources(t *testing.T) {
 func TestProvider_HasDatasources(t *testing.T) {
 	expectedDataSources := []string{
 		"btp_directory",
-		/*TODO: Switched off for phase 1
+		/*TODO: Depending on customer feedback
 		"btp_directory_app",
 		"btp_directory_apps",
 		*/
@@ -261,12 +259,12 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_directory_user",
 		"btp_directory_users",
 		"btp_globalaccount",
-		/*TODO: Switched off for phase 1
+		/*TODO: Depending on customer feedback
 		"btp_globalaccount_app",
 		"btp_globalaccount_apps",
 		*/
 		"btp_globalaccount_entitlements",
-		/*TODO: Switched off for phase 1
+		/*TODO: Depending on customer feedback
 		"btp_globalaccount_resource_provider",
 		"btp_globalaccount_resource_providers",
 		*/
@@ -280,10 +278,8 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_globalaccount_users",
 		"btp_regions",
 		"btp_subaccount",
-		/*TODO: Switched off for phase 1
 		"btp_subaccount_app",
 		"btp_subaccount_apps",
-		*/
 		"btp_subaccount_entitlements",
 		"btp_subaccount_environment_instance",
 		"btp_subaccount_environment_instances",
@@ -305,12 +301,12 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_service_offerings",
 		"btp_subaccount_service_plan",
 		"btp_subaccount_service_plans",
-		/*
-			"btp_subaccount_service_platform",
-			"btp_subaccount_service_platforms",
-			"btp_subaccount_subscription",
-			"btp_subaccount_subscriptions",
+    /*
+		"btp_subaccount_service_platform",
+		"btp_subaccount_service_platforms",
 		*/
+		"btp_subaccount_subscription",
+		"btp_subaccount_subscriptions",
 		"btp_subaccount_trust_configuration",
 		"btp_subaccount_trust_configurations",
 		"btp_subaccount_user",
