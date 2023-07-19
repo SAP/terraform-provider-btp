@@ -217,9 +217,15 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 }
 
 func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan subaccountServiceInstanceType
+	var stateCurrent, plan subaccountServiceInstanceType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	diagsState := req.State.Get(ctx, &stateCurrent)
+	resp.Diagnostics.Append(diagsState...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -227,6 +233,7 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	cliReq := btpcli.ServiceInstanceUpdateInput{
 		Subaccount:    plan.SubaccountId.ValueString(),
 		Id:            plan.Id.ValueString(),
+		Name:          stateCurrent.Name.ValueString(),
 		NewName:       plan.Name.ValueString(),
 		ServicePlanId: plan.ServicePlanId.ValueString(),
 	}

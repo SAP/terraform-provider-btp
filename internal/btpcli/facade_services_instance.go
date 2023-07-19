@@ -71,6 +71,7 @@ func (f servicesInstanceFacade) Create(ctx context.Context, args *ServiceInstanc
 
 type ServiceInstanceUpdateInput struct {
 	Id            string              `btpcli:"id"`
+	Name          string              `btpcli:"name"`
 	NewName       string              `btpcli:"newName"`
 	Subaccount    string              `btpcli:"subaccount"`
 	ServicePlanId string              `btpcli:"plan"`
