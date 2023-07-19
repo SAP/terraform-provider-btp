@@ -391,7 +391,7 @@ func mapUsageToUsedForProduction(subaccountUsage string) string {
 	// Options: "" == ignored in request, "true" == boolean true in request, "false" == boolean false in request
 	switch subaccountUsage {
 	case "UNSET":
-		return "false"
+		return ""
 	case "NOT_USED_FOR_PRODUCTION":
 		return "false"
 	case "USED_FOR_PRODUCTION":
