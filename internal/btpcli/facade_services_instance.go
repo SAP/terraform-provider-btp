@@ -2,6 +2,7 @@ package btpcli
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/servicemanager"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
@@ -86,7 +87,24 @@ func (f servicesInstanceFacade) Update(ctx context.Context, args *ServiceInstanc
 		return servicemanager.ServiceInstanceResponseObject{}, CommandResponse{}, err
 	}
 
-	return doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
+	//TODO workaround for NGPBUG-359662 and NGPBUG-350117 => needs to be rebuilt after fix
+	//return doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
+	// 1. Call the update directly without deserialize the response
+	// 2. Do a consequent GET request to get a consistent response of the instance.
+
+	res, err := f.cliClient.Execute(ctx, NewUpdateRequest(f.getCommand(), params))
+
+	if err != nil {
+		return servicemanager.ServiceInstanceResponseObject{}, res, err
+	}
+
+	if res.StatusCode == 202 {
+		return f.GetById(ctx, args.Subaccount, args.Id)
+	} else {
+		err = fmt.Errorf("the backend responded with an unknown error: %d", res.StatusCode)
+		return servicemanager.ServiceInstanceResponseObject{}, res, err
+	}
+
 }
 
 func (f servicesInstanceFacade) Delete(ctx context.Context, subaccountId string, serviceId string) (CommandResponse, error) {

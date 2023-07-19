@@ -231,8 +231,9 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	}
 
 	cliReq := btpcli.ServiceInstanceUpdateInput{
-		Subaccount:    plan.SubaccountId.ValueString(),
-		Id:            plan.Id.ValueString(),
+		Subaccount: plan.SubaccountId.ValueString(),
+		Id:         plan.Id.ValueString(),
+		//TODO workaround for NGPBUG-359662 and NGPBUG-350117 => Name needs to be removed after fix, ID must be sufficient
 		Name:          stateCurrent.Name.ValueString(),
 		NewName:       plan.Name.ValueString(),
 		ServicePlanId: plan.ServicePlanId.ValueString(),
@@ -257,6 +258,32 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	}
 
 	state, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
+	state.Parameters = plan.Parameters
+	resp.Diagnostics.Append(diags...)
+
+	updateStateConf := &tfutils.StateChangeConf{
+		Pending: []string{servicemanager.StateInProgress},
+		Target:  []string{servicemanager.StateSucceeded, servicemanager.StateFailed},
+		Refresh: func() (interface{}, string, error) {
+			subRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
+
+			if err != nil {
+				return subRes, "", err
+			}
+
+			return subRes, subRes.LastOperation.State, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Updating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
+	}
+
+	state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
 	resp.Diagnostics.Append(diags...)
 
