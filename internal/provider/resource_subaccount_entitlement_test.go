@@ -41,8 +41,6 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 		})
 	})
 
-	/* TODO: Check how to provide the amount attribute. Currently not possible (see https://github.com/SAP/terraform-provider-btp/issues/75).
-
 	t.Run("happy path - with amount", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/resource_subaccount_entitlement.amount_set")
 		defer stopQuietly(rec)
@@ -52,28 +50,21 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "alert-notification", "standard", "3"),
+					Config: hclProvider() + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "3"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "last_modified", regexpValidRFC3999Format),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "hana-cloud-hana"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "hana"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "hana-cloud-hana"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "data-privacy-integration-service-standard"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "standard"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "data-privacy-integration-service-standard"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "data-privacy-integration-service"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},
-					{
-						ResourceName:      "btp_subaccount_entitlement.uut",
-						ImportState:       false,
-						ImportStateVerify: true,
-					},
-
 			},
 		})
 	})
-	*/
 }
 
 func hclResourceSubaccountEntitlement(resourceName string, subaccountId string, serviceName string, planName string) string {
@@ -87,7 +78,6 @@ resource "btp_subaccount_entitlement" "%s" {
 	return fmt.Sprintf(template, resourceName, subaccountId, serviceName, planName)
 }
 
-/* TODO: Check how to provide the amount attribute. Currently not possible.
 func hclResourceSubaccountEntitlementWithAmount(resourceName string, subaccountId string, serviceName string, planName string, amount string) string {
 	return fmt.Sprintf(`resource "btp_subaccount_entitlement" "%s" {
         subaccount_id      = "%s"
@@ -96,4 +86,3 @@ func hclResourceSubaccountEntitlementWithAmount(resourceName string, subaccountI
         amount = %s
     }`, resourceName, subaccountId, serviceName, planName, amount)
 }
-*/
