@@ -34,6 +34,7 @@ type subaccountServiceBindingValue struct {
 type subaccountServiceBindingsDataSourceConfig struct {
 	/* INPUT */
 	SubaccountId types.String `tfsdk:"subaccount_id"`
+	Id           types.String `tfsdk:"id"`
 	FieldsFilter types.String `tfsdk:"fields_filter"`
 	LabelsFilter types.String `tfsdk:"labels_filter"`
 	/* OUTPUT */
@@ -66,6 +67,11 @@ func (ds *subaccountServiceBindingsDataSource) Schema(_ context.Context, _ datas
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+			},
+			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
+				MarkdownDescription: "The ID of the subaccount.",
+				Computed:            true,
 			},
 			"fields_filter": schema.StringAttribute{
 				MarkdownDescription: "Filters the service bindings based on the field query.",
@@ -164,6 +170,7 @@ func (ds *subaccountServiceBindingsDataSource) Read(ctx context.Context, req dat
 		return
 	}
 
+	data.Id = data.SubaccountId
 	data.Values = []subaccountServiceBindingValue{}
 
 	for _, binding := range cliRes {

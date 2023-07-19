@@ -110,6 +110,26 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 			i.Response.Body = i.Response.Body[:indexOfExternalId+14] + "I000000" + i.Response.Body[indexOfExternalId+21:]
 		}
 
+		if strings.Contains(i.Response.Body, "clientid") {
+			reClientSecretVariant1 := regexp.MustCompile(`"clientid":"(.*?)"`)
+			i.Response.Body = reClientSecretVariant1.ReplaceAllString(i.Response.Body, `"clientid":"redacted"`)
+		}
+
+		if strings.Contains(i.Response.Body, "clientsecret") {
+			reClientSecretVariant1 := regexp.MustCompile(`"clientsecret":"(.*?)"`)
+			i.Response.Body = reClientSecretVariant1.ReplaceAllString(i.Response.Body, `"clientsecret":"redacted"`)
+		}
+
+		if strings.Contains(i.Response.Body, "client_id") {
+			reClientSecretVariant2 := regexp.MustCompile(`"client_id":"(.*?)"`)
+			i.Response.Body = reClientSecretVariant2.ReplaceAllString(i.Response.Body, `"client_id":"redacted"`)
+		}
+
+		if strings.Contains(i.Response.Body, "client_secret") {
+			reClientSecretVariant2 := regexp.MustCompile(`"client_secret":"(.*?)"`)
+			i.Response.Body = reClientSecretVariant2.ReplaceAllString(i.Response.Body, `"client_secret":"redacted"`)
+		}
+
 		return nil
 	}
 
@@ -204,9 +224,7 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_subaccount_role_collection",
 		"btp_subaccount_role_collection_assignment",
 		"btp_subaccount_service_instance",
-		/* TODO: switched off for phase 1
 		"btp_subaccount_service_binding",
-		*/
 		"btp_subaccount_subscription",
 		"btp_subaccount_trust_configuration",
 	}
@@ -271,9 +289,9 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_role_collection",
 		"btp_subaccount_role_collections",
 		"btp_subaccount_roles",
-		/*TODO:
 		"btp_subaccount_service_binding",
 		"btp_subaccount_service_bindings",
+		/*TODO: Switched off for phase 1
 		"btp_subaccount_service_broker",
 		"btp_subaccount_service_brokers",
 		*/
