@@ -3,10 +3,11 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -76,8 +77,8 @@ __Further documentation:__
 				},
 			},
 			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
-				DeprecationMessage:  "Use the `name` attribute instead",
-				MarkdownDescription: "The ID of the role collection.",
+				DeprecationMessage:  "Use the `subaccount_id` and `name` attributes instead",
+				MarkdownDescription: "The combined unique ID of the role collection as used for import operations.",
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -137,8 +138,10 @@ func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resour
 	state.Name = types.StringValue(cliRes.Name)
 	state.Description = types.StringValue(cliRes.Description)
 
-	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
-	state.Id = types.StringValue(fmt.Sprintf("%s,%s", state.SubaccountId.ValueString(), cliRes.Name))
+	if state.Id.IsNull() || state.Id.IsUnknown() {
+		// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+		state.Id = types.StringValue(fmt.Sprintf("%s,%s", state.SubaccountId.ValueString(), cliRes.Name))
+	}
 
 	state.Roles = []subaccountRoleCollectionRoleRefType{}
 	for _, role := range cliRes.RoleReferences {
@@ -177,7 +180,7 @@ func (rs *subaccountRoleCollectionResource) Create(ctx context.Context, req reso
 
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
-	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
 	plan.Id = types.StringValue(fmt.Sprintf("%s,%s", plan.SubaccountId.ValueString(), cliRes.Name))
 
 	diags = resp.State.Set(ctx, &plan)

@@ -72,9 +72,12 @@ func (rs *subaccountRoleCollectionAssignmentResource) Schema(_ context.Context, 
 				},
 			},
 			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
-				DeprecationMessage:  "Use the `role_collection_name` field instead",
-				MarkdownDescription: "The ID of the role collection",
+				DeprecationMessage:  "Use the `subaccount_id` and `role_collection_name` attributes instead",
+				MarkdownDescription: "The combined unique ID of the role collection.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"user_name": schema.StringAttribute{
 				MarkdownDescription: "The username of the user to assign.",
@@ -120,9 +123,6 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 		return
 	}
 
-	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
-	state.Id = types.StringValue(fmt.Sprintf("%s,%s,%s", state.SubaccountId.ValueString(), state.RoleCollectionName.ValueString(), state.Username.ValueString()))
-
 	// This resource is not supposed to be read by definition. However nothing the user can do about that, hence no error message is raised via resp.Diagnostics.
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -150,7 +150,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Create(ctx context.Context
 		return
 	}
 
-	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
 	plan.Id = types.StringValue(fmt.Sprintf("%s,%s,%s", plan.SubaccountId.ValueString(), plan.RoleCollectionName.ValueString(), plan.Username.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)

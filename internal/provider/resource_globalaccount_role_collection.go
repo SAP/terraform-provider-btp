@@ -3,10 +3,11 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -128,8 +129,10 @@ func (rs *globalaccountRoleCollectionResource) Read(ctx context.Context, req res
 	state.Name = types.StringValue(cliRes.Name)
 	state.Description = types.StringValue(cliRes.Description)
 
-	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
-	state.Id = state.Name
+	if state.Id.IsNull() || state.Id.IsUnknown() {
+		// Setting ID of state - required by hashicorps terraform plugin testing framework for Import. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+		state.Id = state.Name
+	}
 
 	state.Roles = []globalaccountRoleCollectionRoleRefType{}
 	for _, role := range cliRes.RoleReferences {
@@ -160,7 +163,7 @@ func (rs *globalaccountRoleCollectionResource) Create(ctx context.Context, req r
 
 	plan.Name = types.StringValue(cliRes.Name)
 	plan.Description = types.StringValue(cliRes.Description)
-	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
 	plan.Id = types.StringValue(cliRes.Name)
 
 	for _, role := range plan.Roles {
