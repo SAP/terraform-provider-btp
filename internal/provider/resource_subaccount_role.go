@@ -52,7 +52,7 @@ __Further documentation:__
 				},
 			},
 			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
-				DeprecationMessage:  "Use the `subaccount_id`, `name`, `app_id` and `role_template_name` attributes instead",
+				DeprecationMessage:  "Use the `subaccount_id`, `name`, `role_template_name` and `app_id` attributes instead",
 				MarkdownDescription: "The combined unique ID of the role.",
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
