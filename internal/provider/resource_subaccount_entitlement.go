@@ -3,6 +3,10 @@ package provider
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"strings"
 	"time"
 
@@ -51,6 +55,9 @@ __Further documentation:__
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
@@ -58,14 +65,23 @@ __Further documentation:__
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the entitled service plan.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"service_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the entitled service.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"plan_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the entitled service plan.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"plan_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the entitled service plan.",
@@ -75,7 +91,7 @@ __Further documentation:__
 				MarkdownDescription: "The quota assigned to the subaccount.",
 				Optional:            true,
 				Validators: []validator.Int64{
-					int64validator.Between(0, 2000000000),
+					int64validator.Between(1, 2000000000),
 				},
 			},
 			"state": schema.StringAttribute{
@@ -125,10 +141,18 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 }
 
 func (rs *subaccountEntitlementResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	rs.createOrUpdate(ctx, req.Plan, &resp.Diagnostics, &resp.State, "Creating")
+}
+
+func (rs *subaccountEntitlementResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	rs.createOrUpdate(ctx, req.Plan, &resp.Diagnostics, &resp.State, "Updating")
+}
+
+func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, requestPlan tfsdk.Plan, responseDiagnostics *diag.Diagnostics, responseState *tfsdk.State, action string) {
 	var plan subaccountEntitlementType
-	diags := req.Plan.Get(ctx, &plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
+	diags := requestPlan.Get(ctx, &plan)
+	responseDiagnostics.Append(diags...)
+	if responseDiagnostics.HasError() {
 		return
 	}
 
@@ -140,7 +164,7 @@ func (rs *subaccountEntitlementResource) Create(ctx context.Context, req resourc
 	}
 
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Creating Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
+		responseDiagnostics.AddError(fmt.Sprintf("API Error %s Resource Entitlement (Subaccount)", action), fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -168,40 +192,16 @@ func (rs *subaccountEntitlementResource) Create(ctx context.Context, req resourc
 
 	entitlement, err := createStateConf.WaitForStateContext(ctx)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Creating Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
+		responseDiagnostics.AddError(fmt.Sprintf("API Error %s Resource Entitlement (Subaccount)", action), fmt.Sprintf("%s", err))
 		return
 	}
 
 	updatedState, diags := subaccountEntitlementValueFrom(ctx, entitlement.(btpcli.UnfoldedEntitlement))
 	updatedState.Amount = plan.Amount
-	resp.Diagnostics.Append(diags...)
+	responseDiagnostics.Append(diags...)
 
-	diags = resp.State.Set(ctx, &updatedState)
-	resp.Diagnostics.Append(diags...)
-}
-
-func (rs *subaccountEntitlementResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan subaccountEntitlementType
-	diags := req.Plan.Get(ctx, &plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.AddError("API Error Updating Resource Entitlement (Subaccount)", "Update is not yet implemented.")
-
-	/* TODO: implementation of UPDATE operation
-	cliRes, err := gen.client.Execute(ctx, btpcli.Update, gen.command, plan)
-	if err != nil {
-		resp.Diagnostics.AddError("API Error Updating Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
-		return
-	}*/
-
-	diags = resp.State.Set(ctx, plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
+	diags = responseState.Set(ctx, &updatedState)
+	responseDiagnostics.Append(diags...)
 }
 
 func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
