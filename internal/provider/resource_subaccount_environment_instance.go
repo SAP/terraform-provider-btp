@@ -57,6 +57,9 @@ __Further documentation:__
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
@@ -64,10 +67,16 @@ __Further documentation:__
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the environment instance.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"environment_type": schema.StringAttribute{
 				MarkdownDescription: "The type of the environment instance that is used.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"plan_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the service plan for the environment instance in the corresponding service broker's catalog.",
@@ -76,11 +85,17 @@ __Further documentation:__
 			"service_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the service for the environment instance in the corresponding service broker's catalog.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"landscape_label": schema.StringAttribute{
 				MarkdownDescription: "The name of the landscape within the logged in region on which the environment instance is created.",
 				Optional:            true,
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"parameters": schema.StringAttribute{
 				MarkdownDescription: "The configuration parameters for the environment instance.",
@@ -260,20 +275,46 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Updating Resource Environment Instance (Subaccount)", "Update is not yet implemented.")
-
-	/* TODO: implementation of UPDATE operation
-	cliRes, err := gen.client.Execute(ctx, btpcli.Update, gen.command, plan)
+	_, _, err := rs.cli.Accounts.EnvironmentInstance.Update(ctx,
+		plan.SubaccountId.ValueString(),
+		plan.Id.ValueString(),
+		plan.PlanName.ValueString(),
+		plan.Parameters.ValueString(),
+	)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return
-	}*/
-
-	diags = resp.State.Set(ctx, plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
 	}
+
+	updateStateConf := &tfutils.StateChangeConf{
+		Pending: []string{provisioning.StateUpdating},
+		Target:  []string{provisioning.StateOK, provisioning.StateUpdateFailed},
+		Refresh: func() (interface{}, string, error) {
+			subRes, _, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, plan.SubaccountId.ValueString(), plan.Id.ValueString())
+
+			if err != nil {
+				return subRes, "", err
+			}
+
+			return subRes, subRes.State, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Updating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
+	}
+
+	state, diags := subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
+	// TODO: this temporary workaround ignores the actual "parameters" value which is diverging from the planned state by an additional "status" attribute
+	state.Parameters = plan.Parameters
+	resp.Diagnostics.Append(diags...)
+
+	diags = resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
 }
 
 func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

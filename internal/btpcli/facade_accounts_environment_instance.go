@@ -52,6 +52,15 @@ func (f *accountsEnvironmentInstanceFacade) Create(ctx context.Context, args *Su
 	return doExecute[provisioning.EnvironmentInstanceResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
+func (f *accountsEnvironmentInstanceFacade) Update(ctx context.Context, subaccountId string, environmentId string, plan string, parameters string) (struct{}, CommandResponse, error) {
+	return doExecute[struct{}](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), map[string]string{
+		"subaccount":    subaccountId,
+		"environmentID": environmentId,
+		"plan":          plan,
+		"parameters":    parameters,
+	}))
+}
+
 func (f *accountsEnvironmentInstanceFacade) Delete(ctx context.Context, subaccountId string, environmentId string) (provisioning.EnvironmentInstanceResponseObject, CommandResponse, error) {
 	return doExecute[provisioning.EnvironmentInstanceResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"subaccount":    subaccountId,
