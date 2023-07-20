@@ -8,7 +8,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
@@ -46,6 +49,14 @@ __Further documentation:__
 				Optional:            true,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
+				},
+			},
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `subaccount_id`, `name`, `role_template_name` and `app_id` attributes instead",
+				MarkdownDescription: "The combined unique ID of the role.",
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"name": schema.StringAttribute{
@@ -96,6 +107,12 @@ func (rs *subaccountRoleResource) Read(ctx context.Context, req resource.ReadReq
 
 	updatedState, diags := subaccountRoleFromValue(ctx, cliRes)
 	updatedState.SubaccountId = state.SubaccountId
+
+	if updatedState.Id.IsNull() || updatedState.Id.IsUnknown() {
+		// Setting ID of state - required by hashicorps terraform plugin testing framework for Import. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+		updatedState.Id = types.StringValue(fmt.Sprintf("%s,%s,%s,%s", state.SubaccountId.ValueString(), state.Name.ValueString(), state.RoleTemplateName.ValueString(), state.RoleTemplateAppId.ValueString()))
+	}
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedState)
@@ -123,6 +140,10 @@ func (rs *subaccountRoleResource) Create(ctx context.Context, req resource.Creat
 
 	updatedPlan, diags := subaccountRoleFromValue(ctx, cliRes)
 	updatedPlan.SubaccountId = plan.SubaccountId
+
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	updatedPlan.Id = types.StringValue(fmt.Sprintf("%s,%s,%s,%s", plan.SubaccountId.ValueString(), plan.Name.ValueString(), plan.RoleTemplateName.ValueString(), plan.RoleTemplateAppId.ValueString()))
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedPlan)

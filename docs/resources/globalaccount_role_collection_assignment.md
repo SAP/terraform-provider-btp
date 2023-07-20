@@ -40,6 +40,6 @@ resource "btp_globalaccount_role_collection_assignment" "globalaccount_viewer_gr
 
 ### Read-Only
 
-- `id` (String, Deprecated) The ID of the role collection
+- `id` (String, Deprecated) The combined unique ID of the role collection.
 
 

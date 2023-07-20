@@ -59,10 +59,13 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
-			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
-				DeprecationMessage:  "Use the `role_collection_name` field instead",
-				MarkdownDescription: "The ID of the role collection",
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `role_collection_name` attribute instead",
+				MarkdownDescription: "The combined unique ID of the role collection.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"user_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the user to assign.",
@@ -108,9 +111,6 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Read(ctx context.Contex
 		return
 	}
 
-	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
-	state.Id = types.StringValue(fmt.Sprintf("%s,%s", state.RoleCollectionName.ValueString(), state.Username.ValueString()))
-
 	// This resource is not supposed to be read by definition. However nothing the user can do about that, hence no error message is raised via resp.Diagnostics.
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -138,7 +138,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Create(ctx context.Cont
 		return
 	}
 
-	// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
 	plan.Id = types.StringValue(fmt.Sprintf("%s,%s", plan.RoleCollectionName.ValueString(), plan.Username.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)

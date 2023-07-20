@@ -80,7 +80,7 @@ You must be assigned to the admin or viewer role of the global account, director
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
-			"id": schema.StringAttribute{
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
 				MarkdownDescription: "The ID of the global account.",
 				Computed:            true,

@@ -48,7 +48,7 @@ func (ds *globalaccountUsersDataSource) Schema(_ context.Context, _ datasource.S
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management>`,
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
 				MarkdownDescription: "The ID of the global account.",
 				Computed:            true,

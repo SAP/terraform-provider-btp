@@ -8,6 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -49,10 +51,13 @@ __Further documentation:__
 					uuidvalidator.ValidUUID(),
 				},
 			},
-			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
-				DeprecationMessage:  "Use the `directory_id` attribute instead",
-				MarkdownDescription: "The ID of the directory.",
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `directory_id`, `name`, `role_template_name` and `app_id` attributes instead",
+				MarkdownDescription: "The combined unique ID of the role.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role.",
@@ -135,6 +140,12 @@ func (rs *directoryRoleResource) Read(ctx context.Context, req resource.ReadRequ
 	updatedState, diags := directoryRoleFromValue(ctx, cliRes)
 	updatedState.DirectoryId = state.DirectoryId
 	updatedState.Id = state.DirectoryId
+
+	if updatedState.Id.IsNull() || updatedState.Id.IsUnknown() {
+		// Setting ID of state - required by hashicorps terraform plugin testing framework for Import. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+		updatedState.Id = types.StringValue(fmt.Sprintf("%s,%s,%s,%s", state.DirectoryId.ValueString(), state.Name.ValueString(), state.RoleTemplateName.ValueString(), state.RoleTemplateAppId.ValueString()))
+	}
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedState)
@@ -163,7 +174,10 @@ func (rs *directoryRoleResource) Create(ctx context.Context, req resource.Create
 
 	updatedPlan, diags := directoryRoleFromValue(ctx, cliRes)
 	updatedPlan.DirectoryId = plan.DirectoryId
-	updatedPlan.Id = plan.DirectoryId
+
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	updatedPlan.Id = types.StringValue(fmt.Sprintf("%s,%s,%s,%s", plan.DirectoryId.ValueString(), plan.Name.ValueString(), plan.RoleTemplateName.ValueString(), plan.RoleTemplateAppId.ValueString()))
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedPlan)

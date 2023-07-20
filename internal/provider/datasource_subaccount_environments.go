@@ -72,7 +72,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 					uuidvalidator.ValidUUID(),
 				},
 			},
-			"id": schema.StringAttribute{
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
 				MarkdownDescription: "The ID of the subaccount.",
 				Computed:            true,

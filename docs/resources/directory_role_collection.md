@@ -47,7 +47,7 @@ resource "btp_directory_role_collection" "my_collection" {
 
 ### Read-Only
 
-- `id` (String, Deprecated) The ID of the directory.
+- `id` (String, Deprecated) The combined unique ID of the role collection as used for import operations.
 
 <a id="nestedatt--roles"></a>
 ### Nested Schema for `roles`

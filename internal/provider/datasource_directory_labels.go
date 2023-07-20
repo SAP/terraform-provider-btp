@@ -58,7 +58,7 @@ __Further documentation:__
 					uuidvalidator.ValidUUID(),
 				},
 			},
-			"id": schema.StringAttribute{
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `directory_id` attribute instead",
 				MarkdownDescription: "The ID of the directory.",
 				Computed:            true,

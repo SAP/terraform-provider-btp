@@ -43,6 +43,6 @@ resource "btp_subaccount_role_collection_assignment" "subaccount_viewer_group" {
 
 ### Read-Only
 
-- `id` (String, Deprecated) The ID of the role collection
+- `id` (String, Deprecated) The combined unique ID of the role collection.
 
 

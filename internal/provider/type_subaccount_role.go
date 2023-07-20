@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_authz"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -9,6 +10,7 @@ import (
 
 type subaccountRoleType struct {
 	SubaccountId      types.String `tfsdk:"subaccount_id"`
+	Id                types.String `tfsdk:"id"`
 	Name              types.String `tfsdk:"name"`
 	RoleTemplateAppId types.String `tfsdk:"app_id"`
 	RoleTemplateName  types.String `tfsdk:"role_template_name"`

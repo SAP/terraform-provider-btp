@@ -47,7 +47,7 @@ resource "btp_subaccount_role_collection" "my_collection" {
 
 ### Read-Only
 
-- `id` (String, Deprecated) The ID of the role collection.
+- `id` (String, Deprecated) The combined unique ID of the role collection as used for import operations.
 
 <a id="nestedatt--roles"></a>
 ### Nested Schema for `roles`

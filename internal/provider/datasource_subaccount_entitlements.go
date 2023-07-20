@@ -48,7 +48,7 @@ func (ds *subaccountEntitlementsDataSource) Schema(_ context.Context, _ datasour
 To get all entitlements and quota assigned to a specific subaccount:
 * You must be assigned to either the subaccount admin or subaccount viewer role.`,
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
 				MarkdownDescription: "The ID of the subaccount.",
 				Computed:            true,
