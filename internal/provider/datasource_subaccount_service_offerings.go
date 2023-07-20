@@ -73,7 +73,7 @@ func (ds *subaccountServiceOfferingsDataSource) Schema(_ context.Context, _ data
 					uuidvalidator.ValidUUID(),
 				},
 			},
-			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `subaccount_id` attribute instead",
 				MarkdownDescription: "The ID of the subaccount.",
 				Computed:            true,

@@ -61,7 +61,7 @@ func (ds *globalaccountRoleCollectionDataSource) Schema(_ context.Context, _ dat
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
-			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
 				MarkdownDescription: "The ID of the global account.",
 				Computed:            true,

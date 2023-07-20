@@ -77,7 +77,7 @@ __Further documentation:__
 					uuidvalidator.ValidUUID(),
 				},
 			},
-			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `directory_id` and `name` attributes instead",
 				MarkdownDescription: "The combined unique ID of the role collection as used for import operations.",
 				Computed:            true,

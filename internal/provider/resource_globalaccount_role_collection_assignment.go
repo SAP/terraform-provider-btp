@@ -59,7 +59,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
-			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `role_collection_name` attribute instead",
 				MarkdownDescription: "The combined unique ID of the role collection.",
 				Computed:            true,

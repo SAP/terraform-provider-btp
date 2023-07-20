@@ -46,7 +46,7 @@ You must be viewer or administrator of the global account.
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>`,
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
 				MarkdownDescription: "The ID of the global account.",
 				Computed:            true,

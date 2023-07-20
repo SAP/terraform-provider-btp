@@ -74,7 +74,7 @@ __Further documentation:__
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `name` attribute instead",
 				MarkdownDescription: "The ID of the role collection.",
 				Computed:            true,

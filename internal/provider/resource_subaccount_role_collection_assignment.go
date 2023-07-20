@@ -71,7 +71,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Schema(_ context.Context, 
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
-			"id": schema.StringAttribute{ // required hashicorps terraform plugin testing framework
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `subaccount_id` and `role_collection_name` attributes instead",
 				MarkdownDescription: "The combined unique ID of the role collection.",
 				Computed:            true,
