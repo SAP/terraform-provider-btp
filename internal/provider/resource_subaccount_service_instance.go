@@ -9,6 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -77,6 +79,9 @@ func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resourc
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service instance.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"ready": schema.BoolAttribute{
 				MarkdownDescription: "",
@@ -212,16 +217,24 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 }
 
 func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan subaccountServiceInstanceType
+	var stateCurrent, plan subaccountServiceInstanceType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
+	diagsState := req.State.Get(ctx, &stateCurrent)
+	resp.Diagnostics.Append(diagsState...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	cliReq := btpcli.ServiceInstanceUpdateInput{
-		Subaccount:    plan.SubaccountId.ValueString(),
-		Id:            plan.Id.ValueString(),
+		Subaccount: plan.SubaccountId.ValueString(),
+		Id:         plan.Id.ValueString(),
+		//TODO workaround for NGPBUG-359662 and NGPBUG-350117 => Name needs to be removed after fix, ID must be sufficient
+		Name:          stateCurrent.Name.ValueString(),
 		NewName:       plan.Name.ValueString(),
 		ServicePlanId: plan.ServicePlanId.ValueString(),
 	}
@@ -245,6 +258,32 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	}
 
 	state, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
+	state.Parameters = plan.Parameters
+	resp.Diagnostics.Append(diags...)
+
+	updateStateConf := &tfutils.StateChangeConf{
+		Pending: []string{servicemanager.StateInProgress},
+		Target:  []string{servicemanager.StateSucceeded, servicemanager.StateFailed},
+		Refresh: func() (interface{}, string, error) {
+			subRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
+
+			if err != nil {
+				return subRes, "", err
+			}
+
+			return subRes, subRes.LastOperation.State, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Updating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
+	}
+
+	state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
 	resp.Diagnostics.Append(diags...)
 
