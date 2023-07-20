@@ -84,6 +84,9 @@ func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service binding.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"ready": schema.BoolAttribute{
 				MarkdownDescription: "Shows whether the service binding is ready.",
