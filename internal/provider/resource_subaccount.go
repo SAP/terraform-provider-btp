@@ -244,17 +244,6 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		args.Labels = labels
 	}
 
-	// The BTP CLI and CIS use different parameters for the subaccount usage
-	// To trigger the right state we must distinguish how to set the value in CREATE scenarios
-	// Options: "" == ignored in CREATE request, "true" == boolean true in CREATE request, "false" == boolean false in CREATE request
-	/*if plan.Usage.IsUnknown() || plan.Usage.IsNull() {
-		// No usage explicitly requested
-		args.UsedForProduction = ""
-	} else {
-		// Explicit setting of usage requested
-
-	}
-	*/
 	args.UsedForProduction = mapUsageToUsedForProduction(plan.Usage.ValueString())
 
 	cliRes, _, err := rs.cli.Accounts.Subaccount.Create(ctx, &args)
