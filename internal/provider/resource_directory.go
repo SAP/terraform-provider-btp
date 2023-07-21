@@ -288,7 +288,7 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	plan, diags = directoryValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
-	createStateConf := &tfutils.StateChangeConf{
+	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateUpdating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
 		Refresh: func() (interface{}, string, error) {
@@ -305,7 +305,7 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 		MinTimeout: 5 * time.Second,
 	}
 
-	updatedRes, err := createStateConf.WaitForStateContext(ctx)
+	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Directory", fmt.Sprintf("%s", err))
 	}
