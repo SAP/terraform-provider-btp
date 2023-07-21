@@ -105,6 +105,42 @@ func TestAccountsEnvironmentInstanceFacade_Create(t *testing.T) {
 	})
 }
 
+func TestAccountsEnvironmentInstanceFacade_Update(t *testing.T) {
+	command := "accounts/environment-instance"
+
+	environmentId := "cloudfoundry"
+	parameters := "{}"
+	plan := "free"
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"environmentID": environmentId,
+				"parameters":    parameters,
+				"plan":          plan,
+				"subaccount":    subaccountId,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Accounts.EnvironmentInstance.Update(context.TODO(), &SubaccountEnvironmentInstanceUpdateInput{
+			EnvironmentID: environmentId,
+			Parameters:    parameters,
+			Plan:          plan,
+			SubaccountID:  subaccountId,
+		})
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
 func TestAccountsEnvironmentInstanceFacade_Delete(t *testing.T) {
 	command := "accounts/environment-instance"
 

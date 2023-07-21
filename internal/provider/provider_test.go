@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	testingResource "github.com/hashicorp/terraform-plugin-testing/helper/resource"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
@@ -206,6 +207,24 @@ func convertFirstLetterToUpperCase(stringToConvert string) (convertedString stri
 	return
 }
 
+func containsCheckFunc(expectedSubString string) testingResource.CheckResourceAttrWithFunc {
+	return func(value string) error {
+		if !strings.Contains(value, expectedSubString) {
+			return fmt.Errorf("expected value containing '%s', got: %s", expectedSubString, value)
+		}
+		return nil
+	}
+}
+
+func notContainsCheckFunc(unexpectedSubString string) testingResource.CheckResourceAttrWithFunc {
+	return func(value string) error {
+		if strings.Contains(value, unexpectedSubString) {
+			return fmt.Errorf("expected value NOT containing '%s', got: %s", unexpectedSubString, value)
+		}
+		return nil
+	}
+}
+
 func TestProvider_HasResources(t *testing.T) {
 	expectedResources := []string{
 		"btp_directory",
@@ -301,9 +320,9 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_service_offerings",
 		"btp_subaccount_service_plan",
 		"btp_subaccount_service_plans",
-    /*
-		"btp_subaccount_service_platform",
-		"btp_subaccount_service_platforms",
+		/*
+			"btp_subaccount_service_platform",
+			"btp_subaccount_service_platforms",
 		*/
 		"btp_subaccount_subscription",
 		"btp_subaccount_subscriptions",
