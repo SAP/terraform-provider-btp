@@ -42,6 +42,13 @@ type SubaccountEnvironmentInstanceCreateInput struct {
 	SubaccountID    string `btpcli:"subaccount"`
 }
 
+type SubaccountEnvironmentInstanceUpdateInput struct {
+	EnvironmentID string `btpcli:"environmentID"`
+	Parameters    string `btpcli:"parameters"`
+	Plan          string `btpcli:"plan"`
+	SubaccountID  string `btpcli:"subaccount"`
+}
+
 func (f *accountsEnvironmentInstanceFacade) Create(ctx context.Context, args *SubaccountEnvironmentInstanceCreateInput) (provisioning.EnvironmentInstanceResponseObject, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
@@ -52,13 +59,14 @@ func (f *accountsEnvironmentInstanceFacade) Create(ctx context.Context, args *Su
 	return doExecute[provisioning.EnvironmentInstanceResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *accountsEnvironmentInstanceFacade) Update(ctx context.Context, subaccountId string, environmentId string, plan string, parameters string) (struct{}, CommandResponse, error) {
-	return doExecute[struct{}](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), map[string]string{
-		"subaccount":    subaccountId,
-		"environmentID": environmentId,
-		"plan":          plan,
-		"parameters":    parameters,
-	}))
+func (f *accountsEnvironmentInstanceFacade) Update(ctx context.Context, args *SubaccountEnvironmentInstanceUpdateInput) (struct{}, CommandResponse, error) {
+	params, err := tfutils.ToBTPCLIParamsMap(args)
+
+	if err != nil {
+		return struct{}{}, CommandResponse{}, err
+	}
+
+	return doExecute[struct{}](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
 }
 
 func (f *accountsEnvironmentInstanceFacade) Delete(ctx context.Context, subaccountId string, environmentId string) (provisioning.EnvironmentInstanceResponseObject, CommandResponse, error) {

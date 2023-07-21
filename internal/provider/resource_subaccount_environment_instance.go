@@ -275,12 +275,12 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 		return
 	}
 
-	_, _, err := rs.cli.Accounts.EnvironmentInstance.Update(ctx,
-		plan.SubaccountId.ValueString(),
-		plan.Id.ValueString(),
-		plan.PlanName.ValueString(),
-		plan.Parameters.ValueString(),
-	)
+	_, _, err := rs.cli.Accounts.EnvironmentInstance.Update(ctx, &btpcli.SubaccountEnvironmentInstanceUpdateInput{
+		EnvironmentID: plan.Id.ValueString(),
+		Parameters:    plan.Parameters.ValueString(),
+		Plan:          plan.PlanName.ValueString(),
+		SubaccountID:  plan.SubaccountId.ValueString(),
+	})
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return

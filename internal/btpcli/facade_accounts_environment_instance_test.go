@@ -109,8 +109,8 @@ func TestAccountsEnvironmentInstanceFacade_Update(t *testing.T) {
 	command := "accounts/environment-instance"
 
 	environmentId := "cloudfoundry"
-	plan := "free"
 	parameters := "{}"
+	plan := "free"
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
@@ -120,15 +120,20 @@ func TestAccountsEnvironmentInstanceFacade_Update(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionUpdate, map[string]string{
-				"subaccount":    subaccountId,
 				"environmentID": environmentId,
-				"plan":          plan,
 				"parameters":    parameters,
+				"plan":          plan,
+				"subaccount":    subaccountId,
 			})
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Accounts.EnvironmentInstance.Update(context.TODO(), subaccountId, environmentId, plan, parameters)
+		_, res, err := uut.Accounts.EnvironmentInstance.Update(context.TODO(), &SubaccountEnvironmentInstanceUpdateInput{
+			EnvironmentID: environmentId,
+			Parameters:    parameters,
+			Plan:          plan,
+			SubaccountID:  subaccountId,
+		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
