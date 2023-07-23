@@ -202,7 +202,11 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 	}
 
 	updatedState, diags := subaccountEnvironmentInstanceValueFrom(ctx, cliRes)
-	updatedState.Parameters = state.Parameters
+
+	if !state.Parameters.IsNull() {
+		updatedState.Parameters = state.Parameters
+	}
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedState)
