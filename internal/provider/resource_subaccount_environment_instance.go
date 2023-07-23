@@ -203,6 +203,7 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 
 	updatedState, diags := subaccountEnvironmentInstanceValueFrom(ctx, cliRes)
 
+	// In case of import the existing state is null
 	if !state.Parameters.IsNull() {
 		updatedState.Parameters = state.Parameters
 	}
