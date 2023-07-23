@@ -366,11 +366,11 @@ func (rs *subaccountEnvironmentInstanceResource) ImportState(ctx context.Context
 	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
 		resp.Diagnostics.AddError(
 			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount,environment_instance_id. Got: %q", req.ID),
+			fmt.Sprintf("Expected import identifier with format: subaccount_id,environment_instance_id. Got: %q", req.ID),
 		)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
 }
