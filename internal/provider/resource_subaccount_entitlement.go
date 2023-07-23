@@ -3,12 +3,14 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-	"strings"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -218,6 +220,35 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 	} else {
 		_, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0)
 	}
+
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Deleting Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	deleteStateConf := &tfutils.StateChangeConf{
+		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
+		Target:  []string{cis_entitlements.StateOK, cis_entitlements.StateProcessingFailed, "DELETED"},
+		Refresh: func() (interface{}, string, error) {
+
+			entitlement, comRes, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+
+			if comRes.StatusCode == http.StatusNotFound {
+				return entitlement, "DELETED", nil
+			}
+
+			if err != nil {
+				return entitlement, cis_entitlements.StateProcessingFailed, err
+			}
+
+			return entitlement, cis_entitlements.StateProcessing, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	_, err = deleteStateConf.WaitForStateContext(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
