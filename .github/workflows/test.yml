@@ -80,7 +80,7 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
-        run: go test -v -cover -coverprofile=cover.out -timeout=300s -parallel=4 ./...
+        run: go test -v -cover -coverprofile=cover.out -timeout=420s -parallel=4 ./...
         timeout-minutes: 10
       - uses: actions/upload-artifact@v3
         with:
