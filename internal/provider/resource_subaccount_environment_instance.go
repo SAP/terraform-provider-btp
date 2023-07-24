@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
@@ -203,9 +204,14 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 
 	updatedState, diags := subaccountEnvironmentInstanceValueFrom(ctx, cliRes)
 
-	// In case of import the existing state is null
 	if !state.Parameters.IsNull() {
 		updatedState.Parameters = state.Parameters
+	} else {
+		//When importing a resource the state is empty.
+		//The "parameter" string contains a status field that needs to be omitted as it is not a parameter that can be defined by the caller
+		// This way we stay consistent between CREATE and IMPORT of environment instances via Terraform
+		reStatus := regexp.MustCompile(`,"status":"(.*?)"`)
+		updatedState.Parameters = types.StringValue(reStatus.ReplaceAllString(updatedState.Parameters.ValueString(), ""))
 	}
 
 	resp.Diagnostics.Append(diags...)
