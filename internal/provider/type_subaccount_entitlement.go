@@ -14,6 +14,7 @@ type subaccountEntitlementType struct {
 	Id           types.String `tfsdk:"id"`
 	ServiceName  types.String `tfsdk:"service_name"`
 	PlanName     types.String `tfsdk:"plan_name"`
+	Category     types.String `tfsdk:"category"`
 	PlanId       types.String `tfsdk:"plan_id"`
 	Amount       types.Int64  `tfsdk:"amount"`
 	State        types.String `tfsdk:"state"`
@@ -27,6 +28,7 @@ func subaccountEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedEn
 		Id:           types.StringValue(value.Plan.UniqueIdentifier),
 		ServiceName:  types.StringValue(value.Service.Name),
 		PlanName:     types.StringValue(value.Plan.Name),
+		Category:     types.StringValue(value.Plan.Category),
 		PlanId:       types.StringValue(value.Plan.UniqueIdentifier),
 		Amount:       types.Int64Value(int64(value.Assignment.Amount)),
 		State:        types.StringValue(value.Assignment.EntityState),
