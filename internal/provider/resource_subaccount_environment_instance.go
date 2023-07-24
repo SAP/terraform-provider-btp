@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
@@ -202,7 +203,17 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 	}
 
 	updatedState, diags := subaccountEnvironmentInstanceValueFrom(ctx, cliRes)
-	updatedState.Parameters = state.Parameters
+
+	if !state.Parameters.IsNull() {
+		updatedState.Parameters = state.Parameters
+	} else {
+		//When importing a resource the state is empty.
+		//The "parameter" string contains a status field that needs to be omitted as it is not a parameter that can be defined by the caller
+		// This way we stay consistent between CREATE and IMPORT of environment instances via Terraform
+		reStatus := regexp.MustCompile(`,"status":"(.*?)"`)
+		updatedState.Parameters = types.StringValue(reStatus.ReplaceAllString(updatedState.Parameters.ValueString(), ""))
+	}
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedState)
@@ -366,11 +377,11 @@ func (rs *subaccountEnvironmentInstanceResource) ImportState(ctx context.Context
 	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
 		resp.Diagnostics.AddError(
 			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount,environment_instance_id. Got: %q", req.ID),
+			fmt.Sprintf("Expected import identifier with format: subaccount_id,environment_instance_id. Got: %q", req.ID),
 		)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
 }
