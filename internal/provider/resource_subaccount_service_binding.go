@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -239,6 +240,34 @@ func (rs *subaccountServiceBindingResource) Delete(ctx context.Context, req reso
 	_, _, err := rs.cli.Services.Binding.Delete(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Service Binding (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	deleteStateConf := &tfutils.StateChangeConf{
+		Pending: []string{servicemanager.StateInProgress},
+		Target:  []string{servicemanager.StateSucceeded, servicemanager.StateFailed, "DELETED"},
+		Refresh: func() (interface{}, string, error) {
+			subRes, comRes, err := rs.cli.Services.Binding.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
+
+			if comRes.StatusCode == http.StatusNotFound {
+				return subRes, "DELETED", nil
+			}
+
+			if err != nil {
+				return subRes, servicemanager.StateFailed, err
+			}
+
+			return subRes, subRes.LastOperation.State, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	_, err = deleteStateConf.WaitForStateContext(ctx)
+
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Deleting Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
 }
