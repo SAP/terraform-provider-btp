@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -304,6 +305,35 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 		resp.Diagnostics.AddError("API Error Deleting Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	deleteStateConf := &tfutils.StateChangeConf{
+		Pending: []string{servicemanager.StateInProgress},
+		Target:  []string{servicemanager.StateSucceeded, servicemanager.StateFailed, "DELETED"},
+		Refresh: func() (interface{}, string, error) {
+			subRes, comRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
+
+			if comRes.StatusCode == http.StatusNotFound {
+				return subRes, "DELETED", nil
+			}
+
+			if err != nil {
+				return subRes, subRes.LastOperation.State, err
+			}
+
+			return subRes, subRes.LastOperation.State, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	_, err = deleteStateConf.WaitForStateContext(ctx)
+
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Deleting Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
 }
 
 func (rs *subaccountServiceInstanceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
