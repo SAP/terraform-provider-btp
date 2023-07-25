@@ -28,17 +28,16 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "hana-cloud-hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "hana-cloud"),
-						resource.TestCheckNoResourceAttr("btp_subaccount_entitlement.uut", "amount"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "1"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},
-				/* TODO: Check how to import state properly (see https://github.com/SAP/terraform-provider-btp/issues/75)
 				{
 					ResourceName:      "btp_subaccount_entitlement.uut",
+					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,hana-cloud,hana",
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
-				*/
 			},
 		})
 	})
@@ -64,6 +63,12 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "3"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
+				},
+				{
+					ResourceName:      "btp_subaccount_entitlement.uut",
+					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,data-privacy-integration-service,standard",
+					ImportState:       true,
+					ImportStateVerify: true,
 				},
 			},
 		})

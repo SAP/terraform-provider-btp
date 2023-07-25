@@ -3,12 +3,14 @@ package provider
 import (
 	"context"
 	"fmt"
+	"reflect"
+	"strings"
+	"time"
+
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-	"strings"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -83,6 +85,22 @@ __Further documentation:__
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"category": schema.StringAttribute{
+				MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
+					getFormattedValueAsTableRow("value", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`PLATFORM`", " A service required for using a specific platform; for example, Application Runtime is required for the Cloud Foundry platform.") +
+					getFormattedValueAsTableRow("`SERVICE`", "A commercial or technical service. that has a numeric quota (amount) when entitled or assigned to a resource. When assigning entitlements of this type, use the 'amount' option.") +
+					getFormattedValueAsTableRow("`ELASTIC_SERVICE`", "A commercial or technical service that has no numeric quota (amount) when entitled or assigned to a resource. Generally this type of service can be as many times as needed when enabled, but may in some cases be restricted by the service owner.") +
+					getFormattedValueAsTableRow("`ELASTIC_LIMITED`", "An elastic service that can be enabled for only one subaccount per global account.") +
+					getFormattedValueAsTableRow("`APPLICATION`", "A multitenant application to which consumers can subscribe. As opposed to applications defined as a 'QUOTA_BASED_APPLICATION', these applications do not have a numeric quota and are simply enabled or disabled as entitlements per subaccount.") +
+					getFormattedValueAsTableRow("`QUOTA_BASED_APPLICATION`", "A multitenant application to which consumers can subscribe. As opposed to applications defined as 'APPLICATION', these applications have an numeric quota that limits consumer usage of the subscribed application per subaccount.") +
+					getFormattedValueAsTableRow("`ENVIRONMENT`", " An environment service; for example, Cloud Foundry."),
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"plan_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the entitled service plan.",
 				Computed:            true,
@@ -90,6 +108,7 @@ __Further documentation:__
 			"amount": schema.Int64Attribute{
 				MarkdownDescription: "The quota assigned to the subaccount.",
 				Optional:            true,
+				Computed:            true,
 				Validators: []validator.Int64{
 					int64validator.Between(1, 2000000000),
 				},
@@ -133,7 +152,7 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 	}
 
 	updatedState, diags := subaccountEntitlementValueFrom(ctx, *entitlement)
-	updatedState.Amount = state.Amount
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedState)
@@ -157,7 +176,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 	}
 
 	var err error
-	if plan.Amount.IsNull() {
+	if !hasPlanQuota(plan) {
 		_, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
 	} else {
 		_, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()))
@@ -196,8 +215,8 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		return
 	}
 
+	// The amount field is always set, even if not specified. Distinguish between operations via category
 	updatedState, diags := subaccountEntitlementValueFrom(ctx, entitlement.(btpcli.UnfoldedEntitlement))
-	updatedState.Amount = plan.Amount
 	responseDiagnostics.Append(diags...)
 
 	diags = responseState.Set(ctx, &updatedState)
@@ -213,11 +232,40 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 	}
 
 	var err error
-	if state.Amount.IsNull() {
+	if !hasPlanQuota(state) {
 		_, err = rs.cli.Accounts.Entitlement.DisableInSubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
 	} else {
 		_, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0)
 	}
+
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Deleting Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	deleteStateConf := &tfutils.StateChangeConf{
+		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
+		Target:  []string{cis_entitlements.StateProcessingFailed, "DELETED"},
+		Refresh: func() (interface{}, string, error) {
+
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+
+			if reflect.ValueOf(entitlement).IsNil() {
+				return entitlement, "DELETED", nil
+			}
+
+			if err != nil {
+				return entitlement, cis_entitlements.StateProcessingFailed, err
+			}
+
+			return entitlement, cis_entitlements.StateProcessing, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	_, err = deleteStateConf.WaitForStateContext(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
@@ -236,7 +284,23 @@ func (rs *subaccountEntitlementResource) ImportState(ctx context.Context, req re
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_name"), idParts[1])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
+}
+
+func hasPlanQuota(state subaccountEntitlementType) bool {
+
+	// Case 1: CREATE with a explicitly non-specified amount by caller
+	if state.Amount.ValueInt64() == 0 {
+		return false
+	}
+
+	// Case 2: Categories that allow enabling/disabling only
+	planCategory := state.Category.ValueString()
+	if planCategory == "ELASTIC_SERVICE" || planCategory == "ELASTIC_LIMITED" || planCategory == "APPLICATION" {
+		return false
+	}
+
+	return true
 }

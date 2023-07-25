@@ -320,11 +320,33 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 	plan, diags = subaccountValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
+	updateStateConf := &tfutils.StateChangeConf{
+		Pending: []string{cis.StateUpdating, cis.StateStarted},
+		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
+		Refresh: func() (interface{}, string, error) {
+			subRes, _, err := rs.cli.Accounts.Subaccount.Get(ctx, cliRes.Guid)
+
+			if err != nil {
+				return subRes, "", err
+			}
+
+			return subRes, subRes.State, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Updating Resource Subaccount", fmt.Sprintf("%s", err))
+	}
+
+	plan, diags = subaccountValueFrom(ctx, updatedRes.(cis.SubaccountResponseObject))
+	resp.Diagnostics.Append(diags...)
+
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
 }
 
 func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
