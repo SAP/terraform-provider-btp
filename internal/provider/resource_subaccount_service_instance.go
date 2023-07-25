@@ -308,7 +308,7 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
-		Target:  []string{servicemanager.StateSucceeded, servicemanager.StateFailed, "DELETED"},
+		Target:  []string{servicemanager.StateFailed, "DELETED"},
 		Refresh: func() (interface{}, string, error) {
 			subRes, comRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 
