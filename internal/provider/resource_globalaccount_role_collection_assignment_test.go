@@ -66,7 +66,7 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 					ImportStateId:     "anyID",
 					ImportState:       true,
 					ImportStateVerify: true,
-					ExpectError:       regexp.MustCompile(`Import not supported`),
+					ExpectError:       regexp.MustCompile(`Import Not Supported`),
 				},
 			},
 		})
