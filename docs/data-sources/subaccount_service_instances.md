@@ -2,12 +2,12 @@
 page_title: "btp_subaccount_service_instances Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets all service instances in a subaccount.
+  Lists all service instances in a subaccount.
 ---
 
 # btp_subaccount_service_instances (Data Source)
 
-Gets all service instances in a subaccount.
+Lists all service instances in a subaccount.
 
 ## Example Usage
 

@@ -36,7 +36,7 @@ func (ds *subaccountSubscriptionDataSource) Configure(_ context.Context, req dat
 
 func (ds *subaccountSubscriptionDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets the details of a specific multitenant application to which a subaccount is entitled to subscribe. If this application is in a different global account than the current one, you need to specify its plan with '--plan'.
+		MarkdownDescription: `Gets details of a specific multitenant application to which a subaccount is entitled to subscribe. If this application is in a different global account than the current one, you need to specify its plan with '--plan'.
 
 __Tip:__
 You must be assigned to the subaccount admin or viewer role.`,
@@ -159,7 +159,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "Set of words or phrases assigned to the multitenant application subscription.",
+				MarkdownDescription: "The set of words or phrases assigned to the multitenant application subscription.",
 				Computed:            true,
 			},
 		},

@@ -44,7 +44,7 @@ func (rs *subaccountServiceBindingResource) Configure(_ context.Context, req res
 
 func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Creates a service binding between a service instance and an application.`,
+		MarkdownDescription: `Creates a service binding, i.e. generates access details to consume a service.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -78,7 +78,7 @@ func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "Set of words or phrases assigned to service binding.",
+				MarkdownDescription: "The set of words or phrases assigned to service binding.",
 				Computed:            true,
 			},
 			"id": schema.StringAttribute{

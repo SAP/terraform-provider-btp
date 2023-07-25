@@ -59,7 +59,7 @@ func (ds *subaccountServiceOfferingDataSource) Configure(_ context.Context, req 
 
 func (ds *subaccountServiceOfferingDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets details about a specific service offering such as its ID, name, description, metadata, the associated service brokers, and more.`,
+		MarkdownDescription: `Gets details about a specific service offering such as its ID, name, description, metadata, and the associated service brokers.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

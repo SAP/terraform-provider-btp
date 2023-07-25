@@ -2,12 +2,12 @@
 page_title: "btp_subaccount_service_instance Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Creates a new service instance.
+  Creates a service instance in a subaccount.
 ---
 
 # btp_subaccount_service_instance (Resource)
 
-Creates a new service instance.
+Creates a service instance in a subaccount.
 
 ## Example Usage
 
@@ -44,7 +44,7 @@ resource "btp_subaccount_service_instance" "xsuaa_application" {
 
 ### Optional
 
-- `labels` (Map of Set of String) Set of words or phrases assigned to the service instance..
+- `labels` (Map of Set of String) The set of words or phrases assigned to the service instance.
 - `parameters` (String, Sensitive) The configuration parameters for the service instance.
 
 ### Read-Only

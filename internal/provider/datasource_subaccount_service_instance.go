@@ -38,7 +38,7 @@ func (ds *subaccountServiceInstanceDataSource) Configure(_ context.Context, req 
 
 func (ds *subaccountServiceInstanceDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets details about a specific provisioned service instance such as its name, id, platform to which it belongs, the last operation performed, and more.`,
+		MarkdownDescription: `Gets details about a specific provisioned service instance, such as its name, id,  platform to which it belongs, and the last operation performed.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -113,7 +113,7 @@ func (ds *subaccountServiceInstanceDataSource) Schema(_ context.Context, _ datas
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "Set of words or phrases assigned to the service instance.",
+				MarkdownDescription: "The set of words or phrases assigned to the service instance.",
 				Computed:            true,
 			},
 		},

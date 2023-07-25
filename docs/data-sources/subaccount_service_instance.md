@@ -2,12 +2,12 @@
 page_title: "btp_subaccount_service_instance Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets details about a specific provisioned service instance such as its name, id, platform to which it belongs, the last operation performed, and more.
+  Gets details about a specific provisioned service instance, such as its name, id,  platform to which it belongs, and the last operation performed.
 ---
 
 # btp_subaccount_service_instance (Data Source)
 
-Gets details about a specific provisioned service instance such as its name, id, platform to which it belongs, the last operation performed, and more.
+Gets details about a specific provisioned service instance, such as its name, id,  platform to which it belongs, and the last operation performed.
 
 ## Example Usage
 
@@ -41,7 +41,7 @@ data "btp_subaccount_service_instance" "by_name" {
 
 - `context` (Map of String) Contextual data for the resource.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
-- `labels` (Map of Set of String) Set of words or phrases assigned to the service instance.
+- `labels` (Map of Set of String) The set of words or phrases assigned to the service instance.
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `parameters` (String) The configuration parameters for the service instance.
 - `platform_id` (String) The platform ID.

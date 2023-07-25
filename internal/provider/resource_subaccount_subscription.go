@@ -44,7 +44,7 @@ func (rs *subaccountSubscriptionResource) Configure(_ context.Context, req resou
 
 func (rs *subaccountSubscriptionResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Subscribes to a multitenant application from a subaccount.
+		MarkdownDescription: `Subscribes a subaccount to a multitenant application.
 Custom or partner-developed applications are currently not supported.
 
 __Tip:__
