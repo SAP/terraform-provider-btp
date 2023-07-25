@@ -10,7 +10,7 @@ import (
 )
 
 func TestResourceSubaccountServiceBinding(t *testing.T) {
-	// Using the IBAN service as ID for the service instance
+	// Using the alert notification service as ID for the service instance
 	t.Run("happy path - simple service_binding", func(t *testing.T) {
 		rec := setupVCR(t, "fixtures/resource_subaccount_service_binding")
 		defer stopQuietly(rec)
@@ -20,7 +20,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountServiceBinding("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "b6a7d7da-41f4-4dfc-a883-fde826c2e9f9", "tfint-test-iban-sb"),
+					Config: hclProvider() + hclResourceSubaccountServiceBinding("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "df532d07-57a7-415e-a261-23a398ef068a", "tfint-test-alert-sb"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_service_binding.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
@@ -43,7 +43,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountServiceBindingNoSubaccountId("uut", "b6a7d7da-41f4-4dfc-a883-fde826c2e9f9", "tfint-test-iban-sb"),
+					Config:      hclProvider() + hclResourceSubaccountServiceBindingNoSubaccountId("uut", "df532d07-57a7-415e-a261-23a398ef068a", "tfint-test-alert-sb"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -56,7 +56,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountServiceBindingNoServiceInstanceId("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tfint-test-iban-sb"),
+					Config:      hclProvider() + hclResourceSubaccountServiceBindingNoServiceInstanceId("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tfint-test-alert-sb"),
 					ExpectError: regexp.MustCompile(`The argument "service_instance_id" is required, but no definition was found`),
 				},
 			},
@@ -69,7 +69,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountServiceBindingNoName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "b6a7d7da-41f4-4dfc-a883-fde826c2e9f9"),
+					Config:      hclProvider() + hclResourceSubaccountServiceBindingNoName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "df532d07-57a7-415e-a261-23a398ef068a"),
 					ExpectError: regexp.MustCompile(`The argument "name" is required, but no definition was found`),
 				},
 			},
@@ -85,7 +85,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountServiceBinding("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "b6a7d7da-41f4-4dfc-a883-fde826c2e9f9", "tfint-test-iban-sb"),
+					Config: hclProvider() + hclResourceSubaccountServiceBinding("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "df532d07-57a7-415e-a261-23a398ef068a", "tfint-test-alert-sb"),
 				},
 				{
 					ResourceName:      "btp_subaccount_service_binding.uut",
