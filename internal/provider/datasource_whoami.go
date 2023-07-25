@@ -69,7 +69,7 @@ func (gen *whoamiDataSource) Read(ctx context.Context, req datasource.ReadReques
 
 	user := gen.client.GetLoggedInUser()
 	if user == nil {
-		resp.Diagnostics.AddError("No user found", "")
+		resp.Diagnostics.AddError("No User Found", "")
 		return
 	}
 

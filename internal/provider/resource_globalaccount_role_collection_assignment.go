@@ -188,7 +188,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Delete(ctx context.Cont
 
 func (rs *globalaccountRoleCollectionAssignmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resp.Diagnostics.AddError(
-		"Import not supported",
+		"Import Not Supported",
 		"Import is not supported for this resource. Use the resource globalaccount_role_collection instead.",
 	)
 }
