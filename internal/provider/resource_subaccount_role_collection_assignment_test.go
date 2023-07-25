@@ -68,7 +68,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 					ImportState:       true,
 					ImportStateVerify: true,
-					ExpectError:       regexp.MustCompile(`Import not supported`),
+					ExpectError:       regexp.MustCompile(`Import Not Supported`),
 				},
 			},
 		})

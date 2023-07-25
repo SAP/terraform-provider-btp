@@ -200,7 +200,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Delete(ctx context.Context
 
 func (rs *subaccountRoleCollectionAssignmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resp.Diagnostics.AddError(
-		"Import not supported",
+		"Import Not Supported",
 		"Import is not supported for this resource. Use the resource subaccount_role_collection instead.",
 	)
 }
