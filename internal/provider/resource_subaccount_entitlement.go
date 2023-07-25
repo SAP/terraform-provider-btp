@@ -245,7 +245,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
-		Target:  []string{cis_entitlements.StateOK, cis_entitlements.StateProcessingFailed, "DELETED"},
+		Target:  []string{cis_entitlements.StateProcessingFailed, "DELETED"},
 		Refresh: func() (interface{}, string, error) {
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
