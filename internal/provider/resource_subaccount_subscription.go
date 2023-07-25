@@ -284,6 +284,29 @@ func (rs *subaccountSubscriptionResource) Delete(ctx context.Context, req resour
 		resp.Diagnostics.AddError("API Error Deleting Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	deleteStateConf := &tfutils.StateChangeConf{
+		Pending: []string{saas_manager_service.StateInProcess},
+		Target:  []string{saas_manager_service.StateUnsubscribeFailed, saas_manager_service.StateNotSubscribed},
+		Refresh: func() (interface{}, string, error) {
+			subRes, _, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
+
+			if err != nil {
+				return subRes, subRes.State, err
+			}
+
+			return subRes, subRes.State, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	_, err = deleteStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Deleting Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
 }
 
 func (rs *subaccountSubscriptionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
