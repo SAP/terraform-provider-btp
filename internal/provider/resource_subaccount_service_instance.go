@@ -43,7 +43,7 @@ func (rs *subaccountServiceInstanceResource) Configure(_ context.Context, req re
 
 func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Creates a new service instance.`,
+		MarkdownDescription: `Creates a service instance in a subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -64,7 +64,7 @@ func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resourc
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "Set of words or phrases assigned to the service instance..",
+				MarkdownDescription: "The set of words or phrases assigned to the service instance.",
 				Computed:            true,
 				Optional:            true,
 			},

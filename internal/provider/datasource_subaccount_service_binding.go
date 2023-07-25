@@ -112,7 +112,7 @@ func (ds *subaccountServiceBindingDataSource) Schema(_ context.Context, _ dataso
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "Set of words or phrases assigned to the binding.",
+				MarkdownDescription: "The set of words or phrases assigned to the binding.",
 				Computed:            true,
 			},
 		},

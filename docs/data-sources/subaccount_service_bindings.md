@@ -2,12 +2,12 @@
 page_title: "btp_subaccount_service_bindings Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Lists all service bindings in a subaccount.
+  Lists all service bindings in a subaccount, i.e. the access details to consume a service.
 ---
 
 # btp_subaccount_service_bindings (Data Source)
 
-Lists all service bindings in a subaccount.
+Lists all service bindings in a subaccount, i.e. the access details to consume a service.
 
 ## Example Usage
 
@@ -55,7 +55,7 @@ Read-Only:
 - `context` (Map of String) Contextual data for the resource.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `credentials` (String, Sensitive) The credentials to access the binding.
-- `labels` (Map of Set of String) Set of words or phrases assigned to the binding.
+- `labels` (Map of Set of String) The set of words or phrases assigned to the binding.
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `ready` (Boolean) Shows whether the service binding is ready.
 - `service_instance_id` (String) The ID of the service instance associated with the binding.

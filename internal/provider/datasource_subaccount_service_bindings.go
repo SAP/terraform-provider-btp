@@ -59,7 +59,7 @@ func (ds *subaccountServiceBindingsDataSource) Configure(_ context.Context, req 
 
 func (ds *subaccountServiceBindingsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Lists all service bindings in a subaccount.`,
+		MarkdownDescription: `Lists all service bindings in a subaccount, i.e. the access details to consume a service.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -135,7 +135,7 @@ func (ds *subaccountServiceBindingsDataSource) Schema(_ context.Context, _ datas
 							ElementType: types.SetType{
 								ElemType: types.StringType,
 							},
-							MarkdownDescription: "Set of words or phrases assigned to the binding.",
+							MarkdownDescription: "The set of words or phrases assigned to the binding.",
 							Computed:            true,
 						},
 					},

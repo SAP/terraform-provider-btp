@@ -2,7 +2,7 @@
 page_title: "btp_subaccount_subscription Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Subscribes to a multitenant application from a subaccount.
+  Subscribes a subaccount to a multitenant application.
   Custom or partner-developed applications are currently not supported.
   Tip:
   You must be assigned to the subaccount admin role.
@@ -10,7 +10,7 @@ description: |-
 
 # btp_subaccount_subscription (Resource)
 
-Subscribes to a multitenant application from a subaccount.
+Subscribes a subaccount to a multitenant application.
 Custom or partner-developed applications are currently not supported.
 
 __Tip:__

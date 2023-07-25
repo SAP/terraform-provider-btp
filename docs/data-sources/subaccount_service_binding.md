@@ -43,7 +43,7 @@ data "btp_subaccount_service_binding" "by_name" {
 - `context` (Map of String) Contextual data for the resource.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `credentials` (String, Sensitive) The credentials to access the binding.
-- `labels` (Map of Set of String) Set of words or phrases assigned to the binding.
+- `labels` (Map of Set of String) The set of words or phrases assigned to the binding.
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `parameters` (String) The parameters of the service binding as a valid JSON object.
 - `ready` (Boolean) Shows whether the service binding is ready.
