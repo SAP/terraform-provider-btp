@@ -52,6 +52,6 @@ data "btp_subaccount_service_binding" "by_name" {
 
   | state | description | 
   | --- | --- | 
-  | in progress | The operation or processing is in progress | 
-  | failed | The operation or processing failed | 
-  | succeeded | The operation or processing succeeded |
+  | `in progress` | The operation or processing is in progress | 
+  | `failed` | The operation or processing failed | 
+  | `succeeded` | The operation or processing succeeded |

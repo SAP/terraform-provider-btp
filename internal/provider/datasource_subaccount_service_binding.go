@@ -95,9 +95,9 @@ func (ds *subaccountServiceBindingDataSource) Schema(_ context.Context, _ dataso
 				MarkdownDescription: "The current state of the service binding. Possible values are: \n" +
 					getFormattedValueAsTableRow("state", "description") +
 					getFormattedValueAsTableRow("---", "---") +
-					getFormattedValueAsTableRow("in progress", "The operation or processing is in progress") +
-					getFormattedValueAsTableRow("failed", "The operation or processing failed") +
-					getFormattedValueAsTableRow("succeeded", "The operation or processing succeeded"),
+					getFormattedValueAsTableRow("`in progress`", "The operation or processing is in progress") +
+					getFormattedValueAsTableRow("`failed`", "The operation or processing failed") +
+					getFormattedValueAsTableRow("`succeeded`", "The operation or processing succeeded"),
 				Computed: true,
 			},
 			"created_date": schema.StringAttribute{

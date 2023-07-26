@@ -99,9 +99,9 @@ __Further documentation:__
 				MarkdownDescription: "The type of accounting assignment object that is associated with the global account owner and used to charge for the creation and usage of the global account. The number or code of the specified cost object is defined in `costobject_id`. Possible values are: \n" +
 					getFormattedValueAsTableRow("value", "description") +
 					getFormattedValueAsTableRow("---", "---") +
-					getFormattedValueAsTableRow("COST_CENTER", "Cost Center") +
-					getFormattedValueAsTableRow("INTERNAL_ORDER", "Internal Order") +
-					getFormattedValueAsTableRow("WBS_ELEMENT", "WBS Element"),
+					getFormattedValueAsTableRow("`COST_CENTER`", "Cost Center") +
+					getFormattedValueAsTableRow("`INTERNAL_ORDER`", "Internal Order") +
+					getFormattedValueAsTableRow("`WBS_ELEMENT`", "WBS Element"),
 				Computed: true,
 			},
 			"crm_customer_id": schema.StringAttribute{

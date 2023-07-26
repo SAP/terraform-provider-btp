@@ -82,8 +82,8 @@ func (ds *subaccountServiceOfferingsDataSource) Schema(_ context.Context, _ data
 				MarkdownDescription: "Lists services to be consumed in a Cloud Foundry or Kubernetes-native way. Valid values are: \n " +
 					getFormattedValueAsTableRow("value", "description") +
 					getFormattedValueAsTableRow("---", "---") +
-					getFormattedValueAsTableRow("cloudfoundry", "Cloud Foundry") +
-					getFormattedValueAsTableRow("kubernetes", "Kubernetes"),
+					getFormattedValueAsTableRow("`cloudfoundry`", "Cloud Foundry") +
+					getFormattedValueAsTableRow("`kubernetes`", "Kubernetes"),
 				Optional: true,
 			},
 			"fields_filter": schema.StringAttribute{
