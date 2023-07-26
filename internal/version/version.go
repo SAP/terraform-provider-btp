@@ -1,3 +1,3 @@
 package version
 
-const ProviderVersion = "dev" // replaced during build process
+var ProviderVersion string = "dev" // replaced during build process
