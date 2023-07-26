@@ -58,32 +58,33 @@ resource "btp_directory" "child" {
 - `created_by` (String) The details of the user that created the directory.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `features` (Set of String) The features that are enabled for the directory. Possible values are: 
+
   | value | description | 
   | --- | --- | 
-  | DEFAULT | All directories have the following basic feature enabled:<br> 1. Group and filter subaccounts for reports and filters <br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)<br> 3. Set custom properties and tags to the directory for identification and reporting purposes. | 
-  | ENTITLEMENTS | Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory. | 
-  | AUTHORIZATIONS | Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature. |
+  | `DEFAULT` | All directories have the following basic feature enabled:<br> 1. Group and filter subaccounts for reports and filters <br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)<br> 3. Set custom properties and tags to the directory for identification and reporting purposes. | 
+  | `ENTITLEMENTS` | Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory. | 
+  | `AUTHORIZATIONS` | Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature. |
 - `id` (String) The ID of the directory.
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `state` (String) The current state of the directory. Possible values are: 
 
   | value | description | 
   | --- | --- | 
-  | OK | The CRUD operation or series of operations completed successfully. | 
-  | STARTED | CRUD operation on an entity has started. | 
-  | CREATING | Creating entity operation is in progress. | 
-  | UPDATING | Updating entity operation is in progress. | 
-  | MOVING | Moving entity operation is in progress. | 
-  | PROCESSING | A series of operations related to the entity is in progress. | 
-  | DELETING | Deleting entity operation is in progress. | 
-  | PENDING REVIEW | The processing operation has been stopped for reviewing and can be restarted by the operator. | 
-  | CANCELLED | The operation or processing was canceled by the operator. | 
-  | CREATION_FAILED | The creation operation failed, and the entity was not created or was created but cannot be used. | 
-  | UPDATE_FAILED | The update operation failed, and the entity was not updated. | 
-  | PROCESSING_FAILED | The processing operations failed. | 
-  | DELETION_FAILED | The delete operation failed, and the entity was not deleted. | 
-  | MOVE_FAILED | Entity could not be moved to a different location. | 
-  | MIGRATING | Migrating entity from Neo to Cloud Foundry. |
+  | `OK` | The CRUD operation or series of operations completed successfully. | 
+  | `STARTED` | CRUD operation on an entity has started. | 
+  | `CREATING` | Creating entity operation is in progress. | 
+  | `UPDATING` | Updating entity operation is in progress. | 
+  | `MOVING` | Moving entity operation is in progress. | 
+  | `PROCESSING` | A series of operations related to the entity is in progress. | 
+  | `DELETING` | Deleting entity operation is in progress. | 
+  | `PENDING REVIEW` | The processing operation has been stopped for reviewing and can be restarted by the operator. | 
+  | `CANCELLED` | The operation or processing was canceled by the operator. | 
+  | `CREATION_FAILED` | The creation operation failed, and the entity was not created or was created but cannot be used. | 
+  | `UPDATE_FAILED` | The update operation failed, and the entity was not updated. | 
+  | `PROCESSING_FAILED` | The processing operations failed. | 
+  | `DELETION_FAILED` | The delete operation failed, and the entity was not deleted. | 
+  | `MOVE_FAILED` | Entity could not be moved to a different location. | 
+  | `MIGRATING` | Migrating entity from Neo to Cloud Foundry. |
 
 ## Import
 
