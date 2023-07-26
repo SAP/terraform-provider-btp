@@ -35,6 +35,17 @@ data "btp_globalaccount_entitlements" "all" {}
 
 Read-Only:
 
+- `category` (String) The current state of the entitlement. Possible values are: 
+ 
+  | value | description | 
+  | --- | --- | 
+  | `PLATFORM` |  A service required for using a specific platform; for example, Application Runtime is required for the Cloud Foundry platform. | 
+  | `SERVICE` | A commercial or technical service. that has a numeric quota (amount) when entitled or assigned to a resource. When assigning entitlements of this type, use the 'amount' option. | 
+  | `ELASTIC_SERVICE` | A commercial or technical service that has no numeric quota (amount) when entitled or assigned to a resource. Generally this type of service can be as many times as needed when enabled, but may in some cases be restricted by the service owner. | 
+  | `ELASTIC_LIMITED` | An elastic service that can be enabled for only one subaccount per global account. | 
+  | `APPLICATION` | A multitenant application to which consumers can subscribe. As opposed to applications defined as a 'QUOTA_BASED_APPLICATION', these applications do not have a numeric quota and are simply enabled or disabled as entitlements per subaccount. | 
+  | `QUOTA_BASED_APPLICATION` | A multitenant application to which consumers can subscribe. As opposed to applications defined as 'APPLICATION', these applications have an numeric quota that limits consumer usage of the subscribed application per subaccount. | 
+  | `ENVIRONMENT` |  An environment service; for example, Cloud Foundry. |
 - `plan_description` (String) The description of the entitled service plan.
 - `plan_display_name` (String) The display name of the entitled service plan.
 - `plan_name` (String) The name of the entitled service plan.
