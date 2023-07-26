@@ -90,6 +90,19 @@ To get all entitlements and quota assigned to a specific subaccount:
 							MarkdownDescription: "The quota, which is not used.",
 							Computed:            true,
 						},
+						"category": schema.StringAttribute{
+							MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
+								getFormattedValueAsTableRow("value", "description") +
+								getFormattedValueAsTableRow("---", "---") +
+								getFormattedValueAsTableRow("`PLATFORM`", " A service required for using a specific platform; for example, Application Runtime is required for the Cloud Foundry platform.") +
+								getFormattedValueAsTableRow("`SERVICE`", "A commercial or technical service. that has a numeric quota (amount) when entitled or assigned to a resource. When assigning entitlements of this type, use the 'amount' option.") +
+								getFormattedValueAsTableRow("`ELASTIC_SERVICE`", "A commercial or technical service that has no numeric quota (amount) when entitled or assigned to a resource. Generally this type of service can be as many times as needed when enabled, but may in some cases be restricted by the service owner.") +
+								getFormattedValueAsTableRow("`ELASTIC_LIMITED`", "An elastic service that can be enabled for only one subaccount per global account.") +
+								getFormattedValueAsTableRow("`APPLICATION`", "A multitenant application to which consumers can subscribe. As opposed to applications defined as a 'QUOTA_BASED_APPLICATION', these applications do not have a numeric quota and are simply enabled or disabled as entitlements per subaccount.") +
+								getFormattedValueAsTableRow("`QUOTA_BASED_APPLICATION`", "A multitenant application to which consumers can subscribe. As opposed to applications defined as 'APPLICATION', these applications have an numeric quota that limits consumer usage of the subscribed application per subaccount.") +
+								getFormattedValueAsTableRow("`ENVIRONMENT`", " An environment service; for example, Cloud Foundry."),
+							Computed: true,
+						},
 					},
 				},
 				Computed: true,
@@ -126,6 +139,7 @@ func (ds *subaccountEntitlementsDataSource) Read(ctx context.Context, req dataso
 				PlanDescription:    types.StringValue(servicePlan.Description),
 				QuotaAssigned:      types.Float64Value(servicePlan.Amount),
 				QuotaRemaining:     types.Float64Value(servicePlan.RemainingAmount),
+				Category:           types.StringValue(servicePlan.Category),
 			}
 		}
 	}
