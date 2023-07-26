@@ -49,8 +49,8 @@ data "btp_subaccount_service_offerings" "labeled" {
  
   | value | description | 
   | --- | --- | 
-  | cloudfoundry | Cloud Foundry | 
-  | kubernetes | Kubernetes |
+  | `cloudfoundry` | Cloud Foundry | 
+  | `kubernetes` | Kubernetes |
 - `fields_filter` (String) Filters the response based on the field query. For example, use "name eq 'my service offering name'".
 - `labels_filter` (String) Filters the response based on the label query.  For example, to list all the service offerings associated with the testing environment, use "environment eq 'test'".
 

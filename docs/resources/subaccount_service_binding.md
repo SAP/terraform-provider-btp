@@ -58,9 +58,9 @@ resource "btp_subaccount_service_binding" "my_parameterized_binding" {
 
   | state | description | 
   | --- | --- | 
-  | in progress | The operation or processing is in progress | 
-  | failed | The operation or processing failed | 
-  | succeeded | The operation or processing succeeded |
+  | `in progress` | The operation or processing is in progress | 
+  | `failed` | The operation or processing failed | 
+  | `succeeded` | The operation or processing succeeded |
 
 ## Import
 

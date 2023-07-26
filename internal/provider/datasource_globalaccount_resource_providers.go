@@ -61,8 +61,8 @@ __Further documentation:__
 							MarkdownDescription: "The provider of the requested resource. Possible values are: \n" +
 								getFormattedValueAsTableRow("value", "description") +
 								getFormattedValueAsTableRow("---", "---") +
-								getFormattedValueAsTableRow("AWS", "Amazon Web Services") +
-								getFormattedValueAsTableRow("AZURE", "Microsoft Azure"),
+								getFormattedValueAsTableRow("`AWS`", "Amazon Web Services") +
+								getFormattedValueAsTableRow("`AZURE`", "Microsoft Azure"),
 							Computed: true,
 						},
 						"id": schema.StringAttribute{

@@ -44,9 +44,9 @@ data "btp_globalaccount" "this" {}
 
   | value | description | 
   | --- | --- | 
-  | COST_CENTER | Cost Center | 
-  | INTERNAL_ORDER | Internal Order | 
-  | WBS_ELEMENT | WBS Element |
+  | `COST_CENTER` | Cost Center | 
+  | `INTERNAL_ORDER` | Internal Order | 
+  | `WBS_ELEMENT` | WBS Element |
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `crm_customer_id` (String) The ID of the customer as registered in the CRM system.
 - `crm_tenant_id` (String) The ID of the customer tenant as registered in the CRM system.
