@@ -2,12 +2,12 @@
 page_title: "btp_subaccount_role Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets details about a specific subaccount role.
+  Get details about a specific subaccount role.
 ---
 
 # btp_subaccount_role (Data Source)
 
-Gets details about a specific subaccount role.
+Get details about a specific subaccount role.
 
 ## Example Usage
 
@@ -34,8 +34,8 @@ data "btp_subaccount_role" "user_role_auditor" {
 
 - `description` (String) The description of the role.
 - `id` (String, Deprecated) The ID of the subaccount.
-- `read_only` (Boolean) Shows whether the role can be modified or not.
-- `scopes` (Attributes List) The scopes available with this role. (see [below for nested schema](#nestedatt--scopes))
+- `read_only` (Boolean) Whether the role can be modified or not.
+- `scopes` (Attributes List) Scopes available with this role. (see [below for nested schema](#nestedatt--scopes))
 
 <a id="nestedatt--scopes"></a>
 ### Nested Schema for `scopes`

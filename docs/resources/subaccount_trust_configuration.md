@@ -2,14 +2,14 @@
 page_title: "btp_subaccount_trust_configuration Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Establishes trust from a subaccount to an Identity Authentication tenant.
+  Establish trust from a subaccount to an Identity Authentication tenant.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers
 ---
 
 # btp_subaccount_trust_configuration (Resource)
 
-Establishes trust from a subaccount to an Identity Authentication tenant.
+Establish trust from a subaccount to an Identity Authentication tenant.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>
@@ -52,8 +52,8 @@ resource "btp_subaccount_trust_configuration" "fully_customized" {
 
 - `id` (String) The origin of the identity provider.
 - `protocol` (String) The protocol used to establish trust with the identity provider.
-- `read_only` (Boolean) Shows whether the trust configuration can be modified.
-- `status` (String) Shows whether the identity provider is currently active or not.
+- `read_only` (Boolean) Whether the trust configuration can be modified.
+- `status` (String) Whether the identity provider is currently active or not.
 - `type` (String) The trust type.
 
 

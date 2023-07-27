@@ -2,7 +2,7 @@
 page_title: "btp_subaccount_trust_configurations Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets all trust configurations that are configured for your subaccount.
+  List all trust configurations that are configured for your subaccount.
   Tip:
   You must be viewer or administrator of the subaccount.
   Further documentation:
@@ -11,7 +11,7 @@ description: |-
 
 # btp_subaccount_trust_configurations (Data Source)
 
-Gets all trust configurations that are configured for your subaccount.
+List all trust configurations that are configured for your subaccount.
 
 __Tip:__
 You must be viewer or administrator of the subaccount.
@@ -37,7 +37,7 @@ data "btp_subaccount_trust_configurations" "all" {
 ### Read-Only
 
 - `id` (String, Deprecated) The ID of the subaccount.
-- `values` (Attributes List) The trust configurations associated with the subaccount. (see [below for nested schema](#nestedatt--values))
+- `values` (Attributes List) Trust configurations associated with the subaccount. (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
 ### Nested Schema for `values`
@@ -50,6 +50,6 @@ Read-Only:
 - `name` (String) The name of the trust configuration.
 - `origin` (String) The origin of the identity provider.
 - `protocol` (String) The protocol used to establish trust with the identity provider.
-- `read_only` (Boolean) Shows whether the trust configuration can be modified.
-- `status` (String) Shows whether the identity provider is currently active or not.
+- `read_only` (Boolean) Whether the trust configuration can be modified.
+- `status` (String) Whether the identity provider is currently active or not.
 - `type` (String) The trust type.

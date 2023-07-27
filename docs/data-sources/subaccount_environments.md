@@ -2,7 +2,7 @@
 page_title: "btp_subaccount_environments Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets all the available environments for a subaccount.
+  List all the available environments for a subaccount.
   This includes the environments, such as Cloud Foundry, which are available by default to all subaccounts, and those restricted environments, such as Kyma, which are offered in the product catalog as service entitlements and whose plans have already been assigned by a global account admin to the subaccount.
   Tip:
   You must be assigned to the subaccount admin or viewer role.
@@ -10,7 +10,7 @@ description: |-
 
 # btp_subaccount_environments (Data Source)
 
-Gets all the available environments for a subaccount.
+List all the available environments for a subaccount.
 
 This includes the environments, such as Cloud Foundry, which are available by default to all subaccounts, and those restricted environments, such as Kyma, which are offered in the product catalog as service entitlements and whose plans have already been assigned by a global account admin to the subaccount.
 
@@ -46,11 +46,11 @@ Read-Only:
 - `description` (String) The description of the environment.
 - `environment_type` (String) The type of environment that is available (for example: cloudfoundry).
 - `landscape_label` (String) The landscape label of the environment broker.
-- `plan_name` (String) The name of the service plan for the available environment.
+- `plan_name` (String) Name of the service plan for the available environment.
 - `plan_updateable` (Boolean) Specifies if the consumer can change the plan of an existing instance of the environment.
 - `schema_create` (String) The create schema of the environment broker.
 - `schema_update` (String) The update schema of the environment broker.
 - `service_description` (String) The short description of the service.
 - `service_display_name` (String) The display name of the service.
-- `service_name` (String) The name of the service offered in the catalog of the corresponding environment broker (for example: cloudfoundry).
-- `technical_key` (String) The technical key of the corresponding environment broker.
+- `service_name` (String) Name of the service offered in the catalog of the corresponding environment broker (for example: cloudfoundry).
+- `technical_key` (String) Technical key of the corresponding environment broker.

@@ -31,13 +31,13 @@ provider "btp" {
 
 ### Required
 
-- `globalaccount` (String) The subdomain of the global account in which you want to manage resources. To be found in the cockpit, in the global account view.
+- `globalaccount` (String) The subdomain of the global account you want to log in to. To be found in the cockpit, in the global account view.
 
 ### Optional
 
 - `cli_server_url` (String) The URL of the BTP CLI server (e.g. `https://cpcli.cf.eu10.hana.ondemand.com`).
 - `idp` (String) The identity provider to be used for authentication (default: `sap.default`).
-- `password` (String, Sensitive) Your password. Note that two-factor authentication is not supported.
+- `password` (String, Sensitive) Your password. Note that if two-factor authentication is enabled, concatenate your password, followed by the passcode, in a single string.
 - `username` (String) Your user name, usually an e-mail address.
 
 ## Get Started

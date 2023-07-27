@@ -2,12 +2,12 @@
 page_title: "btp_subaccount_role_collection Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets details about a specific subaccount role collection.
+  Get details about a specific subaccount role collection.
 ---
 
 # btp_subaccount_role_collection (Data Source)
 
-Gets details about a specific subaccount role collection.
+Get details about a specific subaccount role collection.
 
 ## Example Usage
 
@@ -30,7 +30,7 @@ data "btp_subaccount_role_collection" "subaccount_admin" {
 
 - `description` (String) The description of the role collection.
 - `id` (String, Deprecated) The ID of the subaccount.
-- `read_only` (Boolean) Shows whether the role collection is read-only.
+- `read_only` (Boolean) Whether the role collection is read-only.
 - `roles` (Attributes Set) (see [below for nested schema](#nestedatt--roles))
 
 <a id="nestedatt--roles"></a>

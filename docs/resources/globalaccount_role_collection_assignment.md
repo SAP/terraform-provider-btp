@@ -2,12 +2,12 @@
 page_title: "btp_globalaccount_role_collection_assignment Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Assigns a user or a group to a role collection on global account level.
+  Assign a user or a group to a role collection on global account level.
 ---
 
 # btp_globalaccount_role_collection_assignment (Resource)
 
-Assigns a user or a group to a role collection on global account level.
+Assign a user or a group to a role collection on global account level.
 
 ## Example Usage
 
@@ -40,6 +40,6 @@ resource "btp_globalaccount_role_collection_assignment" "globalaccount_viewer_gr
 
 ### Read-Only
 
-- `id` (String, Deprecated) The combined unique ID of the role collection.
+- `id` (String, Deprecated) The ID of the role collection
 
 

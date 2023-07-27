@@ -2,14 +2,14 @@
 page_title: "btp_directory_role_collection Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Creates a role collection in a directory.
+  Create a role collection in a directory.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_directory_role_collection (Resource)
 
-Creates a role collection in a directory.
+Create a role collection in a directory.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>
@@ -47,7 +47,7 @@ resource "btp_directory_role_collection" "my_collection" {
 
 ### Read-Only
 
-- `id` (String, Deprecated) The combined unique ID of the role collection as used for import operations.
+- `id` (String, Deprecated) The ID of the directory.
 
 <a id="nestedatt--roles"></a>
 ### Nested Schema for `roles`

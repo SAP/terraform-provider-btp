@@ -2,14 +2,14 @@
 page_title: "btp_subaccount_environment_instances Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets all the environment instances in a subaccount.
+  List all the environment instances in a subaccount.
   Tip:
   You must be assigned to the subaccount admin or viewer role.
 ---
 
 # btp_subaccount_environment_instances (Data Source)
 
-Gets all the environment instances in a subaccount.
+List all the environment instances in a subaccount.
 
 __Tip:__
 You must be assigned to the subaccount admin or viewer role.
@@ -40,39 +40,33 @@ data "btp_subaccount_environment_instances" "all" {
 Read-Only:
 
 - `broker_id` (String) The ID of the associated environment broker.
-- `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `created_date` (String) The date and time the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `custom_labels` (Map of Set of String)
 - `dashboard_url` (String) The URL of the service dashboard, which is a web-based management user interface for the service instances.
 - `description` (String) The description of the environment instance.
-- `environment_type` (String) The type of the environment instance that is used.
+- `environment_type` (String) Type of the environment instance that is used.
 - `id` (String) The ID of the environment instance.
-- `labels` (String) The Broker-specified key-value pairs that specify attributes of an environment instance.
+- `labels` (String) Broker-specified key-value pairs that specify attributes of an environment instance.
 - `landscape_label` (String) The name of the landscape within the logged-in region on which the environment instance is created.
-- `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
-- `name` (String) The name of the environment instance.
+- `last_modified` (String) The date and time the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `name` (String) Name of the environment instance.
 - `operation` (String) An identifier that represents the last operation. This ID is returned by the environment brokers.
-- `parameters` (String) The configuration parameters for the environment instance.
-- `plan_id` (String) The ID of the service plan for the environment instance in the corresponding service broker's catalog.
-- `plan_name` (String) The name of the service plan for the environment instance in the corresponding service broker's catalog.
-- `platform_id` (String) The ID of the platform for the environment instance in the corresponding service broker's catalog.
-- `service_id` (String) The ID of the service for the environment instance in the corresponding service broker's catalog.
-- `service_name` (String) The name of the service for the environment instance in the corresponding service broker's catalog.
-- `state` (String) The current state of the environment instance. Possible values are: 
-
-  | state | description | 
-  | --- | --- | 
-  | `OK` | The CRUD operation or series of operations completed successfully. | 
-  | `CREATING` | Creating of the environment instance is in progress. | 
-  | `CREATION_FAILED` | The creation of the environment instance failed, and the environment instance was not created or was created but cannot be used. | 
-  | `UPDATING` | Updating of the environment instance is in progress. | 
-  | `UPDATE_FAILED` | The update of the environment instance failed, and  the environment instance was not updated. | 
-  | `DELETING` | Deleting of the environment instance is in progress. | 
-  | `DELETION_FAILED` | The deletion of the environment instance failed, and the environment instance was not deleted. |
+- `parameters` (String) Configuration parameters for the environment instance.
+- `plan_id` (String) ID of the service plan for the environment instance in the corresponding service broker's catalog.
+- `plan_name` (String) Name of the service plan for the environment instance in the corresponding service broker's catalog.
+- `platform_id` (String) ID of the platform for the environment instance in the corresponding service broker's catalog.
+- `service_id` (String) ID of the service for the environment instance in the corresponding service broker's catalog.
+- `service_name` (String) Name of the service for the environment instance in the corresponding service broker's catalog.
+- `state` (String) Current state of the environment instance. Possible values are: 
+	 - `OK`
+	 - `CREATING`
+	 - `CREATION_FAILED`
+	 - `DELETING`
+	 - `DELETION_FAILED`
+	 - `UPDATE_FAILED`
+	 - `UPDATING`
 - `tenant_id` (String) The ID of the tenant that owns the environment instance.
 - `type` (String) The last provisioning operation on the environment instance. Possible values are: 
-
-  | value | description | 
-  | --- | --- | 
-  | `Provision` | The environment instance is created. | 
-  | `Update` | The environment instance is changed. | 
-  | `Deprovision` | The environment instance is deleted. |
+	 - `Provision` Environment instance created.
+	 - `Update` Environment instance changed.
+	 - `Deprovision` Environment instance deleted.

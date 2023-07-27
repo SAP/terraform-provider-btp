@@ -2,14 +2,14 @@
 page_title: "btp_globalaccount_users Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Lists all users.
+  List all users.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management
 ---
 
 # btp_globalaccount_users (Data Source)
 
-Lists all users.
+List all users.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management>
