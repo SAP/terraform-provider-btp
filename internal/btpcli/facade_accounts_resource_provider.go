@@ -25,39 +25,39 @@ func (f *accountsResourceProviderFacade) List(ctx context.Context) ([]provisioni
 	}))
 }
 
-func (f *accountsResourceProviderFacade) Get(ctx context.Context, resourceProvider string, resourceTechnicalName string) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
+func (f *accountsResourceProviderFacade) Get(ctx context.Context, provider string, technicalName string) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
 	return doExecute[provisioning.ResourceProviderResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
-		"provider":      resourceProvider,
-		"technicalName": resourceTechnicalName,
+		"provider":      provider,
+		"technicalName": technicalName,
 	}))
 }
 
 type GlobalaccountResourceProviderCreateInput struct {
-	Provider          string `btpcli:"provider"`
-	TechnicalName     string `btpcli:"technicalName"`
-	DisplayName       string `btpcli:"displayName"`
-	Description       string `btpcli:"description"`
-	ConfigurationInfo string `btpcli:"configurationInfo"`
+	Provider      string `btpcli:"provider"`
+	TechnicalName string `btpcli:"technicalName"`
+	DisplayName   string `btpcli:"displayName"`
+	Description   string `btpcli:"description"`
+	Configuration string `btpcli:"configurationInfo"`
+	Globalaccount string `btpcli:"globalAccount"`
 }
 
 func (f *accountsResourceProviderFacade) Create(ctx context.Context, args GlobalaccountResourceProviderCreateInput) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
+	args.Globalaccount = f.cliClient.GetGlobalAccountSubdomain()
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
 		return provisioning.ResourceProviderResponseObject{}, CommandResponse{}, err
 	}
 
-	params["globalAccount"] = f.cliClient.GetGlobalAccountSubdomain()
-
 	return doExecute[provisioning.ResourceProviderResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *accountsResourceProviderFacade) Delete(ctx context.Context, resourceProvider string, resourceTechnicalName string) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
+func (f *accountsResourceProviderFacade) Delete(ctx context.Context, provider string, technicalName string) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
 	return doExecute[provisioning.ResourceProviderResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
-		"provider":      resourceProvider,
-		"technicalName": resourceTechnicalName,
+		"provider":      provider,
+		"technicalName": technicalName,
 		"confirm":       "true",
 	}))
 }

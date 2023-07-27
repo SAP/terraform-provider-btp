@@ -5,8 +5,8 @@ import (
 )
 
 type ResourceProviderResponseObject struct {
-	// Unique technical name of the resource.
-	ResourceTechnicalName string `json:"technicalName,omitempty"`
+	// Unique technical name of the resource provider.
+	TechnicalName string `json:"technicalName,omitempty"`
 	// Type of the resource.
 	ResourceType string `json:"resourceType,omitempty"`
 	// Provider of the requested resource. For example, IaaS provider: AWS.

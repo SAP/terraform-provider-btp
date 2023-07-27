@@ -63,11 +63,11 @@ func TestAccountsResourceProviderFacade_Get(t *testing.T) {
 func TestAccountsResourceProviderFacade_Create(t *testing.T) {
 	command := "accounts/resource-provider"
 
-	resourceProvider := "AWS"
-	resourceTechnicalName := "my_id"
+	provider := "AWS"
+	technicalName := "my_id"
 	description := "my-description"
 	displayName := "My display name"
-	configurationInfo := "{}"
+	configuration := "{}"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
 		var srvCalled bool
@@ -77,21 +77,21 @@ func TestAccountsResourceProviderFacade_Create(t *testing.T) {
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
 				"globalAccount":     "795b53bb-a3f0-4769-adf0-26173282a975",
-				"provider":          resourceProvider,
-				"technicalName":     resourceTechnicalName,
+				"provider":          provider,
+				"technicalName":     technicalName,
 				"description":       description,
 				"displayName":       displayName,
-				"configurationInfo": configurationInfo,
+				"configurationInfo": configuration,
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Accounts.ResourceProvider.Create(context.TODO(), GlobalaccountResourceProviderCreateInput{
-			Provider:          resourceProvider,
-			TechnicalName:     resourceTechnicalName,
-			Description:       description,
-			DisplayName:       displayName,
-			ConfigurationInfo: configurationInfo,
+			Provider:      provider,
+			TechnicalName: technicalName,
+			Description:   description,
+			DisplayName:   displayName,
+			Configuration: configuration,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -103,8 +103,8 @@ func TestAccountsResourceProviderFacade_Create(t *testing.T) {
 func TestAccountsResourceProviderFacade_Delete(t *testing.T) {
 	command := "accounts/resource-provider"
 
-	resourceProvider := "AWS"
-	resourceTechnicalName := "my_id"
+	provider := "AWS"
+	technicalName := "my_id"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
 		var srvCalled bool
@@ -122,7 +122,7 @@ func TestAccountsResourceProviderFacade_Delete(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Accounts.ResourceProvider.Delete(context.TODO(), resourceProvider, resourceTechnicalName)
+		_, res, err := uut.Accounts.ResourceProvider.Delete(context.TODO(), provider, technicalName)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)

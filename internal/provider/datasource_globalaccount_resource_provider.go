@@ -42,8 +42,8 @@ You must be assigned to the global account admin or viewer role.
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/managing-resource-providers>`,
 		Attributes: map[string]schema.Attribute{
-			"resource_provider": schema.StringAttribute{
-				MarkdownDescription: "The provider of the requested resource. Possible values are: \n" +
+			"provider_type": schema.StringAttribute{
+				MarkdownDescription: "The cloud vendor from which to consume services through your subscribed account. Possible values are: \n" +
 					getFormattedValueAsTableRow("value", "description") +
 					getFormattedValueAsTableRow("---", "---") +
 					getFormattedValueAsTableRow("`AWS`", "Amazon Web Services") +
@@ -53,12 +53,14 @@ __Further documentation:__
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
-			"id": schema.StringAttribute{
+			"technical_name": schema.StringAttribute{
 				MarkdownDescription: "The unique technical name of the resource provider.",
 				Required:            true,
-				Validators: []validator.String{
-					stringvalidator.LengthAtLeast(1),
-				},
+			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `technical_name` attribute instead",
+				MarkdownDescription: "The unique technical name of the resource provider.",
+				Computed:            true,
 			},
 			"display_name": schema.StringAttribute{
 				MarkdownDescription: "The descriptive name of the resource provider.",
@@ -68,8 +70,8 @@ __Further documentation:__
 				MarkdownDescription: "The description of the resource provider.",
 				Computed:            true,
 			},
-			"parameters": schema.StringAttribute{
-				MarkdownDescription: "Shows any relevant information about the resource provider that is not provided by other parameter values.",
+			"configuration": schema.StringAttribute{
+				MarkdownDescription: "The configuration properties for the resource provider as required by the vendor.",
 				Computed:            true,
 				Sensitive:           true,
 			},
@@ -87,7 +89,7 @@ func (ds *globalaccountResourceProviderDataSource) Read(ctx context.Context, req
 		return
 	}
 
-	cliRes, _, err := ds.cli.Accounts.ResourceProvider.Get(ctx, data.ResourceProvider.ValueString(), data.Id.ValueString())
+	cliRes, _, err := ds.cli.Accounts.ResourceProvider.Get(ctx, data.Provider.ValueString(), data.TechnicalName.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Resource Provider (Global Account)", fmt.Sprintf("%s", err))
 		return

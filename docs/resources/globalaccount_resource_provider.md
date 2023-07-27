@@ -63,19 +63,23 @@ resource "btp_globalaccount_resource_provider" "aws" {
 
 ### Required
 
-- `id` (String) The unique technical name of the resource provider.
-- `parameters` (String, Sensitive) Any relevant information about the resource provider that is not provided by other parameter values.
-- `resource_provider` (String) Provider of the requested resource. Possible values are: 
+- `configuration` (String, Sensitive) The configuration properties for the resource provider as required by the vendor.
+- `display_name` (String) The descriptive name of the resource provider.
+- `provider_type` (String) The cloud vendor from which to consume services through your subscribed account. Possible values are: 
 
   | value | description | 
   | --- | --- | 
   | `AWS` | Amazon Web Services | 
   | `AZURE` | Microsoft Azure |
+- `technical_name` (String) The unique technical name of the resource provider.
+
+### Optional
+
+- `description` (String) The description of the resource provider.
 
 ### Read-Only
 
-- `description` (String) The description of the resource provider.
-- `display_name` (String) The descriptive name of the resource provider.
+- `id` (String, Deprecated) The unique technical name of the resource provider.
 
 ## Import
 

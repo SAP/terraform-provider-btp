@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"fmt"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -12,31 +11,32 @@ import (
 )
 
 func newGlobalaccountResourceProvidersDataSource() datasource.DataSource {
-	return &globalaccountGlobalaccountResourceProvidersDataSource{}
+	return &globalaccountResourceProvidersDataSource{}
 }
 
-type globalaccountGlobalaccountResourceProvidersValue struct {
-	ResourceProvider types.String `tfsdk:"resource_provider"`
-	Id               types.String `tfsdk:"id"`
-	DisplayName      types.String `tfsdk:"display_name"`
-	Description      types.String `tfsdk:"description"`
+type globalaccountResourceProvidersValue struct {
+	Provider      types.String `tfsdk:"provider_type"`
+	TechnicalName types.String `tfsdk:"technical_name"`
+	DisplayName   types.String `tfsdk:"display_name"`
+	Description   types.String `tfsdk:"description"`
 }
 
-type globalaccountGlobalaccountResourceProvidersDataSourceConfig struct {
+type globalaccountResourceProvidersDataSourceConfig struct {
 	/* INPUT */
 	/* OUTPUT */
-	Values []globalaccountGlobalaccountResourceProvidersValue `tfsdk:"values"`
+	Id     types.String                          `tfsdk:"id"`
+	Values []globalaccountResourceProvidersValue `tfsdk:"values"`
 }
 
-type globalaccountGlobalaccountResourceProvidersDataSource struct {
+type globalaccountResourceProvidersDataSource struct {
 	cli *btpcli.ClientFacade
 }
 
-func (ds *globalaccountGlobalaccountResourceProvidersDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (ds *globalaccountResourceProvidersDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = fmt.Sprintf("%s_globalaccount_resource_providers", req.ProviderTypeName)
 }
 
-func (ds *globalaccountGlobalaccountResourceProvidersDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
+func (ds *globalaccountResourceProvidersDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -44,7 +44,7 @@ func (ds *globalaccountGlobalaccountResourceProvidersDataSource) Configure(_ con
 	ds.cli = req.ProviderData.(*btpcli.ClientFacade)
 }
 
-func (ds *globalaccountGlobalaccountResourceProvidersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (ds *globalaccountResourceProvidersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Lists all the resource provider instances in a global account.
 
@@ -54,18 +54,23 @@ You must be assigned to the global account admin or viewer role.
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/managing-resource-providers>`,
 		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
+				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",
+				MarkdownDescription: "The ID of the global account",
+				Computed:            true,
+			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"resource_provider": schema.StringAttribute{
-							MarkdownDescription: "The provider of the requested resource. Possible values are: \n" +
+						"provider_type": schema.StringAttribute{
+							MarkdownDescription: "The cloud vendor from which to consume services through your subscribed account. Possible values are: \n" +
 								getFormattedValueAsTableRow("value", "description") +
 								getFormattedValueAsTableRow("---", "---") +
 								getFormattedValueAsTableRow("`AWS`", "Amazon Web Services") +
 								getFormattedValueAsTableRow("`AZURE`", "Microsoft Azure"),
 							Computed: true,
 						},
-						"id": schema.StringAttribute{
+						"technical_name": schema.StringAttribute{
 							MarkdownDescription: "The unique technical name of the resource provider.",
 							Computed:            true,
 						},
@@ -85,8 +90,8 @@ __Further documentation:__
 	}
 }
 
-func (ds *globalaccountGlobalaccountResourceProvidersDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data globalaccountGlobalaccountResourceProvidersDataSourceConfig
+func (ds *globalaccountResourceProvidersDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var data globalaccountResourceProvidersDataSourceConfig
 
 	diags := req.Config.Get(ctx, &data)
 
@@ -101,15 +106,18 @@ func (ds *globalaccountGlobalaccountResourceProvidersDataSource) Read(ctx contex
 		return
 	}
 
-	data.Values = []globalaccountGlobalaccountResourceProvidersValue{}
+	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
+	data.Values = []globalaccountResourceProvidersValue{}
 
 	for _, provider := range cliRes {
-		data.Values = append(data.Values, globalaccountGlobalaccountResourceProvidersValue{
-			ResourceProvider: types.StringValue(provider.ResourceProvider),
-			Id:               types.StringValue(provider.ResourceTechnicalName),
-			DisplayName:      types.StringValue(provider.DisplayName),
-			Description:      types.StringValue(provider.Description),
-		})
+		resourceProvider := globalaccountResourceProvidersValue{
+			Provider:      types.StringValue(provider.ResourceProvider),
+			TechnicalName: types.StringValue(provider.TechnicalName),
+			DisplayName:   types.StringValue(provider.DisplayName),
+			Description:   types.StringValue(provider.Description),
+		}
+
+		data.Values = append(data.Values, resourceProvider)
 	}
 
 	diags = resp.State.Set(ctx, &data)

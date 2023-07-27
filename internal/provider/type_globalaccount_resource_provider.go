@@ -10,25 +10,27 @@ import (
 )
 
 type globalaccountResourceProviderType struct {
-	ResourceProvider types.String `tfsdk:"resource_provider"`
-	Id               types.String `tfsdk:"id"`
-	DisplayName      types.String `tfsdk:"display_name"`
-	Description      types.String `tfsdk:"description"`
-	Parameters       types.String `tfsdk:"parameters"`
+	Provider      types.String `tfsdk:"provider_type"`
+	TechnicalName types.String `tfsdk:"technical_name"`
+	Id            types.String `tfsdk:"id"`
+	DisplayName   types.String `tfsdk:"display_name"`
+	Description   types.String `tfsdk:"description"`
+	Configuration types.String `tfsdk:"configuration"`
 }
 
 func globalaccountResourceProviderValueFrom(ctx context.Context, value provisioning.ResourceProviderResponseObject) (globalaccountResourceProviderType, diag.Diagnostics) {
 	resourceProvider := globalaccountResourceProviderType{
-		ResourceProvider: types.StringValue(value.ResourceProvider),
-		Id:               types.StringValue(value.ResourceTechnicalName),
-		DisplayName:      types.StringValue(value.DisplayName),
-		Description:      types.StringValue(value.Description),
+		Provider:      types.StringValue(value.ResourceProvider),
+		TechnicalName: types.StringValue(value.TechnicalName),
+		Id:            types.StringValue(value.TechnicalName),
+		DisplayName:   types.StringValue(value.DisplayName),
+		Description:   types.StringValue(value.Description),
 	}
 
 	if value.AdditionalInfo == nil {
-		resourceProvider.Parameters = types.StringNull()
+		resourceProvider.Configuration = types.StringNull()
 	} else {
-		resourceProvider.Parameters = types.StringValue(string(*value.AdditionalInfo))
+		resourceProvider.Configuration = types.StringValue(string(*value.AdditionalInfo))
 	}
 
 	return resourceProvider, diag.Diagnostics{}
