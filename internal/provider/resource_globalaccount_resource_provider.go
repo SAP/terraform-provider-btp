@@ -51,33 +51,45 @@ __Tips:__
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/managing-resource-providers>`,
 		Attributes: map[string]schema.Attribute{
-			"resource_provider": schema.StringAttribute{
-				MarkdownDescription: "Provider of the requested resource. Possible values are: \n" +
+			"provider_type": schema.StringAttribute{
+				MarkdownDescription: "The cloud vendor from which to consume services through your subscribed account. Possible values are: \n" +
 					getFormattedValueAsTableRow("value", "description") +
 					getFormattedValueAsTableRow("---", "---") +
 					getFormattedValueAsTableRow("`AWS`", "Amazon Web Services") +
 					getFormattedValueAsTableRow("`AZURE`", "Microsoft Azure"),
 				Required: true,
-			},
-			"id": schema.StringAttribute{
-				MarkdownDescription: "The unique technical name of the resource provider.",
-				Required:            true,
-			},
-			"display_name": schema.StringAttribute{
-				MarkdownDescription: "The descriptive name of the resource provider.",
-				Computed:            true,
-			},
-			"description": schema.StringAttribute{
-				MarkdownDescription: "The description of the resource provider.",
-				Computed:            true,
-			},
-			"parameters": schema.StringAttribute{
-				MarkdownDescription: "Any relevant information about the resource provider that is not provided by other parameter values.",
-				Required:            true,
-				Sensitive:           true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"technical_name": schema.StringAttribute{
+				MarkdownDescription: "The unique technical name of the resource provider.",
+				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `technical_name` attribute instead",
+				MarkdownDescription: "The unique technical name of the resource provider.",
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"display_name": schema.StringAttribute{
+				MarkdownDescription: "The descriptive name of the resource provider.",
+				Required:            true,
+			},
+			"description": schema.StringAttribute{
+				MarkdownDescription: "The description of the resource provider.",
+				Optional:            true,
+				Computed:            true,
+			},
+			"configuration": schema.StringAttribute{
+				MarkdownDescription: "The configuration properties for the resource provider as required by the vendor.",
+				Required:            true,
+				Sensitive:           true,
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
 				},
@@ -96,7 +108,7 @@ func (rs *resourceGlobalaccountProviderResource) Read(ctx context.Context, req r
 		return
 	}
 
-	cliRes, _, err := rs.cli.Accounts.ResourceProvider.Get(ctx, state.ResourceProvider.ValueString(), state.Id.ValueString())
+	cliRes, _, err := rs.cli.Accounts.ResourceProvider.Get(ctx, state.Provider.ValueString(), state.TechnicalName.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Resource Provider (Global Account)", fmt.Sprintf("%s", err))
 		return
@@ -118,21 +130,21 @@ func (rs *resourceGlobalaccountProviderResource) Create(ctx context.Context, req
 	}
 
 	cliRes, _, err := rs.cli.Accounts.ResourceProvider.Create(ctx, btpcli.GlobalaccountResourceProviderCreateInput{
-		Provider:          plan.ResourceProvider.ValueString(),
-		TechnicalName:     plan.Id.ValueString(),
-		DisplayName:       plan.DisplayName.ValueString(),
-		Description:       plan.Description.ValueString(),
-		ConfigurationInfo: plan.Parameters.ValueString(),
+		Provider:      plan.Provider.ValueString(),
+		TechnicalName: plan.TechnicalName.ValueString(),
+		DisplayName:   plan.DisplayName.ValueString(),
+		Description:   plan.Description.ValueString(),
+		Configuration: plan.Configuration.ValueString(),
 	})
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Resource Provider (Global Account)", fmt.Sprintf("%s", err))
 		return
 	}
 
-	plan, diags = globalaccountResourceProviderValueFrom(ctx, cliRes)
+	state, diags := globalaccountResourceProviderValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
-	diags = resp.State.Set(ctx, &plan)
+	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -168,7 +180,7 @@ func (rs *resourceGlobalaccountProviderResource) Delete(ctx context.Context, req
 		return
 	}
 
-	_, _, err := rs.cli.Accounts.ResourceProvider.Delete(ctx, state.ResourceProvider.ValueString(), state.Id.ValueString())
+	_, _, err := rs.cli.Accounts.ResourceProvider.Delete(ctx, state.Provider.ValueString(), state.TechnicalName.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Resource Provider (Global Account)", fmt.Sprintf("%s", err))
 		return
