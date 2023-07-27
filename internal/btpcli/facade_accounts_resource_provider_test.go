@@ -65,8 +65,8 @@ func TestAccountsResourceProviderFacade_Create(t *testing.T) {
 
 	provider := "AWS"
 	technicalName := "my_id"
-	description := "my-description"
 	displayName := "My display name"
+	description := "my-description"
 	configuration := "{}"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
@@ -79,14 +79,54 @@ func TestAccountsResourceProviderFacade_Create(t *testing.T) {
 				"globalAccount":     "795b53bb-a3f0-4769-adf0-26173282a975",
 				"provider":          provider,
 				"technicalName":     technicalName,
-				"description":       description,
 				"displayName":       displayName,
+				"description":       description,
 				"configurationInfo": configuration,
 			})
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Accounts.ResourceProvider.Create(context.TODO(), GlobalaccountResourceProviderCreateInput{
+		_, res, err := uut.Accounts.ResourceProvider.Create(context.TODO(), GlobalaccountResourceProviderCreateUpdateInput{
+			Provider:      provider,
+			TechnicalName: technicalName,
+			Description:   description,
+			DisplayName:   displayName,
+			Configuration: configuration,
+		})
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestAccountsResourceProviderFacade_Update(t *testing.T) {
+	command := "accounts/resource-provider"
+
+	provider := "AWS"
+	technicalName := "my_id"
+	displayName := "My display name"
+	description := "my-description"
+	configuration := "{}"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"globalAccount":     "795b53bb-a3f0-4769-adf0-26173282a975",
+				"provider":          provider,
+				"technicalName":     technicalName,
+				"displayName":       displayName,
+				"description":       description,
+				"configurationInfo": configuration,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Accounts.ResourceProvider.Update(context.TODO(), GlobalaccountResourceProviderCreateUpdateInput{
 			Provider:      provider,
 			TechnicalName: technicalName,
 			Description:   description,

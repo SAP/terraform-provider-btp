@@ -33,7 +33,7 @@ func (f *accountsResourceProviderFacade) Get(ctx context.Context, provider strin
 	}))
 }
 
-type GlobalaccountResourceProviderCreateInput struct {
+type GlobalaccountResourceProviderCreateUpdateInput struct {
 	Provider      string `btpcli:"provider"`
 	TechnicalName string `btpcli:"technicalName"`
 	DisplayName   string `btpcli:"displayName"`
@@ -42,7 +42,7 @@ type GlobalaccountResourceProviderCreateInput struct {
 	Globalaccount string `btpcli:"globalAccount"`
 }
 
-func (f *accountsResourceProviderFacade) Create(ctx context.Context, args GlobalaccountResourceProviderCreateInput) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
+func (f *accountsResourceProviderFacade) Create(ctx context.Context, args GlobalaccountResourceProviderCreateUpdateInput) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
 	args.Globalaccount = f.cliClient.GetGlobalAccountSubdomain()
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
@@ -51,6 +51,17 @@ func (f *accountsResourceProviderFacade) Create(ctx context.Context, args Global
 	}
 
 	return doExecute[provisioning.ResourceProviderResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
+}
+
+func (f *accountsResourceProviderFacade) Update(ctx context.Context, args GlobalaccountResourceProviderCreateUpdateInput) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {
+	args.Globalaccount = f.cliClient.GetGlobalAccountSubdomain()
+	params, err := tfutils.ToBTPCLIParamsMap(args)
+
+	if err != nil {
+		return provisioning.ResourceProviderResponseObject{}, CommandResponse{}, err
+	}
+
+	return doExecute[provisioning.ResourceProviderResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
 }
 
 func (f *accountsResourceProviderFacade) Delete(ctx context.Context, provider string, technicalName string) (provisioning.ResourceProviderResponseObject, CommandResponse, error) {

@@ -129,7 +129,7 @@ func (rs *resourceGlobalaccountProviderResource) Create(ctx context.Context, req
 		return
 	}
 
-	cliRes, _, err := rs.cli.Accounts.ResourceProvider.Create(ctx, btpcli.GlobalaccountResourceProviderCreateInput{
+	cliRes, _, err := rs.cli.Accounts.ResourceProvider.Create(ctx, btpcli.GlobalaccountResourceProviderCreateUpdateInput{
 		Provider:      plan.Provider.ValueString(),
 		TechnicalName: plan.TechnicalName.ValueString(),
 		DisplayName:   plan.DisplayName.ValueString(),
@@ -156,20 +156,23 @@ func (rs *resourceGlobalaccountProviderResource) Update(ctx context.Context, req
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Updating Resource Resource Provider (Global Account)", "Update is not yet implemented.")
-
-	/* TODO: implementation of UPDATE operation
-	cliRes, err := gen.client.Execute(ctx, btpcli.Update, gen.command, plan)
+	cliRes, _, err := rs.cli.Accounts.ResourceProvider.Update(ctx, btpcli.GlobalaccountResourceProviderCreateUpdateInput{
+		Provider:      plan.Provider.ValueString(),
+		TechnicalName: plan.TechnicalName.ValueString(),
+		DisplayName:   plan.DisplayName.ValueString(),
+		Description:   plan.Description.ValueString(),
+		Configuration: plan.Configuration.ValueString(),
+	})
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Resource Provider (Global Account)", fmt.Sprintf("%s", err))
 		return
-	}*/
-
-	diags = resp.State.Set(ctx, plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
 	}
+
+	state, diags := globalaccountResourceProviderValueFrom(ctx, cliRes)
+	resp.Diagnostics.Append(diags...)
+
+	diags = resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
 }
 
 func (rs *resourceGlobalaccountProviderResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
