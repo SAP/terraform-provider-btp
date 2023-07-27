@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -42,7 +43,7 @@ func (rs *subaccountEnvironmentInstanceResource) Configure(_ context.Context, re
 	rs.cli = req.ProviderData.(*btpcli.ClientFacade)
 }
 
-func (rs *subaccountEnvironmentInstanceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (rs *subaccountEnvironmentInstanceResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Creates an environment instance, such as a Cloud Foundry org, in a subaccount.
 
@@ -102,6 +103,14 @@ __Further documentation:__
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
+				Create:            true,
+				CreateDescription: "Timeout for creating the environment instance.",
+				Update:            true,
+				UpdateDescription: "Timeout for updating the environment instance.",
+				Delete:            true,
+				DeleteDescription: "Timeout for deleting the environment instance.",
+			}),
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the environment instance.",
 				Computed:            true,
@@ -247,6 +256,12 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	plan.Parameters = types.StringValue(parameters)
 	resp.Diagnostics.Append(diags...)
 
+	createTimeout, tferr := plan.Timeouts.Create(ctx, 10*time.Minute)
+	if tferr != nil {
+		resp.Diagnostics.AddError("Provider Error Creating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateCreating},
 		Target:  []string{provisioning.StateOK, provisioning.StateCreationFailed},
@@ -259,7 +274,7 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    60 * time.Minute,
+		Timeout:    createTimeout,
 		Delay:      5 * time.Second,
 		MinTimeout: 5 * time.Second,
 	}

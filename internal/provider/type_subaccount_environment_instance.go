@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -10,28 +11,29 @@ import (
 )
 
 type subaccountEnvironmentInstanceType struct {
-	SubaccountId    types.String `tfsdk:"subaccount_id"`
-	Id              types.String `tfsdk:"id"`
-	BrokerId        types.String `tfsdk:"broker_id"`
-	CreatedDate     types.String `tfsdk:"created_date"`
-	CustomLabels    types.Map    `tfsdk:"custom_labels"`
-	DashboardUrl    types.String `tfsdk:"dashboard_url"`
-	Description     types.String `tfsdk:"description"`
-	EnvironmentType types.String `tfsdk:"environment_type"`
-	Labels          types.String `tfsdk:"labels"`
-	LandscapeLabel  types.String `tfsdk:"landscape_label"`
-	LastModified    types.String `tfsdk:"last_modified"`
-	Name            types.String `tfsdk:"name"`
-	Operation       types.String `tfsdk:"operation"`
-	Parameters      types.String `tfsdk:"parameters"`
-	PlanId          types.String `tfsdk:"plan_id"`
-	PlanName        types.String `tfsdk:"plan_name"`
-	PlatformId      types.String `tfsdk:"platform_id"`
-	ServiceId       types.String `tfsdk:"service_id"`
-	ServiceName     types.String `tfsdk:"service_name"`
-	State           types.String `tfsdk:"state"`
-	TenantId        types.String `tfsdk:"tenant_id"`
-	Type_           types.String `tfsdk:"type"`
+	SubaccountId    types.String   `tfsdk:"subaccount_id"`
+	Id              types.String   `tfsdk:"id"`
+	BrokerId        types.String   `tfsdk:"broker_id"`
+	CreatedDate     types.String   `tfsdk:"created_date"`
+	CustomLabels    types.Map      `tfsdk:"custom_labels"`
+	DashboardUrl    types.String   `tfsdk:"dashboard_url"`
+	Description     types.String   `tfsdk:"description"`
+	EnvironmentType types.String   `tfsdk:"environment_type"`
+	Labels          types.String   `tfsdk:"labels"`
+	LandscapeLabel  types.String   `tfsdk:"landscape_label"`
+	LastModified    types.String   `tfsdk:"last_modified"`
+	Name            types.String   `tfsdk:"name"`
+	Operation       types.String   `tfsdk:"operation"`
+	Parameters      types.String   `tfsdk:"parameters"`
+	PlanId          types.String   `tfsdk:"plan_id"`
+	PlanName        types.String   `tfsdk:"plan_name"`
+	PlatformId      types.String   `tfsdk:"platform_id"`
+	ServiceId       types.String   `tfsdk:"service_id"`
+	ServiceName     types.String   `tfsdk:"service_name"`
+	State           types.String   `tfsdk:"state"`
+	TenantId        types.String   `tfsdk:"tenant_id"`
+	Type_           types.String   `tfsdk:"type"`
+	Timeouts        timeouts.Value `tfsdk:"timeouts"`
 }
 
 func subaccountEnvironmentInstanceValueFrom(ctx context.Context, value provisioning.EnvironmentInstanceResponseObject) (subaccountEnvironmentInstanceType, diag.Diagnostics) {
