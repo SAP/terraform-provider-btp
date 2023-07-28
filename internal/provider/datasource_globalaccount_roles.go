@@ -143,7 +143,7 @@ func (ds *globalaccountRolesDataSource) Read(ctx context.Context, req datasource
 
 	for _, role := range cliRes {
 		roleVal := globalaccountRolesValue{
-			Name:              types.StringValue(role.RoleTemplateName),
+			Name:              types.StringValue(role.Name),
 			RoleTemplateAppId: types.StringValue(role.RoleTemplateAppId),
 			RoleTemplateName:  types.StringValue(role.RoleTemplateName),
 			Description:       types.StringValue(role.Description),
