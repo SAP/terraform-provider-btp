@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -229,12 +230,17 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{saas_manager_service.StateInProcess},
-		Target:  []string{saas_manager_service.StateSubscribed, saas_manager_service.StateSubscribeFailed},
+		Target:  []string{saas_manager_service.StateSubscribed},
 		Refresh: func() (interface{}, string, error) {
 			subRes, _, err := rs.cli.Accounts.Subscription.Get(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString())
 
 			if err != nil {
 				return subRes, "", err
+			}
+
+			// No error returned even is subscription failed
+			if subRes.State == saas_manager_service.StateSubscribeFailed {
+				return subRes, subRes.State, errors.New("undefined API error during subscription")
 			}
 
 			return subRes, subRes.State, nil
@@ -287,12 +293,17 @@ func (rs *subaccountSubscriptionResource) Delete(ctx context.Context, req resour
 
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{saas_manager_service.StateInProcess},
-		Target:  []string{saas_manager_service.StateUnsubscribeFailed, saas_manager_service.StateNotSubscribed},
+		Target:  []string{saas_manager_service.StateNotSubscribed},
 		Refresh: func() (interface{}, string, error) {
 			subRes, _, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
 
 			if err != nil {
 				return subRes, subRes.State, err
+			}
+
+			// No error returned even is unsubscribe failed
+			if subRes.State == saas_manager_service.StateUnsubscribeFailed {
+				return subRes, subRes.State, errors.New("undefined API error during unsubscription")
 			}
 
 			return subRes, subRes.State, nil
