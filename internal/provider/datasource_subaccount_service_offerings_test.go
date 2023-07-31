@@ -11,7 +11,7 @@ import (
 func TestDataSourceSubaccountServiceOfferings(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - service offerings for subaccount", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_offerings_all")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_offerings_all")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -19,10 +19,10 @@ func TestDataSourceSubaccountServiceOfferings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountOfferingsBySubaccount("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountOfferingsBySubaccount("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offerings.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_offerings.uut", "values.#", "16"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_offerings.uut", "values.#", "17"),
 					),
 				},
 			},
@@ -30,7 +30,7 @@ func TestDataSourceSubaccountServiceOfferings(t *testing.T) {
 	})
 
 	t.Run("happy path - service offerings for subaccount and environment", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_offerings_by_environment")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_offerings_by_environment")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -38,7 +38,7 @@ func TestDataSourceSubaccountServiceOfferings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountOfferingsBySubaccountAndEnvironment("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountOfferingsBySubaccountAndEnvironment("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offerings.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offerings.uut", "values.#", "0"),
@@ -49,7 +49,7 @@ func TestDataSourceSubaccountServiceOfferings(t *testing.T) {
 	})
 
 	t.Run("happy path - service plans for subaccount with fields filter", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_offerings_namefilter")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_offerings_namefilter")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -57,7 +57,7 @@ func TestDataSourceSubaccountServiceOfferings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountOfferingsBySubaccountAndFields("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountOfferingsBySubaccountAndFields("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offerings.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offerings.uut", "values.#", "1"),
@@ -73,7 +73,7 @@ func TestDataSourceSubaccountServiceOfferings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_subaccount_service_offerings" "uut" {}`,
+					Config:      `data "btp_subaccount_service_offerings" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -85,7 +85,7 @@ func TestDataSourceSubaccountServiceOfferings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountOfferingsBySubaccount("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceSubaccountOfferingsBySubaccount("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -96,7 +96,7 @@ func TestDataSourceSubaccountServiceOfferings(t *testing.T) {
 
 func hclDatasourceSubaccountOfferingsBySubaccount(resourceName string, subaccountId string) string {
 	template := `
-data "btp_subaccount_service_offerings" "%s" { 
+data "btp_subaccount_service_offerings" "%s" {
      subaccount_id = "%s"
 }`
 
@@ -105,7 +105,7 @@ data "btp_subaccount_service_offerings" "%s" {
 
 func hclDatasourceSubaccountOfferingsBySubaccountAndEnvironment(resourceName string, subaccountId string) string {
 	template := `
-data "btp_subaccount_service_offerings" "%s" { 
+data "btp_subaccount_service_offerings" "%s" {
      subaccount_id = "%s"
 	 environment   = "cloudfoundry"
 }`
@@ -115,7 +115,7 @@ data "btp_subaccount_service_offerings" "%s" {
 
 func hclDatasourceSubaccountOfferingsBySubaccountAndFields(resourceName string, subaccountId string) string {
 	template := `
-data "btp_subaccount_service_offerings" "%s" { 
+data "btp_subaccount_service_offerings" "%s" {
      subaccount_id = "%s"
      fields_filter = "name eq 'html5-apps-repo'"
 }`

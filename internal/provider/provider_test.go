@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 	"unicode"
@@ -30,21 +31,43 @@ var (
 	regexpValidUUID          = uuidvalidator.UuidRegexp
 )
 
-func hclProvider() string {
-	return hclProviderWithCLIServerURL("https://cpcli.cf.sap.hana.ondemand.com")
+type TestUser struct {
+	Username  string
+	Password  string
+	Idp       string
+	Issuer    string
+	Firstname string
+	Lastname  string
 }
 
-func hclProviderWithCLIServerURL(cliServerURL string) string {
+var redactedTestUser = TestUser{
+	Username:  "john.doe@int.test",
+	Password:  "testUserPassword",
+	Idp:       "identityProvider",
+	Issuer:    "identity.provider.test",
+	Firstname: "John",
+	Lastname:  "Doe",
+}
+
+func hclProviderFor(user TestUser) string {
+	return hclProvider("https://cpcli.cf.sap.hana.ondemand.com", user)
+}
+
+func hclProviderForCLIServerAt(cliServerURL string) string {
+	return hclProvider(cliServerURL, redactedTestUser)
+}
+
+func hclProvider(cliServerURL string, user TestUser) string {
 	// TODO replace credentials with serviceuser credentials
 	return fmt.Sprintf(`
 provider "btp" {
     cli_server_url = "%s"
     globalaccount  = "terraformintcanary"
-    username       = "john.doe@int.test"
-    password       = "redacted"
-    idp            = ""
+    username       = "%s"
+    password       = "%s"
+    idp            = "%s"
 }
-    `, cliServerURL)
+    `, cliServerURL, user.Username, user.Password, user.Idp)
 }
 
 func getProviders(httpClient *http.Client) map[string]func() (tfprotov6.ProviderServer, error) {
@@ -55,55 +78,107 @@ func getProviders(httpClient *http.Client) map[string]func() (tfprotov6.Provider
 	}
 }
 
-func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
+func setupVCR(t *testing.T, cassetteName string) (*recorder.Recorder, TestUser) {
 	t.Helper()
+
+	mode := recorder.ModeRecordOnce
+	if force, _ := strconv.ParseBool(os.Getenv("TEST_FORCE_REC")); force {
+		mode = recorder.ModeRecordOnly
+	}
 
 	rec, err := recorder.NewWithOptions(&recorder.Options{
 		CassetteName:       cassetteName,
-		Mode:               recorder.ModeRecordOnce,
+		Mode:               mode,
 		SkipRequestLatency: true,
 		RealTransport:      http.DefaultTransport,
 	})
+
+	user := redactedTestUser
+	if rec.IsRecording() {
+		user.Username = os.Getenv("BTP_USERNAME")
+		user.Password = os.Getenv("BTP_PASSWORD")
+		if len(user.Username) == 0 || len(user.Password) == 0 {
+			t.Fatal("Env vars BTP_USERNAME and BTP_PASSWORD are required when recording test fixtures")
+		}
+
+		user.Idp = os.Getenv("BTP_IDP")
+		if len(user.Idp) == 0 {
+			user.Issuer = "accounts.sap.com"
+		} else if strings.Contains(user.Idp, ".") {
+			user.Issuer = user.Idp
+		} else {
+			// TODO: currently short notation (idp = tenant id) only supported with this default domain (e.g. canary)
+			user.Issuer = user.Idp + ".accounts400.ondemand.com"
+		}
+		user.Firstname, user.Lastname = getNameFromEmail(user.Username)
+	}
 
 	if err != nil {
 		t.Fatal()
 	}
 
 	rec.SetMatcher(cliServerRequestMatcher(t))
+	rec.AddHook(hookRedactIntegrationUserCredentials(user), recorder.BeforeSaveHook)
+	rec.AddHook(hookRedactTokensInHeader(), recorder.BeforeSaveHook)
 
-	hookRedactIntegrationUserCredentials := func(i *cassette.Interaction) error {
-		intUser := os.Getenv("BTP_USERNAME")
-		intUserPwd := os.Getenv("BTP_PASSWORD")
-		intUserIdp := os.Getenv("BTP_IDP")
+	return rec, user
+}
 
-		firstName, lastName := getNameFromEmail(intUser)
+func cliServerRequestMatcher(t *testing.T) func(r *http.Request, i cassette.Request) bool {
+	return func(r *http.Request, i cassette.Request) bool {
+		if r.Method != i.Method || r.URL.String() != i.URL {
+			return false
+		}
 
+		subdomainHeaderKey := http.CanonicalHeaderKey(btpcli.HeaderCLISubdomain)
+		if r.Header.Get(subdomainHeaderKey) != i.Headers.Get(subdomainHeaderKey) {
+			return false
+		}
+
+		idpHeaderKey := http.CanonicalHeaderKey(btpcli.HeaderCLICustomIDP)
+		if r.Header.Get(idpHeaderKey) != i.Headers.Get(idpHeaderKey) {
+			return false
+		}
+
+		bytes, err := io.ReadAll(r.Body)
+		if err != nil {
+			t.Fatal("Unable to read body from request")
+		}
+		requestBody := string(bytes)
+		return requestBody == i.Body
+	}
+}
+
+func hookRedactIntegrationUserCredentials(user TestUser) func(i *cassette.Interaction) error {
+	return func(i *cassette.Interaction) error {
 		if strings.Contains(i.Request.URL, "/login/") {
-			i.Request.Body = strings.ReplaceAll(i.Request.Body, intUserPwd, "redacted")
-			// TODO #277 the custom idp and issuer values should be redacted to some special value
-			//      for now the custom idp is replaced by the empty string and the issuer by "accounts.sap.com" to keep
-			//      existing fixtures working that were recorded without selecting a custom idp during login
-			i.Request.Body = strings.ReplaceAll(i.Request.Body, "\"customIdp\":\""+intUserIdp+"\"", "\"customIdp\":\"\"")
-			i.Response.Body = strings.ReplaceAll(i.Response.Body, "\"issuer\":\""+intUserIdp+"\"", "\"issuer\":\"accounts.sap.com\"")
-			i.Response.Body = strings.ReplaceAll(i.Response.Body, "\"issuer\":\""+intUserIdp+".accounts400.ondemand.com\"", "\"issuer\":\"accounts.sap.com\"")
+			i.Request.Body = strings.ReplaceAll(i.Request.Body, user.Password, redactedTestUser.Password)
+			reCustomIdp := regexp.MustCompile(`"customIdp":"(.*?)"`)
+			i.Request.Body = reCustomIdp.ReplaceAllString(i.Request.Body, `"customIdp":"`+redactedTestUser.Idp+`"`)
+			reIssuer := regexp.MustCompile(`"issuer":"(.*?)"`)
+			i.Response.Body = reIssuer.ReplaceAllString(i.Response.Body, `"issuer":"`+redactedTestUser.Issuer+`"`)
 		}
 
 		if _, exists := i.Request.Headers[btpcli.HeaderCLICustomIDP]; exists {
-			// TODO #277 the custom idp header value should be redacted to some special value
-			//      for now the header is replaced by the empty string to keep existing fixtures working that were
-			//      recorded without selecting a custom idp during login
-			i.Request.Headers.Set(btpcli.HeaderCLICustomIDP, "")
+			i.Request.Headers.Set(btpcli.HeaderCLICustomIDP, redactedTestUser.Idp)
 		}
 
-		i.Request.Body = strings.ReplaceAll(i.Request.Body, intUser, "john.doe@int.test")
-		i.Response.Body = strings.ReplaceAll(i.Response.Body, intUser, "john.doe@int.test")
+		reUserSAP := regexp.MustCompile(`[a-zA-Z0-9.!#$%&'*+/=?^_ \x60{|}~-]+@sap\.com`)
+		i.Request.Body = reUserSAP.ReplaceAllString(i.Request.Body, redactedTestUser.Username)
+		i.Response.Body = strings.ReplaceAll(i.Response.Body, user.Username, redactedTestUser.Username)
+		// to support responses containing sets of email addresses, we need to replace with unique values
+		index := 0
+		i.Response.Body = reUserSAP.ReplaceAllStringFunc(i.Response.Body, func(string) string {
+			index++
+			return strings.ReplaceAll(redactedTestUser.Username, "@", "+"+strconv.Itoa(index)+"@")
+		})
 
 		if strings.Contains(i.Response.Body, "givenName") {
-			i.Response.Body = strings.ReplaceAll(i.Response.Body, firstName, "John")
+			i.Response.Body = strings.ReplaceAll(i.Response.Body, user.Firstname, redactedTestUser.Firstname)
 		}
 
 		if strings.Contains(i.Response.Body, "familyName") {
-			i.Response.Body = strings.ReplaceAll(i.Response.Body, lastName, "Doe")
+			i.Response.Body = strings.ReplaceAll(i.Response.Body, user.Lastname, redactedTestUser.Lastname)
 		}
 
 		if strings.Contains(i.Response.Body, "externalId") {
@@ -133,8 +208,10 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 
 		return nil
 	}
+}
 
-	hookRedactTokensInHeader := func(i *cassette.Interaction) error {
+func hookRedactTokensInHeader() func(i *cassette.Interaction) error {
+	return func(i *cassette.Interaction) error {
 		redactTokenHeaders := func(headers map[string][]string) {
 			for key := range headers {
 				if strings.Contains(strings.ToLower(key), "token") {
@@ -151,36 +228,6 @@ func setupVCR(t *testing.T, cassetteName string) *recorder.Recorder {
 		i.Response.Body = re.ReplaceAllString(i.Response.Body, `"refreshToken":"redacted"`)
 
 		return nil
-	}
-
-	rec.AddHook(hookRedactIntegrationUserCredentials, recorder.BeforeSaveHook)
-	rec.AddHook(hookRedactTokensInHeader, recorder.BeforeSaveHook)
-
-	return rec
-}
-
-func cliServerRequestMatcher(t *testing.T) func(r *http.Request, i cassette.Request) bool {
-	return func(r *http.Request, i cassette.Request) bool {
-		if r.Method != i.Method || r.URL.String() != i.URL {
-			return false
-		}
-
-		subdomainHeaderKey := http.CanonicalHeaderKey(btpcli.HeaderCLISubdomain)
-		if r.Header.Get(subdomainHeaderKey) != i.Headers.Get(subdomainHeaderKey) {
-			return false
-		}
-
-		idpHeaderKey := http.CanonicalHeaderKey(btpcli.HeaderCLICustomIDP)
-		if r.Header.Get(idpHeaderKey) != i.Headers.Get(idpHeaderKey) {
-			return false
-		}
-
-		bytes, err := io.ReadAll(r.Body)
-		if err != nil {
-			t.Fatal("Unable to read body from request")
-		}
-		requestBody := string(bytes)
-		return requestBody == i.Body
 	}
 }
 

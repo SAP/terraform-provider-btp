@@ -14,7 +14,7 @@ import (
 func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_directory_role_collection")
+		rec, user := setupVCR(t, "fixtures/datasource_directory_role_collection")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceDirectoryRoleCollection("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryRoleCollection("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "name", "Directory Viewer"),
@@ -35,7 +35,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("error path - directory not security enabled", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_directory_role_collection.not_security_enabled")
+		rec, user := setupVCR(t, "fixtures/datasource_directory_role_collection.not_security_enabled")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -43,7 +43,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Directory Viewer"),
+					Config:      hclProviderFor(user) + hclDatasourceDirectoryRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Directory Viewer"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 400; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -55,7 +55,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_directory_role_collections" "uut" {}`,
+					Config:      `data "btp_directory_role_collections" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "directory_id" is required, but no definition was found`),
 				},
 			},
@@ -67,7 +67,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryRoleCollection("uut", "this-is-not-a-uuid", "Directory Viewer"),
+					Config:      hclDatasourceDirectoryRoleCollection("uut", "this-is-not-a-uuid", "Directory Viewer"),
 					ExpectError: regexp.MustCompile(`Attribute directory_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -79,7 +79,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", ""),
+					Config:      hclDatasourceDirectoryRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", ""),
 					ExpectError: regexp.MustCompile(`Attribute name string length must be at least 1, got: 0`),
 				},
 			},
@@ -100,7 +100,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceDirectoryRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Directory Viewer"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Directory Viewer"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

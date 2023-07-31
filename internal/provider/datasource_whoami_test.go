@@ -10,7 +10,7 @@ import (
 func TestDataSourceWhoami(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path with default idp", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_whoami")
+		rec, user := setupVCR(t, "fixtures/datasource_whoami")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -18,11 +18,11 @@ func TestDataSourceWhoami(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceWhoami("uut"),
+					Config: hclProviderFor(user) + hclDatasourceWhoami("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_whoami.uut", "id", "john.doe@int.test"),
-						resource.TestCheckResourceAttr("data.btp_whoami.uut", "email", "john.doe@int.test"),
-						resource.TestCheckResourceAttr("data.btp_whoami.uut", "issuer", "accounts.sap.com"),
+						resource.TestCheckResourceAttr("data.btp_whoami.uut", "id", user.Username),
+						resource.TestCheckResourceAttr("data.btp_whoami.uut", "email", user.Username),
+						resource.TestCheckResourceAttr("data.btp_whoami.uut", "issuer", user.Issuer),
 					),
 				},
 			},

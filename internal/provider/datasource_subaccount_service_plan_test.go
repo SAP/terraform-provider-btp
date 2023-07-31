@@ -11,7 +11,7 @@ import (
 func TestDataSourceSubaccountServicePlan(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - service plan by id", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_plan_by_id")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plan_by_id")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -19,7 +19,7 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountPlanById("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "cdf9c103-ef56-43e5-ac1d-4f1c5b15e05c"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountPlanById("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "cdf9c103-ef56-43e5-ac1d-4f1c5b15e05c"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_plan.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_plan.uut", "id", "cdf9c103-ef56-43e5-ac1d-4f1c5b15e05c"),
@@ -35,7 +35,7 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 		})
 	})
 	t.Run("happy path service plan  by name", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_plan_by_name")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plan_by_name")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -43,7 +43,7 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountPlanByNameAndOffering("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "lite", "destination"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountPlanByNameAndOffering("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "lite", "destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_plan.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_plan.uut", "id", "cdf9c103-ef56-43e5-ac1d-4f1c5b15e05c"),
@@ -65,7 +65,7 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountPlanWoOffering("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "standard"),
+					Config:      hclDatasourceSubaccountPlanWoOffering("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "standard"),
 					ExpectError: regexp.MustCompile(`Attribute "offering_name" must be specified when "name" is specified`),
 				},
 			},
@@ -78,7 +78,7 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountPlanWoSubaccount("uut", "lite", "destination"),
+					Config:      hclDatasourceSubaccountPlanWoSubaccount("uut", "lite", "destination"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found.`),
 				},
 			},
@@ -89,9 +89,9 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 
 func hclDatasourceSubaccountPlanById(resourceName string, subaccountId string, planId string) string {
 	template := `
-data "btp_subaccount_service_plan" "%s" { 
+data "btp_subaccount_service_plan" "%s" {
      subaccount_id = "%s"
-	 id            = "%s" 
+	 id            = "%s"
 }`
 
 	return fmt.Sprintf(template, resourceName, subaccountId, planId)
@@ -100,7 +100,7 @@ data "btp_subaccount_service_plan" "%s" {
 func hclDatasourceSubaccountPlanByNameAndOffering(resourceName string, subaccountId string, planName string, offeringName string) string {
 	template := `
 data "btp_subaccount_service_plan" "%s" {
-    subaccount_id = "%s" 
+    subaccount_id = "%s"
     name          = "%s"
 	offering_name = "%s"
 }`
@@ -110,7 +110,7 @@ data "btp_subaccount_service_plan" "%s" {
 func hclDatasourceSubaccountPlanWoOffering(resourceName string, subaccountId string, planName string) string {
 	template := `
 data "btp_subaccount_service_plan" "%s" {
-    subaccount_id = "%s" 
+    subaccount_id = "%s"
     name          = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId, planName)

@@ -14,7 +14,7 @@ import (
 func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_trust_configurations.subaccount_exists")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_trust_configurations.subaccount_exists")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,16 +22,16 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountTrustConfigurations("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurations("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configurations.uut", "values.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configurations.uut", "values.#", "3"),
 					),
 				},
 			},
 		})
 	})
 	t.Run("error path - subaccount not existing", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_trust_configurations.subaccount_not_existing")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_trust_configurations.subaccount_not_existing")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -39,7 +39,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountTrustConfigurations("uut", "aaaaaaaa-bbbb-cccc-dddd-caffee00affe"),
+					Config:      hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurations("uut", "aaaaaaaa-bbbb-cccc-dddd-caffee00affe"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -51,7 +51,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountTrustConfigurations("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceSubaccountTrustConfigurations("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -63,7 +63,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_subaccount_trust_configurations" "uut" {}`,
+					Config:      `data "btp_subaccount_trust_configurations" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -84,7 +84,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceSubaccountTrustConfigurations("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountTrustConfigurations("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

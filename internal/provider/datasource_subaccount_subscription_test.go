@@ -12,7 +12,7 @@ func TestDataSourceSubaccountSubscription(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - get subscriptions by id and plan", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_subscription_by_id_and_plan")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_subscription_by_id_and_plan")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -20,7 +20,7 @@ func TestDataSourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountSubscriptionByIdAndPlan("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "content-agent-ui", "free"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountSubscriptionByIdAndPlan("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "content-agent-ui", "free"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_subscription.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_subscription.uut", "app_name", "content-agent-ui"),
@@ -41,7 +41,7 @@ func TestDataSourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountSubscriptionNoSubaccountId("uut", "content-agent-ui", "free"),
+					Config:      hclDatasourceSubaccountSubscriptionNoSubaccountId("uut", "content-agent-ui", "free"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -53,7 +53,7 @@ func TestDataSourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountSubscriptionNoAppName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "free"),
+					Config:      hclDatasourceSubaccountSubscriptionNoAppName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "free"),
 					ExpectError: regexp.MustCompile(`The argument "app_name" is required, but no definition was found`),
 				},
 			},
@@ -65,7 +65,7 @@ func TestDataSourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountSubscriptionByIdAndPlan("uut", "this-is-not-a-uuid", "content-agent-ui", "free"),
+					Config:      hclDatasourceSubaccountSubscriptionByIdAndPlan("uut", "this-is-not-a-uuid", "content-agent-ui", "free"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},

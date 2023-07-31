@@ -11,7 +11,7 @@ import (
 func TestDataSourceSubaccountServicePlans(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - service plans for subaccount", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_plans_all")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plans_all")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -19,10 +19,10 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountPlansBySubaccount("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountPlansBySubaccount("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "values.#", "30"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "values.#", "31"),
 					),
 				},
 			},
@@ -30,7 +30,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 	})
 
 	t.Run("happy path - service plans for subaccount and environment", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_plans_cloudfoundry")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plans_cloudfoundry")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -38,7 +38,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountPlansBySubaccountAndEnvironment("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "cloudfoundry"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountPlansBySubaccountAndEnvironment("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "cloudfoundry"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "values.#", "0"),
@@ -49,7 +49,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 	})
 
 	t.Run("happy path - service plans for subaccount with fields filter", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_plans_namefilter")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plans_namefilter")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -57,7 +57,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountPlansBySubaccountAndFields("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountPlansBySubaccountAndFields("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "values.#", "2"),
@@ -73,7 +73,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_subaccount_service_plans" "uut" {}`,
+					Config:      `data "btp_subaccount_service_plans" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -85,7 +85,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountPlansBySubaccount("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceSubaccountPlansBySubaccount("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -96,7 +96,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 
 func hclDatasourceSubaccountPlansBySubaccount(resourceName string, subaccountId string) string {
 	template := `
-data "btp_subaccount_service_plans" "%s" { 
+data "btp_subaccount_service_plans" "%s" {
      subaccount_id = "%s"
 }`
 
@@ -105,7 +105,7 @@ data "btp_subaccount_service_plans" "%s" {
 
 func hclDatasourceSubaccountPlansBySubaccountAndEnvironment(resourceName string, subaccountId string, environment string) string {
 	template := `
-data "btp_subaccount_service_plans" "%s" { 
+data "btp_subaccount_service_plans" "%s" {
      subaccount_id = "%s"
      environment   = "%s"
 }`
@@ -115,7 +115,7 @@ data "btp_subaccount_service_plans" "%s" {
 
 func hclDatasourceSubaccountPlansBySubaccountAndFields(resourceName string, subaccountId string) string {
 	template := `
-data "btp_subaccount_service_plans" "%s" { 
+data "btp_subaccount_service_plans" "%s" {
      subaccount_id = "%s"
      fields_filter = "name eq 'standard'"
 }`

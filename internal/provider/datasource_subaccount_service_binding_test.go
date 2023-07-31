@@ -12,7 +12,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - service bindings by id", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_binding_by_id")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_binding_by_id")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -20,7 +20,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountServiceBindingbyId("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "b02e4b22-906b-40c5-9c5e-dbb6a9068444"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindingbyId("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "b02e4b22-906b-40c5-9c5e-dbb6a9068444"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "id", "b02e4b22-906b-40c5-9c5e-dbb6a9068444"),
@@ -36,7 +36,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 	})
 
 	t.Run("happy path - service bindings by name", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_binding_by_name")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_binding_by_name")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -44,7 +44,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountServiceBindingbyName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "test-service-binding-iban"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindingbyName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "test-service-binding-iban"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "id", "b02e4b22-906b-40c5-9c5e-dbb6a9068444"),
@@ -64,7 +64,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountServiceBindingNoSubaccount("uut", "test-service-binding-iban"),
+					Config:      hclDatasourceSubaccountServiceBindingNoSubaccount("uut", "test-service-binding-iban"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -77,7 +77,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountServiceBindingNoIdOrName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config:      hclDatasourceSubaccountServiceBindingNoIdOrName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 					ExpectError: regexp.MustCompile(`Error: Invalid Attribute Combination`),
 				},
 			},
@@ -89,7 +89,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountServiceBindingbyName("uut", "this-is-not-a-uuid", "test-service-binding-iban"),
+					Config:      hclDatasourceSubaccountServiceBindingbyName("uut", "this-is-not-a-uuid", "test-service-binding-iban"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},

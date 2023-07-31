@@ -11,7 +11,7 @@ import (
 func TestResourceSubaccountEntitlement(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - no amount", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_entitlement.no_amount")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.no_amount")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -19,7 +19,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountEntitlement("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "hana-cloud", "hana"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlement("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "hana-cloud", "hana"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -43,7 +43,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - with amount", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_entitlement.amount_set")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.amount_set")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -51,7 +51,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "3"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "3"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -75,7 +75,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_entitlement.update")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.update")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -83,7 +83,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "1"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "1"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -97,7 +97,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "2"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "2"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -120,7 +120,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "0"),
+					Config:      hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "0"),
 					ExpectError: regexp.MustCompile(`Attribute amount value must be between 1 and 2000000000, got: 0`),
 				},
 			},

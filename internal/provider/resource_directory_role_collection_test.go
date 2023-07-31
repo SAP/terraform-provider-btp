@@ -19,7 +19,7 @@ type directoryRoleCollectionRoleRefTestType struct {
 func TestResourceDirectoryRoleCollection(t *testing.T) {
 
 	t.Run("happy path - no description", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_directory_role_collection.no_description")
+		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.no_description")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -27,7 +27,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
@@ -45,7 +45,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - with description", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_directory_role_collection.with_description")
+		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.with_description")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -53,7 +53,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceDirectoryRoleCollectionWithDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "This is my new role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionWithDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "This is my new role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
@@ -72,7 +72,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - multiple roles", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_directory_role_collection.multiple_roles")
+		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.multiple_roles")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -80,7 +80,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceDirectoryRoleCollection(
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollection(
 						"uut",
 						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
 						"My role collection",
@@ -113,7 +113,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_directory_role_collection.update")
+		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.update")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -121,7 +121,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
@@ -131,7 +131,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceDirectoryRoleCollection(
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollection(
 						"uut",
 						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
 						"My own role collection",
@@ -154,7 +154,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Usage Reporting Viewer", "uas!b10418", "Directory_Usage_Reporting_Viewer"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Usage Reporting Viewer", "uas!b10418", "Directory_Usage_Reporting_Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
@@ -174,7 +174,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - import fails", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_directory_role_collection.error_import")
+		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.error_import")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -182,7 +182,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My special role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My special role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
 				},
 				{
 					ResourceName:      "btp_directory_role_collection.uut",
@@ -201,7 +201,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `resource "btp_directory_role_collection" "uut" {}`,
+					Config:      `resource "btp_directory_role_collection" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "directory_id" is required, but no definition was found.`),
 				},
 			},
@@ -214,7 +214,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `resource "btp_directory_role_collection" "uut" {}`,
+					Config:      `resource "btp_directory_role_collection" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "name" is required, but no definition was found.`),
 				},
 			},
@@ -227,7 +227,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `resource "btp_directory_role_collection" "uut" {}`,
+					Config:      `resource "btp_directory_role_collection" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "roles" is required, but no definition was found.`),
 				},
 			},

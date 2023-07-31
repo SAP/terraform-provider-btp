@@ -10,7 +10,7 @@ import (
 func TestDataSourceSubaccounts(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccounts.all")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccounts.all")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -18,9 +18,9 @@ func TestDataSourceSubaccounts(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccounts("uut"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccounts("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccounts.uut", "values.#", "1"),
+						resource.TestCheckResourceAttr("data.btp_subaccounts.uut", "values.#", "2"),
 					),
 				},
 			},

@@ -14,7 +14,7 @@ import (
 func TestDataSourceSubaccountUsers(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path with default idp", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_users.default_idp")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_users.default_idp")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,17 +22,17 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountUsersDefaultIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountUsersDefaultIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_users.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_users.uut", "values.#", "3"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_users.uut", "values.#", "6"),
 					),
 				},
 			},
 		})
 	})
 	t.Run("happy path with custom idp", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_users.custom_idp")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_users.custom_idp")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -40,10 +40,10 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountUsersWithCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountUsersWithCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_users.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_users.uut", "values.#", "1"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_users.uut", "values.#", "3"),
 					),
 				},
 			},
@@ -55,7 +55,7 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_subaccount_users" "uut" {}`,
+					Config:      `data "btp_subaccount_users" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -67,7 +67,7 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountUsersDefaultIdp("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceSubaccountUsersDefaultIdp("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -80,7 +80,7 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountUsersWithCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", ""),
+					Config:      hclDatasourceSubaccountUsersWithCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", ""),
 					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
 				},
 			},
@@ -101,7 +101,7 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceSubaccountUsersWithCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint-platform"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountUsersWithCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint-platform"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -118,7 +118,7 @@ func hclDatasourceSubaccountUsersDefaultIdp(resourceName string, subaccountId st
 func hclDatasourceSubaccountUsersWithCustomIdp(resourceName string, subaccountId string, origin string) string {
 	template := `
 data "btp_subaccount_users" "%s" {
-    subaccount_id = "%s" 
+    subaccount_id = "%s"
     origin        = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId, origin)

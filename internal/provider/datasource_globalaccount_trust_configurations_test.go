@@ -14,7 +14,7 @@ import (
 func TestDataSourceGlobalaccountTrustConfigurations(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_trust_configurations")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_trust_configurations")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceGlobalaccountTrustConfigurations(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountTrustConfigurations("uut"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountTrustConfigurations("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configurations.uut", "values.#", "2"),
 					),
@@ -45,7 +45,7 @@ func TestDataSourceGlobalaccountTrustConfigurations(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceGlobalaccountTrustConfigurations("uut"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountTrustConfigurations("uut"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

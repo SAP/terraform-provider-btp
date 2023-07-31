@@ -18,7 +18,7 @@ type subaccountRoleCollectionRoleRefTestType struct {
 
 func TestResourceSubAccountRoleCollection(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -26,7 +26,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
 						"uut",
 						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 						"My new role collection",
@@ -58,7 +58,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection.update")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection.update")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -66,7 +66,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
 						"uut",
 						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 						"My new role collection",
@@ -88,7 +88,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceSubAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
 						"uut",
 						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 						"My new role collection",
@@ -116,7 +116,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - import with wrong key", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection.import_error")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection.import_error")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -124,7 +124,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubAccountRoleCollection("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "My new role collection", "Description of my new role collection"),
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "My new role collection", "Description of my new role collection"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
@@ -148,7 +148,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubAccountRoleCollection("uut", "this-is-not-a-uuid", "My new role collection", "Description of my new role collection"),
+					Config:      hclResourceSubAccountRoleCollection("uut", "this-is-not-a-uuid", "My new role collection", "Description of my new role collection"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -161,7 +161,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubAccountRoleCollectionNoSubaccountId("uut", "My new role collection", "Description of my new role collection"),
+					Config:      hclResourceSubAccountRoleCollectionNoSubaccountId("uut", "My new role collection", "Description of my new role collection"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},

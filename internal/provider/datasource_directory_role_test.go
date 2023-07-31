@@ -14,7 +14,7 @@ import (
 func TestDataSourceDirectoryRole(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_directory_role")
+		rec, user := setupVCR(t, "fixtures/datasource_directory_role")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer", "Directory_Viewer", "cis-central!b13"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer", "Directory_Viewer", "cis-central!b13"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_directory_role.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 						resource.TestCheckResourceAttr("data.btp_directory_role.uut", "name", "Directory Viewer"),
@@ -37,7 +37,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - directory not security enabled", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_directory_role.not_security_enabled")
+		rec, user := setupVCR(t, "fixtures/datasource_directory_role.not_security_enabled")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -45,7 +45,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryRole("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Directory Viewer", "Directory_Viewer", "cis-central!b13"),
+					Config:      hclProviderFor(user) + hclDatasourceDirectoryRole("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Directory Viewer", "Directory_Viewer", "cis-central!b13"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 400; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -57,7 +57,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_directory_role" "uut" {}`,
+					Config:      `data "btp_directory_role" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "(directory_id|name|role_template_name|app_id)" is required, but no definition was found.`),
 				},
 			},
@@ -69,7 +69,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryRole("uut", "this-is-not-a-uuid", "a", "b", "c"),
+					Config:      hclDatasourceDirectoryRole("uut", "this-is-not-a-uuid", "a", "b", "c"),
 					ExpectError: regexp.MustCompile(`Attribute directory_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -81,7 +81,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "", "b", "c"),
+					Config:      hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "", "b", "c"),
 					ExpectError: regexp.MustCompile(`Attribute name string length must be at least 1, got: 0`),
 				},
 			},
@@ -93,7 +93,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "a", "", "c"),
+					Config:      hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "a", "", "c"),
 					ExpectError: regexp.MustCompile(`Attribute role_template_name string length must be at least 1, got: 0`),
 				},
 			},
@@ -105,7 +105,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "a", "b", ""),
+					Config:      hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "a", "b", ""),
 					ExpectError: regexp.MustCompile(`Attribute app_id string length must be at least 1, got: 0`),
 				},
 			},
@@ -126,7 +126,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer", "Directory_Viewer", "cis-central!b13"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer", "Directory_Viewer", "cis-central!b13"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

@@ -14,7 +14,7 @@ import (
 func TestDataSourceGlobalaccountRole(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_role")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountRole("uut", "Global Account Viewer", "GlobalAccount_Viewer", "cis-central!b13"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountRole("uut", "Global Account Viewer", "GlobalAccount_Viewer", "cis-central!b13"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "name", "Global Account Viewer"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "role_template_name", "GlobalAccount_Viewer"),
@@ -41,7 +41,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_globalaccount_role" "uut" {}`,
+					Config:      `data "btp_globalaccount_role" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "(name|role_template_name|app_id)" is required, but no definition was found.`),
 				},
 			},
@@ -53,7 +53,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceGlobalaccountRole("uut", "", "b", "c"),
+					Config:      hclDatasourceGlobalaccountRole("uut", "", "b", "c"),
 					ExpectError: regexp.MustCompile(`Attribute name string length must be at least 1, got: 0`),
 				},
 			},
@@ -65,7 +65,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceGlobalaccountRole("uut", "a", "", "c"),
+					Config:      hclDatasourceGlobalaccountRole("uut", "a", "", "c"),
 					ExpectError: regexp.MustCompile(`Attribute role_template_name string length must be at least 1, got: 0`),
 				},
 			},
@@ -77,7 +77,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceGlobalaccountRole("uut", "a", "b", ""),
+					Config:      hclDatasourceGlobalaccountRole("uut", "a", "b", ""),
 					ExpectError: regexp.MustCompile(`Attribute app_id string length must be at least 1, got: 0`),
 				},
 			},
@@ -98,7 +98,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceGlobalaccountRole("uut", "Global Account Viewer", "GlobalAccount_Viewer", "cis-local!b13"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountRole("uut", "Global Account Viewer", "GlobalAccount_Viewer", "cis-local!b13"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

@@ -10,7 +10,7 @@ import (
 func TestResourceDirectory(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - parent directory", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_directory")
+		rec, user := setupVCR(t, "fixtures/resource_directory")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -18,7 +18,7 @@ func TestResourceDirectory(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceDirectory("uut", "my-new-directory", "This is a new directory"),
+					Config: hclProviderFor(user) + hclResourceDirectory("uut", "my-new-directory", "This is a new directory"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),
@@ -29,7 +29,7 @@ func TestResourceDirectory(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceDirectory("uut", "my-updated-directory", "This is a updated directory"),
+					Config: hclProviderFor(user) + hclResourceDirectory("uut", "my-updated-directory", "This is a updated directory"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),

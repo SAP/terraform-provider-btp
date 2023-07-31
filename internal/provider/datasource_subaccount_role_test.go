@@ -14,7 +14,7 @@ import (
 func TestDataSourceSubaccountRole(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_role")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_role")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceSubaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountRole("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Subaccount Viewer", "Subaccount_Viewer", "cis-local!b2"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountRole("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Subaccount Viewer", "Subaccount_Viewer", "cis-local!b2"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "name", "Subaccount Viewer"),
@@ -42,7 +42,7 @@ func TestDataSourceSubaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_subaccount_role" "uut" {}`,
+					Config:      `data "btp_subaccount_role" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "(subaccount_id|name|role_template_name|app_id)" is required, but no definition was found.`),
 				},
 			},
@@ -54,7 +54,7 @@ func TestDataSourceSubaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountRole("uut", "this-is-not-a-uuid", "a", "b", "c"),
+					Config:      hclDatasourceSubaccountRole("uut", "this-is-not-a-uuid", "a", "b", "c"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -66,7 +66,7 @@ func TestDataSourceSubaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountRole("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "", "b", "c"),
+					Config:      hclDatasourceSubaccountRole("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "", "b", "c"),
 					ExpectError: regexp.MustCompile(`Attribute name string length must be at least 1, got: 0`),
 				},
 			},
@@ -78,7 +78,7 @@ func TestDataSourceSubaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountRole("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "a", "", "c"),
+					Config:      hclDatasourceSubaccountRole("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "a", "", "c"),
 					ExpectError: regexp.MustCompile(`Attribute role_template_name string length must be at least 1, got: 0`),
 				},
 			},
@@ -90,7 +90,7 @@ func TestDataSourceSubaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountRole("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "a", "b", ""),
+					Config:      hclDatasourceSubaccountRole("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "a", "b", ""),
 					ExpectError: regexp.MustCompile(`Attribute app_id string length must be at least 1, got: 0`),
 				},
 			},
@@ -111,7 +111,7 @@ func TestDataSourceSubaccountRole(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceSubaccountRole("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Subaccount Viewer", "Subaccount_Viewer", "cis-local!b2"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountRole("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Subaccount Viewer", "Subaccount_Viewer", "cis-local!b2"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

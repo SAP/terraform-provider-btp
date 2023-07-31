@@ -14,7 +14,7 @@ import (
 func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_role_collection")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_role_collection")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountRoleCollection("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Subaccount Viewer"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountRoleCollection("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Subaccount Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "name", "Subaccount Viewer"),
@@ -40,7 +40,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_subaccount_role_collections" "uut" {}`,
+					Config:      `data "btp_subaccount_role_collections" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -52,7 +52,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountRoleCollection("uut", "this-is-not-a-uuid", "Subaccount Viewer"),
+					Config:      hclDatasourceSubaccountRoleCollection("uut", "this-is-not-a-uuid", "Subaccount Viewer"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -64,7 +64,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountRoleCollection("uut", "this-is-not-a-uuid", ""),
+					Config:      hclDatasourceSubaccountRoleCollection("uut", "this-is-not-a-uuid", ""),
 					ExpectError: regexp.MustCompile(`Attribute name string length must be at least 1, got: 0`),
 				},
 			},
@@ -85,7 +85,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceSubaccountRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Subaccount Viewer"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Subaccount Viewer"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

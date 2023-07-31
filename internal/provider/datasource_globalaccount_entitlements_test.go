@@ -14,7 +14,7 @@ import (
 func TestDataSourceGlobalaccountEntitlements(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_entitlements")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_entitlements")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,9 +22,9 @@ func TestDataSourceGlobalaccountEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountEntitlements("uut"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountEntitlements("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements.uut", "values.%", "128"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements.uut", "values.%", "158"),
 					),
 				},
 			},
@@ -45,7 +45,7 @@ func TestDataSourceGlobalaccountEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceGlobalaccountEntitlements("uut"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountEntitlements("uut"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

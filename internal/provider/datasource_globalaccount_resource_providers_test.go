@@ -10,7 +10,7 @@ import (
 func TestDataSourceGlobalaccountResourceProviders(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_resource_providers")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_resource_providers")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -18,7 +18,7 @@ func TestDataSourceGlobalaccountResourceProviders(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountResourceProviders("uut"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountResourceProviders("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.#", "1"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.provider_type", "AWS"),

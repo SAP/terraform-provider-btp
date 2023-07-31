@@ -14,7 +14,7 @@ import (
 func TestDataSourceSubaccount(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,11 +22,11 @@ func TestDataSourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccount("test", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccount("test", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "beta_enabled", "false"),
-						resource.TestCheckResourceAttr("data.btp_subaccount.test", "created_by", "john.doe@int.test"),
+						resource.TestCheckResourceAttrSet("data.btp_subaccount.test", "created_by"),
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "created_date", "2023-05-15T11:50:47Z"),
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "description", "Please don't modify. This is used for integration tests."),
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "labels.#", "0"),
@@ -43,7 +43,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 		})
 	})
 	t.Run("error path - subaccount doesn't exist", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount.err_subaccount_doesnt_exist")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount.err_subaccount_doesnt_exist")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -51,7 +51,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccount("test", "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+					Config:      hclProviderFor(user) + hclDatasourceSubaccount("test", "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
 					ExpectError: regexp.MustCompile(`404 Not Found: \[no body\] \[Error: 404\]`), // TODO improve error text
 				},
 			},
@@ -63,7 +63,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_subaccount" "test" {}`,
+					Config:      `data "btp_subaccount" "test" {}`,
 					ExpectError: regexp.MustCompile(`The argument "id" is required, but no definition was found`),
 				},
 			},
@@ -75,7 +75,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccount("test", "this-is-not-a-uuid"),
+					Config:      hclDatasourceSubaccount("test", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -96,7 +96,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceSubaccount("test", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccount("test", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

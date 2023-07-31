@@ -35,7 +35,7 @@ type testParamsDestination struct {
 
 func TestResourceSubaccountServiceInstance(t *testing.T) {
 	t.Run("happy path - simple service creation wo parameters", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_service_instance_wo_parameters")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance_wo_parameters")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -43,7 +43,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountServiceInstanceWoParameters("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tf-test-audit-log", "02fed361-89c1-4560-82c3-0deaf93ac75b"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWoParameters("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tf-test-audit-log", "02fed361-89c1-4560-82c3-0deaf93ac75b"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
@@ -56,7 +56,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceSubaccountServiceInstanceWoParameters("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "TF-TEST-AUDIT-LOG", "02fed361-89c1-4560-82c3-0deaf93ac75b"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWoParameters("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "TF-TEST-AUDIT-LOG", "02fed361-89c1-4560-82c3-0deaf93ac75b"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
@@ -79,7 +79,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation with parameters", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_service_instance_with_parameters")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance_with_parameters")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -87,7 +87,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountServiceInstanceWithParameters("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tf-test-destintion", "cdf9c103-ef56-43e5-ac1d-4f1c5b15e05c"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithParameters("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tf-test-destination", "cdf9c103-ef56-43e5-ac1d-4f1c5b15e05c"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
@@ -95,7 +95,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destintion"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destination"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
 					),
 				},
@@ -109,7 +109,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountServiceInstanceNoSubaccountId("uut", "tf-test-audit-log", "4bf8a2c4-6277-4bb1-b80d-2e46e87bd1a5"),
+					Config:      hclResourceSubaccountServiceInstanceNoSubaccountId("uut", "tf-test-audit-log", "4bf8a2c4-6277-4bb1-b80d-2e46e87bd1a5"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -122,7 +122,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountServiceInstanceNoServicName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "4bf8a2c4-6277-4bb1-b80d-2e46e87bd1a5"),
+					Config:      hclResourceSubaccountServiceInstanceNoServicName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "4bf8a2c4-6277-4bb1-b80d-2e46e87bd1a5"),
 					ExpectError: regexp.MustCompile(`The argument "name" is required, but no definition was found`),
 				},
 			},
@@ -135,7 +135,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountServiceInstanceNoPlan("uut", "this-is-not-a-uuid", "tf-test-audit-log"),
+					Config:      hclResourceSubaccountServiceInstanceNoPlan("uut", "this-is-not-a-uuid", "tf-test-audit-log"),
 					ExpectError: regexp.MustCompile(`The argument "serviceplan_id" is required, but no definition was found`),
 				},
 			},
@@ -143,7 +143,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("error path - import failure", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_service_instance_import_error")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance_import_error")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -151,7 +151,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountServiceInstanceWoParameters("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tf-test-audit-log", "02fed361-89c1-4560-82c3-0deaf93ac75b"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWoParameters("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tf-test-audit-log", "02fed361-89c1-4560-82c3-0deaf93ac75b"),
 				},
 				{
 					ResourceName:      "btp_subaccount_service_instance.uut",

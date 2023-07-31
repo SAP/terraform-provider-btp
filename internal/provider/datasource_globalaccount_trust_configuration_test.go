@@ -14,7 +14,7 @@ import (
 func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - default idp", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.default")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.default")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountTrustConfiguration("uut", "sap.default"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountTrustConfiguration("uut", "sap.default"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "id", "sap.default"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "description", ""),
@@ -38,7 +38,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 	t.Run("happy path - custom idp", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.custom_idp_exists")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.custom_idp_exists")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -46,7 +46,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountTrustConfiguration("uut", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountTrustConfiguration("uut", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "id", "terraformint-platform"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "description", "Custom Platform Identity Provider"),
@@ -62,7 +62,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 	t.Run("error path - custom idp - not existing", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.custom_idp_not_existing")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.custom_idp_not_existing")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -70,7 +70,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceGlobalaccountTrustConfiguration("uut", "fuh"),
+					Config:      hclProviderFor(user) + hclDatasourceGlobalaccountTrustConfiguration("uut", "fuh"),
 					ExpectError: regexp.MustCompile(`API Error Reading Resource Trust Configuration \(Global Account\)`),
 				},
 			},
@@ -82,7 +82,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceGlobalaccountTrustConfiguration("uut", ""),
+					Config:      hclDatasourceGlobalaccountTrustConfiguration("uut", ""),
 					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
 				},
 			},
@@ -103,7 +103,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceGlobalaccountTrustConfiguration("uut", "sap.default"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountTrustConfiguration("uut", "sap.default"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

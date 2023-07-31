@@ -14,7 +14,7 @@ import (
 func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_exists")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_exists")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,9 +22,9 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountRoleCollection("uut", "Global Account Administrator"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountRoleCollection("uut", "Global Account Administrator"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", "Administrative access to the global account"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", ""),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "read_only", "true"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "4"),
 					),
@@ -34,7 +34,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - role collection not available", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_not_available")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_not_available")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -42,7 +42,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceGlobalaccountRoleCollection("uut", "fuh"),
+					Config:      hclProviderFor(user) + hclDatasourceGlobalaccountRoleCollection("uut", "fuh"),
 					ExpectError: regexp.MustCompile(`API Error Reading Resource Role Collection \(Global Account\)`),
 				},
 			},
@@ -55,7 +55,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceGlobalaccountRoleCollection("uut", ""),
+					Config:      hclDatasourceGlobalaccountRoleCollection("uut", ""),
 					ExpectError: regexp.MustCompile(`Attribute name string length must be at least 1, got: 0`),
 				},
 			},
@@ -76,7 +76,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceGlobalaccountRoleCollection("uut", "Global Account Administrator"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountRoleCollection("uut", "Global Account Administrator"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
