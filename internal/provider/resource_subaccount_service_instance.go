@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -189,12 +190,17 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
-		Target:  []string{servicemanager.StateSucceeded, servicemanager.StateFailed},
+		Target:  []string{servicemanager.StateSucceeded},
 		Refresh: func() (interface{}, string, error) {
 			subRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
 
 			if err != nil {
 				return subRes, "", err
+			}
+
+			// No error returned even if operation failed
+			if subRes.LastOperation.State == servicemanager.StateFailed {
+				return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance creation")
 			}
 
 			return subRes, subRes.LastOperation.State, nil
@@ -264,12 +270,17 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 
 	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
-		Target:  []string{servicemanager.StateSucceeded, servicemanager.StateFailed},
+		Target:  []string{servicemanager.StateSucceeded},
 		Refresh: func() (interface{}, string, error) {
 			subRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
 
 			if err != nil {
 				return subRes, "", err
+			}
+
+			// No error returned even if operation failed
+			if subRes.LastOperation.State == servicemanager.StateFailed {
+				return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance update")
 			}
 
 			return subRes, subRes.LastOperation.State, nil
@@ -308,7 +319,7 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
-		Target:  []string{servicemanager.StateFailed, "DELETED"},
+		Target:  []string{"DELETED"},
 		Refresh: func() (interface{}, string, error) {
 			subRes, comRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 
@@ -318,6 +329,11 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 
 			if err != nil {
 				return subRes, subRes.LastOperation.State, err
+			}
+
+			// No error returned even if operation failed
+			if subRes.LastOperation.State == servicemanager.StateFailed {
+				return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance deletion")
 			}
 
 			return subRes, subRes.LastOperation.State, nil

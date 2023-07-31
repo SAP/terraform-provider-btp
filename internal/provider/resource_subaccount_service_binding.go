@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -187,12 +188,17 @@ func (rs *subaccountServiceBindingResource) Create(ctx context.Context, req reso
 
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
-		Target:  []string{servicemanager.StateSucceeded, servicemanager.StateFailed},
+		Target:  []string{servicemanager.StateSucceeded},
 		Refresh: func() (interface{}, string, error) {
 			subRes, _, err := rs.cli.Services.Binding.GetById(ctx, plan.SubaccountId.ValueString(), cliRes.Id)
 
 			if err != nil {
 				return subRes, "", err
+			}
+
+			// No error returned even if operation failed
+			if subRes.LastOperation.State == servicemanager.StateFailed {
+				return subRes, subRes.LastOperation.State, errors.New("undefined API error during service binding creation")
 			}
 
 			return subRes, subRes.LastOperation.State, nil
@@ -245,7 +251,7 @@ func (rs *subaccountServiceBindingResource) Delete(ctx context.Context, req reso
 
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
-		Target:  []string{servicemanager.StateFailed, "DELETED"},
+		Target:  []string{"DELETED"},
 		Refresh: func() (interface{}, string, error) {
 			subRes, comRes, err := rs.cli.Services.Binding.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 
@@ -255,6 +261,11 @@ func (rs *subaccountServiceBindingResource) Delete(ctx context.Context, req reso
 
 			if err != nil {
 				return subRes, servicemanager.StateFailed, err
+			}
+
+			// No error returned even if operation failed
+			if subRes.LastOperation.State == servicemanager.StateFailed {
+				return subRes, subRes.LastOperation.State, errors.New("undefined API error during service binding deletion")
 			}
 
 			return subRes, subRes.LastOperation.State, nil
