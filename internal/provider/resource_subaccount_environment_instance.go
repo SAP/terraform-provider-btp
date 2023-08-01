@@ -256,11 +256,14 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	plan.Parameters = types.StringValue(parameters)
 	resp.Diagnostics.Append(diags...)
 
-	createTimeout, tferr := plan.Timeouts.Create(ctx, 10*time.Minute)
+	timeoutsLocal := plan.Timeouts
+	createTimeout, tferr := plan.Timeouts.Create(ctx, tfutils.DefaultTimeout)
 	if tferr != nil {
 		resp.Diagnostics.AddError("Provider Error Creating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateCreating},
@@ -275,8 +278,8 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 			return subRes, subRes.State, nil
 		},
 		Timeout:    createTimeout,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
@@ -286,6 +289,7 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 
 	plan, diags = subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
 	plan.Parameters = types.StringValue(parameters)
+	plan.Timeouts = timeoutsLocal
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &plan)
