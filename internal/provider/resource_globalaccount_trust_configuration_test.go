@@ -1,9 +1,5 @@
 package provider
 
-/* TODO This test is capable of deleting the trust to the terraformint IAS tenant. It was unexpectedly able to create
-        the trust when the limitation to one trust was dropped. This was anyway not the error it was targeting at.
-        The test was disabled and needs to be adapted to work with an IAS tenant that is not required for development.
-
 import (
 	"fmt"
 	"regexp"
@@ -13,6 +9,12 @@ import (
 )
 
 func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
+	/* TODO This test is capable of deleting the trust to the terraformint IAS tenant. It was unexpectedly able to create
+	   the trust when the limitation to one trust was dropped. This was anyway not the error it was targeting at.
+	   The test was disabled and needs to be adapted to work with an IAS tenant that is not required for development.
+	*/
+	t.Skip("test is skipped to prevent unintended deletions of trust to IAS tenant 'terraformint'")
+
 	t.Parallel()
 
 	// TODO: we need an additional test in a global account
@@ -41,5 +43,3 @@ func hclResourceGlobalaccountTrustConfigurationSimple(resourceName string, ident
 
 	return fmt.Sprintf(template, resourceName, identityProvider)
 }
-
-*/

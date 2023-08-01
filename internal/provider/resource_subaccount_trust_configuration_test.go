@@ -1,6 +1,5 @@
 package provider
 
-/*
 import (
 	"fmt"
 	"testing"
@@ -84,4 +83,3 @@ resource "btp_subaccount_trust_configuration" "%s" {
 
 	return fmt.Sprintf(template, resourceName, subaccountId, identityProvider)
 }
-*/
