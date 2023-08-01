@@ -45,11 +45,11 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Required:            true, // TODO validate UUID
 			},
 			"username": schema.StringAttribute{
-				MarkdownDescription: "Your user name, usually an e-mail address.",
+				MarkdownDescription: "Your user name, usually an e-mail address. This can also be sourced from the `BTP_USERNAME` environment variable.",
 				Optional:            true,
 			},
 			"password": schema.StringAttribute{
-				MarkdownDescription: "Your password. Note that two-factor authentication is not supported.",
+				MarkdownDescription: "Your password. Note that two-factor authentication is not supported. This can also be sourced from the `BTP_PASSWORD` environment variable.",
 				Optional:            true,
 				Sensitive:           true,
 			},
