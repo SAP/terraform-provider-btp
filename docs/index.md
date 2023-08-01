@@ -37,8 +37,8 @@ provider "btp" {
 
 - `cli_server_url` (String) The URL of the BTP CLI server (e.g. `https://cpcli.cf.eu10.hana.ondemand.com`).
 - `idp` (String) The identity provider to be used for authentication (default: `sap.default`).
-- `password` (String, Sensitive) Your password. Note that two-factor authentication is not supported.
-- `username` (String) Your user name, usually an e-mail address.
+- `password` (String, Sensitive) Your password. Note that two-factor authentication is not supported. This can also be sourced from the `BTP_PASSWORD` environment variable.
+- `username` (String) Your user name, usually an e-mail address. This can also be sourced from the `BTP_USERNAME` environment variable.
 
 ## Get Started
 
