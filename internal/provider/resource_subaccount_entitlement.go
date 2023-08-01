@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -190,7 +191,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 	// wait for the entitlement to become effective
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
-		Target:  []string{cis_entitlements.StateOK, cis_entitlements.StateProcessingFailed},
+		Target:  []string{cis_entitlements.StateOK},
 		Refresh: func() (interface{}, string, error) {
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
 
@@ -200,6 +201,10 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 
 			if entitlement == nil {
 				return nil, cis_entitlements.StateProcessing, nil
+			}
+
+			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
+				return *entitlement, entitlement.Assignment.EntityState, errors.New("undefined API error during entitlement processing")
 			}
 
 			return *entitlement, entitlement.Assignment.EntityState, nil
@@ -245,7 +250,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
-		Target:  []string{cis_entitlements.StateProcessingFailed, "DELETED"},
+		Target:  []string{"DELETED"},
 		Refresh: func() (interface{}, string, error) {
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
@@ -256,6 +261,10 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 
 			if err != nil {
 				return entitlement, cis_entitlements.StateProcessingFailed, err
+			}
+
+			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
+				return *entitlement, entitlement.Assignment.EntityState, errors.New("undefined API error during entitlement processing")
 			}
 
 			return entitlement, cis_entitlements.StateProcessing, nil
