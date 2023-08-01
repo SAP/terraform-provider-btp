@@ -202,7 +202,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 			if entitlement == nil {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
-
+			// No error returned even if operation failed
 			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
 				return *entitlement, entitlement.Assignment.EntityState, errors.New("undefined API error during entitlement processing")
 			}
@@ -263,6 +263,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 				return entitlement, cis_entitlements.StateProcessingFailed, err
 			}
 
+			// No error returned even if operation failed
 			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
 				return *entitlement, entitlement.Assignment.EntityState, errors.New("undefined API error during entitlement processing")
 			}
