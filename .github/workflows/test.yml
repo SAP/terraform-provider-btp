@@ -21,7 +21,6 @@ permissions:
 jobs:
   # Ensure project builds before running testing matrix
   build:
-    if: ${{ false }}
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -39,7 +38,6 @@ jobs:
           version: latest
 
   generate:
-    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
@@ -64,7 +62,6 @@ jobs:
 
   # Run acceptance tests in a matrix with Terraform CLI versions
   test:
-    if: ${{ false }}
     name: Terraform Provider Acceptance Tests
     needs: build
     runs-on: ubuntu-latest
@@ -100,7 +97,6 @@ jobs:
           path: cover.out
 
   sonarcloud:
-    if: ${{ false }}
     name: SonarCloud
     needs: test
     runs-on: ubuntu-latest
