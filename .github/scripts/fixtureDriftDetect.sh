@@ -5,7 +5,7 @@ showHelp() {
 
 Usage:  ./fixtureDriftDetect.sh (file|dir|prefix) [--revision <rev>] [--regex <expr>]
     -h, -help, --help       Display help.
-    -revision, --revision   Specify the revision to compare with, default: 'origin/HEAD'
+    -revision, --revision   Specify the revision to compare with, default: 'origin/main'
     -regex,    --regex      Specify regular expression for lines to compare, default: '(id: |url: |status: )'
 
 Dependencies:
@@ -16,7 +16,7 @@ Dependencies:
 EOF
 }
 
-revision='origin/HEAD'
+revision='origin/main'
 regex='(id: |url: |status: )'
 
 while [[ $# -gt 0 ]]; do
