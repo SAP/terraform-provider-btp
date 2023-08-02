@@ -95,6 +95,7 @@ func setupVCR(t *testing.T, cassetteName string) (*recorder.Recorder, TestUser) 
 
 	user := redactedTestUser
 	if rec.IsRecording() {
+		t.Logf("ATTENTION: Recording '%s'", cassetteName)
 		user.Username = os.Getenv("BTP_USERNAME")
 		user.Password = os.Getenv("BTP_PASSWORD")
 		if len(user.Username) == 0 || len(user.Password) == 0 {
@@ -111,6 +112,8 @@ func setupVCR(t *testing.T, cassetteName string) (*recorder.Recorder, TestUser) 
 			user.Issuer = user.Idp + ".accounts400.ondemand.com"
 		}
 		user.Firstname, user.Lastname = getNameFromEmail(user.Username)
+	} else {
+		t.Logf("Replaying '%s'", cassetteName)
 	}
 
 	if err != nil {
