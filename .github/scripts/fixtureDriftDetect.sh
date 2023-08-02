@@ -73,7 +73,7 @@ done
 
 if [[ -z "$found" ]]; then
   printf "\nWARNING: no files processed, check pathspec '$pathspec' (e.g. add trailing slash for directories)\n\n"
-  failed="true"
+  exit 1
 fi
 
 if [[ -n "$failed" ]]; then
