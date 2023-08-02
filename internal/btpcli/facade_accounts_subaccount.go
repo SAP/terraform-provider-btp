@@ -99,12 +99,16 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 }
 
 func (f *accountsSubaccountFacade) Subscribe(ctx context.Context, subaccountId string, appName string, planName string, parameters string) (saas_manager_service.SubscriptionAssignmentResponseObject, CommandResponse, error) {
-	return doExecute[saas_manager_service.SubscriptionAssignmentResponseObject](f.cliClient, ctx, NewSubscribeRequest(f.getCommand(), map[string]string{
+	commandOptions := map[string]string{
 		"subaccount":         subaccountId,
 		"appName":            appName,
-		"planName":           planName,
 		"subscriptionParams": parameters,
-	}))
+	}
+
+	if len(planName) > 0 {
+		commandOptions["planName"] = planName
+	}
+	return doExecute[saas_manager_service.SubscriptionAssignmentResponseObject](f.cliClient, ctx, NewSubscribeRequest(f.getCommand(), commandOptions))
 }
 
 func (f *accountsSubaccountFacade) Unsubscribe(ctx context.Context, subaccountId string, appName string) (saas_manager_service.SubscriptionAssignmentResponseObject, CommandResponse, error) {
