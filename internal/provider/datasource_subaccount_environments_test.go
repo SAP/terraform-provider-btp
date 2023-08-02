@@ -14,7 +14,7 @@ import (
 func TestDataSourceSubaccountEnvironments(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_environments")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_environments")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceSubaccountEnvironments(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountEnvironments("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountEnvironments("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_environments.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_environments.uut", "values.#", "2"),
@@ -37,7 +37,7 @@ func TestDataSourceSubaccountEnvironments(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_subaccount_environments" "uut" {}`,
+					Config:      `data "btp_subaccount_environments" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -49,7 +49,7 @@ func TestDataSourceSubaccountEnvironments(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountEnvironments("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceSubaccountEnvironments("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -70,7 +70,7 @@ func TestDataSourceSubaccountEnvironments(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceSubaccountEnvironments("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountEnvironments("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

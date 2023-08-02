@@ -12,7 +12,7 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - service instance by id", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_instance_by_id")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instance_by_id")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -20,7 +20,7 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountServiceInstanceById("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "df532d07-57a7-415e-a261-23a398ef068a"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceInstanceById("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "df532d07-57a7-415e-a261-23a398ef068a"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_instance.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_instance.uut", "id", "df532d07-57a7-415e-a261-23a398ef068a"),
@@ -37,7 +37,7 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 		})
 	})
 	t.Run("happy path - service instance by name", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_service_instance_by_name")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instance_by_name")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -45,7 +45,7 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountServiceInstanceByName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tf-testacc-alertnotification-instance"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceInstanceByName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tf-testacc-alertnotification-instance"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_instance.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_instance.uut", "id", "df532d07-57a7-415e-a261-23a398ef068a"),
@@ -68,7 +68,7 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountServiceInstanceIdName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tf-testacc-alertnotification-instance"),
+					Config:      hclDatasourceSubaccountServiceInstanceIdName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tf-testacc-alertnotification-instance"),
 					ExpectError: regexp.MustCompile(`Error: Invalid Attribute Combination`),
 				},
 			},
@@ -81,7 +81,7 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountServiceInstanceWoSubaccount("uut", "lite"),
+					Config:      hclDatasourceSubaccountServiceInstanceWoSubaccount("uut", "lite"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found.`),
 				},
 			},
@@ -91,18 +91,18 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 
 func hclDatasourceSubaccountServiceInstanceById(resourceName string, subaccountId string, serviceId string) string {
 	template := `
-data "btp_subaccount_service_instance" "%s" { 
+data "btp_subaccount_service_instance" "%s" {
      subaccount_id = "%s"
-	 id            = "%s" 
+	 id            = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId, serviceId)
 }
 
 func hclDatasourceSubaccountServiceInstanceByName(resourceName string, subaccountId string, serviceName string) string {
 	template := `
-data "btp_subaccount_service_instance" "%s" { 
+data "btp_subaccount_service_instance" "%s" {
      subaccount_id = "%s"
-	 name            = "%s" 
+	 name            = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId, serviceName)
 }
@@ -111,7 +111,7 @@ func hclDatasourceSubaccountServiceInstanceIdName(resourceName string, subaccoun
 	template := `
 data "btp_subaccount_service_instance" "%s" {
     subaccount_id = "%s"
-	id            = "%s" 
+	id            = "%s"
     name          = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId, serviceId, serviceName)

@@ -14,7 +14,7 @@ import (
 func TestDataSourceRegions(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_regions")
+		rec, user := setupVCR(t, "fixtures/datasource_regions")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceRegions(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceRegions("uut"),
+					Config: hclProviderFor(user) + hclDatasourceRegions("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_regions.uut", "values.#", "5"),
 					),
@@ -45,7 +45,7 @@ func TestDataSourceRegions(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceRegions("uut"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceRegions("uut"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

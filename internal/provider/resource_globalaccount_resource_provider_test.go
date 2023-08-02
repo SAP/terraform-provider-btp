@@ -11,7 +11,7 @@ import (
 func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - create", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_globalaccount_resource_provider.create")
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_resource_provider.create")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -19,7 +19,7 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceGlobalaccountResourceProvider("uut",
+					Config: hclProviderFor(user) + hclResourceGlobalaccountResourceProvider("uut",
 						"AWS",
 						"my_aws_resource_provider",
 						"My AWS Resource Provider",
@@ -36,7 +36,7 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceGlobalaccountResourceProviderNoDesc("uut",
+					Config: hclProviderFor(user) + hclResourceGlobalaccountResourceProviderNoDesc("uut",
 						"AWS",
 						"another_resource_provider",
 						"Another Resource Provider",
@@ -54,7 +54,7 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_globalaccount_resource_provider.update")
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_resource_provider.update")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -62,7 +62,7 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceGlobalaccountResourceProvider("uut",
+					Config: hclProviderFor(user) + hclResourceGlobalaccountResourceProvider("uut",
 						"AWS",
 						"my_aws_resource_provider",
 						"My AWS Resource Provider",
@@ -79,7 +79,7 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceGlobalaccountResourceProviderNoDesc("uut",
+					Config: hclProviderFor(user) + hclResourceGlobalaccountResourceProviderNoDesc("uut",
 						"AWS",
 						"my_aws_resource_provider",
 						"My New Display Name",
@@ -103,7 +103,7 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + `
+					Config: `
 resource "btp_globalaccount_resource_provider" "uut" {
 	technical_name = "technical_name"
 	display_name = "display_name"
@@ -121,7 +121,7 @@ resource "btp_globalaccount_resource_provider" "uut" {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + `
+					Config: `
 resource "btp_globalaccount_resource_provider" "uut" {
 	provider_type = "provider_type"
 	display_name = "display_name"
@@ -139,7 +139,7 @@ resource "btp_globalaccount_resource_provider" "uut" {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + `
+					Config: `
 resource "btp_globalaccount_resource_provider" "uut" {
 	provider_type = "provider_type"
 	technical_name = "technical_name"
@@ -157,7 +157,7 @@ resource "btp_globalaccount_resource_provider" "uut" {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + `
+					Config: `
 resource "btp_globalaccount_resource_provider" "uut" {
 	provider_type = "provider_type"
 	technical_name = "technical_name"

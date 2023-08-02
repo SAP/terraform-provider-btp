@@ -14,7 +14,7 @@ import (
 func TestDataSourceDirectory(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_directory")
+		rec, user := setupVCR(t, "fixtures/datasource_directory")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,10 +22,10 @@ func TestDataSourceDirectory(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{ // normal directory
-					Config: hclProvider() + hclDatasourceDirectory("uut", "5357bda0-8651-4eab-a69d-12d282bc3247"),
+					Config: hclProviderFor(user) + hclDatasourceDirectory("uut", "5357bda0-8651-4eab-a69d-12d282bc3247"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_directory.uut", "id", "5357bda0-8651-4eab-a69d-12d282bc3247"),
-						resource.TestCheckResourceAttr("data.btp_directory.uut", "created_by", "john.doe@int.test"),
+						resource.TestCheckResourceAttrSet("data.btp_directory.uut", "created_by"),
 						resource.TestCheckResourceAttr("data.btp_directory.uut", "created_date", "2023-05-16T08:39:33Z"),
 						resource.TestCheckResourceAttr("data.btp_directory.uut", "description", "Please don't modify. This is used for integration tests."),
 						resource.TestCheckResourceAttr("data.btp_directory.uut", "labels.#", "0"),
@@ -37,10 +37,10 @@ func TestDataSourceDirectory(t *testing.T) {
 					),
 				},
 				{ // security enabled directory
-					Config: hclProvider() + hclDatasourceDirectory("uut_security_enabled", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+					Config: hclProviderFor(user) + hclDatasourceDirectory("uut_security_enabled", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_directory.uut_security_enabled", "id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
-						resource.TestCheckResourceAttr("data.btp_directory.uut_security_enabled", "created_by", "john.doe@int.test"),
+						resource.TestCheckResourceAttrSet("data.btp_directory.uut_security_enabled", "created_by"),
 						resource.TestCheckResourceAttr("data.btp_directory.uut_security_enabled", "created_date", "2023-05-16T08:46:24Z"),
 						resource.TestCheckResourceAttr("data.btp_directory.uut_security_enabled", "description", "Please don't modify. This is used for integration tests."),
 						resource.TestCheckResourceAttr("data.btp_directory.uut_security_enabled", "labels.#", "0"),
@@ -60,7 +60,7 @@ func TestDataSourceDirectory(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_directory" "uut" {}`,
+					Config:      `data "btp_directory" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "id" is required, but no definition was found`),
 				},
 			},
@@ -72,7 +72,7 @@ func TestDataSourceDirectory(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectory("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceDirectory("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -93,7 +93,7 @@ func TestDataSourceDirectory(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceDirectory("uut", "5357bda0-8651-4eab-a69d-12d282bc3247"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectory("uut", "5357bda0-8651-4eab-a69d-12d282bc3247"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

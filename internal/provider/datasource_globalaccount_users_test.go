@@ -14,7 +14,7 @@ import (
 func TestDataSourceGlobalaccountUsers(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - default idp", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_users.default_idp")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_users.default_idp")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,16 +22,16 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountUsers("uut"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountUsers("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "3"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "14"),
 					),
 				},
 			},
 		})
 	})
 	t.Run("happy path - with custom idp", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_users.custom_idp")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_users.custom_idp")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -39,9 +39,9 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountUsersWithCustomIdp("uut", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountUsersWithCustomIdp("uut", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "3"),
 					),
 				},
 			},
@@ -54,7 +54,7 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceGlobalaccountUsersWithCustomIdp("uut", ""),
+					Config:      hclDatasourceGlobalaccountUsersWithCustomIdp("uut", ""),
 					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
 				},
 			},
@@ -75,7 +75,7 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceGlobalaccountUsersWithCustomIdp("uut", "terraformint-platform"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountUsersWithCustomIdp("uut", "terraformint-platform"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

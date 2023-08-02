@@ -10,7 +10,7 @@ import (
 
 func TestResourceSubaccountSubscription(t *testing.T) {
 	t.Run("happy path - simple subscription", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_subscription")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -18,7 +18,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountSubscription("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "auditlog-viewer", "free"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscription("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "auditlog-viewer", "free"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
@@ -48,7 +48,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountSubscriptionNoSubaccountId("uut", "auditlog-viewer", "free"),
+					Config:      hclResourceSubaccountSubscriptionNoSubaccountId("uut", "auditlog-viewer", "free"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -61,7 +61,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountSubscriptionNoAppName("uut", "auditlog-viewer", "free"),
+					Config:      hclResourceSubaccountSubscriptionNoAppName("uut", "auditlog-viewer", "free"),
 					ExpectError: regexp.MustCompile(`The argument "app_name" is required, but no definition was found`),
 				},
 			},
@@ -74,7 +74,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountSubscriptionNoPlan("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "auditlog-viewer"),
+					Config:      hclResourceSubaccountSubscriptionNoPlan("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "auditlog-viewer"),
 					ExpectError: regexp.MustCompile(`The argument "plan_name" is required, but no definition was found`),
 				},
 			},
@@ -82,7 +82,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("error path - import failure", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_subscription_import_error")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_import_error")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -90,7 +90,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountSubscription("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "auditlog-viewer", "free"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscription("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "auditlog-viewer", "free"),
 				},
 				{
 					ResourceName:      "btp_subaccount_subscription.uut",

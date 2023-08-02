@@ -18,7 +18,7 @@ type globalaccountRoleCollectionRoleRefTestType struct {
 
 func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_globalaccount_role_collection")
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -26,7 +26,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceGlobalAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
 						"uut",
 						"My new role collection",
 						"Description of my new role collection",
@@ -52,7 +52,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_globalaccount_role_collection.update")
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.update")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -60,7 +60,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceGlobalAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
 						"uut",
 						"My new role collection",
 						"Description of my new role collection",
@@ -77,7 +77,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceGlobalAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
 						"uut",
 						"My new role collection",
 						"Description of my updated role collection",
@@ -104,7 +104,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - import fails", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_globalaccount_role_collection.import_error")
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.import_error")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -112,7 +112,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceGlobalAccountRoleCollection("uut", "My new role collection", "Description of my new role collection"),
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection("uut", "My new role collection", "Description of my new role collection"),
 				},
 				{
 					ResourceName:      "btp_globalaccount_role_collection.uut",

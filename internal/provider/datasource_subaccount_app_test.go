@@ -12,7 +12,7 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - app by id", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_subaccount_apps_by_id")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_apps_by_id")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -20,7 +20,7 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceSubaccountAppById("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "cas-ui-xsuaa-prod!t216"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountAppById("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "cas-ui-xsuaa-prod!t216"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_app.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_app.uut", "id", "cas-ui-xsuaa-prod!t216"),
@@ -41,7 +41,7 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountAppNoId("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config:      hclDatasourceSubaccountAppNoId("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
 					ExpectError: regexp.MustCompile(`The argument "id" is required, but no definition was found`),
 				},
 			},
@@ -53,7 +53,7 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountAppNoSubaccountId("uut", "cas-ui-xsuaa-prod!t216"),
+					Config:      hclDatasourceSubaccountAppNoSubaccountId("uut", "cas-ui-xsuaa-prod!t216"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -66,7 +66,7 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceSubaccountAppById("uut", "this-is-not-a-uuid", "cas-ui-xsuaa-prod!t216"),
+					Config:      hclDatasourceSubaccountAppById("uut", "this-is-not-a-uuid", "cas-ui-xsuaa-prod!t216"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},

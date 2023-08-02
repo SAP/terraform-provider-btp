@@ -11,7 +11,7 @@ import (
 func TestResourceRolCollectionAssignment(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - simple role collection assignment", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -19,7 +19,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceRoleCollectionAssignment("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "jenny.doe@test.com"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignment("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "jenny.doe@test.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
@@ -32,7 +32,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 	})
 
 	t.Run("happy path - role collection assignment with origin", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment_with_origin")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment_with_origin")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -40,7 +40,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceRoleCollectionAssignmentWithOrigin("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOrigin("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
@@ -53,7 +53,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 	})
 
 	t.Run("error path - role collection import fails", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment_import_error")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment_import_error")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -61,7 +61,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceRoleCollectionAssignment("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "jenny.doe@test.com"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignment("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "jenny.doe@test.com"),
 				},
 				{
 					ResourceName:      "btp_subaccount_role_collection_assignment.uut",
@@ -80,7 +80,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `resource "btp_subaccount_role_collection_assignment" "uut" {}`,
+					Config:      `resource "btp_subaccount_role_collection_assignment" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found.`),
 				},
 			},
@@ -93,7 +93,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `resource "btp_subaccount_role_collection_assignment" "uut" {}`,
+					Config:      `resource "btp_subaccount_role_collection_assignment" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "role_collection_name" is required, but no definition was found.`),
 				},
 			},

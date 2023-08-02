@@ -14,7 +14,7 @@ import (
 func TestResourceSubaccount(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,14 +22,14 @@ func TestResourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccount("uut", "integration-test-acc-dyn", "eu12", "integration-test-acc-dyn"),
+					Config: hclProviderFor(user) + hclResourceSubaccount("uut", "integration-test-acc-dyn", "eu12", "integration-test-acc-dyn"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
-						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", "john.doe@int.test"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
@@ -38,14 +38,14 @@ func TestResourceSubaccount(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceSubaccount("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
+					Config: hclProviderFor(user) + hclResourceSubaccount("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
-						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", "john.doe@int.test"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
@@ -62,7 +62,7 @@ func TestResourceSubaccount(t *testing.T) {
 		})
 	})
 	t.Run("happy path used for prod", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_used_for_production")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_used_for_production")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -70,14 +70,14 @@ func TestResourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountUsedForProd("uut", "integration-test-acc-dyn", "eu12", "integration-test-acc-dyn"),
+					Config: hclProviderFor(user) + hclResourceSubaccountUsedForProd("uut", "integration-test-acc-dyn", "eu12", "integration-test-acc-dyn"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
-						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", "john.doe@int.test"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
@@ -86,15 +86,15 @@ func TestResourceSubaccount(t *testing.T) {
 					),
 				},
 				{
-					//Update name wo change of usage but proivde usage explicitly again
-					Config: hclProvider() + hclResourceSubaccountUsedForProd("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
+					// Update name wo change of usage but provide usage explicitly again
+					Config: hclProviderFor(user) + hclResourceSubaccountUsedForProd("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
-						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", "john.doe@int.test"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
@@ -112,7 +112,7 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path change to used for prod", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_change_to_used_for_production")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_change_to_used_for_production")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -120,14 +120,14 @@ func TestResourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccount("uut", "integration-test-acc-dyn", "eu12", "integration-test-acc-dyn"),
+					Config: hclProviderFor(user) + hclResourceSubaccount("uut", "integration-test-acc-dyn", "eu12", "integration-test-acc-dyn"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
-						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", "john.doe@int.test"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
@@ -137,14 +137,14 @@ func TestResourceSubaccount(t *testing.T) {
 				},
 				{
 					//Update name wo change of usage but proivde usage explicitly again
-					Config: hclProvider() + hclResourceSubaccountUsedForProd("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
+					Config: hclProviderFor(user) + hclResourceSubaccountUsedForProd("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
-						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", "john.doe@int.test"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
@@ -162,7 +162,7 @@ func TestResourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccountWithParent("uut", "this-is-not-a-uuid", "a-subaccount", "eu12", "a-subaccount"),
+					Config:      hclResourceSubaccountWithParent("uut", "this-is-not-a-uuid", "a-subaccount", "eu12", "a-subaccount"),
 					ExpectError: regexp.MustCompile(`Attribute parent_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -174,7 +174,7 @@ func TestResourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccount("uut", "a/subaccount", "eu12", "a-subaccount"),
+					Config:      hclResourceSubaccount("uut", "a/subaccount", "eu12", "a-subaccount"),
 					ExpectError: regexp.MustCompile(`Attribute name must not contain '/', not be empty and not exceed 255`),
 				},
 			},
@@ -186,7 +186,7 @@ func TestResourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceSubaccount("uut", "a.subaccount", "eu12", "a.subaccount"),
+					Config:      hclResourceSubaccount("uut", "a.subaccount", "eu12", "a.subaccount"),
 					ExpectError: regexp.MustCompile(`Attribute subdomain must only contain letters \(a-z\), digits \(0-9\)`),
 				},
 			},
@@ -207,7 +207,7 @@ func TestResourceSubaccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclResourceSubaccount("uut", "a-subaccount", "eu12", "a-subaccount"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclResourceSubaccount("uut", "a-subaccount", "eu12", "a-subaccount"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

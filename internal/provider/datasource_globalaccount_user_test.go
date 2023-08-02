@@ -14,7 +14,7 @@ import (
 func TestDataSourceGlobalaccountUser(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_globalaccount_user")
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_user")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceGlobalaccountUserWithCustomIdp("uut", "jenny.doe@test.com", "sap.default"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountUserWithCustomIdp("uut", "jenny.doe@test.com", "sap.default"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "user_name", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "origin", "sap.default"),
@@ -30,7 +30,7 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "family_name", "unknown"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "given_name", "unknown"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "id", "86535387-54aa-4282-af13-67dd50cdd13c"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "role_collections.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "role_collections.#", "0"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_user.uut", "verified", "false"),
 					),
 				},
@@ -43,7 +43,7 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceGlobalaccountUser("uut", ""),
+					Config:      hclDatasourceGlobalaccountUser("uut", ""),
 					ExpectError: regexp.MustCompile(`Attribute user_name string length must be between 1 and 256, got: 0`),
 				},
 			},
@@ -55,7 +55,7 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceGlobalaccountUserWithCustomIdp("uut", "jenny.doe@test.com", ""),
+					Config:      hclDatasourceGlobalaccountUserWithCustomIdp("uut", "jenny.doe@test.com", ""),
 					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
 				},
 			},
@@ -76,7 +76,7 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceGlobalaccountUser("uut", "jenny.doe@test.com"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountUser("uut", "jenny.doe@test.com"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},

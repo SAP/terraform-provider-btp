@@ -23,7 +23,7 @@ type cfOrgParameters struct {
 func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - simple CF creation", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_environment_instance")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_environment_instance")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -31,7 +31,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountEnvironmentInstanceCF("uut",
+					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCF("uut",
 						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 						"cloudFoundry-from-terraform",
 						"standard",
@@ -59,7 +59,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_subaccount_environment_instance.update")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_environment_instance.update")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -67,7 +67,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclResourceSubaccountEnvironmentInstanceCF("uut",
+					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCF("uut",
 						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 						"cloudFoundry-from-terraform",
 						"standard",
@@ -85,7 +85,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceSubaccountEnvironmentInstanceCF("uut",
+					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCF("uut",
 						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 						"cloudFoundry-from-terraform",
 						"standard",
@@ -104,7 +104,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProvider() + hclResourceSubaccountEnvironmentInstanceCFWithOrgParams("uut",
+					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCFWithOrgParams("uut",
 						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 						"cloudFoundry-from-terraform",
 						"standard",

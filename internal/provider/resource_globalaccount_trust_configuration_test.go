@@ -9,13 +9,19 @@ import (
 )
 
 func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
+	/* TODO This test is capable of deleting the trust to the terraformint IAS tenant. It was unexpectedly able to create
+	   the trust when the limitation to one trust was dropped. This was anyway not the error it was targeting at.
+	   The test was disabled and needs to be adapted to work with an IAS tenant that is not required for development.
+	*/
+	t.Skip("test is skipped to prevent unintended deletions of trust to IAS tenant 'terraformint'")
+
 	t.Parallel()
 
 	// TODO: we need an additional test in a global account
 	// without a configured trust configuration
 
 	t.Run("error path - trust config does already exist", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.exists")
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.exists")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -23,7 +29,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclResourceGlobalaccountTrustConfigurationSimple("uut", "terraformint.accounts400.ondemand.com"),
+					Config:      hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationSimple("uut", "terraformint.accounts400.ondemand.com"),
 					ExpectError: regexp.MustCompile(`the backend responded with an unknown error: 400`), //FIXME NGPBUG-350117
 				},
 			},

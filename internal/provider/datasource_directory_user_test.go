@@ -14,7 +14,7 @@ import (
 func TestDataSourceDirectoryUser(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - default idp", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_directory_user.default_idp")
+		rec, user := setupVCR(t, "fixtures/datasource_directory_user.default_idp")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -22,7 +22,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceDirectoryUserDefaultIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryUserDefaultIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "user_name", "jenny.doe@test.com"),
@@ -30,7 +30,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "active", "true"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", ""),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", ""),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "id", "40c72ef9-b901-4b89-91fb-3d283231f7b4"),
+						resource.TestMatchResourceAttr("data.btp_directory_user.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "0"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "false"),
 					),
@@ -39,7 +39,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 		})
 	})
 	t.Run("happy path - custom idp", func(t *testing.T) {
-		rec := setupVCR(t, "fixtures/datasource_directory_user.custom_idp")
+		rec, user := setupVCR(t, "fixtures/datasource_directory_user.custom_idp")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -47,15 +47,15 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProvider() + hclDatasourceDirectoryUserCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryUserCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "user_name", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "origin", "terraformint-platform"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "active", "true"),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", "unknown"), //FIXME should be empty, see NGPBUG-357810
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", "unknown"),  //FIXME should be empty, see NGPBUG-357810
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "id", "2b5382f4-1922-4803-8dcb-5babe097b12b"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", ""),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", ""),
+						resource.TestMatchResourceAttr("data.btp_directory_user.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "0"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "false"),
 					),
@@ -69,7 +69,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryUserDefaultIdp("uut", "this-is-not-a-uuid", "jenny.doe@test.com"),
+					Config:      hclDatasourceDirectoryUserDefaultIdp("uut", "this-is-not-a-uuid", "jenny.doe@test.com"),
 					ExpectError: regexp.MustCompile(`Attribute directory_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -81,7 +81,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + `data "btp_directory_user" "uut" {}`,
+					Config:      `data "btp_directory_user" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "(directory_id|user_name)" is required, but no definition was found.`),
 				},
 			},
@@ -93,7 +93,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryUserCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "", "terraformint"),
+					Config:      hclDatasourceDirectoryUserCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "", "terraformint"),
 					ExpectError: regexp.MustCompile(`Attribute user_name string length must be between 1 and 256, got: 0`),
 				},
 			},
@@ -105,7 +105,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProvider() + hclDatasourceDirectoryUserCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com", ""),
+					Config:      hclDatasourceDirectoryUserCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com", ""),
 					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
 				},
 			},
@@ -126,7 +126,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderWithCLIServerURL(srv.URL) + hclDatasourceDirectoryUserDefaultIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryUserDefaultIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com"),
 					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
