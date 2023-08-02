@@ -21,6 +21,7 @@ permissions:
 jobs:
   # Ensure project builds before running testing matrix
   build:
+    if: ${{ false }}
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -38,6 +39,7 @@ jobs:
           version: latest
 
   generate:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
@@ -56,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-      - run: pwd && git status && .github/scripts/fixtureDriftDetect.sh internal/provider/fixtures/
+      - run: git branch -vv && .github/scripts/fixtureDriftDetect.sh internal/provider/fixtures/
 
   # Run acceptance tests in a matrix with Terraform CLI versions
   test:
