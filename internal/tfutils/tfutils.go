@@ -3,9 +3,8 @@ package tfutils
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
-
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"reflect"
 )
 
 const btpcliTag = "btpcli"
@@ -16,108 +15,109 @@ type equalityPredicate[E any] func(E, E) bool
 func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 	out := map[string]string{}
 
-	v := reflect.ValueOf(a)
-
-	if !v.IsValid() {
-		return nil, fmt.Errorf("invalid value")
-	}
-
-	// unwrap until we reach a struct
-	for {
-		stop := false
-		switch v.Kind() {
-		case reflect.Pointer:
-			v = v.Elem()
-		case reflect.Interface:
-			if v.IsNil() {
-				return out, nil
-			}
-			v = v.Elem()
-		default:
-			stop = true
-		}
-
-		if stop {
-			break
-		}
-	}
-
-	if v.Kind() != reflect.Struct || !v.IsValid() {
-		return nil, fmt.Errorf("unsupported type: %s", v.Kind())
+	v, done, err := unwrapToStruct(a)
+	if done {
+		return out, err
 	}
 
 	for i := 0; i < v.NumField(); i++ {
 		fieldProps := v.Type().Field(i)
 		tagValue := fieldProps.Tag.Get(btpcliTag)
-
 		if len(tagValue) == 0 {
 			continue
 		}
 
 		field := v.FieldByName(fieldProps.Name)
-
 		if !field.IsValid() {
 			return nil, fmt.Errorf("invalid field")
 		}
 
-		var value string
-
 		switch fieldProps.Type.String() {
-		case "basetypes.StringValue":
-			fieldVal := field.Interface().(types.String)
-
-			if fieldVal.IsUnknown() || fieldVal.IsNull() {
-				continue
-			}
-
-			value = fieldVal.ValueString()
-		case "basetypes.BoolValue":
-			fieldVal := field.Interface().(types.Bool)
-
-			if fieldVal.IsUnknown() || fieldVal.IsNull() {
-				continue
-			}
-
-			value = fmt.Sprintf("%v", fieldVal.ValueBool())
-		case "bool":
-			fieldVal := field.Interface().(bool)
-
-			value = fmt.Sprintf("%v", fieldVal)
 		case "string":
-			fieldVal := field.Interface().(string)
-
-			if fieldVal == "" {
-				continue
-			}
-
-			value = fieldVal
+			setString(field, tagValue, out)
+		case "basetypes.StringValue":
+			setStringValue(field, tagValue, out)
 		case "*string":
-			if field.IsNil() {
-				continue
-			}
-
-			value = field.Elem().Interface().(string)
+			setStringPointer(field, tagValue, out)
+		case "bool":
+			setBool(field, tagValue, out)
+		case "basetypes.BoolValue":
+			setBoolValue(field, tagValue, out)
 		case "map[string][]string": // TODO would be nice to have `encodethisasjson` tag, instead of an explicit type mapping
-
-			if field.IsNil() {
-				continue
+			if !field.IsNil() {
+				valueArr, err := json.Marshal(field.Interface())
+				if err != nil {
+					return nil, err
+				}
+				out[tagValue] = string(valueArr)
 			}
-
-			valueArr, err := json.Marshal(field.Interface())
-
-			if err != nil {
-				return nil, err
-			}
-
-			value = string(valueArr)
 		default:
 			return nil, fmt.Errorf("the type '%s' assigned to '%s' is not yet supported", fieldProps.Type.String(), tagValue)
 		}
-
-		out[tagValue] = value
 	}
 
 	return out, nil
+}
+
+func unwrapToStruct(a any) (reflect.Value, bool, error) {
+	v := reflect.ValueOf(a)
+
+	if !v.IsValid() {
+		return reflect.Value{}, true, fmt.Errorf("invalid value")
+	}
+
+loop:
+	for {
+		switch v.Kind() {
+		case reflect.Pointer:
+			v = v.Elem()
+		case reflect.Interface:
+			if v.IsNil() {
+				return reflect.Value{}, true, nil
+			}
+			v = v.Elem()
+		default:
+			break loop
+		}
+	}
+
+	if v.Kind() != reflect.Struct || !v.IsValid() {
+		return reflect.Value{}, true, fmt.Errorf("unsupported type: %s", v.Kind())
+	}
+
+	return v, false, nil
+}
+
+func setStringValue(field reflect.Value, tagValue string, out map[string]string) {
+	fieldVal := field.Interface().(types.String)
+	if !(fieldVal.IsUnknown() || fieldVal.IsNull()) {
+		out[tagValue] = fieldVal.ValueString()
+	}
+}
+
+func setString(field reflect.Value, tagValue string, out map[string]string) {
+	fieldVal := field.Interface().(string)
+	if fieldVal != "" {
+		out[tagValue] = fieldVal
+	}
+}
+
+func setStringPointer(field reflect.Value, tagValue string, out map[string]string) {
+	if !field.IsNil() {
+		out[tagValue] = field.Elem().Interface().(string)
+	}
+}
+
+func setBoolValue(field reflect.Value, tagValue string, out map[string]string) {
+	fieldVal := field.Interface().(types.Bool)
+	if !(fieldVal.IsUnknown() || fieldVal.IsNull()) {
+		out[tagValue] = fmt.Sprintf("%v", fieldVal.ValueBool())
+	}
+}
+
+func setBool(field reflect.Value, tagValue string, out map[string]string) {
+	fieldVal := field.Interface().(bool)
+	out[tagValue] = fmt.Sprintf("%v", fieldVal)
 }
 
 // TODO This is a utility function to compute to be removed and to be added substructures in resource configurations.
