@@ -59,6 +59,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
 
 - `environment_type` (String) The type of the environment instance that is used.
 - `name` (String) The name of the environment instance.
+- `parameters` (String) The configuration parameters for the environment instance.
 - `plan_name` (String) The name of the service plan for the environment instance in the corresponding service broker's catalog.
 - `service_name` (String) The name of the service for the environment instance in the corresponding service broker's catalog.
 - `subaccount_id` (String) The ID of the subaccount.
@@ -66,7 +67,6 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
 ### Optional
 
 - `landscape_label` (String) The name of the landscape within the logged in region on which the environment instance is created.
-- `parameters` (String) The configuration parameters for the environment instance.
 
 ### Read-Only
 

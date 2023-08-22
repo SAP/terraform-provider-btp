@@ -90,6 +90,10 @@ __Further documentation:__
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"parameters": schema.StringAttribute{
+				MarkdownDescription: "The configuration parameters for the environment instance.",
+				Required:            true,
+			},
 			"landscape_label": schema.StringAttribute{
 				MarkdownDescription: "The name of the landscape within the logged in region on which the environment instance is created.",
 				Optional:            true,
@@ -97,11 +101,6 @@ __Further documentation:__
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-			},
-			"parameters": schema.StringAttribute{
-				MarkdownDescription: "The configuration parameters for the environment instance.",
-				Optional:            true,
-				Computed:            true,
 			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the environment instance.",
