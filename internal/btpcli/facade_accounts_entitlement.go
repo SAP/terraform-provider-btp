@@ -88,22 +88,30 @@ func (f *accountsEntitlementFacade) GetAssignedBySubaccount(ctx context.Context,
 			continue
 		}
 
-		for _, servicePlan := range assignedService.ServicePlans {
-			if servicePlan.Name != servicePlanName {
-				continue
-			}
-
-			for _, assignment := range servicePlan.AssignmentInfo {
-				if assignment.EntityType == "SUBACCOUNT" && assignment.EntityId == subaccountId {
-					return &UnfoldedEntitlement{
-						Service:    assignedService,
-						Plan:       servicePlan,
-						Assignment: assignment,
-					}, comRes, nil
-				}
-			}
+		servicePlan, assignment := f.searchPlans(assignedService.ServicePlans, servicePlanName, subaccountId)
+		if assignment != nil {
+			return &UnfoldedEntitlement{
+				Service:    assignedService,
+				Plan:       *servicePlan,
+				Assignment: *assignment,
+			}, comRes, nil
 		}
 	}
 
 	return nil, comRes, nil
+}
+
+func (f *accountsEntitlementFacade) searchPlans(servicePlans []cis_entitlements.AssignedServicePlanResponseObject, servicePlanName string, subaccountId string) (*cis_entitlements.AssignedServicePlanResponseObject, *cis_entitlements.AssignedServicePlanSubaccountDto) {
+	for _, servicePlan := range servicePlans {
+		if servicePlan.Name != servicePlanName {
+			continue
+		}
+
+		for _, assignment := range servicePlan.AssignmentInfo {
+			if assignment.EntityType == "SUBACCOUNT" && assignment.EntityId == subaccountId {
+				return &servicePlan, &assignment
+			}
+		}
+	}
+	return nil, nil
 }
