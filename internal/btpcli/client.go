@@ -105,7 +105,8 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 
 	res, err := v2.httpClient.Do(req)
 
-	if v2.session != nil && err == nil {
+	if v2.session != nil && err == nil && res.Header.Get(HeaderCLIReplacementRefreshToken) != "" {
+		// Only update the refresh token if the request was successful and the server returned a replacement refresh token
 		v2.session.RefreshToken = res.Header.Get(HeaderCLIReplacementRefreshToken)
 	}
 
