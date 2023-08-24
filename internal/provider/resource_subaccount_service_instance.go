@@ -205,7 +205,7 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 
 			return subRes, subRes.LastOperation.State, nil
 		},
-		Timeout:    10 * time.Minute,
+		Timeout:    60 * time.Minute,
 		Delay:      5 * time.Second,
 		MinTimeout: 5 * time.Second,
 	}
@@ -285,7 +285,7 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 
 			return subRes, subRes.LastOperation.State, nil
 		},
-		Timeout:    10 * time.Minute,
+		Timeout:    60 * time.Minute,
 		Delay:      5 * time.Second,
 		MinTimeout: 5 * time.Second,
 	}
@@ -338,7 +338,7 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 
 			return subRes, subRes.LastOperation.State, nil
 		},
-		Timeout:    10 * time.Minute,
+		Timeout:    60 * time.Minute,
 		Delay:      5 * time.Second,
 		MinTimeout: 5 * time.Second,
 	}

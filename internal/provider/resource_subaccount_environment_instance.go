@@ -259,7 +259,7 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    10 * time.Minute,
+		Timeout:    60 * time.Minute,
 		Delay:      5 * time.Second,
 		MinTimeout: 5 * time.Second,
 	}
@@ -308,7 +308,7 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    10 * time.Minute,
+		Timeout:    60 * time.Minute,
 		Delay:      5 * time.Second,
 		MinTimeout: 5 * time.Second,
 	}
@@ -357,7 +357,7 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    10 * time.Minute,
+		Timeout:    60 * time.Minute,
 		Delay:      5 * time.Second,
 		MinTimeout: 5 * time.Second,
 	}
