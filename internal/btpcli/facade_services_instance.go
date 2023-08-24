@@ -70,14 +70,16 @@ func (f servicesInstanceFacade) Create(ctx context.Context, args *ServiceInstanc
 	// return doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 	serviceInstanceResponseObject, cmdRes, err := doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 
-	if cmdRes.StatusCode == 202 {
-		//TODO workaround for NGPBUG-350117 => needs to be structured after fix
+	//TODO workaround for NGPBUG-350117 => needs to be structured after fix
+	if cmdRes.StatusCode == 201 {
+		return serviceInstanceResponseObject, cmdRes, err
+	} else if cmdRes.StatusCode == 202 {
 		return f.GetByName(ctx, args.Subaccount, args.Name)
 	} else if err != nil {
-		return serviceInstanceResponseObject, cmdRes, err
+		return servicemanager.ServiceInstanceResponseObject{}, cmdRes, err
 	} else {
 		err = fmt.Errorf("the backend responded with an unknown error: %d", cmdRes.StatusCode)
-		return serviceInstanceResponseObject, cmdRes, err
+		return servicemanager.ServiceInstanceResponseObject{}, cmdRes, err
 	}
 }
 
