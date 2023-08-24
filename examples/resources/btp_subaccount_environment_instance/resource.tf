@@ -12,11 +12,5 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   # available environments can be looked up using the btp_subaccount_environments datasource
   parameters = jsonencode({
     instance_name = "my-cf-org-name"
-    users = [
-      {
-        id    = data.btp_whoami.me.id
-        email = data.btp_whoami.me.email
-      }
-    ]
   })
 }
