@@ -10,17 +10,18 @@ import (
 )
 
 type directoryType struct {
-	ID           types.String `tfsdk:"id"`
-	CreatedBy    types.String `tfsdk:"created_by"`
-	CreatedDate  types.String `tfsdk:"created_date"`
-	Description  types.String `tfsdk:"description"`
-	Features     types.Set    `tfsdk:"features"`
-	Labels       types.Map    `tfsdk:"labels"`
-	LastModified types.String `tfsdk:"last_modified"`
-	Name         types.String `tfsdk:"name"`
-	ParentID     types.String `tfsdk:"parent_id"`
-	State        types.String `tfsdk:"state"`
-	Subdomain    types.String `tfsdk:"subdomain"`
+	ID              types.String `tfsdk:"id"`
+	CreatedBy       types.String `tfsdk:"created_by"`
+	CreatedDate     types.String `tfsdk:"created_date"`
+	Description     types.String `tfsdk:"description"`
+	DirectoryAdmins types.String `tfsdk:"directory_admins"`
+	Features        types.Set    `tfsdk:"features"`
+	Labels          types.Map    `tfsdk:"labels"`
+	LastModified    types.String `tfsdk:"last_modified"`
+	Name            types.String `tfsdk:"name"`
+	ParentID        types.String `tfsdk:"parent_id"`
+	State           types.String `tfsdk:"state"`
+	Subdomain       types.String `tfsdk:"subdomain"`
 }
 
 func directoryValueFrom(ctx context.Context, value cis.DirectoryResponseObject) (directoryType, diag.Diagnostics) {

@@ -20,6 +20,7 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
+	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
@@ -63,12 +64,35 @@ __Further documentation:__
 					stringvalidator.RegexMatches(regexp.MustCompile(`^[^\/]{1,255}$`), "must not contain '/', not be empty and not exceed 255 characters"),
 				},
 			},
+			"features": schema.SetAttribute{
+				ElementType: types.StringType,
+				MarkdownDescription: "The features that are enabled for the directory. Possible values are: \n" +
+					getFormattedValueAsTableRow("value", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`DEFAULT`", "All directories have the following basic feature enabled:"+
+						"<br> 1. Group and filter subaccounts for reports and filters "+
+						"<br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)"+
+						"<br> 3. Set custom properties and tags to the directory for identification and reporting purposes.") +
+					getFormattedValueAsTableRow("`ENTITLEMENTS`", "Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.") +
+					getFormattedValueAsTableRow("`AUTHORIZATIONS`", "Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature."),
+				Optional: true,
+				Computed: true,
+			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "A description of the directory.",
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtMost(300),
+				},
+			},
+			"directory_admins": schema.StringAttribute{
+				MarkdownDescription: "st of additional admins of the directory. Do not add yourself as you are assigned by default. Use only with directories that you configured to manage their authorizations. Enter inline as a valid JSON array containing the list of admin e-mails (as required by your identity provider).",
+				Optional:            true,
+				Computed:            true,
+				Sensitive:           true,
+				Validators: []validator.String{
+					jsonvalidator.ValidJSON(),
 				},
 			},
 			"parent_id": schema.StringAttribute{
@@ -112,20 +136,6 @@ __Further documentation:__
 			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
-			},
-
-			"features": schema.SetAttribute{
-				ElementType: types.StringType,
-				MarkdownDescription: "The features that are enabled for the directory. Possible values are: \n" +
-					getFormattedValueAsTableRow("value", "description") +
-					getFormattedValueAsTableRow("---", "---") +
-					getFormattedValueAsTableRow("`DEFAULT`", "All directories have the following basic feature enabled:"+
-						"<br> 1. Group and filter subaccounts for reports and filters "+
-						"<br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)"+
-						"<br> 3. Set custom properties and tags to the directory for identification and reporting purposes.") +
-					getFormattedValueAsTableRow("`ENTITLEMENTS`", "Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.") +
-					getFormattedValueAsTableRow("`AUTHORIZATIONS`", "Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature."),
-				Computed: true,
 			},
 			"last_modified": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
@@ -211,6 +221,17 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 		var labels map[string][]string
 		plan.Labels.ElementsAs(ctx, &labels, false)
 		args.Labels = labels
+	}
+
+	if !plan.Features.IsUnknown() {
+		var features []string
+		plan.Features.ElementsAs(ctx, &features, false)
+		args.Features = features
+	}
+
+	if !plan.DirectoryAdmins.IsUnknown() {
+		directoryAdmins := plan.DirectoryAdmins.ValueString()
+		args.DirectoryAdmins = directoryAdmins
 	}
 
 	cliRes, _, err := rs.cli.Accounts.Directory.Create(ctx, &args)
