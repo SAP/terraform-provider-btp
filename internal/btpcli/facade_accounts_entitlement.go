@@ -123,7 +123,7 @@ func (f *accountsEntitlementFacade) searchPlans(servicePlans []cis_entitlements.
 
 func (f *accountsEntitlementFacade) AssignToDirectory(ctx context.Context, directoryId string, serviceName string, servicePlanName string, amount int) (CommandResponse, error) {
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
-		"subaccount":      directoryId,
+		"directory":       directoryId,
 		"serviceName":     serviceName,
 		"servicePlanName": servicePlanName,
 		"amount":          fmt.Sprintf("%d", amount),
@@ -134,7 +134,7 @@ func (f *accountsEntitlementFacade) AssignToDirectory(ctx context.Context, direc
 
 func (f *accountsEntitlementFacade) EnableInDirectory(ctx context.Context, directoryId string, serviceName string, servicePlanName string) (CommandResponse, error) {
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
-		"subaccount":      directoryId,
+		"directory":       directoryId,
 		"serviceName":     serviceName,
 		"servicePlanName": servicePlanName,
 		"enable":          "true",
@@ -145,7 +145,7 @@ func (f *accountsEntitlementFacade) EnableInDirectory(ctx context.Context, direc
 
 func (f *accountsEntitlementFacade) DisableInDirectory(ctx context.Context, directoryId string, serviceName string, servicePlanName string) (CommandResponse, error) {
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
-		"subaccount":      directoryId,
+		"directory":       directoryId,
 		"serviceName":     serviceName,
 		"servicePlanName": servicePlanName,
 		"enable":          "false",
