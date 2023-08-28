@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"slices"
 	"strings"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -69,14 +71,17 @@ __Further documentation:__
 				MarkdownDescription: "The features that are enabled for the directory. Possible values are: \n" +
 					getFormattedValueAsTableRow("value", "description") +
 					getFormattedValueAsTableRow("---", "---") +
-					getFormattedValueAsTableRow("`DEFAULT`", "All directories have the following basic feature enabled:"+
+					getFormattedValueAsTableRow("`DEFAULT (D)`", "All directories have the following basic feature enabled:"+
 						"<br> 1. Group and filter subaccounts for reports and filters "+
 						"<br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)"+
 						"<br> 3. Set custom properties and tags to the directory for identification and reporting purposes.") +
-					getFormattedValueAsTableRow("`ENTITLEMENTS`", "Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.") +
-					getFormattedValueAsTableRow("`AUTHORIZATIONS`", "Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature."),
+					getFormattedValueAsTableRow("`ENTITLEMENTS (E)`", "Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.") +
+					getFormattedValueAsTableRow("`AUTHORIZATIONS (A)`", "Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature."),
 				Optional: true,
 				Computed: true,
+				Validators: []validator.Set{
+					setvalidator.ValueStringsAre(stringvalidator.OneOf([]string{"DEFAULT", "ENTITLEMENTS", "AUTHORIZATIONS", "D", "E", "A"}...)),
+				},
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "A description of the directory.",
@@ -226,7 +231,7 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 	if !plan.Features.IsUnknown() {
 		var features []string
 		plan.Features.ElementsAs(ctx, &features, false)
-		args.Features = features
+		args.Features = sortDiretoryFeatures(features)
 	}
 
 	if !plan.DirectoryAdmins.IsUnknown() {
@@ -388,4 +393,26 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 func (rs *directoryResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func sortDiretoryFeatures(directoryFeatures []string) []string {
+
+	//Directory Features must be handed to the CLI in a well defined order.
+	//In case Terraform sorts the entries alphabetically or they are handed over in the wrong sequence, we make sure
+	//that they are handed over correctly
+	directoryFeaturesSorted := []string{}
+
+	if slices.Contains(directoryFeatures, "DEFAULT") {
+		directoryFeaturesSorted = append(directoryFeaturesSorted, "DEFAULT")
+	}
+
+	if slices.Contains(directoryFeatures, "ENTITLEMENTS") {
+		directoryFeaturesSorted = append(directoryFeaturesSorted, "ENTITLEMENTS")
+	}
+
+	if slices.Contains(directoryFeatures, "AUTHORIZATIONS") {
+		directoryFeaturesSorted = append(directoryFeaturesSorted, "AUTHORIZATIONS")
+	}
+
+	return directoryFeaturesSorted
 }
