@@ -142,7 +142,7 @@ func (v2 *v2Client) checkResponseForErrors(ctx context.Context, res *http.Respon
 }
 
 func (v2 *v2Client) parseResponseError(ctx context.Context, res *http.Response) error {
-	return fmt.Errorf("received response with unexpected status")
+	return fmt.Errorf("Received response with unexpected status")
 }
 
 // Login authenticates a user using username + password
