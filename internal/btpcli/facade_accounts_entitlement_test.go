@@ -252,11 +252,13 @@ func TestAccountsEntitlementFacade_DisableInDirectory(t *testing.T) {
 				"serviceName":     serviceName,
 				"servicePlanName": planName,
 				"enable":          "false",
+				"distribute":      "false",
+				"autoAssign":      "false",
 			})
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.DisableInDirectory(context.TODO(), directoryId, serviceName, planName)
+		res, err := uut.Accounts.Entitlement.DisableInDirectory(context.TODO(), directoryId, serviceName, planName, false, false)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)

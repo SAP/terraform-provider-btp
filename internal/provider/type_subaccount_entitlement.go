@@ -22,7 +22,7 @@ type subaccountEntitlementType struct {
 	LastModified types.String `tfsdk:"last_modified"`
 }
 
-func subaccountEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedEntitlement) (subaccountEntitlementType, diag.Diagnostics) {
+func subaccountEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedAssignment) (subaccountEntitlementType, diag.Diagnostics) {
 	return subaccountEntitlementType{
 		SubaccountId: types.StringValue(value.Assignment.EntityId),
 		Id:           types.StringValue(value.Plan.UniqueIdentifier),

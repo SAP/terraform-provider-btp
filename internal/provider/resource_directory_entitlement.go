@@ -2,14 +2,12 @@ package provider
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"reflect"
 	"strings"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -109,9 +107,6 @@ __Further documentation:__
 				MarkdownDescription: "Defines the assignmnet of the plan with the quota specified in `auto_distribute_amount` to subaccounts currently located in the specified directory. For entitlements without a numeric quota, the plan is assigned to the subaccounts currently located in the directory (`auto_distribute_amount` is not needed). When applying this option, `auto_assign` must also be set.",
 				Optional:            true,
 				Computed:            true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"category": schema.StringAttribute{
 				MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
@@ -133,24 +128,6 @@ __Further documentation:__
 				MarkdownDescription: "The ID of the entitled service plan.",
 				Computed:            true,
 			},
-			"state": schema.StringAttribute{
-				MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
-					getFormattedValueAsTableRow("state", "description") +
-					getFormattedValueAsTableRow("---", "---") +
-					getFormattedValueAsTableRow("`OK`", "The CRUD operation or series of operations completed successfully.") +
-					getFormattedValueAsTableRow("`STARTED`", "The processing operation started") +
-					getFormattedValueAsTableRow("`PROCESSING`", "The processing operation is in progress") +
-					getFormattedValueAsTableRow("`PROCESSING_FAILED`", "The processing operation failed"),
-				Computed: true,
-			},
-			"last_modified": schema.StringAttribute{
-				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
-				Computed:            true,
-			},
-			"created_date": schema.StringAttribute{
-				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
-				Computed:            true,
-			},
 		},
 	}
 }
@@ -165,13 +142,13 @@ func (rs *directoryEntitlementResource) Read(ctx context.Context, req resource.R
 		return
 	}
 
-	entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+	entitlement, _, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Entitlement (Directory)", fmt.Sprintf("%s", err))
 		return
 	}
 
-	updatedState, diags := directoryEntitlementValueFrom(ctx, *entitlement)
+	updatedState, diags := directoryEntitlementValueFrom(ctx, *entitlement, state.DirectoryId.ValueString(), state.Distribute.ValueBool())
 
 	resp.Diagnostics.Append(diags...)
 
@@ -212,7 +189,7 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK},
 		Refresh: func() (interface{}, string, error) {
-			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedByDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
 
 			if err != nil {
 				return nil, "", err
@@ -221,12 +198,14 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 			if entitlement == nil {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
-			// No error returned even if operation failed
-			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
-				return *entitlement, entitlement.Assignment.EntityState, errors.New("undefined API error during entitlement processing")
+
+			if !reflect.ValueOf(entitlement).IsNil() {
+				if checkForTargetStateReached(ctx, *entitlement, plan) {
+					return *entitlement, cis_entitlements.StateOK, nil
+				}
 			}
 
-			return *entitlement, entitlement.Assignment.EntityState, nil
+			return *entitlement, cis_entitlements.StateProcessing, nil
 		},
 		Timeout:    10 * time.Minute,
 		Delay:      5 * time.Second,
@@ -239,8 +218,7 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 		return
 	}
 
-	// The amount field is always set, even if not specified. Distinguish between operations via category
-	updatedState, diags := directoryEntitlementValueFrom(ctx, entitlement.(btpcli.UnfoldedEntitlement))
+	updatedState, diags := directoryEntitlementValueFrom(ctx, entitlement.(btpcli.UnfoldedEntitlement), plan.DirectoryId.ValueString(), plan.Distribute.ValueBool())
 	responseDiagnostics.Append(diags...)
 
 	diags = responseState.Set(ctx, &updatedState)
@@ -257,7 +235,7 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 
 	var err error
 	if !hasPlanQuotaDir(state) {
-		_, err = rs.cli.Accounts.Entitlement.DisableInDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+		_, err = rs.cli.Accounts.Entitlement.DisableInDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.Distribute.ValueBool(), state.AutoAssign.ValueBool())
 	} else {
 		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0, state.Distribute.ValueBool(), state.AutoAssign.ValueBool(), int(state.AutoDistributeAmount.ValueInt64()))
 	}
@@ -272,7 +250,7 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 		Target:  []string{"DELETED"},
 		Refresh: func() (interface{}, string, error) {
 
-			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
 
 			if reflect.ValueOf(entitlement).IsNil() {
 				return entitlement, "DELETED", nil
@@ -280,11 +258,6 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 
 			if err != nil {
 				return entitlement, cis_entitlements.StateProcessingFailed, err
-			}
-
-			// No error returned even if operation failed
-			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
-				return *entitlement, entitlement.Assignment.EntityState, errors.New("undefined API error during entitlement processing")
 			}
 
 			return entitlement, cis_entitlements.StateProcessing, nil
@@ -332,4 +305,22 @@ func hasPlanQuotaDir(state directoryEntitlementType) bool {
 	}
 
 	return true
+}
+
+// As we do not get valid state information from the CLI we need to check for changes manually esp. for updates
+func checkForTargetStateReached(ctx context.Context, entitlement btpcli.UnfoldedEntitlement, plan directoryEntitlementType) bool {
+
+	updatedState, _ := directoryEntitlementValueFrom(ctx, entitlement, plan.DirectoryId.String(), plan.Distribute.ValueBool())
+	// Execute the check on all fields that are potential input
+	if updatedState.ServiceName.ValueString() == plan.ServiceName.ValueString() &&
+		updatedState.PlanName.ValueString() == plan.PlanName.ValueString() &&
+		updatedState.AutoAssign.ValueBool() == plan.AutoAssign.ValueBool() &&
+		updatedState.AutoDistributeAmount.ValueInt64() == plan.AutoDistributeAmount.ValueInt64() &&
+		// Special case for Amount as this is changed to 1 if plan is 0
+		(updatedState.Amount.ValueInt64() == plan.Amount.ValueInt64() || plan.Amount.ValueInt64() == 0) {
+		return true
+	} else {
+		return false
+	}
+
 }
