@@ -104,7 +104,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"distribute": schema.BoolAttribute{
-				MarkdownDescription: "Defines the assignmnet of the plan with the quota specified in `auto_distribute_amount` to subaccounts currently located in the specified directory. For entitlements without a numeric quota, the plan is assigned to the subaccounts currently located in the directory (`auto_distribute_amount` is not needed). When applying this option, `auto_assign` must also be set.",
+				MarkdownDescription: "Defines the assignment of the plan with the quota specified in `auto_distribute_amount` to subaccounts currently located in the specified directory. For entitlements without a numeric quota, the plan is assigned to the subaccounts currently located in the directory (`auto_distribute_amount` is not needed). When applying this option, `auto_assign` must also be set.",
 				Optional:            true,
 				Computed:            true,
 			},
@@ -237,7 +237,7 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 	if !hasPlanQuotaDir(state) {
 		_, err = rs.cli.Accounts.Entitlement.DisableInDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.Distribute.ValueBool(), state.AutoAssign.ValueBool())
 	} else {
-		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0, state.Distribute.ValueBool(), state.AutoAssign.ValueBool(), int(state.AutoDistributeAmount.ValueInt64()))
+		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0, state.Distribute.ValueBool(), state.AutoAssign.ValueBool(), 0)
 	}
 
 	if err != nil {
