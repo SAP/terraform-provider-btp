@@ -3,6 +3,7 @@ package btpcli
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis_entitlements"
 )
@@ -121,23 +122,28 @@ func (f *accountsEntitlementFacade) searchPlans(servicePlans []cis_entitlements.
 	return nil, nil
 }
 
-func (f *accountsEntitlementFacade) AssignToDirectory(ctx context.Context, directoryId string, serviceName string, servicePlanName string, amount int) (CommandResponse, error) {
+func (f *accountsEntitlementFacade) AssignToDirectory(ctx context.Context, directoryId string, serviceName string, servicePlanName string, amount int, distribute bool, autoAssign bool, autoDistributeAmount int) (CommandResponse, error) {
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
-		"directory":       directoryId,
-		"serviceName":     serviceName,
-		"servicePlanName": servicePlanName,
-		"amount":          fmt.Sprintf("%d", amount),
+		"directory":            directoryId,
+		"serviceName":          serviceName,
+		"servicePlanName":      servicePlanName,
+		"amount":               fmt.Sprintf("%d", amount),
+		"distribute":           strconv.FormatBool(distribute),
+		"autoAssign":           strconv.FormatBool(autoAssign),
+		"autoDistributeAmount": fmt.Sprintf("%d", autoDistributeAmount),
 	}))
 
 	return res, err
 }
 
-func (f *accountsEntitlementFacade) EnableInDirectory(ctx context.Context, directoryId string, serviceName string, servicePlanName string) (CommandResponse, error) {
+func (f *accountsEntitlementFacade) EnableInDirectory(ctx context.Context, directoryId string, serviceName string, servicePlanName string, distribute bool, autoAssign bool) (CommandResponse, error) {
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
 		"directory":       directoryId,
 		"serviceName":     serviceName,
 		"servicePlanName": servicePlanName,
 		"enable":          "true",
+		"distribute":      strconv.FormatBool(distribute),
+		"autoAssign":      strconv.FormatBool(autoAssign),
 	}))
 
 	return res, err

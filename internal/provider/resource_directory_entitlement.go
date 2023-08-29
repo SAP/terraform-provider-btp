@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -86,6 +87,32 @@ __Further documentation:__
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"amount": schema.Int64Attribute{
+				MarkdownDescription: "The quota assigned to the directory.",
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.Int64{
+					int64validator.Between(1, 2000000000),
+				},
+			},
+			"auto_assign": schema.BoolAttribute{
+				MarkdownDescription: "Determines whether the plans of entitlements that have a numeric quota with the amount specified in `auto_distribute_amount` are automatically allocated to any new subaccount that is added to the directory in the future. For entitlements without a numeric quota, it shows if the plan are assigned to any new subaccount that is added to the directory in the future (`auto_distribute_amount` is not needed). If the `distribute` parameter is set, the same assignment is also made to all subaccounts currently in the directory. Entitlements are subject to available quota in the directory.",
+				Optional:            true,
+				Computed:            true,
+			},
+			"auto_distribute_amount": schema.Int64Attribute{
+				MarkdownDescription: "The quota of the specified plan automatically allocated to any new subaccount that is created in the future in the directory. When applying this option, `auto_assign` and/or `distribute` must also be set. Applies only to entitlements that have a numeric quota.",
+				Optional:            true,
+				Computed:            true,
+			},
+			"distribute": schema.BoolAttribute{
+				MarkdownDescription: "Defines the assignmnet of the plan with the quota specified in `auto_distribute_amount` to subaccounts currently located in the specified directory. For entitlements without a numeric quota, the plan is assigned to the subaccounts currently located in the directory (`auto_distribute_amount` is not needed). When applying this option, `auto_assign` must also be set.",
+				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"category": schema.StringAttribute{
 				MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
 					getFormattedValueAsTableRow("value", "description") +
@@ -105,14 +132,6 @@ __Further documentation:__
 			"plan_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the entitled service plan.",
 				Computed:            true,
-			},
-			"amount": schema.Int64Attribute{
-				MarkdownDescription: "The quota assigned to the directory.",
-				Optional:            true,
-				Computed:            true,
-				Validators: []validator.Int64{
-					int64validator.Between(1, 2000000000),
-				},
 			},
 			"state": schema.StringAttribute{
 				MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
@@ -178,9 +197,9 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 
 	var err error
 	if !hasPlanQuotaDir(plan) {
-		_, err = rs.cli.Accounts.Entitlement.EnableInDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
+		_, err = rs.cli.Accounts.Entitlement.EnableInDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.Distribute.ValueBool(), plan.AutoAssign.ValueBool())
 	} else {
-		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()))
+		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()), plan.Distribute.ValueBool(), plan.AutoAssign.ValueBool(), int(plan.AutoDistributeAmount.ValueInt64()))
 	}
 
 	if err != nil {
@@ -240,7 +259,7 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 	if !hasPlanQuotaDir(state) {
 		_, err = rs.cli.Accounts.Entitlement.DisableInDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
 	} else {
-		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0)
+		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0, state.Distribute.ValueBool(), state.AutoAssign.ValueBool(), int(state.AutoDistributeAmount.ValueInt64()))
 	}
 
 	if err != nil {

@@ -183,15 +183,18 @@ func TestAccountsEntitlementFacade_AssignToDirectory(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
-				"directory":       directoryId,
-				"serviceName":     serviceName,
-				"servicePlanName": planName,
-				"amount":          "10",
+				"directory":            directoryId,
+				"serviceName":          serviceName,
+				"servicePlanName":      planName,
+				"amount":               "10",
+				"distribute":           "false",
+				"autoAssign":           "false",
+				"autoDistributeAmount": "0",
 			})
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.AssignToDirectory(context.TODO(), directoryId, serviceName, planName, amount)
+		res, err := uut.Accounts.Entitlement.AssignToDirectory(context.TODO(), directoryId, serviceName, planName, amount, false, false, 0)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -217,11 +220,13 @@ func TestAccountsEntitlementFacade_EnableInDirectory(t *testing.T) {
 				"serviceName":     serviceName,
 				"servicePlanName": planName,
 				"enable":          "true",
+				"distribute":      "false",
+				"autoAssign":      "false",
 			})
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.EnableInDirectory(context.TODO(), directoryId, serviceName, planName)
+		res, err := uut.Accounts.Entitlement.EnableInDirectory(context.TODO(), directoryId, serviceName, planName, false, false)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)

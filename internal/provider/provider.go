@@ -169,6 +169,7 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 
 	return append([]func() resource.Resource{
 		newDirectoryResource,
+		newDirectoryEntitlementResource,
 		newDirectoryRoleCollectionAssignmentResource,
 		newDirectoryRoleCollectionResource,
 		newGlobalaccountResourceProviderResource,
