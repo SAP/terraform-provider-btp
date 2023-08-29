@@ -65,6 +65,7 @@ func TestResourceDirectory(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_directory.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-new-directory-feat"),
 						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is a new directory with features"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "features.#", "3"),
 					),
 				},
 				{
@@ -76,6 +77,7 @@ func TestResourceDirectory(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_directory.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-updated-directory-feat"),
 						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is a updated directory with features"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "features.#", "3"),
 					),
 				},
 
