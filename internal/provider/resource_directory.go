@@ -22,7 +22,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
-	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
@@ -89,15 +88,6 @@ __Further documentation:__
 				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtMost(300),
-				},
-			},
-			"directory_admins": schema.StringAttribute{
-				MarkdownDescription: "st of additional admins of the directory. Do not add yourself as you are assigned by default. Use only with directories that you configured to manage their authorizations. Enter inline as a valid JSON array containing the list of admin e-mails (as required by your identity provider).",
-				Optional:            true,
-				Computed:            true,
-				Sensitive:           true,
-				Validators: []validator.String{
-					jsonvalidator.ValidJSON(),
 				},
 			},
 			"parent_id": schema.StringAttribute{
@@ -232,11 +222,6 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 		var features []string
 		plan.Features.ElementsAs(ctx, &features, false)
 		args.Features = sortDiretoryFeatures(features)
-	}
-
-	if !plan.DirectoryAdmins.IsUnknown() {
-		directoryAdmins := plan.DirectoryAdmins.ValueString()
-		args.DirectoryAdmins = directoryAdmins
 	}
 
 	cliRes, _, err := rs.cli.Accounts.Directory.Create(ctx, &args)
