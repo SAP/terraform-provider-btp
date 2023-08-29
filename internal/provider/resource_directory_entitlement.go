@@ -276,6 +276,7 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 }
 
 func (rs *directoryEntitlementResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	//Known Gap: The DISTRIBUTE flag cannot be fetched via the platform APIs. Hence, we cannot import the value, it will always be FALSE
 	idParts := strings.Split(req.ID, ",")
 
 	if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
