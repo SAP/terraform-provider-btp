@@ -27,15 +27,24 @@ __Further documentation:__
 ## Example Usage
 
 ```terraform
+# Create a parent directory without features enabled
 resource "btp_directory" "parent" {
   name        = "my-parent-directory"
   description = "This is a parent directory."
 }
 
+# Create a child directory underneath a parent directory without features enabled
 resource "btp_directory" "child" {
   parent_id = btp_directory.parent.id
   name        = "my-child-directory"
   description = "This is a child directory."
+}
+
+# Create a directory with ENTITLEMENT and AUTHORIZATIONS features enabled
+resource "btp_directory" "dir_with_features" {
+  name        = "my-feat-directory"
+  description = "This is a directory with features."
+  features    = ["DEFAULT","ENTITLEMENTS","AUTHORIZATIONS"]
 }
 ```
 
@@ -49,6 +58,13 @@ resource "btp_directory" "child" {
 ### Optional
 
 - `description` (String) A description of the directory.
+- `features` (Set of String) The features that are enabled for the directory. Possible values are: 
+
+  | value | description | 
+  | --- | --- | 
+  | `DEFAULT (D)` | All directories have the following basic feature enabled:<br> 1. Group and filter subaccounts for reports and filters <br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)<br> 3. Set custom properties and tags to the directory for identification and reporting purposes. | 
+  | `ENTITLEMENTS (E)` | Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory. | 
+  | `AUTHORIZATIONS (A)` | Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature. |
 - `labels` (Map of Set of String) Contains information about the labels assigned to a specified global account. Labels are represented in a JSON array of key-value pairs; each key has up to 10 corresponding values.
 - `parent_id` (String) The ID of the directory's parent entity. Typically this is the global account.
 - `subdomain` (String) Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. It has to be unique within the defined region.
@@ -57,13 +73,6 @@ resource "btp_directory" "child" {
 
 - `created_by` (String) The details of the user that created the directory.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
-- `features` (Set of String) The features that are enabled for the directory. Possible values are: 
-
-  | value | description | 
-  | --- | --- | 
-  | `DEFAULT` | All directories have the following basic feature enabled:<br> 1. Group and filter subaccounts for reports and filters <br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)<br> 3. Set custom properties and tags to the directory for identification and reporting purposes. | 
-  | `ENTITLEMENTS` | Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory. | 
-  | `AUTHORIZATIONS` | Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature. |
 - `id` (String) The ID of the directory.
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `state` (String) The current state of the directory. Possible values are: 
