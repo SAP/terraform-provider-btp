@@ -148,6 +148,11 @@ func (rs *directoryEntitlementResource) Read(ctx context.Context, req resource.R
 		return
 	}
 
+	if entitlement == nil {
+		resp.Diagnostics.AddError("API Error Reading Resource Entitlement (Directory)", "Resource not found")
+		return
+	}
+
 	updatedState, diags := directoryEntitlementValueFrom(ctx, *entitlement, state.DirectoryId.ValueString(), state.Distribute.ValueBool())
 
 	resp.Diagnostics.Append(diags...)
