@@ -278,6 +278,7 @@ func notContainsCheckFunc(unexpectedSubString string) testingResource.CheckResou
 func TestProvider_HasResources(t *testing.T) {
 	expectedResources := []string{
 		"btp_directory",
+		"btp_directory_entitlement",
 		//"btp_directory_role",
 		"btp_directory_role_collection",
 		"btp_directory_role_collection_assignment",
