@@ -136,7 +136,7 @@ func TestResourceSubaccount(t *testing.T) {
 					),
 				},
 				{
-					//Update name wo change of usage but proivde usage explicitly again
+					//Update name wo change of usage but provide usage explicitly again
 					Config: hclProviderFor(user) + hclResourceSubaccountUsedForProd("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
