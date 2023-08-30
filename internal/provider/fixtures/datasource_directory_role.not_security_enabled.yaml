@@ -6,7 +6,7 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 127
+        content_length: 118
         transfer_encoding: []
         trailer: {}
         host: cpcli.cf.sap.hana.ondemand.com
@@ -19,12 +19,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 48c68c99-a24a-fbb4-d7f4-7ae1c2b02101
+                - b3e0c0eb-eeb1-6c98-03a7-10ccf5d3708f
             X-Cpcli-Format:
                 - json
-        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -32,18 +32,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 162
+        content_length: 153
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: '{"issuer":"identity.provider.test","refreshToken":"e11979b6-2926-4022-8343-15e88958df85","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "162"
+                - "153"
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:35 GMT
+                - Wed, 30 Aug 2023 11:51:19 GMT
             Expires:
                 - "0"
             Pragma:
@@ -54,15 +54,17 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 7225a3ee-7bcf-4fc2-4040-f4b40d955f73
+                - e300438e-452f-4b92-79ed-a475613e1459
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 534.66262ms
+        duration: 344.0764ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -81,9 +83,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - a45f097d-70ce-70b2-501c-27e3b29cbd08
+                - 1369e838-0c24-865f-c007-c8597e08f757
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -92,7 +94,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.49.0/security/role?get
         method: POST
       response:
         proto: HTTP/2.0
@@ -109,7 +111,7 @@ interactions:
             Content-Length:
                 - "0"
             Date:
-                - Tue, 01 Aug 2023 07:33:35 GMT
+                - Wed, 30 Aug 2023 11:51:20 GMT
             Expires:
                 - "0"
             Pragma:
@@ -120,18 +122,14 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Refreshtoken:
-                - redacted
-            X-Cpcli-Replacementrefreshtoken:
-                - redacted
             X-Cpcli-Server-Message:
-                - None of the authorization parameters represented a tenant for token exchange.
+                - Directory '5357bda0-8651-4eab-a69d-12d282bc3247' lacks AUTHORIZATIONS feature and thus did not entitle you to execute the command.
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - da1f5aad-eaa7-444f-5117-ecdca9366205
+                - d7a53be6-5e77-4682-5b42-c85f324bd94c
             X-Xss-Protection:
                 - "0"
-        status: 400 Bad Request
-        code: 400
-        duration: 213.841637ms
+        status: 403 Forbidden
+        code: 403
+        duration: 152.9774ms

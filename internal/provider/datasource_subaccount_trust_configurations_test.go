@@ -24,7 +24,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurations("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configurations.uut", "values.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configurations.uut", "values.#", "3"),
 					),
 				},
 			},
@@ -40,7 +40,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurations("uut", "aaaaaaaa-bbbb-cccc-dddd-caffee00affe"),
-					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 403; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})

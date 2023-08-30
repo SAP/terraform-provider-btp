@@ -6,7 +6,7 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 127
+        content_length: 118
         transfer_encoding: []
         trailer: {}
         host: cpcli.cf.sap.hana.ondemand.com
@@ -19,12 +19,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 91410efd-13d5-1e39-4ad0-a9c89e30ecb9
+                - 5fd94510-b55e-ccc5-2efd-8827bdc158aa
             X-Cpcli-Format:
                 - json
-        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -32,18 +32,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 162
+        content_length: 153
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: '{"issuer":"identity.provider.test","refreshToken":"dee7f320-31b6-43b3-891d-75a43f031a15","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "162"
+                - "153"
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:17 GMT
+                - Wed, 30 Aug 2023 12:05:38 GMT
             Expires:
                 - "0"
             Pragma:
@@ -54,15 +54,17 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 1ee48203-0db4-452b-6736-87c5b307d922
+                - a8a1de6c-975d-4c78-442d-099ddea6101b
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 222.149689ms
+        duration: 457.4278ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -81,9 +83,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 9e7a0a85-3eaf-f23f-04cc-fa287e2711f1
+                - b5c83636-09d0-dcf7-2f7f-9fdbe79ae6d7
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -92,7 +94,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/trust?list
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.49.0/security/trust?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -102,14 +104,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '[{"name":"sap.default","originKey":"sap.default","typeOfTrust":"Application","status":"active","description":null,"identityProvider":null,"domain":null,"linkTextForUserLogon":"Default Identity Provider","availableForUserLogon":"true","createShadowUsersDuringLogon":"true","sapBtpCli":"accounts","protocol":"OpenID Connect","readOnly":false},{"name":"terraformint-platform","originKey":"terraformint-platform","typeOfTrust":"Platform","status":"active","description":"Custom Platform Identity Provider","identityProvider":"terraformint.accounts400.ondemand.com","domain":null,"linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraformint","protocol":"OpenID Connect","readOnly":false}]'
+        body: '[{"name":"sap.default","originKey":"sap.default","typeOfTrust":"Application","status":"active","description":null,"identityProvider":null,"domain":null,"linkTextForUserLogon":"Default Identity Provider","availableForUserLogon":"true","createShadowUsersDuringLogon":"true","sapBtpCli":null,"protocol":"OpenID Connect","readOnly":false},{"name":"terraformint-platform","originKey":"terraformint-platform","typeOfTrust":"Platform","status":"active","description":"Custom Platform Identity Provider","identityProvider":"terraformint.accounts400.ondemand.com","domain":null,"linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraformint","protocol":"OpenID Connect","readOnly":false},{"name":"terraform.accounts400.ondemand.com (platform users)","originKey":"terraform-platform","typeOfTrust":"Platform","status":"active","description":"Identity Authentication tenant terraform.accounts400.ondemand.com used for platform users","identityProvider":"terraform.accounts400.ondemand.com","domain":"terraform.accounts400.ondemand.com","linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraform","protocol":"OpenID Connect","readOnly":false}]'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:18 GMT
+                - Wed, 30 Aug 2023 12:05:38 GMT
             Expires:
                 - "0"
             Pragma:
@@ -124,25 +126,21 @@ interactions:
                 - application/json
             X-Cpcli-Backend-Status:
                 - "200"
-            X-Cpcli-Refreshtoken:
-                - redacted
-            X-Cpcli-Replacementrefreshtoken:
-                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - d45b147a-6e74-4c74-54be-a47786515882
+                - a4c06185-1e28-4cc8-6fcd-d729f100a6e2
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 415.539332ms
+        duration: 126.0857ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 127
+        content_length: 118
         transfer_encoding: []
         trailer: {}
         host: cpcli.cf.sap.hana.ondemand.com
@@ -155,12 +153,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 55839c6e-6623-7d02-bf9c-29c1866177c4
+                - 7710c468-8e22-2fc1-6de1-b96062245e0b
             X-Cpcli-Format:
                 - json
-        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -168,18 +166,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 162
+        content_length: 153
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: '{"issuer":"identity.provider.test","refreshToken":"61a00254-c537-49cc-b54b-749126efec0b","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "162"
+                - "153"
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:18 GMT
+                - Wed, 30 Aug 2023 12:05:38 GMT
             Expires:
                 - "0"
             Pragma:
@@ -190,15 +188,17 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 776cbf68-ea3e-4abb-5be4-5495857b2508
+                - ce624205-280c-4f3f-4e11-8a762c63bfcc
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 220.065798ms
+        duration: 347.3428ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -217,9 +217,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - c815edf3-c900-67c5-5de4-a001c761024e
+                - cc5f0eda-7ea6-afd5-0fa1-66122948c180
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -228,7 +228,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/trust?list
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.49.0/security/trust?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -238,14 +238,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '[{"name":"sap.default","originKey":"sap.default","typeOfTrust":"Application","status":"active","description":null,"identityProvider":null,"domain":null,"linkTextForUserLogon":"Default Identity Provider","availableForUserLogon":"true","createShadowUsersDuringLogon":"true","sapBtpCli":"accounts","protocol":"OpenID Connect","readOnly":false},{"name":"terraformint-platform","originKey":"terraformint-platform","typeOfTrust":"Platform","status":"active","description":"Custom Platform Identity Provider","identityProvider":"terraformint.accounts400.ondemand.com","domain":null,"linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraformint","protocol":"OpenID Connect","readOnly":false}]'
+        body: '[{"name":"sap.default","originKey":"sap.default","typeOfTrust":"Application","status":"active","description":null,"identityProvider":null,"domain":null,"linkTextForUserLogon":"Default Identity Provider","availableForUserLogon":"true","createShadowUsersDuringLogon":"true","sapBtpCli":null,"protocol":"OpenID Connect","readOnly":false},{"name":"terraformint-platform","originKey":"terraformint-platform","typeOfTrust":"Platform","status":"active","description":"Custom Platform Identity Provider","identityProvider":"terraformint.accounts400.ondemand.com","domain":null,"linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraformint","protocol":"OpenID Connect","readOnly":false},{"name":"terraform.accounts400.ondemand.com (platform users)","originKey":"terraform-platform","typeOfTrust":"Platform","status":"active","description":"Identity Authentication tenant terraform.accounts400.ondemand.com used for platform users","identityProvider":"terraform.accounts400.ondemand.com","domain":"terraform.accounts400.ondemand.com","linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraform","protocol":"OpenID Connect","readOnly":false}]'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:19 GMT
+                - Wed, 30 Aug 2023 12:05:38 GMT
             Expires:
                 - "0"
             Pragma:
@@ -260,25 +260,21 @@ interactions:
                 - application/json
             X-Cpcli-Backend-Status:
                 - "200"
-            X-Cpcli-Refreshtoken:
-                - redacted
-            X-Cpcli-Replacementrefreshtoken:
-                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 2c4e0265-2a4d-458b-7dae-037af0b86c58
+                - 9ce5e9b1-3d48-46f3-5c1e-03205ab4abc9
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 347.645868ms
+        duration: 162.3046ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 127
+        content_length: 118
         transfer_encoding: []
         trailer: {}
         host: cpcli.cf.sap.hana.ondemand.com
@@ -291,12 +287,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 58d3f354-945a-b25f-ca60-1da1e331d419
+                - 8c11dcab-dd4d-c54f-fd82-d7c6256a47de
             X-Cpcli-Format:
                 - json
-        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -304,18 +300,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 162
+        content_length: 153
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: '{"issuer":"identity.provider.test","refreshToken":"99d9fd64-79c9-44b8-a8b2-8a555466d6d3","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "162"
+                - "153"
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:19 GMT
+                - Wed, 30 Aug 2023 12:05:39 GMT
             Expires:
                 - "0"
             Pragma:
@@ -326,15 +322,17 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - dea98054-2ffc-4b30-73dc-f0f42a209690
+                - 97c84b0d-1d9c-4f46-454d-3e8623aacbe1
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 373.452326ms
+        duration: 302.1212ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -353,9 +351,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 287e8438-1f0e-148f-e19e-8d4ed61efa31
+                - ec2a8e74-318e-9dbe-fb19-08f5f7c6bc2f
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -364,7 +362,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/trust?list
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.49.0/security/trust?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -374,14 +372,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '[{"name":"sap.default","originKey":"sap.default","typeOfTrust":"Application","status":"active","description":null,"identityProvider":null,"domain":null,"linkTextForUserLogon":"Default Identity Provider","availableForUserLogon":"true","createShadowUsersDuringLogon":"true","sapBtpCli":"accounts","protocol":"OpenID Connect","readOnly":false},{"name":"terraformint-platform","originKey":"terraformint-platform","typeOfTrust":"Platform","status":"active","description":"Custom Platform Identity Provider","identityProvider":"terraformint.accounts400.ondemand.com","domain":null,"linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraformint","protocol":"OpenID Connect","readOnly":false}]'
+        body: '[{"name":"sap.default","originKey":"sap.default","typeOfTrust":"Application","status":"active","description":null,"identityProvider":null,"domain":null,"linkTextForUserLogon":"Default Identity Provider","availableForUserLogon":"true","createShadowUsersDuringLogon":"true","sapBtpCli":null,"protocol":"OpenID Connect","readOnly":false},{"name":"terraformint-platform","originKey":"terraformint-platform","typeOfTrust":"Platform","status":"active","description":"Custom Platform Identity Provider","identityProvider":"terraformint.accounts400.ondemand.com","domain":null,"linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraformint","protocol":"OpenID Connect","readOnly":false},{"name":"terraform.accounts400.ondemand.com (platform users)","originKey":"terraform-platform","typeOfTrust":"Platform","status":"active","description":"Identity Authentication tenant terraform.accounts400.ondemand.com used for platform users","identityProvider":"terraform.accounts400.ondemand.com","domain":"terraform.accounts400.ondemand.com","linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraform","protocol":"OpenID Connect","readOnly":false}]'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:19 GMT
+                - Wed, 30 Aug 2023 12:05:39 GMT
             Expires:
                 - "0"
             Pragma:
@@ -396,25 +394,21 @@ interactions:
                 - application/json
             X-Cpcli-Backend-Status:
                 - "200"
-            X-Cpcli-Refreshtoken:
-                - redacted
-            X-Cpcli-Replacementrefreshtoken:
-                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 6050357b-40f1-4bd5-4d97-19831454b217
+                - e7b6c716-cd8f-4b4d-400b-91f3ae976217
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 146.259983ms
+        duration: 128.608ms
     - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 127
+        content_length: 118
         transfer_encoding: []
         trailer: {}
         host: cpcli.cf.sap.hana.ondemand.com
@@ -427,12 +421,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 88e05ddf-028f-f349-7dbc-b776c1e3bcc0
+                - 7744ba76-5640-bf98-8975-fd46e20ab829
             X-Cpcli-Format:
                 - json
-        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -440,18 +434,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 162
+        content_length: 153
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: '{"issuer":"identity.provider.test","refreshToken":"49bd9337-91a3-4754-9707-db1071adbded","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "162"
+                - "153"
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:20 GMT
+                - Wed, 30 Aug 2023 12:05:39 GMT
             Expires:
                 - "0"
             Pragma:
@@ -462,15 +456,17 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - f8b6f0a3-cb7b-469b-4ab6-781f2d26cf22
+                - 4394809b-e67b-4194-6a00-ff3fa84ab579
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 187.974137ms
+        duration: 344.4602ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -489,9 +485,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 10b238ff-be5f-c1f6-6538-5c5ba23afd2e
+                - 9b607a7f-a3b2-ec12-552d-aca97fa4ef86
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -500,7 +496,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/trust?list
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.49.0/security/trust?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -510,14 +506,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '[{"name":"sap.default","originKey":"sap.default","typeOfTrust":"Application","status":"active","description":null,"identityProvider":null,"domain":null,"linkTextForUserLogon":"Default Identity Provider","availableForUserLogon":"true","createShadowUsersDuringLogon":"true","sapBtpCli":"accounts","protocol":"OpenID Connect","readOnly":false},{"name":"terraformint-platform","originKey":"terraformint-platform","typeOfTrust":"Platform","status":"active","description":"Custom Platform Identity Provider","identityProvider":"terraformint.accounts400.ondemand.com","domain":null,"linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraformint","protocol":"OpenID Connect","readOnly":false}]'
+        body: '[{"name":"sap.default","originKey":"sap.default","typeOfTrust":"Application","status":"active","description":null,"identityProvider":null,"domain":null,"linkTextForUserLogon":"Default Identity Provider","availableForUserLogon":"true","createShadowUsersDuringLogon":"true","sapBtpCli":null,"protocol":"OpenID Connect","readOnly":false},{"name":"terraformint-platform","originKey":"terraformint-platform","typeOfTrust":"Platform","status":"active","description":"Custom Platform Identity Provider","identityProvider":"terraformint.accounts400.ondemand.com","domain":null,"linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraformint","protocol":"OpenID Connect","readOnly":false},{"name":"terraform.accounts400.ondemand.com (platform users)","originKey":"terraform-platform","typeOfTrust":"Platform","status":"active","description":"Identity Authentication tenant terraform.accounts400.ondemand.com used for platform users","identityProvider":"terraform.accounts400.ondemand.com","domain":"terraform.accounts400.ondemand.com","linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraform","protocol":"OpenID Connect","readOnly":false}]'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:20 GMT
+                - Wed, 30 Aug 2023 12:05:39 GMT
             Expires:
                 - "0"
             Pragma:
@@ -532,25 +528,21 @@ interactions:
                 - application/json
             X-Cpcli-Backend-Status:
                 - "200"
-            X-Cpcli-Refreshtoken:
-                - redacted
-            X-Cpcli-Replacementrefreshtoken:
-                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - d6c5ea81-f342-4795-7ff6-2c3f023516ad
+                - 55e7376e-6166-4e43-4b0a-7655e3ddaa2b
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 140.74196ms
+        duration: 150.2184ms
     - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 127
+        content_length: 118
         transfer_encoding: []
         trailer: {}
         host: cpcli.cf.sap.hana.ondemand.com
@@ -563,12 +555,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 34461fdf-7954-a7ac-46ab-67c728c9565c
+                - 34be8f3b-631f-10c1-a00b-706d04e82f4e
             X-Cpcli-Format:
                 - json
-        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -576,18 +568,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 162
+        content_length: 153
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: '{"issuer":"identity.provider.test","refreshToken":"8f120b54-10e6-43f2-acff-1073bd392a86","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "162"
+                - "153"
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:20 GMT
+                - Wed, 30 Aug 2023 12:05:40 GMT
             Expires:
                 - "0"
             Pragma:
@@ -598,15 +590,17 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 97cd492e-db3c-4c23-60b5-25cbbcc261b2
+                - eebd62df-ce2a-4bfc-426f-32fc955b4305
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 278.936703ms
+        duration: 322.242ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -625,9 +619,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 40714a6a-167a-560a-41e4-01d4ec2242d9
+                - 9914213b-951c-3a0b-ef62-a8fe795f0941
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -636,7 +630,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/trust?list
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.49.0/security/trust?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -646,14 +640,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '[{"name":"sap.default","originKey":"sap.default","typeOfTrust":"Application","status":"active","description":null,"identityProvider":null,"domain":null,"linkTextForUserLogon":"Default Identity Provider","availableForUserLogon":"true","createShadowUsersDuringLogon":"true","sapBtpCli":"accounts","protocol":"OpenID Connect","readOnly":false},{"name":"terraformint-platform","originKey":"terraformint-platform","typeOfTrust":"Platform","status":"active","description":"Custom Platform Identity Provider","identityProvider":"terraformint.accounts400.ondemand.com","domain":null,"linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraformint","protocol":"OpenID Connect","readOnly":false}]'
+        body: '[{"name":"sap.default","originKey":"sap.default","typeOfTrust":"Application","status":"active","description":null,"identityProvider":null,"domain":null,"linkTextForUserLogon":"Default Identity Provider","availableForUserLogon":"true","createShadowUsersDuringLogon":"true","sapBtpCli":null,"protocol":"OpenID Connect","readOnly":false},{"name":"terraformint-platform","originKey":"terraformint-platform","typeOfTrust":"Platform","status":"active","description":"Custom Platform Identity Provider","identityProvider":"terraformint.accounts400.ondemand.com","domain":null,"linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraformint","protocol":"OpenID Connect","readOnly":false},{"name":"terraform.accounts400.ondemand.com (platform users)","originKey":"terraform-platform","typeOfTrust":"Platform","status":"active","description":"Identity Authentication tenant terraform.accounts400.ondemand.com used for platform users","identityProvider":"terraform.accounts400.ondemand.com","domain":"terraform.accounts400.ondemand.com","linkTextForUserLogon":null,"availableForUserLogon":null,"createShadowUsersDuringLogon":null,"sapBtpCli":"terraform","protocol":"OpenID Connect","readOnly":false}]'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:21 GMT
+                - Wed, 30 Aug 2023 12:05:40 GMT
             Expires:
                 - "0"
             Pragma:
@@ -668,25 +662,21 @@ interactions:
                 - application/json
             X-Cpcli-Backend-Status:
                 - "200"
-            X-Cpcli-Refreshtoken:
-                - redacted
-            X-Cpcli-Replacementrefreshtoken:
-                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 932a6477-b84b-4729-6f13-d6f3ac97b1b6
+                - 0e8d6c47-fd24-488b-5b02-759465876b5b
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 239.095275ms
+        duration: 132.4029ms
     - id: 10
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 127
+        content_length: 118
         transfer_encoding: []
         trailer: {}
         host: cpcli.cf.sap.hana.ondemand.com
@@ -699,12 +689,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 97244614-d795-5738-bd49-2c3f3f8685d4
+                - 03a14239-fa90-c56e-345b-7f2212416191
             X-Cpcli-Format:
                 - json
-        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -712,18 +702,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 162
+        content_length: 153
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: '{"issuer":"identity.provider.test","refreshToken":"375569aa-9a2b-4ea3-8e08-64aec479f3aa","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "162"
+                - "153"
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:21 GMT
+                - Wed, 30 Aug 2023 12:05:40 GMT
             Expires:
                 - "0"
             Pragma:
@@ -734,12 +724,14 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - d75f0eb5-2135-4320-647a-84924992f753
+                - 16a8753a-d0e8-409a-4cfc-c182fb5dbb46
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 275.584798ms
+        duration: 356.4048ms

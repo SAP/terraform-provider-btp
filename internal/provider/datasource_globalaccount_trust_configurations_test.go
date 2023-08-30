@@ -24,7 +24,7 @@ func TestDataSourceGlobalaccountTrustConfigurations(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountTrustConfigurations("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configurations.uut", "values.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configurations.uut", "values.#", "3"),
 					),
 				},
 			},
