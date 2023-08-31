@@ -45,8 +45,8 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
 }
 
 
-# creates a cloud foundry environment in a given account and grant the orchestration user admin access to it
-# In additon add a custom timeout for the create and delete operation
+# creates a cloud foundry environment in a given account
+# in additon add a custom timeout for the create and delete operation
 resource "btp_subaccount_environment_instance" "cloudfoundry" {
   subaccount_id    = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   name             = "my-cf-environment"

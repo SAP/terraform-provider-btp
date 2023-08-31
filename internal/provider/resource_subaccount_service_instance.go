@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -43,7 +43,7 @@ func (rs *subaccountServiceInstanceResource) Configure(_ context.Context, req re
 	rs.cli = req.ProviderData.(*btpcli.ClientFacade)
 }
 
-func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Creates a service instance in a subaccount.`,
 		Attributes: map[string]schema.Attribute{
@@ -78,6 +78,14 @@ func (rs *subaccountServiceInstanceResource) Schema(_ context.Context, _ resourc
 					jsonvalidator.ValidJSON(),
 				},
 			},
+			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
+				Create:            true,
+				CreateDescription: "Timeout for creating the environment instance.",
+				Update:            true,
+				UpdateDescription: "Timeout for updating the environment instance.",
+				Delete:            true,
+				DeleteDescription: "Timeout for deleting the environment instance.",
+			}),
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service instance.",
 				Computed:            true,
@@ -188,6 +196,15 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	state.Parameters = plan.Parameters
 	resp.Diagnostics.Append(diags...)
 
+	timeoutsLocal := plan.Timeouts
+	createTimeout, tferr := plan.Timeouts.Create(ctx, tfutils.DefaultTimeout)
+	if tferr != nil {
+		resp.Diagnostics.AddError("Provider Error Creating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
+
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{servicemanager.StateSucceeded},
@@ -205,9 +222,9 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 
 			return subRes, subRes.LastOperation.State, nil
 		},
-		Timeout:    60 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    createTimeout,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
@@ -217,6 +234,7 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 
 	state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
+	state.Timeouts = timeoutsLocal
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
@@ -268,6 +286,15 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	state.Parameters = plan.Parameters
 	resp.Diagnostics.Append(diags...)
 
+	timeoutsLocal := plan.Timeouts
+	updateTimeout, tferr := plan.Timeouts.Update(ctx, tfutils.DefaultTimeout)
+	if tferr != nil {
+		resp.Diagnostics.AddError("Provider Error Updating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
+
 	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{servicemanager.StateSucceeded},
@@ -285,9 +312,9 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 
 			return subRes, subRes.LastOperation.State, nil
 		},
-		Timeout:    60 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    updateTimeout,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
@@ -297,6 +324,7 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 
 	state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
+	state.Timeouts = timeoutsLocal
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, state)
@@ -316,6 +344,14 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 		resp.Diagnostics.AddError("API Error Deleting Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	deleteTimeout, tferr := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
+	if tferr != nil {
+		resp.Diagnostics.AddError("Provider Error Deleting Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
 
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
@@ -338,9 +374,9 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 
 			return subRes, subRes.LastOperation.State, nil
 		},
-		Timeout:    60 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    deleteTimeout,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	_, err = deleteStateConf.WaitForStateContext(ctx)

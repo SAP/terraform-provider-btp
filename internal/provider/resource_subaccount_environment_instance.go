@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -315,6 +314,15 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 		return
 	}
 
+	timeoutsLocal := plan.Timeouts
+	updateTimeout, tferr := plan.Timeouts.Update(ctx, tfutils.DefaultTimeout)
+	if tferr != nil {
+		resp.Diagnostics.AddError("Provider Error Updating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
+
 	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateUpdating},
 		Target:  []string{provisioning.StateOK, provisioning.StateUpdateFailed},
@@ -327,9 +335,9 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    60 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    updateTimeout,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
@@ -340,6 +348,7 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	state, diags := subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
 	// TODO: this temporary workaround ignores the actual "parameters" value which is diverging from the planned state by an additional "status" attribute
 	state.Parameters = plan.Parameters
+	state.Timeouts = timeoutsLocal
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
@@ -360,6 +369,14 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 		return
 	}
 
+	deleteTimeout, tferr := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
+	if tferr != nil {
+		resp.Diagnostics.AddError("Provider Error Deleting Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
+
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateDeleting},
 		Target:  []string{"DELETED", provisioning.StateDeletionFailed},
@@ -376,9 +393,9 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    60 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    deleteTimeout,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	_, err = deleteStateConf.WaitForStateContext(ctx)
