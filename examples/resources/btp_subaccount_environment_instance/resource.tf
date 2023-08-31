@@ -17,7 +17,6 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
 
 # creates a cloud foundry environment in a given account and grant the orchestration user admin access to it
 # In additon add a custom timeout for the create and delete operation
-data "btp_whoami" "me" {}
 resource "btp_subaccount_environment_instance" "cloudfoundry" {
   subaccount_id    = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   name             = "my-cf-environment"
@@ -33,11 +32,5 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   # available environments can be looked up using the btp_subaccount_environments datasource
   parameters = jsonencode({
     instance_name = "my-cf-org-name"
-    users = [
-      {
-        id    = data.btp_whoami.me.id
-        email = data.btp_whoami.me.email
-      }
-    ]
   })
 }
