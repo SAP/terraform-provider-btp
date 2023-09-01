@@ -62,7 +62,7 @@ func TestResourceSubaccount(t *testing.T) {
 		})
 	})
 	t.Run("happy path used for prod", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_used_for_production")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount.used_for_production")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -112,7 +112,7 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path change to used for prod", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_change_to_used_for_production")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount.change_to_used_for_production")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

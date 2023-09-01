@@ -11,7 +11,7 @@ import (
 func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - service instances for subaccount", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances_all")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances.all")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -30,7 +30,7 @@ func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
 	})
 
 	t.Run("happy path - service instances for subaccount with fields filter", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances_namefilter")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances.namefilter")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -49,7 +49,7 @@ func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
 	})
 
 	t.Run("happy path - service instances for subaccount with fields filter (variant)", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances_namefilter_variant")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances.namefilter_variant")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -68,7 +68,7 @@ func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
 	})
 
 	t.Run("happy path - service instances for subaccount with labels filter", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances_labelsfilter")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances.labelsfilter")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

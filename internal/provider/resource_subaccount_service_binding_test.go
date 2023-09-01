@@ -77,7 +77,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 	})
 
 	t.Run("error path - import failure", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding_import_error")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding.import_error")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

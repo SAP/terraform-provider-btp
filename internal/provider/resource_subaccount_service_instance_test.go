@@ -35,7 +35,7 @@ type testParamsDestination struct {
 
 func TestResourceSubaccountServiceInstance(t *testing.T) {
 	t.Run("happy path - simple service creation wo parameters", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance_wo_parameters")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -135,7 +135,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation with parameters", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance_with_parameters")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_parameters")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -199,7 +199,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("error path - import failure", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance_import_error")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.import_error")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
