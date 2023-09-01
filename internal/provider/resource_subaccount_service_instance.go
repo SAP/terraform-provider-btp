@@ -197,7 +197,7 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	resp.Diagnostics.Append(diags...)
 
 	timeoutsLocal := plan.Timeouts
-	createTimeout, _ := plan.Timeouts.Create(ctx, tfutils.DefaultTimeout)
+	createTimeout, _ := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 
 	createStateConf := &tfutils.StateChangeConf{
@@ -277,12 +277,12 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 		return
 	}
 
+	timeoutsLocal := plan.Timeouts
 	state, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
 	state.Parameters = plan.Parameters
 	resp.Diagnostics.Append(diags...)
 
-	timeoutsLocal := plan.Timeouts
-	updateTimeout, _ := plan.Timeouts.Update(ctx, tfutils.DefaultTimeout)
+	updateTimeout, _ := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
 
 	updateStateConf := &tfutils.StateChangeConf{

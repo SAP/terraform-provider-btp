@@ -251,12 +251,12 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 		return
 	}
 
+	timeoutsLocal := plan.Timeouts
 	plan, diags = subaccountEnvironmentInstanceValueFrom(ctx, cliRes)
 	plan.Parameters = types.StringValue(parameters)
 	resp.Diagnostics.Append(diags...)
 
-	timeoutsLocal := plan.Timeouts
-	createTimeout, _ := plan.Timeouts.Create(ctx, tfutils.DefaultTimeout)
+	createTimeout, _ := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 
 	createStateConf := &tfutils.StateChangeConf{
@@ -310,7 +310,7 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	}
 
 	timeoutsLocal := plan.Timeouts
-	updateTimeout, _ := plan.Timeouts.Update(ctx, tfutils.DefaultTimeout)
+	updateTimeout, _ := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
 
 	updateStateConf := &tfutils.StateChangeConf{
