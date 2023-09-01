@@ -23,14 +23,14 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   environment_type = "cloudfoundry"
   service_name     = "cloudfoundry"
   plan_name        = "standard"
-  timeouts {
-    create = "1h"
-    delete = "30m"
-  }
   # some regions offer multiple environments of a kind and you must explicitly select the target environment in which
   # the instance shall be created. 
   # available environments can be looked up using the btp_subaccount_environments datasource
   parameters = jsonencode({
     instance_name = "my-cf-org-name"
   })
+  timeouts  = {
+    create = "1h"
+    delete = "30m"
+  }
 }

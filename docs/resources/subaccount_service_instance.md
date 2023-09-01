@@ -39,10 +39,10 @@ resource "btp_subaccount_service_instance" "alert_notification_free" {
   # The service plan ID can be looked up via the data source btp_subaccount_service_plan
   serviceplan_id = "b50d1b0b-2059-4f21-a014-2ea87752eb48" # alert-notification - free
   name           = "my-alert-notification-instance-new"
-   timeouts {
-    create = "25m"
-    update = "15m"
-  }
+  timeouts       = {
+                     create = "25m"
+                     update = "15m"
+                   }
 }
 ```
 
@@ -79,9 +79,9 @@ resource "btp_subaccount_service_instance" "alert_notification_free" {
 
 Optional:
 
-- `create` (String) Timeout for creating the environment instance.
-- `delete` (String) Timeout for deleting the environment instance.
-- `update` (String) Timeout for updating the environment instance.
+- `create` (String) Timeout for creating the service instance.
+- `delete` (String) Timeout for deleting the service instance.
+- `update` (String) Timeout for updating the service instance.
 
 ## Import
 
