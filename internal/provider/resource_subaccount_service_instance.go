@@ -80,11 +80,11 @@ func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resou
 			},
 			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
 				Create:            true,
-				CreateDescription: "Timeout for creating the environment instance.",
+				CreateDescription: "Timeout for creating the service instance.",
 				Update:            true,
-				UpdateDescription: "Timeout for updating the environment instance.",
+				UpdateDescription: "Timeout for updating the service instance.",
 				Delete:            true,
-				DeleteDescription: "Timeout for deleting the environment instance.",
+				DeleteDescription: "Timeout for deleting the service instance.",
 			}),
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service instance.",
@@ -197,12 +197,7 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	resp.Diagnostics.Append(diags...)
 
 	timeoutsLocal := plan.Timeouts
-	createTimeout, tferr := plan.Timeouts.Create(ctx, tfutils.DefaultTimeout)
-	if tferr != nil {
-		resp.Diagnostics.AddError("Provider Error Creating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
-		return
-	}
-
+	createTimeout, _ := plan.Timeouts.Create(ctx, tfutils.DefaultTimeout)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 
 	createStateConf := &tfutils.StateChangeConf{
@@ -287,12 +282,7 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	resp.Diagnostics.Append(diags...)
 
 	timeoutsLocal := plan.Timeouts
-	updateTimeout, tferr := plan.Timeouts.Update(ctx, tfutils.DefaultTimeout)
-	if tferr != nil {
-		resp.Diagnostics.AddError("Provider Error Updating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
-		return
-	}
-
+	updateTimeout, _ := plan.Timeouts.Update(ctx, tfutils.DefaultTimeout)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
 
 	updateStateConf := &tfutils.StateChangeConf{
@@ -345,12 +335,7 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 		return
 	}
 
-	deleteTimeout, tferr := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
-	if tferr != nil {
-		resp.Diagnostics.AddError("Provider Error Deleting Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
-		return
-	}
-
+	deleteTimeout, _ := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
 
 	deleteStateConf := &tfutils.StateChangeConf{

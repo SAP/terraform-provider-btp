@@ -256,12 +256,7 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	resp.Diagnostics.Append(diags...)
 
 	timeoutsLocal := plan.Timeouts
-	createTimeout, tferr := plan.Timeouts.Create(ctx, tfutils.DefaultTimeout)
-	if tferr != nil {
-		resp.Diagnostics.AddError("Provider Error Creating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
-		return
-	}
-
+	createTimeout, _ := plan.Timeouts.Create(ctx, tfutils.DefaultTimeout)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 
 	createStateConf := &tfutils.StateChangeConf{
@@ -315,12 +310,7 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	}
 
 	timeoutsLocal := plan.Timeouts
-	updateTimeout, tferr := plan.Timeouts.Update(ctx, tfutils.DefaultTimeout)
-	if tferr != nil {
-		resp.Diagnostics.AddError("Provider Error Updating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
-		return
-	}
-
+	updateTimeout, _ := plan.Timeouts.Update(ctx, tfutils.DefaultTimeout)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
 
 	updateStateConf := &tfutils.StateChangeConf{
@@ -369,12 +359,7 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 		return
 	}
 
-	deleteTimeout, tferr := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
-	if tferr != nil {
-		resp.Diagnostics.AddError("Provider Error Deleting Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
-		return
-	}
-
+	deleteTimeout, _ := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
 
 	deleteStateConf := &tfutils.StateChangeConf{
