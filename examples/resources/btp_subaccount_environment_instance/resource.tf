@@ -31,6 +31,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   })
   timeouts  = {
     create = "1h"
+    update = "35m"
     delete = "30m"
   }
 }

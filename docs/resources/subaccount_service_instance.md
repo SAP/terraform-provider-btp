@@ -42,6 +42,7 @@ resource "btp_subaccount_service_instance" "alert_notification_free" {
   timeouts       = {
                      create = "25m"
                      update = "15m"
+                     delete = "15m"
                    }
 }
 ```

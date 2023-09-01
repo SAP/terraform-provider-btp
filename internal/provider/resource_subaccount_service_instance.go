@@ -143,6 +143,7 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	timeoutsLocal := state.Timeouts
 
 	cliRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
@@ -151,6 +152,7 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 	}
 
 	newState, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
+	newState.Timeouts = timeoutsLocal
 	if newState.Parameters.IsNull() {
 		newState.Parameters = state.Parameters
 	}
@@ -197,7 +199,8 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	resp.Diagnostics.Append(diags...)
 
 	timeoutsLocal := plan.Timeouts
-	createTimeout, _ := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
+	createTimeout, diags := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
+	resp.Diagnostics.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 
 	createStateConf := &tfutils.StateChangeConf{
@@ -282,7 +285,8 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	state.Parameters = plan.Parameters
 	resp.Diagnostics.Append(diags...)
 
-	updateTimeout, _ := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	updateTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	resp.Diagnostics.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
 
 	updateStateConf := &tfutils.StateChangeConf{
@@ -335,7 +339,8 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 		return
 	}
 
-	deleteTimeout, _ := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
+	deleteTimeout, diags := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
+	resp.Diagnostics.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
 
 	deleteStateConf := &tfutils.StateChangeConf{

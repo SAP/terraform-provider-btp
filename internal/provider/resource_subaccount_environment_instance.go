@@ -203,6 +203,8 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 		return
 	}
 
+	timeoutsLocal := state.Timeouts
+
 	cliRes, _, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
@@ -210,6 +212,7 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 	}
 
 	updatedState, diags := subaccountEnvironmentInstanceValueFrom(ctx, cliRes)
+	updatedState.Timeouts = timeoutsLocal
 
 	if !state.Parameters.IsNull() {
 		updatedState.Parameters = state.Parameters
@@ -256,7 +259,8 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	plan.Parameters = types.StringValue(parameters)
 	resp.Diagnostics.Append(diags...)
 
-	createTimeout, _ := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
+	createTimeout, diags := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
+	resp.Diagnostics.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 
 	createStateConf := &tfutils.StateChangeConf{
@@ -310,7 +314,8 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	}
 
 	timeoutsLocal := plan.Timeouts
-	updateTimeout, _ := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	updateTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	resp.Diagnostics.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
 
 	updateStateConf := &tfutils.StateChangeConf{
@@ -359,7 +364,8 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 		return
 	}
 
-	deleteTimeout, _ := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
+	deleteTimeout, diags := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
+	resp.Diagnostics.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
 
 	deleteStateConf := &tfutils.StateChangeConf{

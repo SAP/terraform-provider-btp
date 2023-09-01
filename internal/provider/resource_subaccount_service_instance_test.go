@@ -78,6 +78,62 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - simple service creation with timeout", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance_with_timeouts")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWoParametersWithTimeouts("uut",
+						"59cd458e-e66e-4b60-b6d8-8f219379f9a5",
+						"tf-test-audit-log",
+						"02fed361-89c1-4560-82c3-0deaf93ac75b",
+						"15m",
+						"15m",
+						"20m"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_id", "02fed361-89c1-4560-82c3-0deaf93ac75b"),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-audit-log"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "timeouts.create", "15m"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "timeouts.update", "15m"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "timeouts.delete", "20m"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWoParametersWithTimeouts("uut",
+						"59cd458e-e66e-4b60-b6d8-8f219379f9a5",
+						"TF-TEST-AUDIT-LOG",
+						"02fed361-89c1-4560-82c3-0deaf93ac75b",
+						"15m",
+						"15m",
+						"20m"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_id", "02fed361-89c1-4560-82c3-0deaf93ac75b"),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "TF-TEST-AUDIT-LOG"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "timeouts.create", "15m"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "timeouts.update", "15m"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "timeouts.delete", "20m"),
+					),
+				},
+			},
+		})
+	})
+
 	t.Run("happy path - simple service creation with parameters", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance_with_parameters")
 		defer stopQuietly(rec)
@@ -173,6 +229,21 @@ func hclResourceSubaccountServiceInstanceWoParameters(resourceName string, subac
 			name             = "%s"
 			serviceplan_id   = "%s"
 		}`, resourceName, subaccountId, name, servicePlanId)
+}
+
+func hclResourceSubaccountServiceInstanceWoParametersWithTimeouts(resourceName string, subaccountId string, name string, servicePlanId string, createTimeout string, updateTimeout string, deleteTimeout string) string {
+
+	return fmt.Sprintf(`
+		resource "btp_subaccount_service_instance" "%s"{
+		    subaccount_id    = "%s"
+			name             = "%s"
+			serviceplan_id   = "%s"
+			timeouts = {
+				create = "%s"
+				update = "%s"
+				delete = "%s"
+			  }
+		}`, resourceName, subaccountId, name, servicePlanId, createTimeout, updateTimeout, deleteTimeout)
 }
 
 func hclResourceSubaccountServiceInstanceWithParameters(resourceName string, subaccountId string, name string, servicePlanId string) string {
