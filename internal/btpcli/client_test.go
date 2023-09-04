@@ -129,6 +129,14 @@ func TestV2Client_Login(t *testing.T) {
 			},
 		},
 		{
+			description:  "error path - outdated protocol version [412]",
+			loginRequest: NewLoginRequest("subdomain", "john.doe", "pass"),
+			simulation: v2SimulationConfig{
+				srvReturnStatus: http.StatusPreconditionFailed,
+				expectErrorMsg:  "Login failed due to outdated provider version. Update to the latest version of the provider. [Status: 412; Correlation ID: fake-correlation-id]",
+			},
+		},
+		{
 			description:  "error path - login request times out [504]]",
 			loginRequest: NewLoginRequest("subdomain", "john.doe", "pass"),
 			simulation: v2SimulationConfig{
