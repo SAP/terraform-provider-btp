@@ -144,7 +144,7 @@ func (v2 *v2Client) checkResponseForErrors(ctx context.Context, res *http.Respon
 }
 
 func (v2 *v2Client) parseResponseError(ctx context.Context, res *http.Response) error {
-	return fmt.Errorf("Received response with unexpected status")
+	return fmt.Errorf("received response with unexpected status")
 }
 
 // Login authenticates a user using username + password
@@ -235,6 +235,8 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 
 		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {
 			err = fmt.Errorf(backendError.Message)
+		} else if res.Header.Get(HeaderCLIServerMessage) != "" {
+			err = fmt.Errorf("the backend responded with an error: %s", res.Header.Get(HeaderCLIServerMessage))
 		} else {
 			err = fmt.Errorf("the backend responded with an unknown error: %d", cmdRes.StatusCode)
 		}

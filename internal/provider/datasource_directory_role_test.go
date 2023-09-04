@@ -46,7 +46,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderFor(user) + hclDatasourceDirectoryRole("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Directory Viewer", "Directory_Viewer", "cis-central!b13"),
-					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 403; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 403; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})
@@ -127,7 +127,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryRole("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer", "Directory_Viewer", "cis-central!b13"),
-					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})
