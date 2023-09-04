@@ -167,3 +167,101 @@ func TestAccountsEntitlementFacade_DisableInSubaccount(t *testing.T) {
 		}
 	})
 }
+
+func TestAccountsEntitlementFacade_AssignToDirectory(t *testing.T) {
+	command := "accounts/entitlement"
+
+	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	serviceName := "alert-notification"
+	planName := "free"
+	amount := 10
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionAssign, map[string]string{
+				"directory":            directoryId,
+				"serviceName":          serviceName,
+				"servicePlanName":      planName,
+				"amount":               "10",
+				"distribute":           "false",
+				"autoAssign":           "false",
+				"autoDistributeAmount": "0",
+			})
+		}))
+		defer srv.Close()
+
+		res, err := uut.Accounts.Entitlement.AssignToDirectory(context.TODO(), directoryId, serviceName, planName, amount, false, false, 0)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestAccountsEntitlementFacade_EnableInDirectory(t *testing.T) {
+	command := "accounts/entitlement"
+
+	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	serviceName := "alert-notification"
+	planName := "free"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionAssign, map[string]string{
+				"directory":       directoryId,
+				"serviceName":     serviceName,
+				"servicePlanName": planName,
+				"enable":          "true",
+				"distribute":      "false",
+				"autoAssign":      "false",
+			})
+		}))
+		defer srv.Close()
+
+		res, err := uut.Accounts.Entitlement.EnableInDirectory(context.TODO(), directoryId, serviceName, planName, false, false)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestAccountsEntitlementFacade_DisableInDirectory(t *testing.T) {
+	command := "accounts/entitlement"
+
+	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	serviceName := "alert-notification"
+	planName := "free"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionAssign, map[string]string{
+				"directory":       directoryId,
+				"serviceName":     serviceName,
+				"servicePlanName": planName,
+				"enable":          "false",
+				"distribute":      "false",
+				"autoAssign":      "false",
+			})
+		}))
+		defer srv.Close()
+
+		res, err := uut.Accounts.Entitlement.DisableInDirectory(context.TODO(), directoryId, serviceName, planName, false, false)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}

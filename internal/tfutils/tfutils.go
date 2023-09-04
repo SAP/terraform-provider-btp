@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"math"
 	"reflect"
-	"time"
+	"strings"
+  "time"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -56,6 +57,8 @@ func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 				}
 				out[tagValue] = string(valueArr)
 			}
+		case "[]string":
+			setStringSlice(field, tagValue, out)
 		default:
 			return nil, fmt.Errorf("the type '%s' assigned to '%s' is not yet supported", fieldProps.Type.String(), tagValue)
 		}
@@ -123,6 +126,13 @@ func setBoolValue(field reflect.Value, tagValue string, out map[string]string) {
 func setBool(field reflect.Value, tagValue string, out map[string]string) {
 	fieldVal := field.Interface().(bool)
 	out[tagValue] = fmt.Sprintf("%v", fieldVal)
+}
+
+func setStringSlice(field reflect.Value, tagValue string, out map[string]string) {
+	if !field.IsNil() {
+		valueString := fmt.Sprintf("%v", strings.Join(field.Interface().([]string), ","))
+		out[tagValue] = valueString
+	}
 }
 
 // TODO This is a utility function to compute to be removed and to be added substructures in resource configurations.

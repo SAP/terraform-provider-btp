@@ -33,7 +33,7 @@ type DirectoryCreateInput struct {
 	Subdomain     *string             `btpcli:"subdomain"`
 	Labels        map[string][]string `btpcli:"labels"`
 	Globalaccount string              `btpcli:"globalAccount"`
-	//DirectoryAdmins string          `btpcli:"directoryAdmins"`
+	Features      []string            `btpcli:"directoryFeatures"`
 }
 
 type DirectoryUpdateInput struct {

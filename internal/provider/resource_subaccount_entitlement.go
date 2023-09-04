@@ -225,7 +225,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 	}
 
 	// The amount field is always set, even if not specified. Distinguish between operations via category
-	updatedState, diags := subaccountEntitlementValueFrom(ctx, entitlement.(btpcli.UnfoldedEntitlement))
+	updatedState, diags := subaccountEntitlementValueFrom(ctx, entitlement.(btpcli.UnfoldedAssignment))
 	responseDiagnostics.Append(diags...)
 
 	diags = responseState.Set(ctx, &updatedState)

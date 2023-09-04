@@ -97,6 +97,20 @@ func TestToBTPCLIParamsMap(t *testing.T) {
 			},
 		},
 		{
+			description: "happy path - string slices",
+			uut: struct {
+				Features []string `tfsdk:"features" btpcli:"directoryFeatures"`
+			}{
+				Features: []string{"DEFAULT", "AUTHORIZATIONS", "ENTITLEMENTS"},
+			},
+			expects: expects{
+				output: map[string]string{
+					"directoryFeatures": "DEFAULT,AUTHORIZATIONS,ENTITLEMENTS",
+				},
+			},
+		},
+
+		{
 			description: "error case - unsupported attribute type",
 			uut: struct {
 				AListField types.List `tfsdk:"a_list" btpcli:"aList"`

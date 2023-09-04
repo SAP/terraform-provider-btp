@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"slices"
 	"strings"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -63,6 +65,23 @@ __Further documentation:__
 					stringvalidator.RegexMatches(regexp.MustCompile(`^[^\/]{1,255}$`), "must not contain '/', not be empty and not exceed 255 characters"),
 				},
 			},
+			"features": schema.SetAttribute{
+				ElementType: types.StringType,
+				MarkdownDescription: "The features that are enabled for the directory. Possible values are: \n" +
+					getFormattedValueAsTableRow("value", "description") +
+					getFormattedValueAsTableRow("---", "---") +
+					getFormattedValueAsTableRow("`DEFAULT (D)`", "All directories have the following basic feature enabled:"+
+						"<br> 1. Group and filter subaccounts for reports and filters "+
+						"<br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)"+
+						"<br> 3. Set custom properties and tags to the directory for identification and reporting purposes.") +
+					getFormattedValueAsTableRow("`ENTITLEMENTS (E)`", "Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.") +
+					getFormattedValueAsTableRow("`AUTHORIZATIONS (A)`", "Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature."),
+				Optional: true,
+				Computed: true,
+				Validators: []validator.Set{
+					setvalidator.ValueStringsAre(stringvalidator.OneOf([]string{"DEFAULT", "ENTITLEMENTS", "AUTHORIZATIONS", "D", "E", "A"}...)),
+				},
+			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "A description of the directory.",
 				Optional:            true,
@@ -112,20 +131,6 @@ __Further documentation:__
 			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
-			},
-
-			"features": schema.SetAttribute{
-				ElementType: types.StringType,
-				MarkdownDescription: "The features that are enabled for the directory. Possible values are: \n" +
-					getFormattedValueAsTableRow("value", "description") +
-					getFormattedValueAsTableRow("---", "---") +
-					getFormattedValueAsTableRow("`DEFAULT`", "All directories have the following basic feature enabled:"+
-						"<br> 1. Group and filter subaccounts for reports and filters "+
-						"<br> 2. Monitor usage and costs on a directory level (costs only available for contracts that use the consumption-based commercial model)"+
-						"<br> 3. Set custom properties and tags to the directory for identification and reporting purposes.") +
-					getFormattedValueAsTableRow("`ENTITLEMENTS`", "Allows the assignment of a quota for services and applications to the directory from the global account quota for distribution to the subaccounts under this directory.") +
-					getFormattedValueAsTableRow("`AUTHORIZATIONS`", "Allows the assignment of users as administrators or viewers of this directory. You must apply this feature in combination with the `ENTITLEMENTS` feature."),
-				Computed: true,
 			},
 			"last_modified": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
@@ -211,6 +216,12 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 		var labels map[string][]string
 		plan.Labels.ElementsAs(ctx, &labels, false)
 		args.Labels = labels
+	}
+
+	if !plan.Features.IsUnknown() {
+		var features []string
+		plan.Features.ElementsAs(ctx, &features, false)
+		args.Features = sortDiretoryFeatures(features)
 	}
 
 	cliRes, _, err := rs.cli.Accounts.Directory.Create(ctx, &args)
@@ -367,4 +378,26 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 func (rs *directoryResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func sortDiretoryFeatures(directoryFeatures []string) []string {
+
+	//Directory Features must be handed to the CLI in a well defined order.
+	//In case Terraform sorts the entries alphabetically or they are handed over in the wrong sequence, we make sure
+	//that they are handed over correctly
+	directoryFeaturesSorted := []string{}
+
+	if slices.Contains(directoryFeatures, DirectoryFeatureDefault) {
+		directoryFeaturesSorted = append(directoryFeaturesSorted, DirectoryFeatureDefault)
+	}
+
+	if slices.Contains(directoryFeatures, DirectoryFeatureEntitlements) {
+		directoryFeaturesSorted = append(directoryFeaturesSorted, DirectoryFeatureEntitlements)
+	}
+
+	if slices.Contains(directoryFeatures, DirectoryFeatureAuthorizations) {
+		directoryFeaturesSorted = append(directoryFeaturesSorted, DirectoryFeatureAuthorizations)
+	}
+
+	return directoryFeaturesSorted
 }
