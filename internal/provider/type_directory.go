@@ -9,6 +9,12 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
 )
 
+const (
+	DirectoryFeatureDefault        = "DEFAULT"
+	DirectoryFeatureAuthorizations = "ENTITLEMENTS"
+	DirectoryFeatureEntitlements   = "AUTHORIZATIONS"
+)
+
 type directoryType struct {
 	ID           types.String `tfsdk:"id"`
 	CreatedBy    types.String `tfsdk:"created_by"`

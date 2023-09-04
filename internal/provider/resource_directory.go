@@ -387,16 +387,16 @@ func sortDiretoryFeatures(directoryFeatures []string) []string {
 	//that they are handed over correctly
 	directoryFeaturesSorted := []string{}
 
-	if slices.Contains(directoryFeatures, "DEFAULT") {
-		directoryFeaturesSorted = append(directoryFeaturesSorted, "DEFAULT")
+	if slices.Contains(directoryFeatures, DirectoryFeatureDefault) {
+		directoryFeaturesSorted = append(directoryFeaturesSorted, DirectoryFeatureDefault)
 	}
 
-	if slices.Contains(directoryFeatures, "ENTITLEMENTS") {
-		directoryFeaturesSorted = append(directoryFeaturesSorted, "ENTITLEMENTS")
+	if slices.Contains(directoryFeatures, DirectoryFeatureEntitlements) {
+		directoryFeaturesSorted = append(directoryFeaturesSorted, DirectoryFeatureEntitlements)
 	}
 
-	if slices.Contains(directoryFeatures, "AUTHORIZATIONS") {
-		directoryFeaturesSorted = append(directoryFeaturesSorted, "AUTHORIZATIONS")
+	if slices.Contains(directoryFeatures, DirectoryFeatureAuthorizations) {
+		directoryFeaturesSorted = append(directoryFeaturesSorted, DirectoryFeatureAuthorizations)
 	}
 
 	return directoryFeaturesSorted
