@@ -3,11 +3,16 @@ package tfutils
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-framework/types"
+	"math"
 	"reflect"
+	"time"
+
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 const btpcliTag = "btpcli"
+
+const DefaultTimeout = 10 * time.Minute
 
 type any interface{}
 type equalityPredicate[E any] func(E, E) bool
@@ -141,4 +146,15 @@ func setContains[S ~[]E, E any](set S, element E, isEqual equalityPredicate[E]) 
 		}
 	}
 	return false
+}
+
+func CalculateDelayAndMinTimeOut(timeout time.Duration) (delay time.Duration, minTimeout time.Duration) {
+	// We define the polling interval as 1/100 of the timeout value in seconds
+	// For 10 minutes this results in 6 seconds polling interval
+	// For 1 hour this results in 36 seconds polling interval
+	delay = time.Duration(math.Round(timeout.Seconds()/100)) * time.Second
+
+	// We set the minTimeout equal to the polling interval
+	minTimeout = delay
+	return
 }

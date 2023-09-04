@@ -121,7 +121,7 @@ func (ds *subaccountServiceInstanceDataSource) Schema(_ context.Context, _ datas
 }
 
 func (ds *subaccountServiceInstanceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data subaccountServiceInstanceType
+	var data subaccountServiceInstanceDataSourceType
 
 	diags := req.Config.Get(ctx, &data)
 
@@ -146,7 +146,7 @@ func (ds *subaccountServiceInstanceDataSource) Read(ctx context.Context, req dat
 		return
 	}
 
-	data, diags = subaccountServiceInstanceValueFrom(ctx, cliRes)
+	data, diags = subaccountServiceInstanceDataSourceValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
 	data.Parameters = types.StringNull() // TODO can be set once --show-parameters is works

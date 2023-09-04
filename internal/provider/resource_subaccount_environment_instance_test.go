@@ -58,6 +58,65 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - CF creation with timeout", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_environment_instance.with_timeout")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCFTimeout("uut",
+						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"cloudFoundry-from-terraform",
+						"standard",
+						"cf-eu12",
+						"cf-terraform-org",
+						"john.doe@int.test",
+						"60m",
+						"20m",
+						"30m"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Provision"),
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "labels", regexp.MustCompile(`"API Endpoint":"https:\/\/api\.cf\.eu12\.hana\.ondemand\.com"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.create", "60m"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.update", "20m"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.delete", "30m"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCFTimeout("uut",
+						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"cloudFoundry-from-terraform",
+						"standard",
+						"cf-eu12",
+						"cf-terraform-org-updated",
+						"john.doe@int.test",
+						"60m",
+						"20m",
+						"30m"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Update"),
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "labels", regexp.MustCompile(`"API Endpoint":"https:\/\/api\.cf\.eu12\.hana\.ondemand\.com"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org-updated"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.create", "60m"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.update", "20m"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.delete", "30m"),
+					),
+				},
+			},
+		})
+	})
 	t.Run("happy path - update", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_environment_instance.update")
 		defer stopQuietly(rec)
@@ -158,6 +217,36 @@ resource "btp_subaccount_environment_instance" "%s"{
 	landscape_label  = "%s"
 	parameters       = %q
 }`, resourceName, subaccountId, name, planName, landscapeLabel, string(jsonCfParameters))
+}
+
+func hclResourceSubaccountEnvironmentInstanceCFTimeout(resourceName string, subaccountId string, name string, planName string, landscapeLabel string, orgName string, user string, createTimeout string, updateTimeout string, deleteTimeout string) string {
+	cfParameters := cfOrgParameters{
+		InstanceName: orgName,
+		Users: []cfUsers{
+			{
+				Id:    user,
+				Email: user,
+			},
+		},
+	}
+
+	jsonCfParameters, _ := json.Marshal(cfParameters)
+
+	return fmt.Sprintf(`
+resource "btp_subaccount_environment_instance" "%s"{
+    subaccount_id    = "%s"
+	name             = "%s"
+	environment_type = "cloudfoundry"
+	plan_name        = "%s"
+	service_name     = "cloudfoundry"
+	landscape_label  = "%s"
+	parameters       = %q
+	timeouts = {
+		create = "%s"
+		update = "%s"
+		delete = "%s"
+	  }
+}`, resourceName, subaccountId, name, planName, landscapeLabel, string(jsonCfParameters), createTimeout, updateTimeout, deleteTimeout)
 }
 
 func getEnvironmentInstanceIdForImport(resourceName string) resource.ImportStateIdFunc {
