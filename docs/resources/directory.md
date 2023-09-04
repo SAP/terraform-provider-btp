@@ -33,7 +33,7 @@ resource "btp_directory" "parent" {
 }
 
 resource "btp_directory" "child" {
-  parent_id = btp_directory.parent.id
+  parent_id   = btp_directory.parent.id
   name        = "my-child-directory"
   description = "This is a child directory."
 }

@@ -29,7 +29,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   parameters = jsonencode({
     instance_name = "my-cf-org-name"
   })
-  timeouts  = {
+  timeouts = {
     create = "1h"
     update = "35m"
     delete = "30m"
