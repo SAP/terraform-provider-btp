@@ -35,7 +35,7 @@ resource "btp_directory" "parent" {
 
 # Create a child directory underneath a parent directory without features enabled
 resource "btp_directory" "child" {
-  parent_id = btp_directory.parent.id
+  parent_id   = btp_directory.parent.id
   name        = "my-child-directory"
   description = "This is a child directory."
 }

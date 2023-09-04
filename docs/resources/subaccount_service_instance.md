@@ -14,7 +14,7 @@ Creates a service instance in a subaccount.
 ```terraform
 # create an instance of the alert-notification service (no configuration necessary)
 resource "btp_subaccount_service_instance" "alert_notification_free" {
-  subaccount_id  = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   # The service plan ID can be looked up via the data source btp_subaccount_service_plan
   serviceplan_id = "b50d1b0b-2059-4f21-a014-2ea87752eb48" # alert-notification - free
   name           = "my-alert-notification-instance-new"
@@ -22,7 +22,7 @@ resource "btp_subaccount_service_instance" "alert_notification_free" {
 
 # create an xsuaa service instance with additional configurations
 resource "btp_subaccount_service_instance" "xsuaa_application" {
-  subaccount_id  = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   # The service plan ID can be looked up via the data source btp_subaccount_service_plan
   serviceplan_id = "bd5e893f-81dd-4d10-8343-e02975e8ecd8" # xsuaa - application
   name           = "my-application"
@@ -30,6 +30,20 @@ resource "btp_subaccount_service_instance" "xsuaa_application" {
     xsappname   = "my-application"
     tenant-mode = "dedicated"
   })
+}
+
+# create an instance of the alert-notification service (no configuration necessary)
+# in additon add a custom timeout for the create and update operation
+resource "btp_subaccount_service_instance" "alert_notification_free" {
+  subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  # The service plan ID can be looked up via the data source btp_subaccount_service_plan
+  serviceplan_id = "b50d1b0b-2059-4f21-a014-2ea87752eb48" # alert-notification - free
+  name           = "my-alert-notification-instance-new"
+  timeouts = {
+    create = "25m"
+    update = "15m"
+    delete = "15m"
+  }
 }
 ```
 
@@ -46,6 +60,7 @@ resource "btp_subaccount_service_instance" "xsuaa_application" {
 
 - `labels` (Map of Set of String) The set of words or phrases assigned to the service instance.
 - `parameters` (String, Sensitive) The configuration parameters for the service instance.
+- `timeouts` (Attributes) (see [below for nested schema](#nestedatt--timeouts))
 
 ### Read-Only
 
@@ -59,6 +74,15 @@ resource "btp_subaccount_service_instance" "xsuaa_application" {
 - `shared` (Boolean) Shows whether the service instance is shared.
 - `state` (String) The current state of the service instance.
 - `usable` (Boolean) Shows whether the resource can be used.
+
+<a id="nestedatt--timeouts"></a>
+### Nested Schema for `timeouts`
+
+Optional:
+
+- `create` (String) Timeout for creating the service instance.
+- `delete` (String) Timeout for deleting the service instance.
+- `update` (String) Timeout for updating the service instance.
 
 ## Import
 

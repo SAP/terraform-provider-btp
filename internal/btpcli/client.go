@@ -44,6 +44,8 @@ const (
 	HeaderCLIBackendStatus           string = "X-Cpcli-Backend-Status"
 	HeaderCLIBackendMessage          string = "X-Cpcli-Backend-Message"
 	HeaderCLIBackendMediaType        string = "X-Cpcli-Backend-Mediatype"
+	HeaderCLIClientUpdate            string = "X-Cpcli-Client-Update"
+	HeaderCLIServerMessage           string = "X-Cpcli-Server-Message"
 )
 
 const cliTargetProtocolVersion string = "v2.38.0"
@@ -157,10 +159,11 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 
 	var loginResponse LoginResponse
 	err = v2.parseResponse(ctx, res, &loginResponse, http.StatusOK, map[int]string{
-		http.StatusUnauthorized:   "Login failed. Check your credentials.",
-		http.StatusForbidden:      fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
-		http.StatusNotFound:       fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
-		http.StatusGatewayTimeout: "Login timed out. Please try again later.",
+		http.StatusUnauthorized:       "Login failed. Check your credentials.",
+		http.StatusForbidden:          fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
+		http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
+		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
+		http.StatusGatewayTimeout:     "Login timed out. Please try again later.",
 	})
 
 	if err != nil {

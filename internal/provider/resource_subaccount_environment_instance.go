@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
-	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -42,7 +42,7 @@ func (rs *subaccountEnvironmentInstanceResource) Configure(_ context.Context, re
 	rs.cli = req.ProviderData.(*btpcli.ClientFacade)
 }
 
-func (rs *subaccountEnvironmentInstanceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (rs *subaccountEnvironmentInstanceResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Creates an environment instance, such as a Cloud Foundry org, in a subaccount.
 
@@ -102,6 +102,14 @@ __Further documentation:__
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
+				Create:            true,
+				CreateDescription: "Timeout for creating the environment instance.",
+				Update:            true,
+				UpdateDescription: "Timeout for updating the environment instance.",
+				Delete:            true,
+				DeleteDescription: "Timeout for deleting the environment instance.",
+			}),
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the environment instance.",
 				Computed:            true,
@@ -195,6 +203,8 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 		return
 	}
 
+	timeoutsLocal := state.Timeouts
+
 	cliRes, _, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
@@ -202,6 +212,7 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 	}
 
 	updatedState, diags := subaccountEnvironmentInstanceValueFrom(ctx, cliRes)
+	updatedState.Timeouts = timeoutsLocal
 
 	if !state.Parameters.IsNull() {
 		updatedState.Parameters = state.Parameters
@@ -243,9 +254,14 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 		return
 	}
 
+	timeoutsLocal := plan.Timeouts
 	plan, diags = subaccountEnvironmentInstanceValueFrom(ctx, cliRes)
 	plan.Parameters = types.StringValue(parameters)
 	resp.Diagnostics.Append(diags...)
+
+	createTimeout, diags := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
+	resp.Diagnostics.Append(diags...)
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateCreating},
@@ -259,9 +275,9 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    60 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    createTimeout,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
@@ -271,6 +287,7 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 
 	plan, diags = subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
 	plan.Parameters = types.StringValue(parameters)
+	plan.Timeouts = timeoutsLocal
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &plan)
@@ -296,6 +313,11 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 		return
 	}
 
+	timeoutsLocal := plan.Timeouts
+	updateTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	resp.Diagnostics.Append(diags...)
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
+
 	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateUpdating},
 		Target:  []string{provisioning.StateOK, provisioning.StateUpdateFailed},
@@ -308,9 +330,9 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    60 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    updateTimeout,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
@@ -321,6 +343,7 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	state, diags := subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
 	// TODO: this temporary workaround ignores the actual "parameters" value which is diverging from the planned state by an additional "status" attribute
 	state.Parameters = plan.Parameters
+	state.Timeouts = timeoutsLocal
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
@@ -341,6 +364,10 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 		return
 	}
 
+	deleteTimeout, diags := state.Timeouts.Delete(ctx, tfutils.DefaultTimeout)
+	resp.Diagnostics.Append(diags...)
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
+
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateDeleting},
 		Target:  []string{"DELETED", provisioning.StateDeletionFailed},
@@ -357,9 +384,9 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    60 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    deleteTimeout,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	_, err = deleteStateConf.WaitForStateContext(ctx)

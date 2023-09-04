@@ -152,8 +152,12 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 		return
 	}
 
-	updatedState, diags := subaccountEntitlementValueFrom(ctx, *entitlement)
+	if entitlement == nil {
+		resp.Diagnostics.AddError("API Error Reading Resource Entitlement (Subaccount)", "Resource not found")
+		return
+	}
 
+	updatedState, diags := subaccountEntitlementValueFrom(ctx, *entitlement)
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedState)

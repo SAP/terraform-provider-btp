@@ -155,7 +155,7 @@ You must be assigned to the subaccount admin or viewer role.`,
 }
 
 func (ds *subaccountEnvironmentInstanceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data subaccountEnvironmentInstanceType
+	var data subaccountEnvironmentInstanceDataSourceType
 
 	diags := req.Config.Get(ctx, &data)
 
@@ -170,7 +170,7 @@ func (ds *subaccountEnvironmentInstanceDataSource) Read(ctx context.Context, req
 		return
 	}
 
-	data, diags = subaccountEnvironmentInstanceValueFrom(ctx, cliRes)
+	data, diags = subaccountEnvironmentInstanceDataSourceValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &data)
