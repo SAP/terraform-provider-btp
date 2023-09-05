@@ -22,8 +22,6 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationComplete("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com", "Custom IAS tenant for apps", "IAS tenant terraformint.accounts400.ondemand.com (OpenID Connect)"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
-						//resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "created_date", regexpValidRFC3999Format),
-						//resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "id", "sap.custom"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "name", "Custom IAS tenant for apps"),
@@ -47,8 +45,6 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimum("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
-						// resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "created_date", regexpValidRFC3999Format),
-						// resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "id", "sap.custom"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "name", "Custom IAS tenant"),
