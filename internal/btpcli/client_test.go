@@ -242,7 +242,7 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusTeapot,
-				expectErrorMsg:  "Received response with unexpected status [Status: 418; Correlation ID: fake-correlation-id]",
+				expectErrorMsg:  "received response with unexpected status [Status: 418; Correlation ID: fake-correlation-id]",
 			},
 		},
 	}
