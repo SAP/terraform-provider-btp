@@ -155,7 +155,8 @@ func cliServerRequestMatcher(t *testing.T) func(r *http.Request, i cassette.Requ
 func hookRedactIntegrationUserCredentials(user TestUser) func(i *cassette.Interaction) error {
 	return func(i *cassette.Interaction) error {
 		if strings.Contains(i.Request.URL, "/login/") {
-			i.Request.Body = strings.ReplaceAll(i.Request.Body, user.Password, redactedTestUser.Password)
+			reUserPwd := regexp.MustCompile(`"password":"(.*?)"`)
+			i.Request.Body = reUserPwd.ReplaceAllString(i.Request.Body, `"password":"`+redactedTestUser.Password+`"`)
 			reCustomIdp := regexp.MustCompile(`"customIdp":"(.*?)"`)
 			i.Request.Body = reCustomIdp.ReplaceAllString(i.Request.Body, `"customIdp":"`+redactedTestUser.Idp+`"`)
 			reIssuer := regexp.MustCompile(`"issuer":"(.*?)"`)
@@ -226,7 +227,7 @@ func hookRedactTokensInHeader() func(i *cassette.Interaction) error {
 		redactTokenHeaders(i.Request.Headers)
 		redactTokenHeaders(i.Response.Headers)
 
-		re := regexp.MustCompile(`"refreshToken":\s*"([a-f0-9]+)"`)
+		re := regexp.MustCompile(`"refreshToken":"(.*?)"`)
 		i.Request.Body = re.ReplaceAllString(i.Request.Body, `"refreshToken":"redacted"`)
 		i.Response.Body = re.ReplaceAllString(i.Response.Body, `"refreshToken":"redacted"`)
 
