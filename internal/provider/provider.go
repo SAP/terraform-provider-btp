@@ -53,6 +53,11 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:            true,
 				Sensitive:           true,
 			},
+			"idtoken": schema.StringAttribute{
+				MarkdownDescription: "A valid id token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_IDTOKEN` environment variable.",
+				Optional:            true,
+				Sensitive:           true,
+			},
 			"idp": schema.StringAttribute{
 				MarkdownDescription: "The identity provider to be used for authentication (default: SAP ID service with origin `sap.default`).",
 				Optional:            true,
@@ -67,6 +72,7 @@ type providerData struct {
 	GlobalAccount    types.String `tfsdk:"globalaccount"`
 	Username         types.String `tfsdk:"username"`
 	Password         types.String `tfsdk:"password"`
+	IdToken          types.String `tfsdk:"idtoken"`
 	IdentityProvider types.String `tfsdk:"idp"`
 }
 
@@ -115,7 +121,20 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		idp = config.IdentityProvider.ValueString()
 	}
 
-	// User must provide a username to the provider
+	// User may provide an id token to the provider instead of username and password (see below)
+	var idToken string
+	if config.IdToken.IsUnknown() {
+		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as id token")
+		return
+	}
+
+	if config.IdToken.IsNull() {
+		idToken = os.Getenv("BTP_IDTOKEN")
+	} else {
+		idToken = config.IdToken.ValueString()
+	}
+
+	// User must provide a username to the provider unless an id token is given
 	var username string
 	if config.Username.IsUnknown() {
 		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as username")
@@ -128,7 +147,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		username = config.Username.ValueString()
 	}
 
-	// User must provide a password to the provider
+	// User must provide a password to the provider unless an id token is given
 	var password string
 	if config.Password.IsUnknown() {
 		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as password")
@@ -141,14 +160,26 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		password = config.Password.ValueString()
 	}
 
-	if len(username) == 0 || len(password) == 0 {
-		resp.Diagnostics.AddError(unableToCreateClient, "globalaccount, username and password must be given.")
-		return
-	}
+	if len(idToken) == 0 {
+		if len(username) == 0 || len(password) == 0 {
+			resp.Diagnostics.AddError(unableToCreateClient, "globalaccount, username and password must be given.")
+			return
+		}
 
-	if _, err = client.Login(ctx, btpcli.NewLoginRequestWithCustomIDP(idp, config.GlobalAccount.ValueString(), username, password)); err != nil {
-		resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
-		return
+		if _, err = client.Login(ctx, btpcli.NewLoginRequestWithCustomIDP(idp, config.GlobalAccount.ValueString(), username, password)); err != nil {
+			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
+			return
+		}
+	} else {
+		if len(username) > 0 || len(password) > 0 {
+			resp.Diagnostics.AddError(unableToCreateClient, "username and password must not be given when providing an id token.")
+			return
+		}
+
+		if err = client.IdTokenLogin(ctx, btpcli.NewIdTokenLoginRequest(idp, config.GlobalAccount.ValueString(), idToken)); err != nil {
+			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
+			return
+		}
 	}
 
 	resp.DataSourceData = client
