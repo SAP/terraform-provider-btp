@@ -6,7 +6,7 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 127
+        content_length: 118
         transfer_encoding: []
         trailer: {}
         host: cpcli.cf.sap.hana.ondemand.com
@@ -19,12 +19,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - f375d121-336f-41b3-43e4-611dc4edb2e1
+                - ec630645-4b1e-b0d4-3cf5-7548d09c7820
             X-Cpcli-Format:
                 - json
-        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -32,18 +32,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 162
+        content_length: 153
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "162"
+                - "153"
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 12:28:49 GMT
+                - Tue, 05 Sep 2023 08:49:30 GMT
             Expires:
                 - "0"
             Pragma:
@@ -54,15 +54,17 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - a92ba265-aa96-4e0e-7d66-f0dfb3c4a0b6
+                - 7a31b6d8-3b9b-4c8f-4b15-a04d75818051
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 280.96807ms
+        duration: 424.8586ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -81,9 +83,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - fa4ac6a7-3f40-5090-1cc2-26fb2f4e97f7
+                - 4cf4bb25-8c09-363d-f142-bff017c97f90
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -92,7 +94,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/trust?list
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.49.0/security/trust?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -109,7 +111,7 @@ interactions:
             Content-Length:
                 - "0"
             Date:
-                - Tue, 01 Aug 2023 12:28:49 GMT
+                - Tue, 05 Sep 2023 08:49:30 GMT
             Expires:
                 - "0"
             Pragma:
@@ -120,18 +122,14 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Refreshtoken:
-                - redacted
-            X-Cpcli-Replacementrefreshtoken:
-                - redacted
             X-Cpcli-Server-Message:
-                - Subaccount 'aaaaaaaa-bbbb-cccc-dddd-caffee00affe' does not exist in the current global account. Make sure to provide the ID of a subaccount of the current global account.
+                - Subaccount 'aaaaaaaa-bbbb-cccc-dddd-caffee00affe' does not exist in the current global account and thus did not entitle you to execute the command.
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 2cb11402-2799-4871-52a6-c6932ce01670
+                - 225d0354-d0f9-41c0-7eb5-1d193c1d892e
             X-Xss-Protection:
                 - "0"
-        status: 404 Not Found
-        code: 404
-        duration: 197.135397ms
+        status: 403 Forbidden
+        code: 403
+        duration: 149.9736ms

@@ -25,7 +25,7 @@ func TestDataSourceSubaccountEntitlements(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountEntitlements("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "values.%", "159"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "values.%", "163"),
 					),
 				},
 			},
@@ -71,7 +71,7 @@ func TestDataSourceSubaccountEntitlements(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountEntitlements("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
-					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})

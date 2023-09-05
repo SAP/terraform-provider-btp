@@ -6,7 +6,7 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 127
+        content_length: 118
         transfer_encoding: []
         trailer: {}
         host: cpcli.cf.sap.hana.ondemand.com
@@ -19,12 +19,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 48c68c99-a24a-fbb4-d7f4-7ae1c2b02101
+                - c11fb7ab-6d87-41e3-9b76-d3859cc73e58
             X-Cpcli-Format:
                 - json
-        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.38.0
+        url: https://cpcli.cf.sap.hana.ondemand.com/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -32,18 +32,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 162
+        content_length: 153
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "162"
+                - "153"
             Content-Type:
                 - application/json
             Date:
-                - Tue, 01 Aug 2023 07:33:35 GMT
+                - Tue, 05 Sep 2023 08:48:59 GMT
             Expires:
                 - "0"
             Pragma:
@@ -54,15 +54,17 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
+            X-Cpcli-Refreshtoken:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 7225a3ee-7bcf-4fc2-4040-f4b40d955f73
+                - f5867bff-5c3b-4d54-5d70-d6203e9efe3d
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 534.66262ms
+        duration: 886.75ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -81,9 +83,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.0 terraform-provider-btp/dev
+                - Terraform/1.5.6 terraform-provider-btp/dev
             X-Correlationid:
-                - a45f097d-70ce-70b2-501c-27e3b29cbd08
+                - 90635c06-0d0a-8d39-5102-cd40e6714a46
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -92,7 +94,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.38.0/security/role?get
+        url: https://cpcli.cf.sap.hana.ondemand.com/command/v2.49.0/security/role?get
         method: POST
       response:
         proto: HTTP/2.0
@@ -109,7 +111,7 @@ interactions:
             Content-Length:
                 - "0"
             Date:
-                - Tue, 01 Aug 2023 07:33:35 GMT
+                - Tue, 05 Sep 2023 08:48:59 GMT
             Expires:
                 - "0"
             Pragma:
@@ -120,18 +122,14 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Refreshtoken:
-                - redacted
-            X-Cpcli-Replacementrefreshtoken:
-                - redacted
             X-Cpcli-Server-Message:
-                - None of the authorization parameters represented a tenant for token exchange.
+                - Directory '5357bda0-8651-4eab-a69d-12d282bc3247' lacks AUTHORIZATIONS feature and thus did not entitle you to execute the command.
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - da1f5aad-eaa7-444f-5117-ecdca9366205
+                - 475a1dbc-c310-4602-72d0-e04f6a8314e3
             X-Xss-Protection:
                 - "0"
-        status: 400 Bad Request
-        code: 400
-        duration: 213.841637ms
+        status: 403 Forbidden
+        code: 403
+        duration: 113.6766ms

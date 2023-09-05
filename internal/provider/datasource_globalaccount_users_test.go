@@ -24,7 +24,7 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountUsers("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "14"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "15"),
 					),
 				},
 			},
@@ -41,7 +41,7 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountUsersWithCustomIdp("uut", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "3"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "4"),
 					),
 				},
 			},
@@ -76,7 +76,7 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountUsersWithCustomIdp("uut", "terraformint-platform"),
-					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})

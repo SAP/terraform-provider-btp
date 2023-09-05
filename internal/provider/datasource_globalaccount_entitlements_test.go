@@ -24,7 +24,7 @@ func TestDataSourceGlobalaccountEntitlements(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountEntitlements("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements.uut", "values.%", "158"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements.uut", "values.%", "163"),
 					),
 				},
 			},
@@ -46,7 +46,7 @@ func TestDataSourceGlobalaccountEntitlements(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountEntitlements("uut"),
-					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})

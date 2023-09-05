@@ -54,7 +54,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Sensitive:           true,
 			},
 			"idp": schema.StringAttribute{
-				MarkdownDescription: "The identity provider to be used for authentication (default: `sap.default`).",
+				MarkdownDescription: "The identity provider to be used for authentication (default: SAP ID service with origin `sap.default`).",
 				Optional:            true,
 			},
 		},

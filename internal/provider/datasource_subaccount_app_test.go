@@ -12,7 +12,7 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - app by id", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_apps_by_id")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_app.by_id")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

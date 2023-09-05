@@ -99,7 +99,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountRole("uut", "Global Account Viewer", "GlobalAccount_Viewer", "cis-local!b13"),
-					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})

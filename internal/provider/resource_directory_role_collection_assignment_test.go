@@ -32,7 +32,7 @@ func TestResourceDirectoryRoleCollectionAssignment(t *testing.T) {
 	})
 
 	t.Run("happy path - role collection assignment with origin", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection_assignment_with_origin")
+		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection_assignment.with_origin")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -53,7 +53,7 @@ func TestResourceDirectoryRoleCollectionAssignment(t *testing.T) {
 	})
 
 	t.Run("error path - role collection import fails", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection_assignment_import_error")
+		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection_assignment.import_error")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

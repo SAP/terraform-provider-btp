@@ -82,7 +82,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("error path - import failure", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_import_error")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription.import_error")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

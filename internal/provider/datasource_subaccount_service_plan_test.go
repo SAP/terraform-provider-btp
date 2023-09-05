@@ -11,7 +11,7 @@ import (
 func TestDataSourceSubaccountServicePlan(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - service plan by id", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plan_by_id")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plan.by_id")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -35,7 +35,7 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 		})
 	})
 	t.Run("happy path service plan  by name", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plan_by_name")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plan.by_name")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

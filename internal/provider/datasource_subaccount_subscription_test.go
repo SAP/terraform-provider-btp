@@ -12,7 +12,7 @@ func TestDataSourceSubaccountSubscription(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - get subscriptions by id and plan", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_subscription_by_id_and_plan")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_subscription.by_id_and_plan")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

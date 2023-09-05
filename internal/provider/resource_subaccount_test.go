@@ -62,7 +62,7 @@ func TestResourceSubaccount(t *testing.T) {
 		})
 	})
 	t.Run("happy path used for prod", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_used_for_production")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount.used_for_production")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -112,7 +112,7 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path change to used for prod", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_change_to_used_for_production")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount.change_to_used_for_production")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -136,7 +136,7 @@ func TestResourceSubaccount(t *testing.T) {
 					),
 				},
 				{
-					//Update name wo change of usage but proivde usage explicitly again
+					//Update name wo change of usage but provide usage explicitly again
 					Config: hclProviderFor(user) + hclResourceSubaccountUsedForProd("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
@@ -208,7 +208,7 @@ func TestResourceSubaccount(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderForCLIServerAt(srv.URL) + hclResourceSubaccount("uut", "a-subaccount", "eu12", "a-subaccount"),
-					ExpectError: regexp.MustCompile(`Received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})

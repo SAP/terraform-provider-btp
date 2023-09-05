@@ -48,7 +48,7 @@ const (
 	HeaderCLIServerMessage           string = "X-Cpcli-Server-Message"
 )
 
-const cliTargetProtocolVersion string = "v2.38.0"
+const cliTargetProtocolVersion string = "v2.49.0"
 
 type v2ContextKey string
 
@@ -144,7 +144,7 @@ func (v2 *v2Client) checkResponseForErrors(ctx context.Context, res *http.Respon
 }
 
 func (v2 *v2Client) parseResponseError(ctx context.Context, res *http.Response) error {
-	return fmt.Errorf("Received response with unexpected status")
+	return fmt.Errorf("received response with unexpected status")
 }
 
 // Login authenticates a user using username + password
@@ -218,6 +218,7 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 
 	opts := firstElementOrDefault(options, CommandOptions{GoodState: http.StatusOK, KnownErrorStates: map[int]string{}})
 	opts.KnownErrorStates[http.StatusGatewayTimeout] = "Command timed out. Please try again later."
+	opts.KnownErrorStates[http.StatusForbidden] = "Access forbidden due to insufficient authorization. Make sure to have sufficient access rights."
 
 	if err = v2.checkResponseForErrors(ctx, res, opts.GoodState, opts.KnownErrorStates); err != nil {
 		return
@@ -235,6 +236,8 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 
 		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {
 			err = fmt.Errorf(backendError.Message)
+		} else if res.Header.Get(HeaderCLIServerMessage) != "" {
+			err = fmt.Errorf("the backend responded with an error: %s", res.Header.Get(HeaderCLIServerMessage))
 		} else {
 			err = fmt.Errorf("the backend responded with an unknown error: %d", cmdRes.StatusCode)
 		}
