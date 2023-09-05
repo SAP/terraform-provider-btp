@@ -40,7 +40,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurations("uut", "aaaaaaaa-bbbb-cccc-dddd-caffee00affe"),
-					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 403; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`Access forbidden due to insufficient authorization.*`), //error message has a line break, we only check the first part
 				},
 			},
 		})

@@ -218,6 +218,7 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 
 	opts := firstElementOrDefault(options, CommandOptions{GoodState: http.StatusOK, KnownErrorStates: map[int]string{}})
 	opts.KnownErrorStates[http.StatusGatewayTimeout] = "Command timed out. Please try again later."
+	opts.KnownErrorStates[http.StatusForbidden] = "Access forbidden due to insufficient authorization. Make sure to have sufficient access rights."
 
 	if err = v2.checkResponseForErrors(ctx, res, opts.GoodState, opts.KnownErrorStates); err != nil {
 		return
