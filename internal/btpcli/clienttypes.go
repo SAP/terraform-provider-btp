@@ -20,11 +20,25 @@ func NewLoginRequestWithCustomIDP(idp string, globalaccountSubdomain string, use
 	}
 }
 
+func NewIdTokenLoginRequest(idp string, globalaccountSubdomain string, idToken string) *IdTokenLoginRequest {
+	return &IdTokenLoginRequest{
+		IdentityProvider:       idp,
+		GlobalAccountSubdomain: globalaccountSubdomain,
+		IdToken:                idToken,
+	}
+}
+
 type LoginRequest struct {
 	IdentityProvider       string `json:"customIdp"`
 	GlobalAccountSubdomain string `json:"subdomain"`
 	Username               string `json:"userName"`
 	Password               string `json:"password"`
+}
+
+type IdTokenLoginRequest struct {
+	IdentityProvider       string `json:"customIdp"`
+	GlobalAccountSubdomain string `json:"subdomain"`
+	IdToken                string `json:"idToken"`
 }
 
 type LoginResponse struct {

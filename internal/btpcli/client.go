@@ -76,7 +76,9 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 	var bodyContent bytes.Buffer
 
 	if body != nil {
-		if err = json.NewEncoder(&bodyContent).Encode(body); err != nil {
+		encoder := json.NewEncoder(&bodyContent)
+		encoder.SetEscapeHTML(false) // no need for HTML safe json encoding
+		if err = encoder.Encode(body); err != nil {
 			return nil, err
 		}
 	}
@@ -122,6 +124,10 @@ func (v2 *v2Client) doPostRequest(ctx context.Context, endpoint string, body any
 func (v2 *v2Client) parseResponse(ctx context.Context, res *http.Response, targetObj any, goodState int, knownErrorStates map[int]string) error {
 	if err := v2.checkResponseForErrors(ctx, res, goodState, knownErrorStates); err != nil {
 		return err
+	}
+
+	if targetObj == nil {
+		return nil
 	}
 
 	return json.NewDecoder(res.Body).Decode(targetObj)
@@ -182,6 +188,38 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 	}
 
 	return &loginResponse, nil
+}
+
+// IdTokenLogin authenticates a user by providing an id token
+func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequest) error {
+	ctx = v2.initTrace(ctx)
+
+	res, err := v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion, "idtoken"), loginReq)
+
+	if err != nil {
+		return err
+	}
+
+	err = v2.parseResponse(ctx, res, nil, http.StatusOK, map[int]string{
+		// TODO enable NOT_FOUND and FORBIDDEN once it is supported by the btp CLI server
+		//http.StatusUnauthorized:       "Login failed. ID Token expired.",
+		http.StatusForbidden: fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
+		//http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
+		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
+		http.StatusGatewayTimeout:     "Login timed out. Please try again later.",
+	})
+
+	if err != nil {
+		return err
+	}
+
+	v2.session = &Session{
+		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
+		IdentityProvider:       loginReq.IdentityProvider,
+		RefreshToken:           res.Header.Get(HeaderCLIRefreshToken),
+	}
+
+	return nil
 }
 
 // Logout invalidates the current user session

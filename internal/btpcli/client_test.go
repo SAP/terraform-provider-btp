@@ -166,6 +166,99 @@ func TestV2Client_Login(t *testing.T) {
 	}
 }
 
+func TestV2Client_IdTokenLogin(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		description string
+
+		loginRequest *IdTokenLoginRequest
+		simulation   v2SimulationConfig
+	}{
+		{
+			description:  "happy path",
+			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
+			simulation: v2SimulationConfig{
+				srvExpectBody:    `{"customIdp":"","subdomain":"subdomain","idToken":"idToken"}`,
+				srvReturnStatus:  http.StatusOK,
+				srvReturnContent: ``,
+				srvReturnHeader: map[string]string{
+					HeaderCLIRefreshToken: "sessionid",
+				},
+				expectResponse: struct{}{},
+				expectClientSession: &Session{
+					RefreshToken:           "sessionid",
+					IdentityProvider:       "",
+					GlobalAccountSubdomain: "subdomain",
+					LoggedInUser:           nil,
+				},
+			},
+		},
+		{
+			description:  "happy path - with custom idp",
+			loginRequest: NewIdTokenLoginRequest("my.custom.idp", "subdomain", "idToken"),
+			simulation: v2SimulationConfig{
+				srvExpectBody:    `{"customIdp":"my.custom.idp","subdomain":"subdomain","idToken":"idToken"}`,
+				srvReturnStatus:  http.StatusOK,
+				srvReturnContent: ``,
+				srvReturnHeader: map[string]string{
+					HeaderCLIRefreshToken: "sessionid",
+				},
+				expectResponse: struct{}{},
+				expectClientSession: &Session{
+					RefreshToken:           "sessionid",
+					IdentityProvider:       "my.custom.idp",
+					GlobalAccountSubdomain: "subdomain",
+					LoggedInUser:           nil,
+				},
+			},
+		},
+		{
+			description:  "error path - user is lacking permissions to globalaccount [403]",
+			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
+			simulation: v2SimulationConfig{
+				srvReturnStatus: http.StatusForbidden,
+				expectErrorMsg:  "You cannot access global account 'subdomain'. Make sure you have at least read access to the global account, a directory, or a subaccount. [Status: 403; Correlation ID: fake-correlation-id]",
+			},
+		},
+		{
+			description:  "error path - outdated protocol version [412]",
+			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
+			simulation: v2SimulationConfig{
+				srvReturnStatus: http.StatusPreconditionFailed,
+				expectErrorMsg:  "Login failed due to outdated provider version. Update to the latest version of the provider. [Status: 412; Correlation ID: fake-correlation-id]",
+			},
+		},
+		{
+			description:  "error path - login request times out [504]]",
+			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
+			simulation: v2SimulationConfig{
+				srvReturnStatus: http.StatusGatewayTimeout,
+				expectErrorMsg:  "Login timed out. Please try again later. [Status: 504; Correlation ID: fake-correlation-id]",
+			},
+		},
+		{
+			description:  "error path - unexpected error",
+			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
+			simulation: v2SimulationConfig{
+				srvReturnStatus: http.StatusTeapot,
+				expectErrorMsg:  "received response with unexpected status [Status: 418; Correlation ID: fake-correlation-id]",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.description, func(t *testing.T) {
+			test.simulation.srvExpectPath = path.Join("/login", cliTargetProtocolVersion, "idtoken")
+			test.simulation.callFunctionUnderTest = func(ctx context.Context, uut *v2Client) (any, error) {
+				return struct{}{}, uut.IdTokenLogin(ctx, test.loginRequest)
+			}
+
+			simulateV2Call(t, test.simulation)
+		})
+	}
+}
+
 func TestV2Client_Logout(t *testing.T) {
 	t.Parallel()
 
@@ -348,6 +441,9 @@ type v2SimulationConfig struct {
 	// the content the fake api server shall respond
 	srvReturnContent string
 
+	// the header values the fake api server shall return
+	srvReturnHeader map[string]string
+
 	// triggers the function under test on the uut
 	callFunctionUnderTest func(ctx context.Context, uut *v2Client) (any, error)
 
@@ -379,6 +475,9 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 				assert.Equal(t, config.srvExpectBody, strings.TrimSpace(string(b)))
 			}
 
+			for key, value := range config.srvReturnHeader {
+				w.Header().Add(key, value)
+			}
 			w.WriteHeader(config.srvReturnStatus)
 			fmt.Fprintf(w, config.srvReturnContent)
 		}
