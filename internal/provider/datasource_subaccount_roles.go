@@ -24,6 +24,7 @@ type subaccountRolesValue struct {
 	/* OUTPUT */
 	Description types.String          `tfsdk:"description"`
 	IsReadOnly  types.Bool            `tfsdk:"read_only"`
+	AppName     types.String          `tfsdk:"app_name"`
 	Scopes      []subaccountRoleScope `tfsdk:"scopes"`
 }
 
@@ -93,6 +94,10 @@ __Further documentation:__
 							MarkdownDescription: "Shows whether the role can be modified or not.",
 							Computed:            true,
 						},
+						"app_name": schema.StringAttribute{
+							MarkdownDescription: "The name of the xsuaa application.",
+							Computed:            true,
+						},
 						"scopes": schema.ListNestedAttribute{
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -158,6 +163,7 @@ func (ds *subaccountRolesDataSource) Read(ctx context.Context, req datasource.Re
 			RoleTemplateName:  types.StringValue(role.RoleTemplateName),
 			Description:       types.StringValue(role.Description),
 			IsReadOnly:        types.BoolValue(role.IsReadOnly),
+			AppName:           types.StringValue(role.AppName),
 			Scopes:            []subaccountRoleScope{},
 		}
 
