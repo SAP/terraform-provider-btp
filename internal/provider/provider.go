@@ -54,7 +54,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Sensitive:           true,
 			},
 			"idtoken": schema.StringAttribute{
-				MarkdownDescription: "A valid id token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_IDTOKEN` environment variable.(SAP-internal usage only)",
+				MarkdownDescription: "A valid id token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_IDTOKEN` environment variable. (SAP-internal usage only)",
 				Optional:            true,
 				Sensitive:           true,
 			},
