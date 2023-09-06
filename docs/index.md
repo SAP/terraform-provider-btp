@@ -15,7 +15,7 @@ terraform {
   required_providers {
     btp = {
       source  = "SAP/btp"
-      version = "0.3.0-beta1"
+      version = "0.4.0-beta1"
     }
   }
 }
@@ -37,7 +37,7 @@ provider "btp" {
 
 - `cli_server_url` (String) The URL of the BTP CLI server (e.g. `https://cpcli.cf.eu10.hana.ondemand.com`).
 - `idp` (String) The identity provider to be used for authentication (default: SAP ID service with origin `sap.default`).
-- `idtoken` (String, Sensitive) A valid id token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_IDTOKEN` environment variable.(SAP-internal usage only)
+- `idtoken` (String, Sensitive) A valid id token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_IDTOKEN` environment variable. (SAP-internal usage only)
 - `password` (String, Sensitive) Your password. Note that two-factor authentication is not supported. This can also be sourced from the `BTP_PASSWORD` environment variable.
 - `username` (String) Your user name, usually an e-mail address. This can also be sourced from the `BTP_USERNAME` environment variable.
 
