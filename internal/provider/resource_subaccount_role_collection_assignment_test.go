@@ -52,6 +52,50 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - role collection assignment with origin and group", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment.with_origin_and_group")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndGroup("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
+					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "user_name", "john.doe@test.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
+					),
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - role collection assignment with origin and attribute", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment.with_origin_and_attribute")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndAttribute("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
+					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "user_name", "john.doe@test.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
+					),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - role collection import fails", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment.import_error")
 		defer stopQuietly(rec)
@@ -119,5 +163,30 @@ resource "btp_subaccount_role_collection_assignment" "%s"{
 	role_collection_name = "%s"
 	user_name            = "%s"
 	origin               = "%s"
+}`, resourceName, subaccountId, roleCollectionName, userName, origin)
+}
+
+func hclResourceRoleCollectionAssignmentWithOriginAndGroup(resourceName string, subaccountId string, roleCollectionName string, userName string, origin string) string {
+
+	return fmt.Sprintf(`
+resource "btp_subaccount_role_collection_assignment" "%s"{
+    subaccount_id        = "%s"
+	role_collection_name = "%s"
+	user_name            = "%s"
+	origin               = "%s"
+	group                = "tf-test-group"
+}`, resourceName, subaccountId, roleCollectionName, userName, origin)
+}
+
+func hclResourceRoleCollectionAssignmentWithOriginAndAttribute(resourceName string, subaccountId string, roleCollectionName string, userName string, origin string) string {
+
+	return fmt.Sprintf(`
+resource "btp_subaccount_role_collection_assignment" "%s"{
+    subaccount_id        = "%s"
+	role_collection_name = "%s"
+	user_name            = "%s"
+	origin               = "%s"
+	attribute_name       = "tf_attr_name_test"
+	attribute_value      = "tf_attr_val_test"
 }`, resourceName, subaccountId, roleCollectionName, userName, origin)
 }
