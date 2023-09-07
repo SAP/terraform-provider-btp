@@ -26,6 +26,7 @@ func TestDataSourceDirectoryRoles(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_directory_roles.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 						resource.TestCheckResourceAttr("data.btp_directory_roles.uut", "values.#", "8"),
+						resource.TestCheckResourceAttrSet("data.btp_directory_roles.uut", "values.0.app_name"),
 					),
 				},
 			},

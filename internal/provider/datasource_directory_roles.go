@@ -24,6 +24,7 @@ type directoryRolesValue struct {
 	/* OUTPUT */
 	Description types.String         `tfsdk:"description"`
 	IsReadOnly  types.Bool           `tfsdk:"read_only"`
+	AppName     types.String         `tfsdk:"app_name"`
 	Scopes      []directoryRoleScope `tfsdk:"scopes"`
 }
 
@@ -78,7 +79,7 @@ __Further documentation:__
 							Computed:            true,
 						},
 						"app_id": schema.StringAttribute{
-							MarkdownDescription: "The ID of the xsuaa application.",
+							MarkdownDescription: "The id of the application that provides the role template and the role.",
 							Computed:            true,
 						},
 						"role_template_name": schema.StringAttribute{
@@ -91,6 +92,10 @@ __Further documentation:__
 						},
 						"read_only": schema.BoolAttribute{
 							MarkdownDescription: "Shows whether the role can be modified or not.",
+							Computed:            true,
+						},
+						"app_name": schema.StringAttribute{
+							MarkdownDescription: "The name of the application that provides the role template and the role.",
 							Computed:            true,
 						},
 						"scopes": schema.ListNestedAttribute{
@@ -159,6 +164,7 @@ func (ds *directoryRolesDataSource) Read(ctx context.Context, req datasource.Rea
 			RoleTemplateName:  types.StringValue(role.RoleTemplateName),
 			Description:       types.StringValue(role.Description),
 			IsReadOnly:        types.BoolValue(role.IsReadOnly),
+			AppName:           types.StringValue(role.AppName),
 			Scopes:            []directoryRoleScope{},
 		}
 
