@@ -59,10 +59,10 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndGroup("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "tf-test-group", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollectionAssignmentWithOriginAndGroup("uut", "Global Account Viewer", "tf-test-group", "terraformint-platform"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "role_collection_name", "Global Account Viewer"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "group_name", "tf-test-group"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
 					),
@@ -80,10 +80,10 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndAttribute("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "tf_attr_name_test", "tf_attr_val_test", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollectionAssignmentWithOriginAndAttribute("uut", "Global Account Viewer", "tf_attr_name_test", "tf_attr_val_test", "terraformint-platform"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "role_collection_name", "Global Account Viewer"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "attribute_name", "tf_attr_name_test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "attribute_value", "tf_attr_val_test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
