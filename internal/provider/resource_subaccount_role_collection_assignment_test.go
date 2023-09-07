@@ -61,12 +61,12 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndGroup("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndGroup("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "tf-test-group", "terraformint-platform"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
-						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "user_name", "john.doe@test.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "group_name", "tf-test-group"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
 					),
 				},
@@ -83,12 +83,13 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndAttribute("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndAttribute("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "tf_attr_name_test", "tf_attr_val_test", "terraformint-platform"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
-						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "user_name", "john.doe@test.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "attribute_name", "tf_attr_name_test"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "attribute_value", "tf_attr_val_test"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
 					),
 				},
@@ -166,27 +167,25 @@ resource "btp_subaccount_role_collection_assignment" "%s"{
 }`, resourceName, subaccountId, roleCollectionName, userName, origin)
 }
 
-func hclResourceRoleCollectionAssignmentWithOriginAndGroup(resourceName string, subaccountId string, roleCollectionName string, userName string, origin string) string {
+func hclResourceRoleCollectionAssignmentWithOriginAndGroup(resourceName string, subaccountId string, roleCollectionName string, groupName string, origin string) string {
 
 	return fmt.Sprintf(`
 resource "btp_subaccount_role_collection_assignment" "%s"{
     subaccount_id        = "%s"
 	role_collection_name = "%s"
-	user_name            = "%s"
 	origin               = "%s"
-	group                = "tf-test-group"
-}`, resourceName, subaccountId, roleCollectionName, userName, origin)
+	group_name           = "%s"
+}`, resourceName, subaccountId, roleCollectionName, origin, groupName)
 }
 
-func hclResourceRoleCollectionAssignmentWithOriginAndAttribute(resourceName string, subaccountId string, roleCollectionName string, userName string, origin string) string {
+func hclResourceRoleCollectionAssignmentWithOriginAndAttribute(resourceName string, subaccountId string, roleCollectionName string, attributeName string, attributeValue string, origin string) string {
 
 	return fmt.Sprintf(`
 resource "btp_subaccount_role_collection_assignment" "%s"{
     subaccount_id        = "%s"
 	role_collection_name = "%s"
-	user_name            = "%s"
 	origin               = "%s"
-	attribute_name       = "tf_attr_name_test"
-	attribute_value      = "tf_attr_val_test"
-}`, resourceName, subaccountId, roleCollectionName, userName, origin)
+	attribute_name       = "%s"
+	attribute_value      = "%s"
+}`, resourceName, subaccountId, roleCollectionName, origin, attributeName, attributeValue)
 }

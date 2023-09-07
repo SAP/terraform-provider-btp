@@ -244,7 +244,7 @@ func (f *securityRoleCollectionFacade) AssignAttributeBySubaccount(ctx context.C
 	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
 		"subaccount":          subaccountId,
 		"roleCollectionName":  roleCollectionName,
-		"attributeName":       attributeName,
+		"attribute":           attributeName,
 		"attributeValue":      attributeValue,
 		"origin":              origin,
 		"createUserIfMissing": "true",
@@ -255,7 +255,7 @@ func (f *securityRoleCollectionFacade) UnassignAttributeBySubaccount(ctx context
 	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewUnassignRequest(f.getCommand(), map[string]string{
 		"subaccount":         subaccountId,
 		"roleCollectionName": roleCollectionName,
-		"attributeName":      attributeName,
+		"attribute":          attributeName,
 		"attributeValue":     attributeValue,
 		"origin":             origin,
 	}))
@@ -265,7 +265,7 @@ func (f *securityRoleCollectionFacade) AssignAttributeByDirectory(ctx context.Co
 	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
 		"directory":           directoryId,
 		"roleCollectionName":  roleCollectionName,
-		"attributeName":       attributeName,
+		"attribute":           attributeName,
 		"attributeValue":      attributeValue,
 		"origin":              origin,
 		"createUserIfMissing": "true",
@@ -276,7 +276,7 @@ func (f *securityRoleCollectionFacade) UnassignAttributeByDirectory(ctx context.
 	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewUnassignRequest(f.getCommand(), map[string]string{
 		"directory":          directoryId,
 		"roleCollectionName": roleCollectionName,
-		"attributeName":      attributeName,
+		"attribute":          attributeName,
 		"attributeValue":     attributeValue,
 		"origin":             origin,
 	}))
@@ -286,7 +286,7 @@ func (f *securityRoleCollectionFacade) AssignAttributeByGlobalaccount(ctx contex
 	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
 		"globalAccount":       f.cliClient.GetGlobalAccountSubdomain(),
 		"roleCollectionName":  roleCollectionName,
-		"attributeName":       attributeName,
+		"attribute":           attributeName,
 		"attributeValue":      attributeValue,
 		"origin":              origin,
 		"createUserIfMissing": "true",
@@ -297,7 +297,7 @@ func (f *securityRoleCollectionFacade) UnassignAttributeByGlobalaccount(ctx cont
 	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewUnassignRequest(f.getCommand(), map[string]string{
 		"globalAccount":      f.cliClient.GetGlobalAccountSubdomain(),
 		"roleCollectionName": roleCollectionName,
-		"attributeName":      attributeName,
+		"attribute":          attributeName,
 		"attributeValue":     attributeValue,
 		"origin":             origin,
 	}))
