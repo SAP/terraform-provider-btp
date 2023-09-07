@@ -39,8 +39,8 @@ data "btp_directory_roles" "all" {
 
 Read-Only:
 
-- `app_id` (String) The ID of the xsuaa application.
-- `app_name` (String) The name of the xsuaa application.
+- `app_id` (String) The id of the application that provides the role template and the role.
+- `app_name` (String) The name of the application that provides the role template and the role.
 - `description` (String) The description of the role.
 - `name` (String) The name of the role.
 - `read_only` (Boolean) Shows whether the role can be modified or not.

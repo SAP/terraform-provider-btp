@@ -79,7 +79,7 @@ __Further documentation:__
 							Computed:            true,
 						},
 						"app_id": schema.StringAttribute{
-							MarkdownDescription: "The ID of the xsuaa application.",
+							MarkdownDescription: "The id of the application that provides the role template and the role.",
 							Computed:            true,
 						},
 						"role_template_name": schema.StringAttribute{
@@ -95,7 +95,7 @@ __Further documentation:__
 							Computed:            true,
 						},
 						"app_name": schema.StringAttribute{
-							MarkdownDescription: "The name of the xsuaa application.",
+							MarkdownDescription: "The name of the application that provides the role template and the role.",
 							Computed:            true,
 						},
 						"scopes": schema.ListNestedAttribute{
