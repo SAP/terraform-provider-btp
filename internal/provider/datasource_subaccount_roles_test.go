@@ -26,7 +26,7 @@ func TestDataSourceSubaccountRoles(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_roles.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_roles.uut", "values.#", "24"),
-						resource.TestMatchResourceAttr("data.btp_subaccount_roles.uut", "values.0.app_name", regexp.MustCompile(`(.*?)`)),
+						resource.TestCheckResourceAttrSet("data.btp_subaccount_roles.uut", "values.0.app_name"),
 					),
 				},
 			},
