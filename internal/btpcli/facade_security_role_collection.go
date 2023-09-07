@@ -239,3 +239,66 @@ func (f *securityRoleCollectionFacade) UnassignGroupByGlobalaccount(ctx context.
 		"origin":             origin,
 	}))
 }
+
+func (f *securityRoleCollectionFacade) AssignAttributeBySubaccount(ctx context.Context, subaccountId string, roleCollectionName string, attributeName string, attributeValue string, origin string) (xsuaa_authz.UserReference, CommandResponse, error) {
+	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
+		"subaccount":          subaccountId,
+		"roleCollectionName":  roleCollectionName,
+		"attributeName":       attributeName,
+		"attributeValue":      attributeValue,
+		"origin":              origin,
+		"createUserIfMissing": "true",
+	}))
+}
+
+func (f *securityRoleCollectionFacade) UnassignAttributeBySubaccount(ctx context.Context, subaccountId string, roleCollectionName string, attributeName string, attributeValue string, origin string) (xsuaa_authz.UserReference, CommandResponse, error) {
+	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewUnassignRequest(f.getCommand(), map[string]string{
+		"subaccount":         subaccountId,
+		"roleCollectionName": roleCollectionName,
+		"attributeName":      attributeName,
+		"attributeValue":     attributeValue,
+		"origin":             origin,
+	}))
+}
+
+func (f *securityRoleCollectionFacade) AssignAttributeByDirectory(ctx context.Context, directoryId string, roleCollectionName string, attributeName string, attributeValue string, origin string) (xsuaa_authz.UserReference, CommandResponse, error) {
+	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
+		"directory":           directoryId,
+		"roleCollectionName":  roleCollectionName,
+		"attributeName":       attributeName,
+		"attributeValue":      attributeValue,
+		"origin":              origin,
+		"createUserIfMissing": "true",
+	}))
+}
+
+func (f *securityRoleCollectionFacade) UnassignAttributeByDirectory(ctx context.Context, directoryId string, roleCollectionName string, attributeName string, attributeValue string, origin string) (xsuaa_authz.UserReference, CommandResponse, error) {
+	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewUnassignRequest(f.getCommand(), map[string]string{
+		"directory":          directoryId,
+		"roleCollectionName": roleCollectionName,
+		"attributeName":      attributeName,
+		"attributeValue":     attributeValue,
+		"origin":             origin,
+	}))
+}
+
+func (f *securityRoleCollectionFacade) AssignAttributeByGlobalaccount(ctx context.Context, roleCollectionName string, attributeName string, attributeValue string, origin string) (xsuaa_authz.UserReference, CommandResponse, error) {
+	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
+		"globalAccount":       f.cliClient.GetGlobalAccountSubdomain(),
+		"roleCollectionName":  roleCollectionName,
+		"attributeName":       attributeName,
+		"attributeValue":      attributeValue,
+		"origin":              origin,
+		"createUserIfMissing": "true",
+	}))
+}
+
+func (f *securityRoleCollectionFacade) UnassignAttributeByGlobalaccount(ctx context.Context, roleCollectionName string, attributeName string, attributeValue string, origin string) (xsuaa_authz.UserReference, CommandResponse, error) {
+	return doExecute[xsuaa_authz.UserReference](f.cliClient, ctx, NewUnassignRequest(f.getCommand(), map[string]string{
+		"globalAccount":      f.cliClient.GetGlobalAccountSubdomain(),
+		"roleCollectionName": roleCollectionName,
+		"attributeName":      attributeName,
+		"attributeValue":     attributeValue,
+		"origin":             origin,
+	}))
+}
