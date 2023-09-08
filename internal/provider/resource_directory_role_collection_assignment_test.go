@@ -61,7 +61,7 @@ func TestResourceDirectoryRoleCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginAndGroup("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Directory Viewer", "tf-test-group", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginAndGroup("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer", "tf-test-group", "terraformint-platform"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection_assignment.uut", "directory_id", regexpValidUUID),
@@ -83,7 +83,7 @@ func TestResourceDirectoryRoleCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginAndAttribute("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Directory Viewer", "tf_attr_name_test", "tf_attr_val_test", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginAndAttribute("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer", "tf_attr_name_test", "tf_attr_val_test", "terraformint-platform"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection_assignment.uut", "directory_id", regexpValidUUID),
