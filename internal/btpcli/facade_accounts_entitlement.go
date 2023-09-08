@@ -13,6 +13,16 @@ const (
 	directoryEntityType  = "DIRECTORY"
 )
 
+type DirectoryAssignmentInput struct {
+	DirectoryId          string
+	ServiceName          string
+	ServicePlanName      string
+	Amount               int
+	Distribute           bool
+	AutoAssign           bool
+	AutoDistributeAmount int
+}
+
 func newAccountsEntitlementFacade(cliClient *v2Client) accountsEntitlementFacade {
 	return accountsEntitlementFacade{cliClient: cliClient}
 }
@@ -136,15 +146,15 @@ func (f *accountsEntitlementFacade) searchPlansForEntitlement(servicePlans []cis
 	return nil
 }
 
-func (f *accountsEntitlementFacade) AssignToDirectory(ctx context.Context, directoryId string, serviceName string, servicePlanName string, amount int, distribute bool, autoAssign bool, autoDistributeAmount int) (CommandResponse, error) {
+func (f *accountsEntitlementFacade) AssignToDirectory(ctx context.Context, dirAssignmentInput DirectoryAssignmentInput) (CommandResponse, error) {
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
-		"directory":            directoryId,
-		"serviceName":          serviceName,
-		"servicePlanName":      servicePlanName,
-		"amount":               fmt.Sprintf("%d", amount),
-		"distribute":           strconv.FormatBool(distribute),
-		"autoAssign":           strconv.FormatBool(autoAssign),
-		"autoDistributeAmount": fmt.Sprintf("%d", autoDistributeAmount),
+		"directory":            dirAssignmentInput.DirectoryId,
+		"serviceName":          dirAssignmentInput.ServiceName,
+		"servicePlanName":      dirAssignmentInput.ServicePlanName,
+		"amount":               fmt.Sprintf("%d", dirAssignmentInput.Amount),
+		"distribute":           strconv.FormatBool(dirAssignmentInput.Distribute),
+		"autoAssign":           strconv.FormatBool(dirAssignmentInput.AutoAssign),
+		"autoDistributeAmount": fmt.Sprintf("%d", dirAssignmentInput.AutoDistributeAmount),
 	}))
 
 	return res, err

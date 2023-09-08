@@ -2,6 +2,7 @@ package btpcli
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -171,10 +172,12 @@ func TestAccountsEntitlementFacade_DisableInSubaccount(t *testing.T) {
 func TestAccountsEntitlementFacade_AssignToDirectory(t *testing.T) {
 	command := "accounts/entitlement"
 
-	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-	serviceName := "alert-notification"
-	planName := "free"
-	amount := 10
+	dirAssignmentInput := DirectoryAssignmentInput{
+		DirectoryId:     "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f",
+		ServiceName:     "alert-notification",
+		ServicePlanName: "free",
+		Amount:          10,
+	}
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
 		var srvCalled bool
@@ -183,10 +186,10 @@ func TestAccountsEntitlementFacade_AssignToDirectory(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
-				"directory":            directoryId,
-				"serviceName":          serviceName,
-				"servicePlanName":      planName,
-				"amount":               "10",
+				"directory":            dirAssignmentInput.DirectoryId,
+				"serviceName":          dirAssignmentInput.ServiceName,
+				"servicePlanName":      dirAssignmentInput.ServicePlanName,
+				"amount":               fmt.Sprintf("%d", dirAssignmentInput.Amount),
 				"distribute":           "false",
 				"autoAssign":           "false",
 				"autoDistributeAmount": "0",
@@ -194,7 +197,7 @@ func TestAccountsEntitlementFacade_AssignToDirectory(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.AssignToDirectory(context.TODO(), directoryId, serviceName, planName, amount, false, false, 0)
+		res, err := uut.Accounts.Entitlement.AssignToDirectory(context.TODO(), dirAssignmentInput)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
