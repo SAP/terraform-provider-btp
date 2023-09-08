@@ -805,7 +805,7 @@ func TestSecurityRoleCollectionFacade_AssignAttributeByGlobalAccount(t *testing.
 			assertCall(t, r, command, ActionAssign, map[string]string{
 				"globalAccount":       "795b53bb-a3f0-4769-adf0-26173282a975",
 				"roleCollectionName":  roleCollectionName,
-				"attributeName":       attributeName,
+				"attribute":           attributeName,
 				"attributeValue":      attributeValue,
 				"origin":              origin,
 				"createUserIfMissing": "true",
@@ -839,7 +839,7 @@ func TestSecurityRoleCollectionFacade_AssignAttributeBySubaccount(t *testing.T) 
 			assertCall(t, r, command, ActionAssign, map[string]string{
 				"subaccount":          subaccountId,
 				"roleCollectionName":  roleCollectionName,
-				"attributeName":       attributeName,
+				"attribute":           attributeName,
 				"attributeValue":      attributeValue,
 				"origin":              origin,
 				"createUserIfMissing": "true",
@@ -873,7 +873,7 @@ func TestSecurityRoleCollectionFacade_AssignAttributeByDirectory(t *testing.T) {
 			assertCall(t, r, command, ActionAssign, map[string]string{
 				"directory":           directoryId,
 				"roleCollectionName":  roleCollectionName,
-				"attributeName":       attributeName,
+				"attribute":           attributeName,
 				"attributeValue":      attributeValue,
 				"origin":              origin,
 				"createUserIfMissing": "true",
@@ -906,7 +906,7 @@ func TestSecurityRoleCollectionFacade_UnassignAttributeByGlobalAccount(t *testin
 			assertCall(t, r, command, ActionUnassign, map[string]string{
 				"globalAccount":      "795b53bb-a3f0-4769-adf0-26173282a975",
 				"roleCollectionName": roleCollectionName,
-				"attributeName":      attributeName,
+				"attribute":          attributeName,
 				"attributeValue":     attributeValue,
 				"origin":             origin,
 			})
@@ -939,7 +939,7 @@ func TestSecurityRoleCollectionFacade_UnassignAttributeBySubaccount(t *testing.T
 			assertCall(t, r, command, ActionUnassign, map[string]string{
 				"subaccount":         subaccountId,
 				"roleCollectionName": roleCollectionName,
-				"attributeName":      attributeName,
+				"attribute":          attributeName,
 				"attributeValue":     attributeValue,
 				"origin":             origin,
 			})
@@ -972,7 +972,7 @@ func TestSecurityRoleCollectionFacade_UnassignAttributeByDirectory(t *testing.T)
 			assertCall(t, r, command, ActionUnassign, map[string]string{
 				"directory":          directoryId,
 				"roleCollectionName": roleCollectionName,
-				"attributeName":      attributeName,
+				"attribute":          attributeName,
 				"attributeValue":     attributeValue,
 				"origin":             origin,
 			})
