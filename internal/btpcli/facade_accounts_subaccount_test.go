@@ -185,6 +185,7 @@ func TestAccountsSubaccountFacade_Subscribe(t *testing.T) {
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	appName := "SAPLaunchpad"
 	planName := "free"
+	planNameEmpty := ""
 	parameters := "{}"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
@@ -204,6 +205,28 @@ func TestAccountsSubaccountFacade_Subscribe(t *testing.T) {
 		defer srv.Close()
 
 		_, res, err := uut.Accounts.Subaccount.Subscribe(context.TODO(), subaccountId, appName, planName, parameters)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs the CLI params correctly with empty plan", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionSubscribe, map[string]string{
+				"subaccount":         subaccountId,
+				"appName":            appName,
+				"subscriptionParams": parameters,
+			})
+
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Accounts.Subaccount.Subscribe(context.TODO(), subaccountId, appName, planNameEmpty, parameters)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
