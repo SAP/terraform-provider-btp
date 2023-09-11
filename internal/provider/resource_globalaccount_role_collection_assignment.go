@@ -76,7 +76,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 					stringplanmodifier.RequiresReplace(),
 				},
 				Validators: []validator.String{
-					stringvalidator.AtLeastOneOf(path.MatchRoot("user_name"), path.MatchRoot("group_name"), path.MatchRoot("attribute_name")),
+					stringvalidator.ExactlyOneOf(path.MatchRoot("user_name"), path.MatchRoot("group_name"), path.MatchRoot("attribute_name")),
 					stringvalidator.LengthBetween(1, 256),
 				},
 			},
@@ -110,6 +110,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 					stringplanmodifier.RequiresReplace(),
 				},
 				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("attribute_name")),
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
