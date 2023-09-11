@@ -105,7 +105,7 @@ func (f *accountsSubaccountFacade) Subscribe(ctx context.Context, subaccountId s
 		"subscriptionParams": parameters,
 	}
 
-	// The plan name can be empty in case of subscrioption hosted in the same account
+	// The plan name can be empty in case of subscription hosted in the same account. In this case the plan name is not required and must not be transferred to the API call.
 	if len(planName) > 0 {
 		commandOptions["planName"] = planName
 	}
