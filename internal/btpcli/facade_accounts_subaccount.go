@@ -105,6 +105,7 @@ func (f *accountsSubaccountFacade) Subscribe(ctx context.Context, subaccountId s
 		"subscriptionParams": parameters,
 	}
 
+	// The plan name can be empty in case of subscrioption hosted in the same account
 	if len(planName) > 0 {
 		commandOptions["planName"] = planName
 	}
