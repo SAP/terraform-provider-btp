@@ -787,3 +787,202 @@ func TestSecurityRoleCollectionFacade_UnassignGroupByDirectory(t *testing.T) {
 		}
 	})
 }
+
+func TestSecurityRoleCollectionFacade_AssignAttributeByGlobalAccount(t *testing.T) {
+	command := "security/role-collection"
+
+	roleCollectionName := "my own rolecollection"
+	attributeName := "my/attributename"
+	attributeValue := "my/attributevalue"
+	origin := "ldap"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":       "795b53bb-a3f0-4769-adf0-26173282a975",
+				"roleCollectionName":  roleCollectionName,
+				"attribute":           attributeName,
+				"attributeValue":      attributeValue,
+				"origin":              origin,
+				"createUserIfMissing": "true",
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.RoleCollection.AssignAttributeByGlobalaccount(context.TODO(), roleCollectionName, attributeName, attributeValue, origin)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestSecurityRoleCollectionFacade_AssignAttributeBySubaccount(t *testing.T) {
+	command := "security/role-collection"
+
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	roleCollectionName := "my own rolecollection"
+	attributeName := "my/attributename"
+	attributeValue := "my/attributevalue"
+	origin := "ldap"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionAssign, map[string]string{
+				"subaccount":          subaccountId,
+				"roleCollectionName":  roleCollectionName,
+				"attribute":           attributeName,
+				"attributeValue":      attributeValue,
+				"origin":              origin,
+				"createUserIfMissing": "true",
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.RoleCollection.AssignAttributeBySubaccount(context.TODO(), subaccountId, roleCollectionName, attributeName, attributeValue, origin)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestSecurityRoleCollectionFacade_AssignAttributeByDirectory(t *testing.T) {
+	command := "security/role-collection"
+
+	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	roleCollectionName := "my own rolecollection"
+	attributeName := "my/attributename"
+	attributeValue := "my/attributevalue"
+	origin := "ldap"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionAssign, map[string]string{
+				"directory":           directoryId,
+				"roleCollectionName":  roleCollectionName,
+				"attribute":           attributeName,
+				"attributeValue":      attributeValue,
+				"origin":              origin,
+				"createUserIfMissing": "true",
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.RoleCollection.AssignAttributeByDirectory(context.TODO(), directoryId, roleCollectionName, attributeName, attributeValue, origin)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestSecurityRoleCollectionFacade_UnassignAttributeByGlobalAccount(t *testing.T) {
+	command := "security/role-collection"
+
+	roleCollectionName := "my own rolecollection"
+	attributeName := "my/attributename"
+	attributeValue := "my/attributevalue"
+	origin := "ldap"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUnassign, map[string]string{
+				"globalAccount":      "795b53bb-a3f0-4769-adf0-26173282a975",
+				"roleCollectionName": roleCollectionName,
+				"attribute":          attributeName,
+				"attributeValue":     attributeValue,
+				"origin":             origin,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.RoleCollection.UnassignAttributeByGlobalaccount(context.TODO(), roleCollectionName, attributeName, attributeValue, origin)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestSecurityRoleCollectionFacade_UnassignAttributeBySubaccount(t *testing.T) {
+	command := "security/role-collection"
+
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	roleCollectionName := "my own rolecollection"
+	attributeName := "my/attributename"
+	attributeValue := "my/attributevalue"
+	origin := "ldap"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUnassign, map[string]string{
+				"subaccount":         subaccountId,
+				"roleCollectionName": roleCollectionName,
+				"attribute":          attributeName,
+				"attributeValue":     attributeValue,
+				"origin":             origin,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.RoleCollection.UnassignAttributeBySubaccount(context.TODO(), subaccountId, roleCollectionName, attributeName, attributeValue, origin)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestSecurityRoleCollectionFacade_UnassignAttributeByDirectory(t *testing.T) {
+	command := "security/role-collection"
+
+	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	roleCollectionName := "my own rolecollection"
+	attributeName := "my/attributename"
+	attributeValue := "my/attributevalue"
+	origin := "ldap"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUnassign, map[string]string{
+				"directory":          directoryId,
+				"roleCollectionName": roleCollectionName,
+				"attribute":          attributeName,
+				"attributeValue":     attributeValue,
+				"origin":             origin,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.RoleCollection.UnassignAttributeByDirectory(context.TODO(), directoryId, roleCollectionName, attributeName, attributeValue, origin)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}

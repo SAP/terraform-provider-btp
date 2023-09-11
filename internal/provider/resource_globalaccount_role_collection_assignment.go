@@ -26,6 +26,8 @@ type globalaccountRoleCollectionAssignmentType struct {
 	RoleCollectionName types.String `tfsdk:"role_collection_name"`
 	Username           types.String `tfsdk:"user_name"`
 	Groupname          types.String `tfsdk:"group_name"`
+	AttributeName      types.String `tfsdk:"attribute_name"`
+	AttributeValue     types.String `tfsdk:"attribute_value"`
 	Origin             types.String `tfsdk:"origin"`
 }
 
@@ -74,7 +76,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 					stringplanmodifier.RequiresReplace(),
 				},
 				Validators: []validator.String{
-					stringvalidator.ExactlyOneOf(path.MatchRoot("user_name"), path.MatchRoot("group_name")),
+					stringvalidator.ExactlyOneOf(path.MatchRoot("user_name"), path.MatchRoot("group_name"), path.MatchRoot("attribute_name")),
 					stringvalidator.LengthBetween(1, 256),
 				},
 			},
@@ -85,6 +87,30 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 					stringplanmodifier.RequiresReplace(),
 				},
 				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("origin")),
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
+			"attribute_name": schema.StringAttribute{
+				MarkdownDescription: "The name of the attribute to assign.",
+				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("attribute_value")),
+					stringvalidator.AlsoRequires(path.MatchRoot("origin")),
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
+			"attribute_value": schema.StringAttribute{
+				MarkdownDescription: "The value of the attribute to assign.",
+				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("attribute_name")),
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
@@ -128,9 +154,12 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Create(ctx context.Cont
 	if !plan.Username.IsNull() {
 		// assign user
 		_, _, err = rs.cli.Security.RoleCollection.AssignUserByGlobalaccount(ctx, plan.RoleCollectionName.ValueString(), plan.Username.ValueString(), plan.Origin.ValueString())
-	} else {
+	} else if !plan.Groupname.IsNull() {
 		// assign group
 		_, _, err = rs.cli.Security.RoleCollection.AssignGroupByGlobalaccount(ctx, plan.RoleCollectionName.ValueString(), plan.Groupname.ValueString(), plan.Origin.ValueString())
+	} else {
+		// assign attribute
+		_, _, err = rs.cli.Security.RoleCollection.AssignAttributeByGlobalaccount(ctx, plan.RoleCollectionName.ValueString(), plan.AttributeName.ValueString(), plan.AttributeValue.ValueString(), plan.Origin.ValueString())
 	}
 
 	if err != nil {
@@ -175,9 +204,12 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Delete(ctx context.Cont
 	if !state.Username.IsNull() {
 		// unassign user
 		_, _, err = rs.cli.Security.RoleCollection.UnassignUserByGlobalaccount(ctx, state.RoleCollectionName.ValueString(), state.Username.ValueString(), state.Origin.ValueString())
-	} else {
+	} else if !state.Groupname.IsNull() {
 		// unassign group
 		_, _, err = rs.cli.Security.RoleCollection.UnassignGroupByGlobalaccount(ctx, state.RoleCollectionName.ValueString(), state.Groupname.ValueString(), state.Origin.ValueString())
+	} else {
+		// unassign attribute
+		_, _, err = rs.cli.Security.RoleCollection.UnassignAttributeByGlobalaccount(ctx, state.RoleCollectionName.ValueString(), state.AttributeName.ValueString(), state.AttributeValue.ValueString(), state.Origin.ValueString())
 	}
 
 	if err != nil {

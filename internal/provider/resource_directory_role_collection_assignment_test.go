@@ -52,6 +52,51 @@ func TestResourceDirectoryRoleCollectionAssignment(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - role collection assignment with origin and group", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection_assignment.with_origin_and_group")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginAndGroup("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer", "tf-test-group", "terraformint-platform"),
+					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_role_collection_assignment.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "role_collection_name", "Directory Viewer"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "group_name", "tf-test-group"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "origin", "terraformint-platform"),
+					),
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - role collection assignment with origin and attribute", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection_assignment.with_origin_and_attribute")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginAndAttribute("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer", "tf_attr_name_test", "tf_attr_val_test", "terraformint-platform"),
+					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_role_collection_assignment.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "role_collection_name", "Directory Viewer"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "attribute_name", "tf_attr_name_test"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "attribute_value", "tf_attr_val_test"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "origin", "terraformint-platform"),
+					),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - role collection import fails", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection_assignment.import_error")
 		defer stopQuietly(rec)
@@ -120,4 +165,27 @@ resource "btp_directory_role_collection_assignment" "%s"{
 	user_name            = "%s"
 	origin               = "%s"
 }`, resourceName, directoryId, roleCollectionName, userName, origin)
+}
+
+func hclResourceDirectoryRoleCollectionAssignmentWithOriginAndGroup(resourceName string, directoryId string, roleCollectionName string, groupName string, origin string) string {
+
+	return fmt.Sprintf(`
+resource "btp_directory_role_collection_assignment" "%s"{
+    directory_id        = "%s"
+	role_collection_name = "%s"
+	origin               = "%s"
+	group_name           = "%s"
+}`, resourceName, directoryId, roleCollectionName, origin, groupName)
+}
+
+func hclResourceDirectoryRoleCollectionAssignmentWithOriginAndAttribute(resourceName string, directoryId string, roleCollectionName string, attributeName string, attributeValue string, origin string) string {
+
+	return fmt.Sprintf(`
+resource "btp_directory_role_collection_assignment" "%s"{
+    directory_id        = "%s"
+	role_collection_name = "%s"
+	origin               = "%s"
+	attribute_name       = "%s"
+	attribute_value      = "%s"
+}`, resourceName, directoryId, roleCollectionName, origin, attributeName, attributeValue)
 }
