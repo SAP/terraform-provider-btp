@@ -181,7 +181,17 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 	if !hasPlanQuotaDir(plan) {
 		_, err = rs.cli.Accounts.Entitlement.EnableInDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.Distribute.ValueBool(), plan.AutoAssign.ValueBool())
 	} else {
-		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()), plan.Distribute.ValueBool(), plan.AutoAssign.ValueBool(), int(plan.AutoDistributeAmount.ValueInt64()))
+
+		dirAssignmentInput := btpcli.DirectoryAssignmentInput{
+			DirectoryId:          plan.DirectoryId.ValueString(),
+			ServiceName:          plan.ServiceName.ValueString(),
+			ServicePlanName:      plan.PlanName.ValueString(),
+			Amount:               int(plan.Amount.ValueInt64()),
+			Distribute:           plan.Distribute.ValueBool(),
+			AutoAssign:           plan.AutoAssign.ValueBool(),
+			AutoDistributeAmount: int(plan.AutoDistributeAmount.ValueInt64()),
+		}
+		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, dirAssignmentInput)
 	}
 
 	if err != nil {
@@ -242,7 +252,17 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 	if !hasPlanQuotaDir(state) {
 		_, err = rs.cli.Accounts.Entitlement.DisableInDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.Distribute.ValueBool(), state.AutoAssign.ValueBool())
 	} else {
-		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0, state.Distribute.ValueBool(), state.AutoAssign.ValueBool(), 0)
+
+		dirAssignmentInput := btpcli.DirectoryAssignmentInput{
+			DirectoryId:          state.DirectoryId.ValueString(),
+			ServiceName:          state.ServiceName.ValueString(),
+			ServicePlanName:      state.PlanName.ValueString(),
+			Amount:               0,
+			Distribute:           state.Distribute.ValueBool(),
+			AutoAssign:           state.AutoAssign.ValueBool(),
+			AutoDistributeAmount: 0,
+		}
+		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, dirAssignmentInput)
 	}
 
 	if err != nil {
