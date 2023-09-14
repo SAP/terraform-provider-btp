@@ -67,6 +67,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
 }
 
 # creates a kyma environment in a given account
+# NOTE: for insight into the choices for these options, see the Kyma environment creation UI in the BTP Cockpit
 resource "btp_subaccount_environment_instance" "kyma" {
   subaccount_id    = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   name             = "my-kyma-environment"
