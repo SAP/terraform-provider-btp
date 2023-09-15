@@ -72,7 +72,7 @@ resource "btp_subaccount_environment_instance" "kyma" {
   subaccount_id    = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   name             = "my-kyma-environment"
   environment_type = "kyma"
-  service_name     = "kyma"
+  service_name     = "kymaruntime"
   plan_name        = "aws"
 
   parameters = jsonencode({
@@ -82,6 +82,11 @@ resource "btp_subaccount_environment_instance" "kyma" {
     auto_scaler_min = 3
     auto_scaler_max = 20
   })
+  timeouts = {
+    create = "1h"
+    update = "35m"
+    delete = "1h"
+  }
 }
 ```
 
