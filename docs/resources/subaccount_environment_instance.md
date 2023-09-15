@@ -67,7 +67,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
 }
 
 # creates a kyma environment in a given account
-# NOTE: for insight into the choices for these options, see the Kyma environment creation UI in the BTP Cockpit
+# NOTE: for the available parameter values, check https://help.sap.com/docs/btp/sap-business-technology-platform/available-plans-in-kyma-environment
 resource "btp_subaccount_environment_instance" "kyma" {
   subaccount_id    = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   name             = "my-kyma-environment"
@@ -76,7 +76,7 @@ resource "btp_subaccount_environment_instance" "kyma" {
   plan_name        = "aws"
 
   parameters = jsonencode({
-    name   = "my-kyma-environment"
+    name            = "my-kyma-environment"
     region          = "us-east-1"
     machine_type    = "mx5.xlarge" #smallest option
     auto_scaler_min = 3
