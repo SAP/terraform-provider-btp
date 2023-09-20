@@ -157,6 +157,9 @@ func (v2 *v2Client) parseResponseError(ctx context.Context, res *http.Response) 
 func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginResponse, error) {
 	ctx = v2.initTrace(ctx)
 
+	// TODO: After the switch to client protocol v2.49.0 the terraform provider is still providing
+	//       the globalaccount subdomain during login. However, this relies on a special handling
+	//       for older clients that might be removed from the server in the future.
 	res, err := v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion), loginReq)
 
 	if err != nil {
@@ -191,35 +194,40 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 }
 
 // IdTokenLogin authenticates a user by providing an id token
-func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequest) error {
+func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequest) (*LoginResponse, error) {
 	ctx = v2.initTrace(ctx)
 
 	res, err := v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion, "idtoken"), loginReq)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	err = v2.parseResponse(ctx, res, nil, http.StatusOK, map[int]string{
-		// TODO enable NOT_FOUND and FORBIDDEN once it is supported by the btp CLI server
-		//http.StatusUnauthorized:       "Login failed. ID Token expired.",
-		http.StatusForbidden: fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
-		//http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
+	var loginResponse LoginResponse
+	err = v2.parseResponse(ctx, res, &loginResponse, http.StatusOK, map[int]string{
+		http.StatusBadRequest:         "Login failed. Invalid provider configuration.",
+		http.StatusUnauthorized:       "Login failed. Please check ID Token validity.",
+		http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
 		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
 		http.StatusGatewayTimeout:     "Login timed out. Please try again later.",
 	})
 
-	if err != nil {
-		return err
+	if err != nil && err.Error() != "EOF" { // TODO: stop ignoring EOF when btp CLI server returning non-empty body has reached productive landscapes
+		return nil, err
 	}
 
 	v2.session = &Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
-		IdentityProvider:       loginReq.IdentityProvider,
-		RefreshToken:           res.Header.Get(HeaderCLIRefreshToken),
+		IdentityProvider:       loginResponse.Issuer,
+		LoggedInUser: &v2LoggedInUser{
+			Username: loginResponse.Username,
+			Email:    loginResponse.Email,
+			Issuer:   loginResponse.Issuer,
+		},
+		RefreshToken: res.Header.Get(HeaderCLIRefreshToken),
 	}
 
-	return nil
+	return &loginResponse, nil
 }
 
 // Logout invalidates the current user session

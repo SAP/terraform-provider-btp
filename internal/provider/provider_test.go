@@ -276,6 +276,47 @@ func notContainsCheckFunc(unexpectedSubString string) testingResource.CheckResou
 	}
 }
 
+func TestProvider_ConfigurationWithIdToken(t *testing.T) {
+	t.Run("error path - attribute conflicts with idtoken", func(t *testing.T) {
+		testingResource.Test(t, testingResource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []testingResource.TestStep{
+				{
+					Config: `
+provider "btp" {
+	globalaccount  = "terraformintcanary"
+	username       = "username"
+	idtoken        = "idtoken"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`Attribute "username" cannot be specified when "idtoken" is specified`),
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount  = "terraformintcanary"
+	password       = "password"
+	idtoken        = "idtoken"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`Attribute "password" cannot be specified when "idtoken" is specified`),
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount  = "terraformintcanary"
+	idp            = "idp"
+	idtoken        = "idtoken"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`Attribute "idp" cannot be specified when "idtoken" is specified`),
+				},
+			},
+		})
+	})
+}
+
 func TestProvider_HasResources(t *testing.T) {
 	expectedResources := []string{
 		"btp_directory",
