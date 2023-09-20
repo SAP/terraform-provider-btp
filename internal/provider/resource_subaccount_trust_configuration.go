@@ -3,18 +3,18 @@ package provider
 import (
 	"context"
 	"fmt"
-	"regexp"
-
+	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-
-	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 func newSubaccountTrustConfigurationResource() resource.Resource {
@@ -50,39 +50,84 @@ __Further documentation:__
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"identity_provider": schema.StringAttribute{
-				MarkdownDescription: "The name of the Identity Authentication tenant that you want the subaccount to connect.",
+				MarkdownDescription: "The name of the Identity Authentication tenant that you want to connect to the subaccount.",
 				Required:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
+			"domain": schema.StringAttribute{
+				MarkdownDescription: "The tenant's domain which should be used for user logon.",
+				Optional:            true,
+			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "The name of the identity provider.",
+				MarkdownDescription: "The display name of the trust configuration.",
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"description": schema.StringAttribute{
+				MarkdownDescription: "Description of the trust configuration.",
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"link_text": schema.StringAttribute{
+				MarkdownDescription: "Short string that helps users to identify the link for login.",
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"available_for_user_logon": schema.BoolAttribute{
+				MarkdownDescription: "Determines that end users can choose the trust configuration for login. If not set, the trust configuration can remain active, however only application users that explicitly specify the origin key can use if for login.",
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(true),
+			},
+			"auto_create_shadow_users": schema.BoolAttribute{
+				MarkdownDescription: "Determines that any user from the tenant can log in. If not set, only the ones who already have a shadow user can log in.",
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(true),
+			},
+			"status": schema.StringAttribute{
+				MarkdownDescription: "Determines whether the identity provider is currently 'active' or 'inactive'.",
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("active"),
+				Validators: []validator.String{
+					stringvalidator.OneOf("active", "inactive"),
 				},
 			},
 			"origin": schema.StringAttribute{
 				MarkdownDescription: "The origin of the identity provider.",
-				Optional:            true,
 				Computed:            true,
-				Validators: []validator.String{
-					stringvalidator.RegexMatches(regexp.MustCompile(`^.{1,27}-platform$`), "must end with '-platform' and not exceed 36 characters"),
-				},
-			},
-			"description": schema.StringAttribute{
-				MarkdownDescription: "A description for the identity provider.",
-				Optional:            true,
-				Computed:            true,
-				Validators: []validator.String{
-					stringvalidator.LengthAtLeast(1),
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `origin` attribute instead",
 				MarkdownDescription: "The origin of the identity provider.",
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
@@ -92,18 +137,23 @@ __Further documentation:__
 			"type": schema.StringAttribute{
 				MarkdownDescription: "The trust type.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"protocol": schema.StringAttribute{
 				MarkdownDescription: "The protocol used to establish trust with the identity provider.",
 				Computed:            true,
-			},
-			"status": schema.StringAttribute{
-				MarkdownDescription: "Shows whether the identity provider is currently active or not.",
-				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"read_only": schema.BoolAttribute{
 				MarkdownDescription: "Shows whether the trust configuration can be modified.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 		},
 	}
@@ -141,38 +191,53 @@ func (rs *subaccountTrustConfigurationResource) Create(ctx context.Context, req 
 		return
 	}
 
-	cliReq := btpcli.TrustConfigurationInput{
+	cliCreateReq := btpcli.TrustConfigurationCreateInput{
 		IdentityProvider: plan.IdentityProvider.ValueString(),
 	}
 
 	if !plan.Name.IsUnknown() {
 		name := plan.Name.ValueString()
-		cliReq.Name = &name
+		cliCreateReq.Name = &name
 	}
 
 	if !plan.Description.IsUnknown() {
 		description := plan.Description.ValueString()
-		cliReq.Description = &description
+		cliCreateReq.Description = &description
 	}
 
-	if !plan.Origin.IsUnknown() {
-		origin := plan.Origin.ValueString()
-		cliReq.Origin = &origin
+	if !plan.Domain.IsNull() {
+		domain := plan.Domain.ValueString()
+		cliCreateReq.Domain = &domain
 	}
 
-	createRes, _, err := rs.cli.Security.Trust.CreateBySubaccount(ctx, plan.SubaccountId.ValueString(), cliReq)
+	createRes, _, err := rs.cli.Security.Trust.CreateBySubaccount(ctx, plan.SubaccountId.ValueString(), cliCreateReq)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Trust Configuration (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.Trust.GetBySubaccount(ctx, plan.SubaccountId.ValueString(), createRes.OriginKey)
+	cliUpdateReq := btpcli.TrustConfigurationUpdateInput{
+		OriginKey: createRes.OriginKey,
+		// TODO: remove repeating domain and idp, see NGPBUG-364505
+		IdentityProvider:      cliCreateReq.IdentityProvider,
+		Domain:                cliCreateReq.Domain,
+		AvailableForUserLogon: plan.AvailableForUserLogon.ValueBool(),
+		AutoCreateShadowUsers: plan.AutoCreateShadowUsers.ValueBool(),
+		Status:                plan.Status.ValueString(),
+	}
+
+	if !plan.LinkText.IsUnknown() {
+		linkText := plan.LinkText.ValueString()
+		cliUpdateReq.LinkText = &linkText
+	}
+
+	updateRes, _, err := rs.cli.Security.Trust.UpdateBySubaccount(ctx, plan.SubaccountId.ValueString(), cliUpdateReq)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Trust Configuration (Subaccount)", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("API Error Updating Resource Trust Configuration after Creation (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
 
-	state, diags := subaccountTrustConfigurationFromValue(ctx, cliRes)
+	state, diags := subaccountTrustConfigurationFromValue(ctx, updateRes)
 	state.SubaccountId = plan.SubaccountId
 	resp.Diagnostics.Append(diags...)
 
@@ -184,14 +249,55 @@ func (rs *subaccountTrustConfigurationResource) Update(ctx context.Context, req 
 	var plan subaccountTrustConfigurationType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
+
+	var state subaccountTrustConfigurationType
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Updating Resource Trust Configuration (Subaccount)", "This resource is not supposed to be updated")
-	if resp.Diagnostics.HasError() {
+	cliUpdateReq := btpcli.TrustConfigurationUpdateInput{
+		OriginKey:             plan.Origin.ValueString(),
+		IdentityProvider:      plan.IdentityProvider.ValueString(),
+		AvailableForUserLogon: plan.AvailableForUserLogon.ValueBool(),
+		AutoCreateShadowUsers: plan.AutoCreateShadowUsers.ValueBool(),
+		Status:                plan.Status.ValueString(),
+	}
+
+	if !plan.Domain.IsNull() {
+		domain := plan.Domain.ValueString()
+		cliUpdateReq.Domain = &domain
+	}
+
+	if !plan.Name.Equal(state.Name) {
+		name := plan.Name.ValueString()
+		cliUpdateReq.Name = &name
+	}
+
+	if !plan.Description.IsUnknown() {
+		description := plan.Description.ValueString()
+		cliUpdateReq.Description = &description
+	}
+
+	if !plan.LinkText.IsUnknown() {
+		linkText := plan.LinkText.ValueString()
+		cliUpdateReq.LinkText = &linkText
+	}
+
+	updateRes, _, err := rs.cli.Security.Trust.UpdateBySubaccount(ctx, plan.SubaccountId.ValueString(), cliUpdateReq)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Updating Resource Trust Configuration (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	state, diags = subaccountTrustConfigurationFromValue(ctx, updateRes)
+	state.SubaccountId = plan.SubaccountId
+	resp.Diagnostics.Append(diags...)
+
+	diags = resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
 }
 
 func (rs *subaccountTrustConfigurationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

@@ -6,7 +6,7 @@ import (
 	"math"
 	"reflect"
 	"strings"
-  "time"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -49,6 +49,8 @@ func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 			setBool(field, tagValue, out)
 		case "basetypes.BoolValue":
 			setBoolValue(field, tagValue, out)
+		case "*bool":
+			setBoolPointer(field, tagValue, out)
 		case "map[string][]string": // TODO would be nice to have `encodethisasjson` tag, instead of an explicit type mapping
 			if !field.IsNil() {
 				valueArr, err := json.Marshal(field.Interface())
@@ -128,6 +130,13 @@ func setBool(field reflect.Value, tagValue string, out map[string]string) {
 	out[tagValue] = fmt.Sprintf("%v", fieldVal)
 }
 
+func setBoolPointer(field reflect.Value, tagValue string, out map[string]string) {
+	if !field.IsNil() {
+		fieldVal := field.Elem().Interface().(bool)
+		out[tagValue] = fmt.Sprintf("%v", fieldVal)
+
+	}
+}
 func setStringSlice(field reflect.Value, tagValue string, out map[string]string) {
 	if !field.IsNil() {
 		valueString := fmt.Sprintf("%v", strings.Join(field.Interface().([]string), ","))
