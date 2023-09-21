@@ -177,53 +177,59 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 	}{
 		{
 			description:  "happy path",
-			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
+			loginRequest: NewIdTokenLoginRequest("subdomain", "idToken"),
 			simulation: v2SimulationConfig{
-				srvExpectBody:    `{"customIdp":"","subdomain":"subdomain","idToken":"idToken"}`,
+				srvExpectBody:    `{"subdomain":"subdomain","idToken":"idToken"}`,
 				srvReturnStatus:  http.StatusOK,
-				srvReturnContent: ``,
+				srvReturnContent: `{"issuer": "idp.from.idtoken","user":"john.doe","mail":"john.doe@test.com"}`,
 				srvReturnHeader: map[string]string{
 					HeaderCLIRefreshToken: "sessionid",
 				},
-				expectResponse: struct{}{},
+				expectResponse: &LoginResponse{
+					Issuer:       "idp.from.idtoken",
+					Username:     "john.doe",
+					Email:        "john.doe@test.com",
+					RefreshToken: "",
+				},
 				expectClientSession: &Session{
 					RefreshToken:           "sessionid",
-					IdentityProvider:       "",
+					IdentityProvider:       "idp.from.idtoken",
 					GlobalAccountSubdomain: "subdomain",
-					LoggedInUser:           nil,
+					LoggedInUser: &v2LoggedInUser{
+						Issuer:   "idp.from.idtoken",
+						Username: "john.doe",
+						Email:    "john.doe@test.com",
+					},
 				},
 			},
 		},
 		{
-			description:  "happy path - with custom idp",
-			loginRequest: NewIdTokenLoginRequest("my.custom.idp", "subdomain", "idToken"),
+			description:  "error path - id token not parseable [400]",
+			loginRequest: NewIdTokenLoginRequest("subdomain", "idToken"),
 			simulation: v2SimulationConfig{
-				srvExpectBody:    `{"customIdp":"my.custom.idp","subdomain":"subdomain","idToken":"idToken"}`,
-				srvReturnStatus:  http.StatusOK,
-				srvReturnContent: ``,
-				srvReturnHeader: map[string]string{
-					HeaderCLIRefreshToken: "sessionid",
-				},
-				expectResponse: struct{}{},
-				expectClientSession: &Session{
-					RefreshToken:           "sessionid",
-					IdentityProvider:       "my.custom.idp",
-					GlobalAccountSubdomain: "subdomain",
-					LoggedInUser:           nil,
-				},
+				srvReturnStatus: http.StatusBadRequest,
+				expectErrorMsg:  "Login failed. Invalid provider configuration. [Status: 400; Correlation ID: fake-correlation-id]",
 			},
 		},
 		{
-			description:  "error path - user is lacking permissions to globalaccount [403]",
-			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
+			description:  "error path - id token expired [401]",
+			loginRequest: NewIdTokenLoginRequest("subdomain", "idToken"),
 			simulation: v2SimulationConfig{
-				srvReturnStatus: http.StatusForbidden,
-				expectErrorMsg:  "You cannot access global account 'subdomain'. Make sure you have at least read access to the global account, a directory, or a subaccount. [Status: 403; Correlation ID: fake-correlation-id]",
+				srvReturnStatus: http.StatusUnauthorized,
+				expectErrorMsg:  "Login failed. Please check ID Token validity. [Status: 401; Correlation ID: fake-correlation-id]",
+			},
+		},
+		{
+			description:  "error path - globalaccount not found [404]",
+			loginRequest: NewIdTokenLoginRequest("subdomain", "idToken"),
+			simulation: v2SimulationConfig{
+				srvReturnStatus: http.StatusNotFound,
+				expectErrorMsg:  "Global account 'subdomain' not found. Try again and make sure to provide the global account's subdomain. [Status: 404; Correlation ID: fake-correlation-id]",
 			},
 		},
 		{
 			description:  "error path - outdated protocol version [412]",
-			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
+			loginRequest: NewIdTokenLoginRequest("subdomain", "idToken"),
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusPreconditionFailed,
 				expectErrorMsg:  "Login failed due to outdated provider version. Update to the latest version of the provider. [Status: 412; Correlation ID: fake-correlation-id]",
@@ -231,7 +237,7 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 		},
 		{
 			description:  "error path - login request times out [504]]",
-			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
+			loginRequest: NewIdTokenLoginRequest("subdomain", "idToken"),
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusGatewayTimeout,
 				expectErrorMsg:  "Login timed out. Please try again later. [Status: 504; Correlation ID: fake-correlation-id]",
@@ -239,7 +245,7 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 		},
 		{
 			description:  "error path - unexpected error",
-			loginRequest: NewIdTokenLoginRequest("", "subdomain", "idToken"),
+			loginRequest: NewIdTokenLoginRequest("subdomain", "idToken"),
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusTeapot,
 				expectErrorMsg:  "received response with unexpected status [Status: 418; Correlation ID: fake-correlation-id]",
@@ -251,7 +257,7 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 		t.Run(test.description, func(t *testing.T) {
 			test.simulation.srvExpectPath = path.Join("/login", cliTargetProtocolVersion, "idtoken")
 			test.simulation.callFunctionUnderTest = func(ctx context.Context, uut *v2Client) (any, error) {
-				return struct{}{}, uut.IdTokenLogin(ctx, test.loginRequest)
+				return uut.IdTokenLogin(ctx, test.loginRequest)
 			}
 
 			simulateV2Call(t, test.simulation)

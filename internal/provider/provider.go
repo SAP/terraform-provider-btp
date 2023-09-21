@@ -3,6 +3,9 @@ package provider
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"net/http"
 	"net/url"
 	"os"
@@ -57,6 +60,10 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				MarkdownDescription: "A valid id token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_IDTOKEN` environment variable. (SAP-internal usage only)",
 				Optional:            true,
 				Sensitive:           true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("idp")),
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"idp": schema.StringAttribute{
 				MarkdownDescription: "The identity provider to be used for authentication (default: SAP ID service with origin `sap.default`).",
@@ -171,12 +178,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 			return
 		}
 	} else {
-		if len(username) > 0 || len(password) > 0 {
-			resp.Diagnostics.AddError(unableToCreateClient, "username and password must not be given when providing an id token.")
-			return
-		}
-
-		if err = client.IdTokenLogin(ctx, btpcli.NewIdTokenLoginRequest(idp, config.GlobalAccount.ValueString(), idToken)); err != nil {
+		if _, err = client.IdTokenLogin(ctx, btpcli.NewIdTokenLoginRequest(config.GlobalAccount.ValueString(), idToken)); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 			return
 		}
