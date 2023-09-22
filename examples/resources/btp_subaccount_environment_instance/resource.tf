@@ -35,3 +35,26 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
     delete = "30m"
   }
 }
+
+# creates a kyma environment in a given account
+# NOTE: for the available parameter values, check https://help.sap.com/docs/btp/sap-business-technology-platform/available-plans-in-kyma-environment
+resource "btp_subaccount_environment_instance" "kyma" {
+  subaccount_id    = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  name             = "my-kyma-environment"
+  environment_type = "kyma"
+  service_name     = "kymaruntime"
+  plan_name        = "aws"
+
+  parameters = jsonencode({
+    name            = "my-kyma-environment"
+    region          = "us-east-1"
+    machine_type    = "mx5.xlarge" #smallest option
+    auto_scaler_min = 3
+    auto_scaler_max = 20
+  })
+  timeouts = {
+    create = "1h"
+    update = "35m"
+    delete = "1h"
+  }
+}
