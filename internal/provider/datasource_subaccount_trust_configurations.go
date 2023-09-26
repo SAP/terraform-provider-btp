@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"fmt"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -18,9 +17,9 @@ func newSubaccountTrustConfigurationsDataSource() datasource.DataSource {
 }
 
 type subaccountTrustConfigurationsDataSourceConfig struct {
-	Id           types.String                          `tfsdk:"id"`
-	SubaccountId types.String                          `tfsdk:"subaccount_id"`
-	Values       []globalaccountTrustConfigurationType `tfsdk:"values"`
+	Id           types.String                                `tfsdk:"id"`
+	SubaccountId types.String                                `tfsdk:"subaccount_id"`
+	Values       []subaccountTrustConfigurationListEntryType `tfsdk:"values"`
 }
 
 type subaccountTrustConfigurationsDataSource struct {
@@ -69,31 +68,48 @@ __Further documentation:__
 							Computed:            true,
 						},
 						"id": schema.StringAttribute{
-							MarkdownDescription: "The ID of the trust configuration.",
+							DeprecationMessage:  "Use the `origin` attribute instead",
+							MarkdownDescription: "The origin of the identity provider.",
+							Computed:            true,
+						},
+						"identity_provider": schema.StringAttribute{
+							MarkdownDescription: "The name of the Identity Authentication tenant the subaccount is connected to.",
+							Computed:            true,
+						},
+						"domain": schema.StringAttribute{
+							MarkdownDescription: "The tenant's domain which should be used for user logon.",
 							Computed:            true,
 						},
 						"name": schema.StringAttribute{
-							MarkdownDescription: "The name of the trust configuration.",
+							MarkdownDescription: "The display name of the trust configuration.",
 							Computed:            true,
 						},
 						"description": schema.StringAttribute{
 							MarkdownDescription: "The description of the trust configuration.",
 							Computed:            true,
 						},
+						"link_text": schema.StringAttribute{
+							MarkdownDescription: "Short string that helps users to identify the link for login.",
+							Computed:            true,
+						},
+						"available_for_user_logon": schema.BoolAttribute{
+							MarkdownDescription: "Shows whether end users can choose the trust configuration for login. If not set, the trust configuration can remain active, however only application users that explicitly specify the origin key can use if for login.",
+							Computed:            true,
+						},
+						"auto_create_shadow_users": schema.BoolAttribute{
+							MarkdownDescription: "Shows whether any user from the tenant can log in. If not set, only the ones who already have a shadow user can log in.",
+							Computed:            true,
+						},
+						"status": schema.StringAttribute{
+							MarkdownDescription: "Shows whether the identity provider is currently 'active' or 'inactive'.",
+							Computed:            true,
+						},
 						"type": schema.StringAttribute{
 							MarkdownDescription: "The trust type.",
 							Computed:            true,
 						},
-						"identity_provider": schema.StringAttribute{
-							MarkdownDescription: "The name of the identity provider.",
-							Computed:            true,
-						},
 						"protocol": schema.StringAttribute{
 							MarkdownDescription: "The protocol used to establish trust with the identity provider.",
-							Computed:            true,
-						},
-						"status": schema.StringAttribute{
-							MarkdownDescription: "Shows whether the identity provider is currently active or not.",
 							Computed:            true,
 						},
 						"read_only": schema.BoolAttribute{
@@ -126,10 +142,10 @@ func (ds *subaccountTrustConfigurationsDataSource) Read(ctx context.Context, req
 	}
 
 	data.Id = data.SubaccountId
-	data.Values = []globalaccountTrustConfigurationType{}
+	data.Values = []subaccountTrustConfigurationListEntryType{}
 
 	for _, trustConfig := range cliRes {
-		trustConfigValue, diags := globalaccountTrustConfigurationFromValue(ctx, trustConfig)
+		trustConfigValue, diags := subaccountTrustConfigurationFromListEntry(ctx, trustConfig)
 		resp.Diagnostics.Append(diags...)
 
 		data.Values = append(data.Values, trustConfigValue)
