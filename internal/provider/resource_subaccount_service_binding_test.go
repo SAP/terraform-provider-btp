@@ -37,6 +37,28 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("happy path - simple service_binding with labels", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding.with_labels")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBindingWithLabels("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "df532d07-57a7-415e-a261-23a398ef068a", "tfint-test-alert-sb"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_service_binding.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_service_binding.uut", "labels.foo.0", "bar"),
+					),
+				},
+			},
+		})
+	})
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -107,6 +129,17 @@ func hclResourceSubaccountServiceBinding(resourceName string, subaccountId strin
 		    subaccount_id       = "%s"
 			service_instance_id = "%s"
 			name                = "%s"
+		}`, resourceName, subaccountId, serviceInstanceId, name)
+}
+
+func hclResourceSubaccountServiceBindingWithLabels(resourceName string, subaccountId string, serviceInstanceId string, name string) string {
+
+	return fmt.Sprintf(`
+		resource "btp_subaccount_service_binding" "%s"{
+		    subaccount_id       = "%s"
+			service_instance_id = "%s"
+			name                = "%s"
+			labels              = {"foo" = ["bar"]}
 		}`, resourceName, subaccountId, serviceInstanceId, name)
 }
 

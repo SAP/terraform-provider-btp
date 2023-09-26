@@ -80,8 +80,9 @@ func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "The set of words or phrases assigned to service binding.",
+				MarkdownDescription: "The set of words or phrases assigned to the service binding.",
 				Computed:            true,
+				Optional:            true,
 			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service binding.",
@@ -177,6 +178,13 @@ func (rs *subaccountServiceBindingResource) Create(ctx context.Context, req reso
 		Parameters:        plan.Parameters.ValueString(),
 	}
 
+	if !plan.Labels.IsNull() {
+		var labels map[string][]string
+		plan.Labels.ElementsAs(ctx, &labels, false)
+
+		cliReq.Labels = labels
+	}
+
 	cliRes, _, err := rs.cli.Services.Binding.Create(ctx, cliReq)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Service Binding (Subaccount)", fmt.Sprintf("%s", err))
@@ -215,6 +223,9 @@ func (rs *subaccountServiceBindingResource) Create(ctx context.Context, req reso
 
 	updatedPlan, diags = subaccountServiceBindingValueFrom(ctx, updatedRes.(servicemanager.ServiceBindingResponseObject))
 	updatedPlan.Parameters = plan.Parameters
+
+	//We override the labels as the service manager adds the subaccount ID as a label which is redundant and also not visible in the cockpit
+	updatedPlan.Labels = plan.Labels
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedPlan)

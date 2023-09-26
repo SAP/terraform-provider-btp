@@ -152,6 +152,9 @@ func TestServicesBindingFacade_Create(t *testing.T) {
 	bindingName := "my-binding"
 	parameters := "{}"
 	serviceInstanceId := "8911491d-0e1d-425d-a233-785512602d6f"
+	labels := map[string][]string{
+		"a": {"b"},
+	}
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
 		var srvCalled bool
@@ -164,6 +167,7 @@ func TestServicesBindingFacade_Create(t *testing.T) {
 				"name":              bindingName,
 				"serviceInstanceID": serviceInstanceId,
 				"parameters":        parameters,
+				"labels":            `{"a":["b"]}`,
 			})
 		}))
 		defer srv.Close()
@@ -173,6 +177,7 @@ func TestServicesBindingFacade_Create(t *testing.T) {
 			Name:              bindingName,
 			Parameters:        parameters,
 			ServiceInstanceId: serviceInstanceId,
+			Labels:            labels,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {

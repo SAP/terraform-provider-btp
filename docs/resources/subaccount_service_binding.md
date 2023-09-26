@@ -42,6 +42,7 @@ resource "btp_subaccount_service_binding" "my_parameterized_binding" {
 
 ### Optional
 
+- `labels` (Map of Set of String) The set of words or phrases assigned to the service binding.
 - `parameters` (String) The parameters of the service binding as a valid JSON object.
 
 ### Read-Only
@@ -51,7 +52,6 @@ resource "btp_subaccount_service_binding" "my_parameterized_binding" {
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `credentials` (String, Sensitive) The credentials to access the binding.
 - `id` (String) The ID of the service binding.
-- `labels` (Map of Set of String) The set of words or phrases assigned to service binding.
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `ready` (Boolean) Shows whether the service binding is ready.
 - `state` (String) The current state of the service binding. Possible values are: 
