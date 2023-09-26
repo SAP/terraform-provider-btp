@@ -132,7 +132,7 @@ func (rs *globalaccountTrustConfigurationResource) Create(ctx context.Context, r
 		return
 	}
 
-	cliReq := btpcli.TrustConfigurationInput{
+	cliReq := btpcli.TrustConfigurationCreateInput{
 		IdentityProvider: plan.IdentityProvider.ValueString(),
 	}
 

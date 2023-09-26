@@ -45,11 +45,15 @@ data "btp_subaccount_trust_configuration" "custom" {
 
 ### Read-Only
 
+- `auto_create_shadow_users` (Boolean) Shows whether any user from the tenant can log in. If not set, only the ones who already have a shadow user can log in.
+- `available_for_user_logon` (Boolean) Shows whether end users can choose the trust configuration for login. If not set, the trust configuration can remain active, however only application users that explicitly specify the origin key can use if for login.
 - `description` (String) The description of the trust configuration.
-- `id` (String) The ID of the trust configuration.
-- `identity_provider` (String) The name of the identity provider.
-- `name` (String) The name of the trust configuration.
+- `domain` (String) The tenant's domain which should be used for user logon.
+- `id` (String, Deprecated) The origin of the identity provider.
+- `identity_provider` (String) The name of the Identity Authentication tenant the subaccount is connected to.
+- `link_text` (String) Short string that helps users to identify the link for login.
+- `name` (String) The display name of the trust configuration.
 - `protocol` (String) The protocol used to establish trust with the identity provider.
 - `read_only` (Boolean) Shows whether the trust configuration can be modified.
-- `status` (String) Shows whether the identity provider is currently active or not.
+- `status` (String) Shows whether the identity provider is currently 'active' or 'inactive'.
 - `type` (String) The trust type.
