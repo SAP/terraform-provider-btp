@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/servicemanager"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 )
 
 type subaccountServiceInstanceType struct {
@@ -49,6 +50,9 @@ func subaccountServiceInstanceValueFrom(ctx context.Context, value servicemanage
 
 	serviceInstance.Context, diags = types.MapValueFrom(ctx, types.StringType, value.Context)
 	diagnostics.Append(diags...)
+
+	//Remove computed labels to avoid state inconsistencies
+	value.Labels = tfutils.RemoveComputedlabels(value.Labels)
 
 	serviceInstance.Labels, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, value.Labels)
 	diagnostics.Append(diags...)
@@ -94,6 +98,9 @@ func subaccountServiceInstanceDataSourceValueFrom(ctx context.Context, value ser
 
 	serviceInstance.Context, diags = types.MapValueFrom(ctx, types.StringType, value.Context)
 	diagnostics.Append(diags...)
+
+	//Remove computed labels to avoid state inconsistencies
+	value.Labels = tfutils.RemoveComputedlabels(value.Labels)
 
 	serviceInstance.Labels, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, value.Labels)
 	diagnostics.Append(diags...)

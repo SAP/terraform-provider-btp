@@ -224,10 +224,6 @@ func (rs *subaccountServiceBindingResource) Create(ctx context.Context, req reso
 	updatedPlan, diags = subaccountServiceBindingValueFrom(ctx, updatedRes.(servicemanager.ServiceBindingResponseObject))
 	updatedPlan.Parameters = plan.Parameters
 
-	//We override the labels as the service manager adds the subaccount ID as a label which is redundant and also not visible in the cockpit
-	updatedPlan.Labels = plan.Labels
-	resp.Diagnostics.Append(diags...)
-
 	diags = resp.State.Set(ctx, &updatedPlan)
 	resp.Diagnostics.Append(diags...)
 }
