@@ -223,6 +223,7 @@ func (rs *subaccountServiceBindingResource) Create(ctx context.Context, req reso
 
 	updatedPlan, diags = subaccountServiceBindingValueFrom(ctx, updatedRes.(servicemanager.ServiceBindingResponseObject))
 	updatedPlan.Parameters = plan.Parameters
+	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedPlan)
 	resp.Diagnostics.Append(diags...)
