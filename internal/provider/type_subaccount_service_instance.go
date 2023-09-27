@@ -99,9 +99,6 @@ func subaccountServiceInstanceDataSourceValueFrom(ctx context.Context, value ser
 	serviceInstance.Context, diags = types.MapValueFrom(ctx, types.StringType, value.Context)
 	diagnostics.Append(diags...)
 
-	//Remove computed labels to avoid state inconsistencies
-	value.Labels = tfutils.RemoveComputedlabels(value.Labels)
-
 	serviceInstance.Labels, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, value.Labels)
 	diagnostics.Append(diags...)
 
