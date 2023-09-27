@@ -267,11 +267,19 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 		cliReq.Parameters = &params
 	}
 
+	// Labels of plan and state need to be transferred as a delta must be computed for the update operation
 	if !plan.Labels.IsNull() {
-		var labels map[string][]string
-		plan.Labels.ElementsAs(ctx, &labels, false)
+		var labelsFromPlan map[string][]string
+		plan.Labels.ElementsAs(ctx, &labelsFromPlan, false)
 
-		cliReq.Labels = labels
+		cliReq.LabelsPlan = labelsFromPlan
+	}
+
+	if !stateCurrent.Labels.IsNull() {
+		var labelsFromState map[string][]string
+		stateCurrent.Labels.ElementsAs(ctx, &labelsFromState, false)
+
+		cliReq.LabelsState = labelsFromState
 	}
 
 	cliRes, _, err := rs.cli.Services.Instance.Update(ctx, &cliReq)
