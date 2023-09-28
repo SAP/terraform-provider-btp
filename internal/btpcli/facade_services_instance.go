@@ -106,10 +106,15 @@ type ServiceInstanceUpdateInput struct {
 func (f servicesInstanceFacade) Update(ctx context.Context, args *ServiceInstanceUpdateInput) (servicemanager.ServiceInstanceResponseObject, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
-	params["labels"] = getLabelParam(args.LabelsPlan, args.LabelsState)
-
 	if err != nil {
 		return servicemanager.ServiceInstanceResponseObject{}, CommandResponse{}, err
+	}
+
+	computedLabels := computeLabelParam(args.LabelsPlan, args.LabelsState)
+
+	if computedLabels != "" {
+		// Parameter must only be added to call if non-empty
+		params["labels"] = computedLabels
 	}
 
 	//TODO workaround for NGPBUG-359662 and NGPBUG-350117 => needs to be rebuilt after fix
@@ -141,23 +146,30 @@ func (f servicesInstanceFacade) Delete(ctx context.Context, subaccountId string,
 	return res, err
 }
 
-func getLabelParam(labelsPlan map[string][]string, labelsState map[string][]string) string {
+func computeLabelParam(labelsPlan map[string][]string, labelsState map[string][]string) string {
 
 	var labelEntry servicemanager.Label
 	var labelDiff []servicemanager.Label
 
 	for k, v := range labelsState {
+		if _, ok := labelsPlan[k]; !ok {
+			// Do not add not found entries
+			continue
+		}
 		if !reflect.DeepEqual(v, labelsPlan[k]) {
-			// Old label needs to be removed and new label needs to be added
+			// Old label needs to be removed
 			labelEntry.Op = labelRemoveOp
 			labelEntry.Key = k
 			labelEntry.Values = v
 
 			labelDiff = append(labelDiff, labelEntry)
 
+			//New label needs to be added
 			labelEntry.Op = labelAddOp
 			labelEntry.Key = k
 			labelEntry.Values = labelsPlan[k]
+
+			labelDiff = append(labelDiff, labelEntry)
 
 		}
 	}
