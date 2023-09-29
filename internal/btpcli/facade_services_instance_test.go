@@ -241,3 +241,62 @@ func TestServicesInstanceFacade_Delete(t *testing.T) {
 		}
 	})
 }
+
+func TestServicesInstanceFacade_ComputeLabelDiff(t *testing.T) {
+
+	tests := []struct {
+		description string
+		labelsOld   map[string][]string
+		labelsNew   map[string][]string
+		expects     string
+	}{
+
+		{
+			description: "No changes",
+			labelsOld: map[string][]string{
+				"foo": {"bar"},
+			},
+			labelsNew: map[string][]string{
+				"foo": {"bar"},
+			},
+			expects: "",
+		},
+		{
+			description: "Change a label",
+			labelsOld: map[string][]string{
+				"foo": {"bar"},
+			},
+			labelsNew: map[string][]string{
+				"foo": {"BAR"},
+			},
+			expects: "[{\"op\":\"remove\",\"key\":\"foo\",\"values\":[\"bar\"]},{\"op\":\"add\",\"key\":\"foo\",\"values\":[\"BAR\"]}]",
+		},
+		{
+			description: "Remove a label",
+			labelsOld: map[string][]string{
+				"foo": {"bar"},
+			},
+			labelsNew: map[string][]string{},
+			expects:   "[{\"op\":\"remove\",\"key\":\"foo\",\"values\":[\"bar\"]}]",
+		},
+		{
+			description: "Add a label",
+			labelsOld: map[string][]string{
+				"foo": {"bar"},
+			},
+			labelsNew: map[string][]string{
+				"foo": {"bar"},
+				"bar": {"foo"},
+			},
+			expects: "[{\"op\":\"add\",\"key\":\"bar\",\"values\":[\"foo\"]}]",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.description, func(t *testing.T) {
+			result := computeLabelParam(test.labelsNew, test.labelsOld)
+
+			assert.Equal(t, test.expects, result)
+		})
+	}
+}
