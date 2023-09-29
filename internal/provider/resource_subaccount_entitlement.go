@@ -25,6 +25,10 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
+const entitlementCallRetrySucceeded = "retryCallSucceeded"
+const entitlementCallRetryPending = "retryCallPending"
+const entitlementCallRetryFailed = "retryCallFailed"
+
 func newSubaccountEntitlementResource() resource.Resource {
 	return &subaccountEntitlementResource{}
 }
@@ -180,12 +184,41 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		return
 	}
 
-	var err error
-	if !hasPlanQuota(plan) {
-		_, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
-	} else {
-		_, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()))
+	// We call the API in a retry mode as the API may return a locking error
+	RetryApiCallConf := &tfutils.StateChangeConf{
+		Pending: []string{entitlementCallRetryPending},
+		Target:  []string{entitlementCallRetryFailed, entitlementCallRetrySucceeded},
+		Refresh: func() (interface{}, string, error) {
+
+			var callResult btpcli.CommandResponse
+			var err error
+
+			if !hasPlanQuota(plan) {
+				callResult, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
+			} else {
+				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()))
+			}
+
+			if err == nil {
+				return callResult, entitlementCallRetrySucceeded, nil
+			}
+
+			if err != nil && isRetriableError(err) {
+				return callResult, entitlementCallRetryPending, nil
+			}
+
+			if err != nil {
+				return callResult, entitlementCallRetryFailed, err
+			}
+
+			return callResult, entitlementCallRetryPending, err
+		},
+		Timeout:    5 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
 	}
+
+	_, err := RetryApiCallConf.WaitForStateContext(ctx)
 
 	if err != nil {
 		responseDiagnostics.AddError(fmt.Sprintf("API Error %s Resource Entitlement (Subaccount)", action), fmt.Sprintf("%s", err))
@@ -240,12 +273,40 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 		return
 	}
 
-	var err error
-	if !hasPlanQuota(state) {
-		_, err = rs.cli.Accounts.Entitlement.DisableInSubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
-	} else {
-		_, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0)
+	// We call the API in a retry mode as the API may return a locking error
+	RetryApiCallConf := &tfutils.StateChangeConf{
+		Pending: []string{entitlementCallRetryPending},
+		Target:  []string{entitlementCallRetryFailed, entitlementCallRetrySucceeded},
+		Refresh: func() (interface{}, string, error) {
+			var callResult btpcli.CommandResponse
+			var err error
+
+			if !hasPlanQuota(state) {
+				callResult, err = rs.cli.Accounts.Entitlement.DisableInSubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+			} else {
+				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0)
+			}
+
+			if err == nil {
+				return callResult, entitlementCallRetrySucceeded, nil
+			}
+
+			if err != nil && isRetriableError(err) {
+				return callResult, entitlementCallRetryPending, nil
+			}
+
+			if err != nil {
+				return callResult, entitlementCallRetryFailed, err
+			}
+
+			return callResult, entitlementCallRetryPending, err
+		},
+		Timeout:    5 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
 	}
+
+	_, err := RetryApiCallConf.WaitForStateContext(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
@@ -317,4 +378,21 @@ func hasPlanQuota(state subaccountEntitlementType) bool {
 	}
 
 	return true
+}
+
+func isRetriableError(err error) bool {
+
+	if err == nil {
+		//If no error was raised a retry is not necessary
+		return false
+	}
+
+	if strings.Contains(err.Error(), "[Error: 30004/400]") {
+		// Error code for a locking scenario - API call must be retried
+		return true
+	} else {
+		// No retry possible as errro code does not indicate a valid retry scenario
+		return false
+	}
+
 }
