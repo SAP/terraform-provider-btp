@@ -50,11 +50,11 @@ func (f servicesBindingFacade) GetByName(ctx context.Context, subaccountId strin
 }
 
 type SubaccountServiceBindingCreateInput struct {
-	Subaccount        string  `btpcli:"subaccount"`
-	ServiceInstanceId string  `btpcli:"serviceInstanceID"`
-	Name              string  `btpcli:"name"`
-	Parameters        string  `btpcli:"parameters"`
-	Labels            *string `btpcli:"labels"`
+	Subaccount        string              `btpcli:"subaccount"`
+	ServiceInstanceId string              `btpcli:"serviceInstanceID"`
+	Name              string              `btpcli:"name"`
+	Parameters        string              `btpcli:"parameters"`
+	Labels            map[string][]string `btpcli:"labels"`
 }
 
 func (f servicesBindingFacade) Create(ctx context.Context, args SubaccountServiceBindingCreateInput) (servicemanager.ServiceBindingResponseObject, CommandResponse, error) {

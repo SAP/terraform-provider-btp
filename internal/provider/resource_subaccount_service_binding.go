@@ -80,8 +80,9 @@ func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource
 				ElementType: types.SetType{
 					ElemType: types.StringType,
 				},
-				MarkdownDescription: "The set of words or phrases assigned to service binding.",
+				MarkdownDescription: "The set of words or phrases assigned to the service binding.",
 				Computed:            true,
+				Optional:            true,
 			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service binding.",
@@ -175,6 +176,13 @@ func (rs *subaccountServiceBindingResource) Create(ctx context.Context, req reso
 		ServiceInstanceId: plan.ServiceInstanceId.ValueString(),
 		Name:              plan.Name.ValueString(),
 		Parameters:        plan.Parameters.ValueString(),
+	}
+
+	if !plan.Labels.IsNull() {
+		var labels map[string][]string
+		plan.Labels.ElementsAs(ctx, &labels, false)
+
+		cliReq.Labels = labels
 	}
 
 	cliRes, _, err := rs.cli.Services.Binding.Create(ctx, cliReq)
