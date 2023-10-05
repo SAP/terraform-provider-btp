@@ -44,6 +44,13 @@ func (f *accountsEntitlementFacade) ListByGlobalAccount(ctx context.Context) (ci
 func (f *accountsEntitlementFacade) ListBySubaccount(ctx context.Context, subaccountId string) (cis_entitlements.EntitledAndAssignedServicesResponseObject, CommandResponse, error) {
 	return doExecute[cis_entitlements.EntitledAndAssignedServicesResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"subaccountFilter": subaccountId,
+		"subaccount":       subaccountId,
+	}))
+}
+
+func (f *accountsEntitlementFacade) ListBySubaccountId(ctx context.Context, subaccountId string) (cis_entitlements.ServicePlanAssignmentsResponseCollection, CommandResponse, error) {
+	return doExecute[cis_entitlements.ServicePlanAssignmentsResponseCollection](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
+		"subaccount": subaccountId,
 	}))
 }
 
@@ -122,6 +129,32 @@ func (f *accountsEntitlementFacade) GetAssignedBySubaccount(ctx context.Context,
 	return nil, comRes, nil
 }
 
+func (f *accountsEntitlementFacade) GetAssignedBySubaccountId(ctx context.Context, subaccountId, serviceName string, servicePlanName string) (*UnfoldedAssignment, CommandResponse, error) {
+	//cliRes, comRes, err := f.ListBySubaccount(ctx, subaccountId)
+
+	cliRes, comRes, err := f.ListBySubaccountId(ctx, subaccountId)
+	if err != nil {
+		return nil, comRes, err
+	}
+
+	for _, assignedService := range cliRes.AssignedService {
+		if assignedService.Service != serviceName {
+			continue
+		}
+
+		/*servicePlan, assignment := f.searchPlansAndAssignments(assignedService.ServicePlans, servicePlanName, subaccountEntityType, subaccountId)
+		if assignment != nil {
+			return &UnfoldedAssignment{
+				Service:    assignedService,
+				Plan:       *servicePlan,
+				Assignment: *assignment,
+			}, comRes, nil
+		}
+		*/
+	}
+
+	return nil, comRes, nil
+}
 func (f *accountsEntitlementFacade) searchPlansAndAssignments(servicePlans []cis_entitlements.AssignedServicePlanResponseObject, servicePlanName string, entityType string, entityId string) (*cis_entitlements.AssignedServicePlanResponseObject, *cis_entitlements.AssignedServicePlanSubaccountDto) {
 	for _, servicePlan := range servicePlans {
 		if servicePlan.Name != servicePlanName {
