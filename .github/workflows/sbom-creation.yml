@@ -1,0 +1,16 @@
+name: SBOM Generator
+# Create SBOM for a repository and store the artifatcs
+
+on:
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  generate-sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anchore/sbom-action@v0.14.3
+        with:
+          artifact-name: sbom.spdx
