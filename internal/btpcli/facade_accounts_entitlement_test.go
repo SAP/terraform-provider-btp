@@ -55,6 +55,30 @@ func TestAccountsEntitlementFacade_ListBySubaccount(t *testing.T) {
 	})
 }
 
+func TestAccountsEntitlementFacade_ListBySubaccountWithDirectoryParent(t *testing.T) {
+	command := "accounts/entitlement"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionList, map[string]string{
+				"subaccountFilter": "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f",
+				"directory":        "8ab64c2f-38c1-49a9-b2e8-cf9fea769b7f",
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Accounts.Entitlement.ListBySubaccountWithDirectoryParent(context.TODO(), "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f", "8ab64c2f-38c1-49a9-b2e8-cf9fea769b7f")
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
 func TestAccountsEntitlementFacade_ListByDirectory(t *testing.T) {
 	command := "accounts/entitlement"
 

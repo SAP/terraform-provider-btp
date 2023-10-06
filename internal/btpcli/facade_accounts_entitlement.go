@@ -47,6 +47,13 @@ func (f *accountsEntitlementFacade) ListBySubaccount(ctx context.Context, subacc
 	}))
 }
 
+func (f *accountsEntitlementFacade) ListBySubaccountWithDirectoryParent(ctx context.Context, subaccountId string, directoryId string) (cis_entitlements.EntitledAndAssignedServicesResponseObject, CommandResponse, error) {
+	return doExecute[cis_entitlements.EntitledAndAssignedServicesResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
+		"subaccountFilter": subaccountId,
+		"directory":        directoryId,
+	}))
+}
+
 func (f *accountsEntitlementFacade) ListByDirectory(ctx context.Context, directoryId string) (cis_entitlements.EntitledAndAssignedServicesResponseObject, CommandResponse, error) {
 	return doExecute[cis_entitlements.EntitledAndAssignedServicesResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
 		"directory": directoryId,
@@ -97,8 +104,16 @@ type UnfoldedEntitlement struct {
 	Plan    cis_entitlements.ServicePlanResponseObject
 }
 
-func (f *accountsEntitlementFacade) GetAssignedBySubaccount(ctx context.Context, subaccountId, serviceName string, servicePlanName string) (*UnfoldedAssignment, CommandResponse, error) {
-	cliRes, comRes, err := f.ListBySubaccount(ctx, subaccountId)
+func (f *accountsEntitlementFacade) GetAssignedBySubaccount(ctx context.Context, subaccountId, serviceName string, servicePlanName string, isParentGlobalAccount bool, parentId string) (*UnfoldedAssignment, CommandResponse, error) {
+	var cliRes cis_entitlements.EntitledAndAssignedServicesResponseObject
+	var comRes CommandResponse
+	var err error
+
+	if isParentGlobalAccount {
+		cliRes, comRes, err = f.ListBySubaccount(ctx, subaccountId)
+	} else {
+		cliRes, comRes, err = f.ListBySubaccountWithDirectoryParent(ctx, subaccountId, parentId)
+	}
 
 	if err != nil {
 		return nil, comRes, err

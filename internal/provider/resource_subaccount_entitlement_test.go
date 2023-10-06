@@ -28,13 +28,45 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "hana-cloud-hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "hana-cloud"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "3"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},
 				{
 					ResourceName:      "btp_subaccount_entitlement.uut",
 					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,hana-cloud,hana",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - directory hierarchy", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.dir_hierarchy")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlement("uut", "47a7c342-1a90-4ed7-a218-cb0b1cadb062", "hana-cloud", "hana"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "hana-cloud-hana"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "hana"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "hana-cloud-hana"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_entitlement.uut",
+					ImportStateId:     "47a7c342-1a90-4ed7-a218-cb0b1cadb062,hana-cloud,hana",
 					ImportState:       true,
 					ImportStateVerify: true,
 				},

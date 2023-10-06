@@ -150,7 +150,13 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 		return
 	}
 
-	entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+	// Determine the parent of the subaccount
+	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
+	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
+	parentId, isParentGlobalAccount := determineParentId(rs.cli, ctx, subaccountData.ParentGUID)
+
+	entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
+
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
 		return
@@ -225,12 +231,18 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		return
 	}
 
+	// Determine the parent of the subaccount
+	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
+	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, plan.SubaccountId.ValueString())
+	parentId, isParentGlobalAccount := determineParentId(rs.cli, ctx, subaccountData.ParentGUID)
+
 	// wait for the entitlement to become effective
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK},
 		Refresh: func() (interface{}, string, error) {
-			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
+
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
 			if err != nil {
 				return nil, "", err
@@ -313,12 +325,17 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 		return
 	}
 
+	// Determine the parent of the subaccount
+	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
+	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
+	parentId, isParentGlobalAccount := determineParentId(rs.cli, ctx, subaccountData.ParentGUID)
+
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{"DELETED"},
 		Refresh: func() (interface{}, string, error) {
 
-			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
 			if reflect.ValueOf(entitlement).IsNil() {
 				return entitlement, "DELETED", nil

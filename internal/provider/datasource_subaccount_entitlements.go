@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis_entitlements"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
@@ -113,6 +114,8 @@ To get all entitlements and quota assigned to a specific subaccount:
 
 func (ds *subaccountEntitlementsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data subaccountEntitlementsDataSourceConfig
+	var cliRes cis_entitlements.EntitledAndAssignedServicesResponseObject
+	var err error
 
 	diags := req.Config.Get(ctx, &data)
 
@@ -121,7 +124,17 @@ func (ds *subaccountEntitlementsDataSource) Read(ctx context.Context, req dataso
 		return
 	}
 
-	cliRes, _, err := ds.cli.Accounts.Entitlement.ListBySubaccount(ctx, data.SubaccountId.ValueString())
+	// Determine the parent of the subaccount
+	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the "List" call
+	subaccountData, _, _ := ds.cli.Accounts.Subaccount.Get(ctx, data.SubaccountId.ValueString())
+	parentId, isParentGlobalAccount := determineParentId(ds.cli, ctx, subaccountData.ParentGUID)
+
+	if isParentGlobalAccount {
+		cliRes, _, err = ds.cli.Accounts.Entitlement.ListBySubaccount(ctx, data.SubaccountId.ValueString())
+	} else {
+		cliRes, _, err = ds.cli.Accounts.Entitlement.ListBySubaccountWithDirectoryParent(ctx, data.SubaccountId.ValueString(), parentId)
+	}
+
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Entitlements (Subaccount)", fmt.Sprintf("%s", err))
 		return

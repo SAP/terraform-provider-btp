@@ -25,7 +25,7 @@ func TestDataSourceSubaccountEntitlements(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountEntitlements("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "values.%", "163"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "values.%", "162"),
 					),
 				},
 			},
