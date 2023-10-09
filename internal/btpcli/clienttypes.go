@@ -39,6 +39,16 @@ type IdTokenLoginRequest struct {
 	IdToken                string `json:"idToken"`
 }
 
+type PasscodeLoginRequest struct {
+	GlobalAccountSubdomain string
+	IdentityProvider       string
+	IdentityProviderURL    string
+	Username               string
+	PEMEncodedCACerts      string
+	PEMEncodedPrivateKey   string
+	PEMEncodedCertificate  string
+}
+
 type LoginResponse struct {
 	RefreshToken string `json:"refreshToken"`
 	Username     string `json:"user"`
