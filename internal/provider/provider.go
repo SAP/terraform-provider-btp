@@ -3,12 +3,13 @@ package provider
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"net/http"
 	"net/url"
 	"os"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -61,7 +62,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
-					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("idp")),
+					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("idp"), path.MatchRoot("idp_url"), path.MatchRoot("tls_client_key"), path.MatchRoot("tls_client_certificate")),
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
@@ -72,14 +73,26 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 			"idp_url": schema.StringAttribute{
 				MarkdownDescription: "The URL of the identity provider to be used for authentication (only required for x509 auth).",
 				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
+					stringvalidator.AlsoRequires(path.MatchRoot("tls_client_key"), path.MatchRoot("tls_client_certificate")),
+				},
 			},
 			"tls_client_key": schema.StringAttribute{
 				MarkdownDescription: "PEM encoded private key",
 				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
+					stringvalidator.AlsoRequires(path.MatchRoot("idp_url"), path.MatchRoot("tls_client_certificate")),
+				},
 			},
 			"tls_client_certificate": schema.StringAttribute{
 				MarkdownDescription: "PEM encoded certificate",
 				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
+					stringvalidator.AlsoRequires(path.MatchRoot("idp_url"), path.MatchRoot("tls_client_key")),
+				},
 			},
 		},
 	}
