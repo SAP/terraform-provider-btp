@@ -227,7 +227,7 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 // DataSources - Defines provider data sources
 func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	betaDataSources := []func() datasource.DataSource{
-		//Beta resources should be excluded from sonar scan.
+		//Beta data sources should be excluded from sonar scan.
 		//If you add them to production code, remove them from sonar exclusion list
 		newDirectoryAppDataSource,
 		newDirectoryAppsDataSource,
