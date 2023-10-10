@@ -2,8 +2,17 @@ package btpcli
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/tls"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding/json"
+	"encoding/pem"
 	"fmt"
 	"io"
+	"math/big"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -11,6 +20,7 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -263,6 +273,83 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 			simulateV2Call(t, test.simulation)
 		})
 	}
+}
+
+func TestV2Client_PasscodeLogin(t *testing.T) {
+	t.Parallel()
+
+	// Generate CA, server and client certificates
+	caKey, caCert, _ := generateKeyPair(nil)
+	serverKey, serverCert, _ := generateKeyPair(caKey)
+	clientKey, clientCert, _ := generateKeyPair(caKey)
+
+	_, pemEncodedCACerts := pemEncodeKeyPair(caKey, caCert)
+	pemEncodedClientKey, pemEncodedClientCert := pemEncodeKeyPair(clientKey, clientCert)
+
+	// Create certificate pool
+	certPool := x509.NewCertPool()
+	certPool.AddCert(caCert)
+
+	// Create TLS config
+	tlsConfig := tls.Config{
+		Certificates: []tls.Certificate{
+			{
+				Certificate: [][]byte{serverCert.Raw},
+				PrivateKey:  serverKey,
+			},
+		},
+		ClientCAs: certPool,
+	}
+
+	// Setup HTTPS server
+	srv := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/service/users/passcode" {
+			_, _ = w.Write([]byte("{\"passcode\": \"this-is-a-onetime-passcode\"}"))
+		} else if strings.HasPrefix(r.URL.Path, "/login/") {
+			var loginReq LoginRequest
+
+			err := json.NewDecoder(r.Body).Decode(&loginReq)
+
+			if assert.NoError(t, err) {
+				assert.Equal(t, "this-is-a-onetime-passcode", loginReq.Password)
+			}
+
+			_, _ = w.Write([]byte("{}"))
+		} else {
+			w.WriteHeader(http.StatusNotImplemented)
+		}
+	}))
+	srv.TLS = &tlsConfig
+	srv.StartTLS()
+	defer srv.Close()
+
+	srvUrl, _ := url.Parse(srv.URL)
+
+	t.Run("happy path", func(t *testing.T) {
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		_, err := uut.PasscodeLogin(context.TODO(), &PasscodeLoginRequest{
+			GlobalAccountSubdomain: "my-subdomain",
+			Username:               "john.doe@test.com",
+			IdentityProvider:       "my-custom-idp",
+			IdentityProviderURL:    srv.URL,
+			PEMEncodedCACerts:      pemEncodedCACerts,
+			PEMEncodedPrivateKey:   pemEncodedClientKey,
+			PEMEncodedCertificate:  pemEncodedClientCert,
+		})
+
+		assert.NoError(t, err)
+	})
+	t.Run("error path - requires certificate", func(t *testing.T) {
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		_, err := uut.PasscodeLogin(context.TODO(), &PasscodeLoginRequest{
+			GlobalAccountSubdomain: "my-subdomain",
+			Username:               "john.doe@test.com",
+			IdentityProvider:       "my-custom-idp",
+			IdentityProviderURL:    srv.URL,
+		})
+
+		assert.Error(t, err)
+	})
 }
 
 func TestV2Client_Logout(t *testing.T) {
@@ -552,4 +639,50 @@ func TestV2Client_GetGlobalAccountSubdomain(t *testing.T) {
 
 		assert.Equal(t, "my-subdomain", uut.GetGlobalAccountSubdomain())
 	})
+}
+
+func generateKeyPair(signingKey *rsa.PrivateKey) (*rsa.PrivateKey, *x509.Certificate, error) {
+	// generate private key
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if signingKey == nil {
+		signingKey = privateKey
+	}
+
+	// generate self-signed certificate
+	cert := &x509.Certificate{
+		SerialNumber: big.NewInt(42),
+		Subject: pkix.Name{
+			Organization: []string{"SAP SE"},
+		},
+		NotBefore:             time.Now(),
+		NotAfter:              time.Now().AddDate(5, 5, 5),
+		IPAddresses:           []net.IP{net.ParseIP("127.0.0.1")},
+		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
+		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
+		BasicConstraintsValid: true,
+		IsCA:                  true,
+	}
+
+	certBytes, err := x509.CreateCertificate(rand.Reader, cert, cert, &privateKey.PublicKey, signingKey)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	cert, err = x509.ParseCertificate(certBytes)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return privateKey, cert, nil
+}
+
+func pemEncodeKeyPair(key *rsa.PrivateKey, cert *x509.Certificate) (pemEncodedKey string, pemEncodedCert string) {
+	pemEncodedCert = string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cert.Raw}))
+	pemEncodedKey = string(pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(key)}))
+
+	return
 }

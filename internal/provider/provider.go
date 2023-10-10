@@ -62,7 +62,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
-					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("idp")),
+					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("idp"), path.MatchRoot("idp_url"), path.MatchRoot("tls_client_key"), path.MatchRoot("tls_client_certificate")),
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
@@ -70,18 +70,45 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				MarkdownDescription: "The identity provider to be used for authentication (default: SAP ID service with origin `sap.default`).",
 				Optional:            true,
 			},
+			"idp_url": schema.StringAttribute{
+				MarkdownDescription: "The URL of the identity provider to be used for authentication (only required for x509 auth).",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
+					stringvalidator.AlsoRequires(path.MatchRoot("tls_client_key"), path.MatchRoot("tls_client_certificate")),
+				},
+			},
+			"tls_client_key": schema.StringAttribute{
+				MarkdownDescription: "PEM encoded private key",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
+					stringvalidator.AlsoRequires(path.MatchRoot("idp_url"), path.MatchRoot("tls_client_certificate")),
+				},
+			},
+			"tls_client_certificate": schema.StringAttribute{
+				MarkdownDescription: "PEM encoded certificate",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
+					stringvalidator.AlsoRequires(path.MatchRoot("idp_url"), path.MatchRoot("tls_client_key")),
+				},
+			},
 		},
 	}
 }
 
 // Provider schema struct
 type providerData struct {
-	CLIServerURL     types.String `tfsdk:"cli_server_url"`
-	GlobalAccount    types.String `tfsdk:"globalaccount"`
-	Username         types.String `tfsdk:"username"`
-	Password         types.String `tfsdk:"password"`
-	IdToken          types.String `tfsdk:"idtoken"`
-	IdentityProvider types.String `tfsdk:"idp"`
+	CLIServerURL         types.String `tfsdk:"cli_server_url"`
+	GlobalAccount        types.String `tfsdk:"globalaccount"`
+	Username             types.String `tfsdk:"username"`
+	Password             types.String `tfsdk:"password"`
+	IdToken              types.String `tfsdk:"idtoken"`
+	IdentityProvider     types.String `tfsdk:"idp"`
+	IdentityProviderURL  types.String `tfsdk:"idp_url"`
+	TLSClientKey         types.String `tfsdk:"tls_client_key"`
+	TLSClientCertificate types.String `tfsdk:"tls_client_certificate"`
 }
 
 // Metadata returns the provider type name.
@@ -175,6 +202,20 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		}
 
 		if _, err = client.Login(ctx, btpcli.NewLoginRequestWithCustomIDP(idp, config.GlobalAccount.ValueString(), username, password)); err != nil {
+			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
+			return
+		}
+	} else if !config.TLSClientKey.IsNull() && !config.TLSClientCertificate.IsNull() {
+		passcodeLoginReq := &btpcli.PasscodeLoginRequest{
+			GlobalAccountSubdomain: config.GlobalAccount.ValueString(),
+			IdentityProvider:       idp,
+			IdentityProviderURL:    config.IdentityProviderURL.ValueString(),
+			Username:               username,
+			PEMEncodedPrivateKey:   config.TLSClientKey.ValueString(),
+			PEMEncodedCertificate:  config.TLSClientCertificate.ValueString(),
+		}
+
+		if _, err = client.PasscodeLogin(ctx, passcodeLoginReq); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 			return
 		}

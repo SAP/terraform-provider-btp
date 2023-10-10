@@ -3,6 +3,8 @@ package btpcli
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -228,6 +230,60 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 	}
 
 	return &loginResponse, nil
+}
+
+// PasscodeLogin authenticates with a pem encoded x509 key-pair
+func (v2 *v2Client) PasscodeLogin(ctx context.Context, loginReq *PasscodeLoginRequest) (*LoginResponse, error) {
+	ctx = v2.initTrace(ctx)
+
+	clientCert, err := tls.X509KeyPair([]byte(loginReq.PEMEncodedCertificate), []byte(loginReq.PEMEncodedPrivateKey))
+	if err != nil {
+		return nil, err
+	}
+
+	caCertPool, err := x509.SystemCertPool()
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(loginReq.PEMEncodedCACerts) > 0 {
+		caCertPool.AppendCertsFromPEM([]byte(loginReq.PEMEncodedCACerts))
+	}
+
+	tlsConfig := &tls.Config{
+		Certificates: []tls.Certificate{clientCert},
+		RootCAs:      caCertPool,
+	}
+
+	tlsTransport := (http.DefaultTransport.(*http.Transport)).Clone()
+	tlsTransport.TLSClientConfig = tlsConfig
+	idpClient := &http.Client{Transport: tlsTransport}
+
+	res, err := idpClient.Get(fmt.Sprintf("%s/service/users/passcode", loginReq.IdentityProviderURL)) // FIXME use URL
+
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("IDP responded with unexpected response code: %d", res.StatusCode)
+	}
+
+	var passcodeResponse struct {
+		Passcode string `json:"passcode"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&passcodeResponse); err != nil {
+		return nil, err
+	}
+
+	return v2.Login(ctx, &LoginRequest{
+		IdentityProvider:       loginReq.IdentityProvider,
+		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
+		Username:               loginReq.Username,
+		Password:               passcodeResponse.Passcode,
+	})
 }
 
 // Logout invalidates the current user session
