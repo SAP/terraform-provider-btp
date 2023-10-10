@@ -3,12 +3,13 @@ package provider
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"net/http"
 	"net/url"
 	"os"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -191,6 +192,8 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 // Resources - Defines provider resources
 func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resource {
 	betaResources := []func() resource.Resource{
+		//Beta resources should be excluded from sonar scan.
+		//If you add them to production code, remove them from sonar exclusion list
 		newDirectoryRoleResource,
 		newGlobalaccountRoleResource,
 		newSubaccountRoleResource,
@@ -224,6 +227,8 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 // DataSources - Defines provider data sources
 func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	betaDataSources := []func() datasource.DataSource{
+		//Beta resources should be excluded from sonar scan.
+		//If you add them to production code, remove them from sonar exclusion list
 		newDirectoryAppDataSource,
 		newDirectoryAppsDataSource,
 		newGlobalaccountAppDataSource,
