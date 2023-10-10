@@ -10,7 +10,7 @@ import (
 func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 	t.Parallel()
 
-	t.Run("happy path - complete configuration", func(t *testing.T) {
+	t.Run("happy path - complete configuration with update", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration.complete")
 		defer stopQuietly(rec)
 
@@ -38,7 +38,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimum("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimal("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
@@ -60,7 +60,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path - minimal configuration", func(t *testing.T) {
+	t.Run("happy path - minimal configuration with update", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration.minimal")
 		defer stopQuietly(rec)
 
@@ -69,7 +69,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimum("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimal("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
@@ -129,7 +129,7 @@ resource "btp_subaccount_trust_configuration" "%s" {
 	return fmt.Sprintf(template, resourceName, subaccountId, identityProvider, domain, name, description, linkText, availableForUserLogin, autoCreateShadowUsers, status)
 }
 
-func hclResourceSubaccountTrustConfigurationMinimum(resourceName string, subaccountId string, identityProvider string) string {
+func hclResourceSubaccountTrustConfigurationMinimal(resourceName string, subaccountId string, identityProvider string) string {
 	template := `
 resource "btp_subaccount_trust_configuration" "%s" {
     subaccount_id 		= "%s"
