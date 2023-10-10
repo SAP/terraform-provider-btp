@@ -29,11 +29,3 @@ func (t *Time) UnmarshalJSON(b []byte) (err error) {
 func (t *Time) Time() time.Time {
 	return time.Time(*t)
 }
-
-/*func (ct *Time) MarshalJSON() ([]byte, error) {
-  if ct.Time.UnixNano() == nilTime {
-    return []byte("null"), nil
-  }
-  return []byte(fmt.Sprintf("\"%s\"", ct.Time.Format(ctLayout))), nil
-}
-*/
