@@ -209,20 +209,6 @@ func hclResourceSubaccountEnvironmentInstanceCF(resourceName string, subaccountI
 	return hclResourceSubaccountEnvironmentInstanceCFWithOrgParams(resourceName, subaccountId, name, planName, landscapeLabel, cfParameters)
 }
 
-func hclResourceSubaccountEnvironmentInstanceCFWoLandscape(resourceName string, subaccountId string, name string, planName string, orgName string, user string) string {
-	cfParameters := cfOrgParameters{
-		InstanceName: orgName,
-		Users: []cfUsers{
-			{
-				Id:    user,
-				Email: user,
-			},
-		},
-	}
-
-	return hclResourceSubaccountEnvironmentInstanceCFWithOrgParamsWoLandscapeLabel(resourceName, subaccountId, name, planName, cfParameters)
-}
-
 func hclResourceSubaccountEnvironmentInstanceCFWithOrgParams(resourceName string, subaccountId string, name string, planName string, landscapeLabel string, cfParameters cfOrgParameters) string {
 	jsonCfParameters, _ := json.Marshal(cfParameters)
 
