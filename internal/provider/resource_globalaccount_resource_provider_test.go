@@ -79,6 +79,51 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 					),
 				},
 				{
+					Config: hclProviderFor(user) + hclResourceGlobalaccountResourceProvider("uut",
+						"AWS",
+						"my_aws_resource_provider",
+						"My New Display Name",
+						"",
+						"{\"access_key_id\":\"AWSACCESSKEY\",\"secret_access_key\":\"AWSSECRETKEY\",\"vpc_id\":\"vpc-test\",\"region\":\"us-east-1\"}",
+					),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "provider_type", "AWS"),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "technical_name", "my_aws_resource_provider"),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "display_name", "My New Display Name"),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "configuration", "{\"access_key_id\":\"AWSACCESSKEY\",\"secret_access_key\":\"AWSSECRETKEY\",\"vpc_id\":\"vpc-test\",\"region\":\"us-east-1\"}"),
+					),
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - update omitting description", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_resource_provider.update_wo_description")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceGlobalaccountResourceProvider("uut",
+						"AWS",
+						"my_aws_resource_provider",
+						"My AWS Resource Provider",
+						"My description",
+						"{\"access_key_id\":\"AWSACCESSKEY\",\"secret_access_key\":\"AWSSECRETKEY\",\"vpc_id\":\"vpc-test\",\"region\":\"eu-central-1\"}",
+					),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "provider_type", "AWS"),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "technical_name", "my_aws_resource_provider"),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "id", "my_aws_resource_provider"),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "display_name", "My AWS Resource Provider"),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "description", "My description"),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "configuration", "{\"access_key_id\":\"AWSACCESSKEY\",\"secret_access_key\":\"AWSSECRETKEY\",\"vpc_id\":\"vpc-test\",\"region\":\"eu-central-1\"}"),
+					),
+				},
+				{
 					Config: hclProviderFor(user) + hclResourceGlobalaccountResourceProviderNoDesc("uut",
 						"AWS",
 						"my_aws_resource_provider",
@@ -89,7 +134,7 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "provider_type", "AWS"),
 						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "technical_name", "my_aws_resource_provider"),
 						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "display_name", "My New Display Name"),
-						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "description", "My description"),
 						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "configuration", "{\"access_key_id\":\"AWSACCESSKEY\",\"secret_access_key\":\"AWSSECRETKEY\",\"vpc_id\":\"vpc-test\",\"region\":\"us-east-1\"}"),
 					),
 				},
