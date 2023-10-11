@@ -92,7 +92,122 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 						"uut",
 						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 						"My new role collection",
+						"Updated description of my new role collection",
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Subaccount Service Auditor",
+							RoleTemplateAppId: "service-manager!b3",
+							RoleTemplateName:  "Subaccount_Service_Auditor",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Updated description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.0.name", "Subaccount Service Auditor"),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_role_collection.uut",
+					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,My new role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - update removing description", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection.update_rm_desc")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
+						"uut",
+						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"My new role collection",
 						"Description of my new role collection",
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Subaccount Viewer",
+							RoleTemplateAppId: "cis-local!b2",
+							RoleTemplateName:  "Subaccount_Viewer",
+						},
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Destination Viewer",
+							RoleTemplateAppId: "destination-xsappname!b9",
+							RoleTemplateName:  "Destination_Viewer",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "2"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
+						"uut",
+						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"My new role collection",
+						"",
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Subaccount Service Auditor",
+							RoleTemplateAppId: "service-manager!b3",
+							RoleTemplateName:  "Subaccount_Service_Auditor",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.0.name", "Subaccount Service Auditor"),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_role_collection.uut",
+					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,My new role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - update omitting description", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection.update_wo_desc")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
+						"uut",
+						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"My new role collection",
+						"Description of my new role collection",
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Subaccount Viewer",
+							RoleTemplateAppId: "cis-local!b2",
+							RoleTemplateName:  "Subaccount_Viewer",
+						},
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Destination Viewer",
+							RoleTemplateAppId: "destination-xsappname!b9",
+							RoleTemplateName:  "Destination_Viewer",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "2"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionWoDescription(
+						"uut",
+						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"My new role collection",
 						subaccountRoleCollectionRoleRefTestType{
 							Name:              "Subaccount Service Auditor",
 							RoleTemplateAppId: "service-manager!b3",
@@ -207,4 +322,17 @@ func hclResourceSubAccountRoleCollectionNoSubaccountId(resourceName string, disp
         description      	= "%s"
 		roles               = %v
     }`, resourceName, displayName, description, string(rolesJson))
+}
+
+func hclResourceSubAccountRoleCollectionWoDescription(resourceName string, subaccountId string, displayName string, roles ...subaccountRoleCollectionRoleRefTestType) string {
+	if roles == nil {
+		roles = []subaccountRoleCollectionRoleRefTestType{}
+	}
+	rolesJson, _ := json.Marshal(roles)
+
+	return fmt.Sprintf(`resource "btp_subaccount_role_collection" "%s" {
+        subaccount_id       = "%s"
+		name      			= "%s"
+		roles               = %v
+    }`, resourceName, subaccountId, displayName, string(rolesJson))
 }
