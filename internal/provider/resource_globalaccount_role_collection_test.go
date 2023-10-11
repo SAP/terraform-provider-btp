@@ -103,6 +103,109 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - update removing description", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.update_rm_desc")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
+						"uut",
+						"My new role collection",
+						"Description of my new role collection",
+						globalaccountRoleCollectionRoleRefTestType{
+							Name:              "Global Account Viewer",
+							RoleTemplateAppId: "cis-central!b13",
+							RoleTemplateName:  "GlobalAccount_Viewer",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "roles.#", "1"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "roles.0.name", "Global Account Viewer"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
+						"uut",
+						"My new role collection",
+						"",
+						globalaccountRoleCollectionRoleRefTestType{
+							Name:              "System Landscape Viewer",
+							RoleTemplateAppId: "cmp!b17875",
+							RoleTemplateName:  "GlobalAccount_System_Landscape_Viewer",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "roles.#", "1"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "roles.0.name", "System Landscape Viewer"),
+					),
+				},
+				{
+					ResourceName:      "btp_globalaccount_role_collection.uut",
+					ImportStateId:     "My new role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - update omitting description", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.update_wo_desc")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
+						"uut",
+						"My new role collection",
+						"Description of my new role collection",
+						globalaccountRoleCollectionRoleRefTestType{
+							Name:              "Global Account Viewer",
+							RoleTemplateAppId: "cis-central!b13",
+							RoleTemplateName:  "GlobalAccount_Viewer",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "roles.#", "1"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "roles.0.name", "Global Account Viewer"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollectionWoDescription(
+						"uut",
+						"My new role collection",
+						globalaccountRoleCollectionRoleRefTestType{
+							Name:              "System Landscape Viewer",
+							RoleTemplateAppId: "cmp!b17875",
+							RoleTemplateName:  "GlobalAccount_System_Landscape_Viewer",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "roles.#", "1"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "roles.0.name", "System Landscape Viewer"),
+					),
+				},
+				{
+					ResourceName:      "btp_globalaccount_role_collection.uut",
+					ImportStateId:     "My new role collection",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
 	t.Run("error path - import fails", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.import_error")
 		defer stopQuietly(rec)
@@ -137,4 +240,16 @@ func hclResourceGlobalAccountRoleCollection(resourceName string, displayName str
         description  = "%s"
         roles        = %v
     }`, resourceName, displayName, description, string(rolesJson))
+}
+
+func hclResourceGlobalAccountRoleCollectionWoDescription(resourceName string, displayName string, roles ...globalaccountRoleCollectionRoleRefTestType) string {
+	if roles == nil {
+		roles = []globalaccountRoleCollectionRoleRefTestType{}
+	}
+	rolesJson, _ := json.Marshal(roles)
+
+	return fmt.Sprintf(`resource "btp_globalaccount_role_collection" "%s" {
+        name         = "%s"
+        roles        = %v
+    }`, resourceName, displayName, string(rolesJson))
 }
