@@ -121,11 +121,18 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionWithDescription(
+						"uut",
+						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
+						"My own role collection",
+						"This is my new role collection",
+						"Directory Viewer",
+						"cis-central!b13",
+						"Directory_Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
-						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "description", "This is my new role collection"),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.#", "1"),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.0.name", "Directory Viewer"),
 					),
@@ -154,13 +161,36 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Usage Reporting Viewer", "uas!b10418", "Directory_Usage_Reporting_Viewer"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescription(
+						"uut",
+						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
+						"My own role collection",
+						"Directory Viewer",
+						"cis-central!b13",
+						"Directory_Viewer"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "description", "This is my updated role collection"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.#", "1"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.0.name", "Directory Viewer"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionWithDescription(
+						"uut",
+						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
+						"My own role collection",
+						"",
+						"Directory Viewer",
+						"cis-central!b13",
+						"Directory_Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "description", ""),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.#", "1"),
-						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.0.name", "Directory Usage Reporting Viewer"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.0.name", "Directory Viewer"),
 					),
 				},
 				{
