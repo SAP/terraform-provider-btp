@@ -260,7 +260,7 @@ func (v2 *v2Client) PasscodeLogin(ctx context.Context, loginReq *PasscodeLoginRe
 	tlsTransport.TLSClientConfig = tlsConfig
 	idpClient := &http.Client{Transport: tlsTransport}
 
-	res, err := idpClient.Get(fmt.Sprintf("%s/service/users/passcode", loginReq.IdentityProviderURL)) // FIXME use URL
+	res, err := idpClient.Get(fmt.Sprintf("%s/service/users/passcode", loginReq.IdentityProviderURL)) // TODO use URL
 
 	if err != nil {
 		return nil, err
