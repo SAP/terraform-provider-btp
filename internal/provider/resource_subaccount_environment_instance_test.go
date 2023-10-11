@@ -43,6 +43,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Provision"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12"),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "labels", regexp.MustCompile(`"API Endpoint":"https:\/\/api\.cf\.eu12\.hana\.ondemand\.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
@@ -82,6 +83,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Provision"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12"),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "labels", regexp.MustCompile(`"API Endpoint":"https:\/\/api\.cf\.eu12\.hana\.ondemand\.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
@@ -106,6 +108,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Update"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12"),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "labels", regexp.MustCompile(`"API Endpoint":"https:\/\/api\.cf\.eu12\.hana\.ondemand\.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org-updated"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
@@ -138,6 +141,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Provision"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12"),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "labels", regexp.MustCompile(`"API Endpoint":"https:\/\/api\.cf\.eu12\.hana\.ondemand\.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
@@ -156,6 +160,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Update"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12"),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "labels", regexp.MustCompile(`"API Endpoint":"https:\/\/api\.cf\.eu12\.hana\.ondemand\.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", notContainsCheckFunc(`"id":"john.doe@int.test"`)),
@@ -163,11 +168,10 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCFWithOrgParams("uut",
+					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCFWithOrgParamsWoLandscapeLabel("uut",
 						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 						"cloudFoundry-from-terraform",
 						"standard",
-						"cf-eu12",
 						cfOrgParameters{
 							InstanceName: "cf-terraform-org",
 						}),
@@ -176,6 +180,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Update"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12"),
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "labels", regexp.MustCompile(`"API Endpoint":"https:\/\/api\.cf\.eu12\.hana\.ondemand\.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", notContainsCheckFunc(`"id":"john.doe@int.test"`)),
@@ -204,6 +209,20 @@ func hclResourceSubaccountEnvironmentInstanceCF(resourceName string, subaccountI
 	return hclResourceSubaccountEnvironmentInstanceCFWithOrgParams(resourceName, subaccountId, name, planName, landscapeLabel, cfParameters)
 }
 
+func hclResourceSubaccountEnvironmentInstanceCFWoLandscape(resourceName string, subaccountId string, name string, planName string, orgName string, user string) string {
+	cfParameters := cfOrgParameters{
+		InstanceName: orgName,
+		Users: []cfUsers{
+			{
+				Id:    user,
+				Email: user,
+			},
+		},
+	}
+
+	return hclResourceSubaccountEnvironmentInstanceCFWithOrgParamsWoLandscapeLabel(resourceName, subaccountId, name, planName, cfParameters)
+}
+
 func hclResourceSubaccountEnvironmentInstanceCFWithOrgParams(resourceName string, subaccountId string, name string, planName string, landscapeLabel string, cfParameters cfOrgParameters) string {
 	jsonCfParameters, _ := json.Marshal(cfParameters)
 
@@ -217,6 +236,20 @@ resource "btp_subaccount_environment_instance" "%s"{
 	landscape_label  = "%s"
 	parameters       = %q
 }`, resourceName, subaccountId, name, planName, landscapeLabel, string(jsonCfParameters))
+}
+
+func hclResourceSubaccountEnvironmentInstanceCFWithOrgParamsWoLandscapeLabel(resourceName string, subaccountId string, name string, planName string, cfParameters cfOrgParameters) string {
+	jsonCfParameters, _ := json.Marshal(cfParameters)
+
+	return fmt.Sprintf(`
+resource "btp_subaccount_environment_instance" "%s"{
+    subaccount_id    = "%s"
+	name             = "%s"
+	environment_type = "cloudfoundry"
+	plan_name        = "%s"
+	service_name     = "cloudfoundry"
+	parameters       = %q
+}`, resourceName, subaccountId, name, planName, string(jsonCfParameters))
 }
 
 func hclResourceSubaccountEnvironmentInstanceCFTimeout(resourceName string, subaccountId string, name string, planName string, landscapeLabel string, orgName string, user string, createTimeout string, updateTimeout string, deleteTimeout string) string {
