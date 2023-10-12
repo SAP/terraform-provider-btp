@@ -49,7 +49,7 @@ func TestResourceDirectory(t *testing.T) {
 	})
 
 	t.Run("happy path - directory with features", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_directory_features")
+		rec, user := setupVCR(t, "fixtures/resource_directory.with_features")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -89,6 +89,51 @@ func TestResourceDirectory(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("happy path full config", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory.full_config")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryAll("uut", "my-new-directory", "This is a new directory"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_directory.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_directory.uut", "parent_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-new-directory"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is a new directory"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "labels.foo.0", "bar"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "features.#", "3"),
+					),
+				},
+				{
+					// Update name wo change of usage but omit optional parameters
+					Config: hclProviderFor(user) + hclResourceDirectory("uut", "my-new-directory", "This is a updated directory"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_directory.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_directory.uut", "parent_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-new-directory"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is a updated directory"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "labels.foo.0", "bar"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "features.#", "3"),
+					),
+				},
+				{
+					ResourceName:      "btp_directory.uut",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
 }
 
 func hclResourceDirectory(resourceName string, displayName string, description string) string {
@@ -103,5 +148,14 @@ func hclResourceDirectoryWithFeatures(resourceName string, displayName string, d
         name        = "%s"
         description = "%s"
 		features    = ["DEFAULT","ENTITLEMENTS","AUTHORIZATIONS"]
+    }`, resourceName, displayName, description)
+}
+
+func hclResourceDirectoryAll(resourceName string, displayName string, description string) string {
+	return fmt.Sprintf(`resource "btp_directory" "%s" {
+        name        = "%s"
+        description = "%s"
+		features    = ["DEFAULT","ENTITLEMENTS","AUTHORIZATIONS"]
+		labels = {"foo" = ["bar"]}
     }`, resourceName, displayName, description)
 }

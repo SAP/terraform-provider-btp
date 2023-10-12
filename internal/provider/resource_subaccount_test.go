@@ -156,6 +156,58 @@ func TestResourceSubaccount(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path full config", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount.full_config")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountAll("uut", "integration-test-acc-dyn", "eu12", "integration-test-acc-dyn", "My subaccount description", "NOT_USED_FOR_PRODUCTION", true),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "integration-test-acc-dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", "My subaccount description"),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "NOT_USED_FOR_PRODUCTION"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "labels.foo.0", "bar"),
+					),
+				},
+				{
+					// Update name wo change of usage but omit optional parameters
+					Config: hclProviderFor(user) + hclResourceSubaccount("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", "My subaccount description"),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "NOT_USED_FOR_PRODUCTION"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "labels.foo.0", "bar"),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount.uut",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
 	t.Run("error path - parent_id not a valid UUID", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -224,6 +276,22 @@ resource "btp_subaccount" "%s" {
 }`
 
 	return fmt.Sprintf(template, resourceName, displayName, region, subdomain)
+}
+
+func hclResourceSubaccountAll(resourceName string, displayName string, region string, subdomain string, description string, usage string, betaEnabled bool) string {
+	template := `
+resource "btp_subaccount" "%s" {
+    name         = "%s"
+    region       = "%s"
+    subdomain    = "%s"
+	description  = "%s"
+	usage        = "%s"
+	beta_enabled = %t
+	labels	     = {"foo" = ["bar"]}
+}`
+
+	result := fmt.Sprintf(template, resourceName, displayName, region, subdomain, description, usage, betaEnabled)
+	return result
 }
 
 func hclResourceSubaccountWithParent(resourceName string, parentId string, displayName string, region string, subdomain string) string {

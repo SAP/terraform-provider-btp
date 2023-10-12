@@ -85,6 +85,9 @@ __Further documentation:__
 				MarkdownDescription: "The description of the resource provider.",
 				Optional:            true,
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"configuration": schema.StringAttribute{
 				MarkdownDescription: "The configuration properties for the resource provider as required by the vendor.",

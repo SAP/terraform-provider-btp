@@ -142,6 +142,20 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlement("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "data-privacy-integration-service-standard"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "standard"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "data-privacy-integration-service-standard"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "data-privacy-integration-service"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "2"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
+					),
+				},
 			},
 		})
 	})

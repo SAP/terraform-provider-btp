@@ -95,6 +95,9 @@ __Further documentation:__
 				MarkdownDescription: "The description of the role collection.",
 				Optional:            true,
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"roles": schema.SetNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
