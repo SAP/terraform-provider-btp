@@ -272,8 +272,8 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 			ServiceName:          state.ServiceName.ValueString(),
 			ServicePlanName:      state.PlanName.ValueString(),
 			Amount:               0,
-			Distribute:           state.Distribute.ValueBool(),
-			AutoAssign:           state.AutoAssign.ValueBool(),
+			Distribute:           false,
+			AutoAssign:           false,
 			AutoDistributeAmount: 0,
 		}
 		_, err = rs.cli.Accounts.Entitlement.AssignToDirectory(ctx, dirAssignmentInput)
