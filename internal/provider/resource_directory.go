@@ -107,6 +107,7 @@ __Further documentation:__
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"subdomain": schema.StringAttribute{
@@ -279,7 +280,15 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 
 func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan directoryType
+	var state directoryType
+
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -303,6 +312,18 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 		var labels map[string][]string
 		plan.Labels.ElementsAs(ctx, &labels, false)
 		args.Labels = labels
+	}
+
+	//We do not support the update of features (distinct command in CLI). We raise an error if the user tries to update the features
+	var planFeatures []string
+	var stateFeatures []string
+
+	plan.Features.ElementsAs(ctx, &planFeatures, false)
+	state.Features.ElementsAs(ctx, &stateFeatures, false)
+
+	if strings.Join(planFeatures, ",") != strings.Join(stateFeatures, ",") {
+		resp.Diagnostics.AddError("API Error Updating Resource Directory", "Update of Directory Features is not supported")
+		return
 	}
 
 	cliRes, _, err := rs.cli.Accounts.Directory.Update(ctx, &args)

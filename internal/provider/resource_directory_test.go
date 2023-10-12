@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -134,6 +135,32 @@ func TestResourceDirectory(t *testing.T) {
 		})
 	})
 
+	t.Run("error path - change directory features", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory.error_change_features")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectory("uut", "my-new-directory", "This is a new directory"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_directory.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_directory.uut", "parent_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-new-directory"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is a new directory"),
+					),
+				},
+				{
+					Config:      hclProviderFor(user) + hclResourceDirectoryWithFeatures("uut", "my-new-directory", "This is an updated directory"),
+					ExpectError: regexp.MustCompile(`Update of Directory Features is not supported`),
+				},
+			},
+		})
+	})
 }
 
 func hclResourceDirectory(resourceName string, displayName string, description string) string {
