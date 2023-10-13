@@ -202,6 +202,8 @@ func (rs *directoryResource) Read(ctx context.Context, req resource.ReadRequest,
 }
 
 func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	const createErrorHeader = "API Error Creating Resource Directory"
+
 	var plan directoryType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -242,7 +244,7 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 
 	cliRes, _, err := rs.cli.Accounts.Directory.Create(ctx, &args)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Creating Resource Directory", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(createErrorHeader, fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -268,7 +270,7 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Creating Resource Directory", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(createErrorHeader, fmt.Sprintf("%s", err))
 	}
 
 	plan, diags = directoryValueFrom(ctx, updatedRes.(cis.DirectoryResponseObject))
@@ -279,6 +281,8 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 }
 
 func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	const updateErrorHeader = "API Error Updating Resource Directory"
+
 	var plan directoryType
 	var state directoryType
 
@@ -322,13 +326,13 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	state.Features.ElementsAs(ctx, &stateFeatures, false)
 
 	if strings.Join(planFeatures, ",") != strings.Join(stateFeatures, ",") {
-		resp.Diagnostics.AddError("API Error Updating Resource Directory", "Update of Directory Features is not supported")
+		resp.Diagnostics.AddError(updateErrorHeader, "Update of Directory Features is not supported")
 		return
 	}
 
 	cliRes, _, err := rs.cli.Accounts.Directory.Update(ctx, &args)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Updating Resource Directory", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -354,7 +358,7 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Updating Resource Directory", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
 	}
 
 	plan, diags = directoryValueFrom(ctx, updatedRes.(cis.DirectoryResponseObject))
@@ -365,6 +369,8 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 }
 
 func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	const deleteErrorHeader = "API Error Deleting Resource Directory"
+
 	var state directoryType
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -374,7 +380,7 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 	cliRes, _, err := rs.cli.Accounts.Directory.Delete(ctx, state.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Deleting Resource Directory", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(deleteErrorHeader, fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -407,7 +413,7 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 	_, err = deleteStateConf.WaitForStateContext(ctx)
 
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Deleting Resource Directory", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(deleteErrorHeader, fmt.Sprintf("%s", err))
 		return
 	}
 }
