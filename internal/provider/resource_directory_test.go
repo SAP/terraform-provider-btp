@@ -114,7 +114,7 @@ func TestResourceDirectory(t *testing.T) {
 				},
 				{
 					// Update name wo change of usage but omit optional parameters
-					Config: hclProviderFor(user) + hclResourceDirectory("uut", "my-new-directory", "This is a updated directory"),
+					Config: hclProviderFor(user) + hclResourceDirectoryAll("uut", "my-new-directory", "This is a updated directory"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),

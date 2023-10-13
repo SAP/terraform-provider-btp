@@ -183,7 +183,7 @@ func TestResourceSubaccount(t *testing.T) {
 				},
 				{
 					// Update name wo change of usage but omit optional parameters
-					Config: hclProviderFor(user) + hclResourceSubaccount("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
+					Config: hclProviderFor(user) + hclResourceSubaccountAll("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn", "My subaccount description", "NOT_USED_FOR_PRODUCTION", true),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),

@@ -95,6 +95,7 @@ __Further documentation:__
 			},
 			"parent_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.",
+				Computed:            true,
 				Optional:            true,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
@@ -109,7 +110,6 @@ __Further documentation:__
 					ElemType: types.StringType,
 				},
 				MarkdownDescription: "The set of words or phrases assigned to the subaccount.",
-				Computed:            true,
 				Optional:            true,
 				PlanModifiers: []planmodifier.Map{
 					mapplanmodifier.UseStateForUnknown(),
