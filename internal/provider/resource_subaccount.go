@@ -111,9 +111,6 @@ __Further documentation:__
 				},
 				MarkdownDescription: "The set of words or phrases assigned to the subaccount.",
 				Optional:            true,
-				PlanModifiers: []planmodifier.Map{
-					mapplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"beta_enabled": schema.BoolAttribute{
 				MarkdownDescription: "Shows whether the subaccount can use beta services and applications.",

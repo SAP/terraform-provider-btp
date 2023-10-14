@@ -128,9 +128,6 @@ __Further documentation:__
 				},
 				MarkdownDescription: "Contains information about the labels assigned to a specified global account. Labels are represented in a JSON array of key-value pairs; each key has up to 10 corresponding values.",
 				Optional:            true,
-				PlanModifiers: []planmodifier.Map{
-					mapplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",
