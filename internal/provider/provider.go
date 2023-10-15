@@ -21,6 +21,10 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/version"
 )
 
+const userPasswordFlow = "userPasswordFlow"
+const x509Flow = "x509Flow"
+const idTokenFlow = "idTokenFlow"
+
 // New .
 func New() provider.Provider {
 	return NewWithClient(http.DefaultClient)
@@ -195,9 +199,63 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		password = config.Password.ValueString()
 	}
 
-	if len(idToken) == 0 {
-		if len(username) == 0 || len(password) == 0 {
-			resp.Diagnostics.AddError(unableToCreateClient, "globalaccount, username and password must be given.")
+	// Global Account must be provided to the provider independent of login flow:
+	if len(config.GlobalAccount.ValueString()) == 0 {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("globalaccount"),
+			"Missing Global Account",
+			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the BTP global account. "+
+				"Set the global account value in the configuration. "+
+				"If it is already set, ensure the value is not empty.",
+		)
+	}
+
+	/*
+		switch authFlow := determineAuthFlow(config, idToken); authFlow {
+		case userPasswordFlow:
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		case x509Flow:
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		case idTokenFlow:
+			if _, err = client.IdTokenLogin(ctx, btpcli.NewIdTokenLoginRequest(config.GlobalAccount.ValueString(), idToken)); err != nil {
+				resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
+				return
+			}
+		default:
+			// No valid login flow found
+			resp.Diagnostics.AddError(unableToCreateClient, "No valid login flow found. Please provide either username and password, or an id token, or a client certificate and key.")
+			return
+		}
+	*/
+
+	if len(idToken) == 0 && config.TLSClientKey.IsNull() && config.TLSClientCertificate.IsNull() {
+		//Login via username and password - check required fields
+		if len(username) == 0 {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("username"),
+				"Missing Username",
+				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the username. "+
+					"Set the username value in the configuration or use the BTP_USERNAME environment variable. "+
+					"If either is already set, ensure the value is not empty.",
+			)
+		}
+
+		if len(password) == 0 {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("password"),
+				"Missing Password",
+				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the password. "+
+					"Set the password value in the configuration or use the BTP_PASSWORD environment variable. "+
+					"If either is already set, ensure the value is not empty.",
+			)
+
+		}
+
+		if resp.Diagnostics.HasError() {
 			return
 		}
 
@@ -206,6 +264,55 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 			return
 		}
 	} else if !config.TLSClientKey.IsNull() && !config.TLSClientCertificate.IsNull() {
+
+		if len(config.IdentityProviderURL.ValueString()) == 0 {
+
+		}
+
+		if len(username) == 0 {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("username"),
+				"Missing Username",
+				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the username. "+
+					"Set the username value in the configuration or use the BTP_USERNAME environment variable. "+
+					"If either is already set, ensure the value is not empty.",
+			)
+		}
+
+		if len(config.IdentityProviderURL.ValueString()) == 0 {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("idp_url"),
+				"Missing IDP URL (only required for x509 auth)",
+				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the idp_url (only required for x509 auth). "+
+					"Set the idp_url value in the configuration. "+
+					"If it is already set, ensure the value is not empty.",
+			)
+		}
+
+		if len(config.TLSClientKey.ValueString()) == 0 {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("tls_client_key"),
+				"Missing PEM Encoded Private Key",
+				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the tls_client_key (PEM encoded private key). "+
+					"Set the tls_client_key value in the configuration. "+
+					"If it is already set, ensure the value is not empty.",
+			)
+		}
+
+		if len(config.TLSClientCertificate.ValueString()) == 0 {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("tls_client_certificate"),
+				"Missing PEM Encoded Certificate",
+				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the tls_client_certificate (PEM encoded certificate). "+
+					"Set the tls_client_certificate value in the configuration. "+
+					"If it is already set, ensure the value is not empty.",
+			)
+		}
+
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
 		passcodeLoginReq := &btpcli.PasscodeLoginRequest{
 			GlobalAccountSubdomain: config.GlobalAccount.ValueString(),
 			IdentityProvider:       idp,
@@ -219,11 +326,15 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 			return
 		}
-	} else {
+	} else if len(idToken) > 0 {
 		if _, err = client.IdTokenLogin(ctx, btpcli.NewIdTokenLoginRequest(config.GlobalAccount.ValueString(), idToken)); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 			return
 		}
+	} else {
+		// No valid login flow found
+		resp.Diagnostics.AddError(unableToCreateClient, "No valid login flow found. Please provide either username and password, or an id token, or a client certificate and key.")
+		return
 	}
 
 	resp.DataSourceData = client
@@ -336,4 +447,14 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newSubaccountsDataSource,
 		newWhoamiDataSource,
 	}, betaDataSources...)
+}
+
+func determineAuthFlow(config providerData, idToken string) string {
+	if len(idToken) > 0 {
+		return idTokenFlow
+	} else if !config.TLSClientKey.IsNull() && !config.TLSClientCertificate.IsNull() {
+		return x509Flow
+	} else {
+		return userPasswordFlow
+	}
 }
