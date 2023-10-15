@@ -25,7 +25,6 @@ const userPasswordFlow = "userPasswordFlow"
 const x509Flow = "x509Flow"
 const idTokenFlow = "idTokenFlow"
 
-// New .
 func New() provider.Provider {
 	return NewWithClient(http.DefaultClient)
 }
@@ -39,7 +38,6 @@ type btpcliProvider struct {
 	betaFeaturesEnabled bool
 }
 
-// GetSchema
 func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `The Terraform provider for SAP BTP enables you to automate the provisioning, management, and configuration of resources on [SAP Business Technology Platform](https://account.hana.ondemand.com/). By leveraging this provider, you can simplify and streamline the deployment and maintenance of BTP services and applications.`,
@@ -102,7 +100,6 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 	}
 }
 
-// Provider schema struct
 type providerData struct {
 	CLIServerURL         types.String `tfsdk:"cli_server_url"`
 	GlobalAccount        types.String `tfsdk:"globalaccount"`
@@ -200,60 +197,12 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	// Global Account must be provided to the provider independent of login flow:
-	if len(config.GlobalAccount.ValueString()) == 0 {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("globalaccount"),
-			"Missing Global Account",
-			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the BTP global account. "+
-				"Set the global account value in the configuration. "+
-				"If it is already set, ensure the value is not empty.",
-		)
-	}
+	validateGlobalAccount(config.GlobalAccount.ValueString(), resp)
 
-	/*
-		switch authFlow := determineAuthFlow(config, idToken); authFlow {
-		case userPasswordFlow:
-			if resp.Diagnostics.HasError() {
-				return
-			}
-		case x509Flow:
-			if resp.Diagnostics.HasError() {
-				return
-			}
-		case idTokenFlow:
-			if _, err = client.IdTokenLogin(ctx, btpcli.NewIdTokenLoginRequest(config.GlobalAccount.ValueString(), idToken)); err != nil {
-				resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
-				return
-			}
-		default:
-			// No valid login flow found
-			resp.Diagnostics.AddError(unableToCreateClient, "No valid login flow found. Please provide either username and password, or an id token, or a client certificate and key.")
-			return
-		}
-	*/
-
-	if len(idToken) == 0 && config.TLSClientKey.IsNull() && config.TLSClientCertificate.IsNull() {
-		//Login via username and password - check required fields
-		if len(username) == 0 {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("username"),
-				"Missing Username",
-				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the username. "+
-					"Set the username value in the configuration or use the BTP_USERNAME environment variable. "+
-					"If either is already set, ensure the value is not empty.",
-			)
-		}
-
-		if len(password) == 0 {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("password"),
-				"Missing Password",
-				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the password. "+
-					"Set the password value in the configuration or use the BTP_PASSWORD environment variable. "+
-					"If either is already set, ensure the value is not empty.",
-			)
-
-		}
+	//Determine and execute the login flow depending on the provided parameters
+	switch authFlow := determineAuthFlow(config, idToken); authFlow {
+	case userPasswordFlow:
+		validateUserPasswordFlow(username, password, resp)
 
 		if resp.Diagnostics.HasError() {
 			return
@@ -261,53 +210,10 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 		if _, err = client.Login(ctx, btpcli.NewLoginRequestWithCustomIDP(idp, config.GlobalAccount.ValueString(), username, password)); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
-			return
 		}
-	} else if !config.TLSClientKey.IsNull() && !config.TLSClientCertificate.IsNull() {
+	case x509Flow:
 
-		if len(config.IdentityProviderURL.ValueString()) == 0 {
-
-		}
-
-		if len(username) == 0 {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("username"),
-				"Missing Username",
-				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the username. "+
-					"Set the username value in the configuration or use the BTP_USERNAME environment variable. "+
-					"If either is already set, ensure the value is not empty.",
-			)
-		}
-
-		if len(config.IdentityProviderURL.ValueString()) == 0 {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("idp_url"),
-				"Missing IDP URL (only required for x509 auth)",
-				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the idp_url (only required for x509 auth). "+
-					"Set the idp_url value in the configuration. "+
-					"If it is already set, ensure the value is not empty.",
-			)
-		}
-
-		if len(config.TLSClientKey.ValueString()) == 0 {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("tls_client_key"),
-				"Missing PEM Encoded Private Key",
-				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the tls_client_key (PEM encoded private key). "+
-					"Set the tls_client_key value in the configuration. "+
-					"If it is already set, ensure the value is not empty.",
-			)
-		}
-
-		if len(config.TLSClientCertificate.ValueString()) == 0 {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("tls_client_certificate"),
-				"Missing PEM Encoded Certificate",
-				"The provider cannot create he Terraform BTP client as there is a missing or empty value for the tls_client_certificate (PEM encoded certificate). "+
-					"Set the tls_client_certificate value in the configuration. "+
-					"If it is already set, ensure the value is not empty.",
-			)
-		}
+		validateX509Flow(username, config.IdentityProviderURL.ValueString(), config.TLSClientKey.ValueString(), config.TLSClientCertificate.ValueString(), resp)
 
 		if resp.Diagnostics.HasError() {
 			return
@@ -326,14 +232,18 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 			return
 		}
-	} else if len(idToken) > 0 {
+
+	case idTokenFlow:
+		// SAP Internal usage only
 		if _, err = client.IdTokenLogin(ctx, btpcli.NewIdTokenLoginRequest(config.GlobalAccount.ValueString(), idToken)); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
-			return
 		}
-	} else {
-		// No valid login flow found
+	default:
+		// No valid login flow
 		resp.Diagnostics.AddError(unableToCreateClient, "No valid login flow found. Please provide either username and password, or an id token, or a client certificate and key.")
+	}
+
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -456,5 +366,83 @@ func determineAuthFlow(config providerData, idToken string) string {
 		return x509Flow
 	} else {
 		return userPasswordFlow
+	}
+}
+
+func validateGlobalAccount(globalAccount string, resp *provider.ConfigureResponse) {
+	if len(globalAccount) == 0 {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("globalaccount"),
+			"Missing Global Account",
+			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the BTP global account. "+
+				"Set the global account value in the configuration. "+
+				"If it is already set, ensure the value is not empty.",
+		)
+	}
+}
+
+func validateUserPasswordFlow(userName string, password string, resp *provider.ConfigureResponse) {
+	if len(userName) == 0 {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("username"),
+			"Missing Username",
+			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the username. "+
+				"Set the username value in the configuration or use the BTP_USERNAME environment variable. "+
+				"If either is already set, ensure the value is not empty.",
+		)
+	}
+
+	if len(password) == 0 {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("password"),
+			"Missing Password",
+			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the password. "+
+				"Set the password value in the configuration or use the BTP_PASSWORD environment variable. "+
+				"If either is already set, ensure the value is not empty.",
+		)
+
+	}
+
+}
+
+func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey string, tlsClientCertificate string, resp *provider.ConfigureResponse) {
+	if len(userName) == 0 {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("username"),
+			"Missing Username",
+			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the username. "+
+				"Set the username value in the configuration or use the BTP_USERNAME environment variable. "+
+				"If either is already set, ensure the value is not empty.",
+		)
+	}
+
+	if len(identityProviderUrl) == 0 {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("idp_url"),
+			"Missing IDP URL (only required for x509 auth)",
+			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the idp_url (only required for x509 auth). "+
+				"Set the idp_url value in the configuration. "+
+				"If it is already set, ensure the value is not empty.",
+		)
+	}
+
+	if len(tlsClientKey) == 0 {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("tls_client_key"),
+			"Missing PEM Encoded Private Key",
+			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the tls_client_key (PEM encoded private key). "+
+				"Set the tls_client_key value in the configuration. "+
+				"If it is already set, ensure the value is not empty.",
+		)
+	}
+
+	if len(tlsClientCertificate) == 0 {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("tls_client_certificate"),
+			"Missing PEM Encoded Certificate",
+			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the tls_client_certificate (PEM encoded certificate). "+
+				"Set the tls_client_certificate value in the configuration. "+
+				"If it is already set, ensure the value is not empty.",
+		)
 	}
 }
