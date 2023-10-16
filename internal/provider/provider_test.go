@@ -276,6 +276,124 @@ func notContainsCheckFunc(unexpectedSubString string) testingResource.CheckResou
 	}
 }
 
+func TestProvider_ConfigurationFlows(t *testing.T) {
+	t.Parallel()
+	t.Run("error path - user password login with missing data", func(t *testing.T) {
+		rec, _ := setupVCR(t, "fixtures/provider.error_user_pwd")
+		defer stopQuietly(rec)
+
+		testingResource.Test(t, testingResource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []testingResource.TestStep{
+				{
+					Config: `
+provider "btp" {
+	globalaccount  = ""
+	username       = "username"
+	password       = "password"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`empty value for the BTP global account`),
+					PlanOnly:    true,
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount  = "terraformintcanary"
+	username       = ""
+	password       = "password"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`empty value for the username`),
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount  = "terraformintcanary"
+	username       = "username"
+	password       = ""
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`empty value for the password`),
+				},
+			},
+		})
+	})
+	t.Run("error path - x509 with missing data", func(t *testing.T) {
+		rec, _ := setupVCR(t, "fixtures/provider.error_x509")
+		defer stopQuietly(rec)
+
+		testingResource.Test(t, testingResource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []testingResource.TestStep{
+				{
+					Config: `
+provider "btp" {
+	globalaccount          = ""
+	username               = "username"
+	tls_client_key         = "tlsClientKey"
+	tls_client_certificate = "tlsClientCertificate"
+	idp_url                = "idpUrl"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`empty value for the BTP global account`),
+					PlanOnly:    true,
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount          = "terraformintcanary"
+	username               = ""
+	tls_client_key         = "tlsClientKey"
+	tls_client_certificate = "tlsClientCertificate"
+	idp_url                = "idpUrl"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`empty value for the username`),
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount          = "terraformintcanary"
+	username               = "username"
+	tls_client_key         = ""
+	tls_client_certificate = "tlsClientCertificate"
+	idp_url                = "idpUrl"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`empty value for the tls_client_key`),
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount          = "terraformintcanary"
+	username               = "username"
+	tls_client_key         = "tlsClientKey"
+	tls_client_certificate = ""
+	idp_url                = "idpUrl"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`empty value for the tls_client_certificate`),
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount          = "terraformintcanary"
+	username               = "username"
+	tls_client_key         = "tlsClientKey"
+	tls_client_certificate = "tlsClientCertificate"
+	idp_url                = ""
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`empty value for the idp_url`),
+				},
+			},
+		})
+	})
+}
+
 func TestProvider_ConfigurationWithIdToken(t *testing.T) {
 	t.Run("error path - attribute conflicts with idtoken", func(t *testing.T) {
 		testingResource.Test(t, testingResource.TestCase{
@@ -358,9 +476,9 @@ func TestProvider_HasResources(t *testing.T) {
 func TestProvider_HasDatasources(t *testing.T) {
 	expectedDataSources := []string{
 		"btp_directory",
-		/*TODO: Depending on customer feedback
-		"btp_directory_app",
-		"btp_directory_apps",
+		/*
+			"btp_directory_app",
+			"btp_directory_apps",
 		*/
 		"btp_directory_entitlements",
 		"btp_directory_labels",
@@ -371,14 +489,14 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_directory_user",
 		"btp_directory_users",
 		"btp_globalaccount",
-		/*TODO: Depending on customer feedback
-		"btp_globalaccount_app",
-		"btp_globalaccount_apps",
+		/*
+			"btp_globalaccount_app",
+			"btp_globalaccount_apps",
 		*/
 		"btp_globalaccount_entitlements",
-		/*TODO: Depending on customer feedback
-		"btp_globalaccount_resource_provider",
-		"btp_globalaccount_resource_providers",
+		/*
+			"btp_globalaccount_resource_provider",
+			"btp_globalaccount_resource_providers",
 		*/
 		"btp_globalaccount_role",
 		"btp_globalaccount_role_collection",
@@ -403,9 +521,9 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_roles",
 		"btp_subaccount_service_binding",
 		"btp_subaccount_service_bindings",
-		/*TODO: Switched off for phase 1
-		"btp_subaccount_service_broker",
-		"btp_subaccount_service_brokers",
+		/*
+			"btp_subaccount_service_broker",
+			"btp_subaccount_service_brokers",
 		*/
 		"btp_subaccount_service_instance",
 		"btp_subaccount_service_instances",
