@@ -39,11 +39,12 @@ data "btp_globalaccount_trust_configurations" "all" {}
 Read-Only:
 
 - `description` (String) The description of the trust configuration.
-- `id` (String) The ID of the trust configuration.
-- `identity_provider` (String) The name of the identity provider.
-- `name` (String) The name of the trust configuration.
+- `domain` (String) The tenant's domain which should be used for user logon.
+- `id` (String, Deprecated) The origin of the identity provider.
+- `identity_provider` (String) The name of the Identity Authentication tenant the global account is connected to.
+- `name` (String) The display name of the trust configuration.
 - `origin` (String) The origin of the identity provider.
 - `protocol` (String) The protocol used to establish trust with the identity provider.
 - `read_only` (Boolean) Shows whether the trust configuration can be modified.
-- `status` (String) Shows whether the identity provider is currently active or not.
+- `status` (String) Shows whether the identity provider is currently 'active' or 'inactive'.
 - `type` (String) The trust type.

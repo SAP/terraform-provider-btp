@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"fmt"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -59,31 +58,36 @@ __Further documentation:__
 							Computed:            true,
 						},
 						"id": schema.StringAttribute{
-							MarkdownDescription: "The ID of the trust configuration.",
+							DeprecationMessage:  "Use the `origin` attribute instead",
+							MarkdownDescription: "The origin of the identity provider.",
+							Computed:            true,
+						},
+						"identity_provider": schema.StringAttribute{
+							MarkdownDescription: "The name of the Identity Authentication tenant the global account is connected to.",
+							Computed:            true,
+						},
+						"domain": schema.StringAttribute{
+							MarkdownDescription: "The tenant's domain which should be used for user logon.",
 							Computed:            true,
 						},
 						"name": schema.StringAttribute{
-							MarkdownDescription: "The name of the trust configuration.",
+							MarkdownDescription: "The display name of the trust configuration.",
 							Computed:            true,
 						},
 						"description": schema.StringAttribute{
 							MarkdownDescription: "The description of the trust configuration.",
 							Computed:            true,
 						},
+						"status": schema.StringAttribute{
+							MarkdownDescription: "Shows whether the identity provider is currently 'active' or 'inactive'.",
+							Computed:            true,
+						},
 						"type": schema.StringAttribute{
 							MarkdownDescription: "The trust type.",
 							Computed:            true,
 						},
-						"identity_provider": schema.StringAttribute{
-							MarkdownDescription: "The name of the identity provider.",
-							Computed:            true,
-						},
 						"protocol": schema.StringAttribute{
 							MarkdownDescription: "The protocol used to establish trust with the identity provider.",
-							Computed:            true,
-						},
-						"status": schema.StringAttribute{
-							MarkdownDescription: "Shows whether the identity provider is currently active or not.",
 							Computed:            true,
 						},
 						"read_only": schema.BoolAttribute{

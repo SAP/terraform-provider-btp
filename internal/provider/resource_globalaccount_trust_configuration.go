@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -44,18 +45,43 @@ __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>`,
 		Attributes: map[string]schema.Attribute{
 			"identity_provider": schema.StringAttribute{
-				MarkdownDescription: "The name of the Identity Authentication tenant that you want the global account to connect.",
+				MarkdownDescription: "The name of the Identity Authentication tenant that you want to connect to the global account.",
 				Required:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"domain": schema.StringAttribute{
+				MarkdownDescription: "The tenant's domain which should be used for user logon.",
+				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "The name of the identity provider.",
+				MarkdownDescription: "The display name of the trust configuration.",
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"description": schema.StringAttribute{
+				MarkdownDescription: "Description of the trust configuration.",
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"origin": schema.StringAttribute{
@@ -65,17 +91,21 @@ __Further documentation:__
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(regexp.MustCompile(`^.{1,27}-platform$`), "must end with '-platform' and not exceed 36 characters"),
 				},
-			},
-			"description": schema.StringAttribute{
-				MarkdownDescription: "A description for the identity provider.",
-				Optional:            true,
-				Computed:            true,
-				Validators: []validator.String{
-					stringvalidator.LengthAtLeast(1),
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"id": schema.StringAttribute{
+				DeprecationMessage:  "Use the `origin` attribute instead",
 				MarkdownDescription: "The origin of the identity provider.",
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"status": schema.StringAttribute{
+				MarkdownDescription: "Determines whether the identity provider is currently 'active' or 'inactive'.",
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -84,18 +114,23 @@ __Further documentation:__
 			"type": schema.StringAttribute{
 				MarkdownDescription: "The trust type.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"protocol": schema.StringAttribute{
 				MarkdownDescription: "The protocol used to establish trust with the identity provider.",
 				Computed:            true,
-			},
-			"status": schema.StringAttribute{
-				MarkdownDescription: "Shows whether the identity provider is currently active or not.",
-				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"read_only": schema.BoolAttribute{
 				MarkdownDescription: "Shows whether the trust configuration can be modified.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 		},
 	}
@@ -132,41 +167,46 @@ func (rs *globalaccountTrustConfigurationResource) Create(ctx context.Context, r
 		return
 	}
 
-	cliReq := btpcli.TrustConfigurationCreateInput{
+	cliCreateReq := btpcli.TrustConfigurationCreateInput{
 		IdentityProvider: plan.IdentityProvider.ValueString(),
 	}
 
 	if !plan.Name.IsUnknown() {
 		name := plan.Name.ValueString()
-		cliReq.Name = &name
+		cliCreateReq.Name = &name
 	}
 
 	if !plan.Description.IsUnknown() {
 		description := plan.Description.ValueString()
-		cliReq.Description = &description
+		cliCreateReq.Description = &description
+	}
+
+	if !plan.Domain.IsUnknown() {
+		domain := plan.Domain.ValueString()
+		cliCreateReq.Domain = &domain
 	}
 
 	if !plan.Origin.IsUnknown() {
 		origin := plan.Origin.ValueString()
-		cliReq.Origin = &origin
+		cliCreateReq.Origin = &origin
 	}
 
-	createRes, _, err := rs.cli.Security.Trust.CreateByGlobalAccount(ctx, cliReq)
+	createRes, _, err := rs.cli.Security.Trust.CreateByGlobalAccount(ctx, cliCreateReq)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Trust Configuration (Global Account)", fmt.Sprintf("%s", err))
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.Trust.GetByGlobalAccount(ctx, createRes.OriginKey)
+	getRes, _, err := rs.cli.Security.Trust.GetByGlobalAccount(ctx, createRes.OriginKey)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Trust Configuration (Global Account)", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("API Error Reading Resource Trust Configuration after Creation (Global Account)", fmt.Sprintf("%s", err))
 		return
 	}
 
-	plan, diags = globalaccountTrustConfigurationFromValue(ctx, cliRes)
+	state, diags := globalaccountTrustConfigurationFromValue(ctx, getRes)
 	resp.Diagnostics.Append(diags...)
 
-	diags = resp.State.Set(ctx, &plan)
+	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -178,10 +218,41 @@ func (rs *globalaccountTrustConfigurationResource) Update(ctx context.Context, r
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Updating Resource Trust Configuration (Global Account)", "this resource is not supposed to be updated")
-	if resp.Diagnostics.HasError() {
+	cliUpdateReq := btpcli.TrustConfigurationUpdateInput{
+		OriginKey: plan.Origin.ValueString(),
+	}
+
+	if !plan.Name.IsUnknown() {
+		name := plan.Name.ValueString()
+		cliUpdateReq.Name = &name
+	}
+
+	if !plan.Description.IsUnknown() {
+		description := plan.Description.ValueString()
+		cliUpdateReq.Description = &description
+	}
+
+	if !plan.Domain.IsUnknown() {
+		domain := plan.Domain.ValueString()
+		cliUpdateReq.Domain = &domain
+	}
+
+	updateRes, _, err := rs.cli.Security.Trust.UpdateByGlobalAccount(ctx, cliUpdateReq)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Updating Resource Trust Configuration (Global Account)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	getRes, _, err := rs.cli.Security.Trust.GetByGlobalAccount(ctx, updateRes.OriginKey)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Reading Resource Trust Configuration after Update (Global Account)", fmt.Sprintf("%s", err))
+		return
+	}
+	state, diags := globalaccountTrustConfigurationFromValue(ctx, getRes)
+	resp.Diagnostics.Append(diags...)
+
+	diags = resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
 }
 
 func (rs *globalaccountTrustConfigurationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

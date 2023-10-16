@@ -79,14 +79,27 @@ func (f *securityTrustFacade) CreateBySubaccount(ctx context.Context, subaccount
 
 type TrustConfigurationUpdateInput struct {
 	OriginKey             string  `btpcli:"originKey"`
-	IdentityProvider      string  `btpcli:"iasTenantUrl"`
+	IdentityProvider      *string `btpcli:"iasTenantUrl"`
 	Name                  *string `btpcli:"name"`
 	Description           *string `btpcli:"description"`
 	Domain                *string `btpcli:"domain"`
-	LinkText              *string `btpcli:"linkText"`
-	AvailableForUserLogon bool    `btpcli:"userLogon"`
-	AutoCreateShadowUsers bool    `btpcli:"shadowUsers"`
-	Status                string  `btpcli:"status"`
+	LinkText              *string `btpcli:"linkText"`    // subaccount only
+	AvailableForUserLogon *bool   `btpcli:"userLogon"`   // subaccount only
+	AutoCreateShadowUsers *bool   `btpcli:"shadowUsers"` // subaccount only
+	Status                *string `btpcli:"status"`
+}
+
+func (f *securityTrustFacade) UpdateByGlobalAccount(ctx context.Context, args TrustConfigurationUpdateInput) (xsuaa_trust.TrustConfigurationResponseObject, CommandResponse, error) {
+	params, err := tfutils.ToBTPCLIParamsMap(args)
+
+	if err != nil {
+		return xsuaa_trust.TrustConfigurationResponseObject{}, CommandResponse{}, err
+	}
+
+	params["globalAccount"] = f.cliClient.GetGlobalAccountSubdomain()
+	params["refreshTrust"] = "true"
+
+	return doExecute[xsuaa_trust.TrustConfigurationResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
 }
 
 func (f *securityTrustFacade) UpdateBySubaccount(ctx context.Context, subaccountId string, args TrustConfigurationUpdateInput) (xsuaa_trust.TrustConfigurationResponseObject, CommandResponse, error) {

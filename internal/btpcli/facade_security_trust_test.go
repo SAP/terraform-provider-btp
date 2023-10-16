@@ -119,6 +119,7 @@ func TestSecurityTrustFacade_CreateByGlobalAccount(t *testing.T) {
 	name := "my-ias"
 	description := "this is a description for the ias tenant"
 	origin := "custom-origin-platform"
+	domain := "custom.domain"
 
 	t.Run("constructs the CLI params correctly - minimal", func(t *testing.T) {
 		var srvCalled bool
@@ -153,6 +154,7 @@ func TestSecurityTrustFacade_CreateByGlobalAccount(t *testing.T) {
 				"name":          name,
 				"description":   description,
 				"origin":        origin,
+				"domain":        domain,
 			})
 		}))
 		defer srv.Close()
@@ -162,6 +164,7 @@ func TestSecurityTrustFacade_CreateByGlobalAccount(t *testing.T) {
 			Name:             &name,
 			Description:      &description,
 			Origin:           &origin,
+			Domain:           &domain,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -232,6 +235,69 @@ func TestSecurityTrustFacade_CreateBySubaccount(t *testing.T) {
 	})
 }
 
+func TestSecurityTrustFacade_UpdateByGlobalAccount(t *testing.T) {
+	command := "security/trust"
+
+	globalAccountId := "795b53bb-a3f0-4769-adf0-26173282a975"
+	name := "my-ias"
+	description := "this is a description for the ias tenant"
+	originKey := "custom-origin-platform"
+	domain := "custom.domain"
+
+	t.Run("constructs the CLI params correctly - minimal", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"globalAccount": globalAccountId,
+				"originKey":     originKey,
+				"name":          name,
+				"refreshTrust":  "true",
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.Trust.UpdateByGlobalAccount(context.TODO(), TrustConfigurationUpdateInput{
+			OriginKey: originKey,
+			Name:      &name,
+		})
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+	t.Run("constructs the CLI params correctly - fully customized", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"globalAccount": globalAccountId,
+				"originKey":     originKey,
+				"name":          name,
+				"description":   description,
+				"domain":        domain,
+				"refreshTrust":  "true",
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Security.Trust.UpdateByGlobalAccount(context.TODO(), TrustConfigurationUpdateInput{
+			OriginKey:   originKey,
+			Name:        &name,
+			Description: &description,
+			Domain:      &domain,
+		})
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
 func TestSecurityTrustFacade_UpdateBySubaccount(t *testing.T) {
 	command := "security/trust"
 
@@ -239,7 +305,7 @@ func TestSecurityTrustFacade_UpdateBySubaccount(t *testing.T) {
 	idp := "my-ias-tenant.local"
 	name := "my-ias"
 	description := "this is a description for the ias tenant"
-	originKey := "custom-originKey-platform"
+	originKey := "custom-originKey"
 	domain := "custom-domain"
 	linkTextForUserLogon := "link-text"
 	availableForUserLogon := true
@@ -266,10 +332,10 @@ func TestSecurityTrustFacade_UpdateBySubaccount(t *testing.T) {
 
 		_, res, err := uut.Security.Trust.UpdateBySubaccount(context.TODO(), subaccountId, TrustConfigurationUpdateInput{
 			OriginKey:             originKey,
-			IdentityProvider:      idp,
-			AvailableForUserLogon: availableForUserLogon,
-			AutoCreateShadowUsers: autoCreateShadowUsers,
-			Status:                status,
+			IdentityProvider:      &idp,
+			AvailableForUserLogon: &availableForUserLogon,
+			AutoCreateShadowUsers: &autoCreateShadowUsers,
+			Status:                &status,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -300,14 +366,14 @@ func TestSecurityTrustFacade_UpdateBySubaccount(t *testing.T) {
 
 		_, res, err := uut.Security.Trust.UpdateBySubaccount(context.TODO(), subaccountId, TrustConfigurationUpdateInput{
 			OriginKey:             originKey,
-			IdentityProvider:      idp,
+			IdentityProvider:      &idp,
 			Name:                  &name,
 			Description:           &description,
 			Domain:                &domain,
 			LinkText:              &linkTextForUserLogon,
-			AvailableForUserLogon: availableForUserLogon,
-			AutoCreateShadowUsers: autoCreateShadowUsers,
-			Status:                status,
+			AvailableForUserLogon: &availableForUserLogon,
+			AutoCreateShadowUsers: &autoCreateShadowUsers,
+			Status:                &status,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {

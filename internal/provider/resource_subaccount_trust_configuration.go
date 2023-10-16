@@ -216,14 +216,17 @@ func (rs *subaccountTrustConfigurationResource) Create(ctx context.Context, req 
 		return
 	}
 
+	availableForUserLogon := plan.AvailableForUserLogon.ValueBool()
+	autoCreateShadowUsers := plan.AutoCreateShadowUsers.ValueBool()
+	status := plan.Status.ValueString()
 	cliUpdateReq := btpcli.TrustConfigurationUpdateInput{
 		OriginKey: createRes.OriginKey,
 		// TODO: remove repeating domain and idp, see NGPBUG-364505
-		IdentityProvider:      cliCreateReq.IdentityProvider,
+		IdentityProvider:      &cliCreateReq.IdentityProvider,
 		Domain:                cliCreateReq.Domain,
-		AvailableForUserLogon: plan.AvailableForUserLogon.ValueBool(),
-		AutoCreateShadowUsers: plan.AutoCreateShadowUsers.ValueBool(),
-		Status:                plan.Status.ValueString(),
+		AvailableForUserLogon: &availableForUserLogon,
+		AutoCreateShadowUsers: &autoCreateShadowUsers,
+		Status:                &status,
 	}
 
 	if !plan.LinkText.IsUnknown() {
@@ -258,12 +261,16 @@ func (rs *subaccountTrustConfigurationResource) Update(ctx context.Context, req 
 		return
 	}
 
+	idp := plan.IdentityProvider.ValueString()
+	availableForUserLogon := plan.AvailableForUserLogon.ValueBool()
+	autoCreateShadowUsers := plan.AutoCreateShadowUsers.ValueBool()
+	status := plan.Status.ValueString()
 	cliUpdateReq := btpcli.TrustConfigurationUpdateInput{
 		OriginKey:             plan.Origin.ValueString(),
-		IdentityProvider:      plan.IdentityProvider.ValueString(),
-		AvailableForUserLogon: plan.AvailableForUserLogon.ValueBool(),
-		AutoCreateShadowUsers: plan.AutoCreateShadowUsers.ValueBool(),
-		Status:                plan.Status.ValueString(),
+		IdentityProvider:      &idp,
+		AvailableForUserLogon: &availableForUserLogon,
+		AutoCreateShadowUsers: &autoCreateShadowUsers,
+		Status:                &status,
 	}
 
 	if !plan.Domain.IsNull() {

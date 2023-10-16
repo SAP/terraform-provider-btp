@@ -36,20 +36,21 @@ resource "btp_globalaccount_trust_configuration" "fully_customized" {
 
 ### Required
 
-- `identity_provider` (String) The name of the Identity Authentication tenant that you want the global account to connect.
+- `identity_provider` (String) The name of the Identity Authentication tenant that you want to connect to the global account.
 
 ### Optional
 
-- `description` (String) A description for the identity provider.
-- `name` (String) The name of the identity provider.
+- `description` (String) Description of the trust configuration.
+- `domain` (String) The tenant's domain which should be used for user logon.
+- `name` (String) The display name of the trust configuration.
 - `origin` (String) The origin of the identity provider.
 
 ### Read-Only
 
-- `id` (String) The origin of the identity provider.
+- `id` (String, Deprecated) The origin of the identity provider.
 - `protocol` (String) The protocol used to establish trust with the identity provider.
 - `read_only` (Boolean) Shows whether the trust configuration can be modified.
-- `status` (String) Shows whether the identity provider is currently active or not.
+- `status` (String) Determines whether the identity provider is currently 'active' or 'inactive'.
 - `type` (String) The trust type.
 
 
