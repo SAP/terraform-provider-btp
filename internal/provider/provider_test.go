@@ -289,17 +289,6 @@ func TestProvider_ConfigurationFlows(t *testing.T) {
 				{
 					Config: `
 provider "btp" {
-	globalaccount  = ""
-	username       = "username"
-	password       = "password"
-}
-data "btp_whoami" "me" {}`,
-					ExpectError: regexp.MustCompile(`empty value for the BTP global account`),
-					PlanOnly:    true,
-				},
-				{
-					Config: `
-provider "btp" {
 	globalaccount  = "terraformintcanary"
 	username       = ""
 	password       = "password"
@@ -328,19 +317,6 @@ data "btp_whoami" "me" {}`,
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []testingResource.TestStep{
-				{
-					Config: `
-provider "btp" {
-	globalaccount          = ""
-	username               = "username"
-	tls_client_key         = "tlsClientKey"
-	tls_client_certificate = "tlsClientCertificate"
-	idp_url                = "idpUrl"
-}
-data "btp_whoami" "me" {}`,
-					ExpectError: regexp.MustCompile(`empty value for the BTP global account`),
-					PlanOnly:    true,
-				},
 				{
 					Config: `
 provider "btp" {

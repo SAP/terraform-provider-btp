@@ -48,7 +48,10 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 			},
 			"globalaccount": schema.StringAttribute{
 				MarkdownDescription: "The subdomain of the global account in which you want to manage resources. To be found in the cockpit, in the global account view.",
-				Required:            true, // TODO validate UUID
+				Required:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"username": schema.StringAttribute{
 				MarkdownDescription: "Your user name, usually an e-mail address. This can also be sourced from the `BTP_USERNAME` environment variable.",
@@ -195,9 +198,6 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	} else {
 		password = config.Password.ValueString()
 	}
-
-	// Global Account must be provided to the provider independent of login flow:
-	validateGlobalAccount(config.GlobalAccount.ValueString(), resp)
 
 	//Determine and execute the login flow depending on the provided parameters
 	switch authFlow := determineAuthFlow(config, idToken); authFlow {
@@ -362,22 +362,10 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 func determineAuthFlow(config providerData, idToken string) string {
 	if len(idToken) > 0 {
 		return idTokenFlow
-	} else if !config.TLSClientKey.IsNull() && !config.TLSClientCertificate.IsNull() {
+	} else if !config.TLSClientKey.IsNull() {
 		return x509Flow
 	} else {
 		return userPasswordFlow
-	}
-}
-
-func validateGlobalAccount(globalAccount string, resp *provider.ConfigureResponse) {
-	if len(globalAccount) == 0 {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("globalaccount"),
-			"Missing Global Account",
-			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the BTP global account. "+
-				"Set the global account value in the configuration. "+
-				"If it is already set, ensure the value is not empty.",
-		)
 	}
 }
 
@@ -386,7 +374,7 @@ func validateUserPasswordFlow(userName string, password string, resp *provider.C
 		resp.Diagnostics.AddAttributeError(
 			path.Root("username"),
 			"Missing Username",
-			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the username. "+
+			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the username. "+
 				"Set the username value in the configuration or use the BTP_USERNAME environment variable. "+
 				"If either is already set, ensure the value is not empty.",
 		)
@@ -396,7 +384,7 @@ func validateUserPasswordFlow(userName string, password string, resp *provider.C
 		resp.Diagnostics.AddAttributeError(
 			path.Root("password"),
 			"Missing Password",
-			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the password. "+
+			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the password. "+
 				"Set the password value in the configuration or use the BTP_PASSWORD environment variable. "+
 				"If either is already set, ensure the value is not empty.",
 		)
@@ -410,7 +398,7 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 		resp.Diagnostics.AddAttributeError(
 			path.Root("username"),
 			"Missing Username",
-			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the username. "+
+			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the username. "+
 				"Set the username value in the configuration or use the BTP_USERNAME environment variable. "+
 				"If either is already set, ensure the value is not empty.",
 		)
@@ -420,7 +408,7 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 		resp.Diagnostics.AddAttributeError(
 			path.Root("idp_url"),
 			"Missing IDP URL (only required for x509 auth)",
-			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the idp_url (only required for x509 auth). "+
+			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the idp_url (only required for x509 auth). "+
 				"Set the idp_url value in the configuration. "+
 				"If it is already set, ensure the value is not empty.",
 		)
@@ -430,7 +418,7 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 		resp.Diagnostics.AddAttributeError(
 			path.Root("tls_client_key"),
 			"Missing PEM Encoded Private Key",
-			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the tls_client_key (PEM encoded private key). "+
+			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the tls_client_key (PEM encoded private key). "+
 				"Set the tls_client_key value in the configuration. "+
 				"If it is already set, ensure the value is not empty.",
 		)
@@ -440,7 +428,7 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 		resp.Diagnostics.AddAttributeError(
 			path.Root("tls_client_certificate"),
 			"Missing PEM Encoded Certificate",
-			"The provider cannot create he Terraform BTP client as there is a missing or empty value for the tls_client_certificate (PEM encoded certificate). "+
+			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the tls_client_certificate (PEM encoded certificate). "+
 				"Set the tls_client_certificate value in the configuration. "+
 				"If it is already set, ensure the value is not empty.",
 		)
