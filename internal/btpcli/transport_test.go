@@ -64,9 +64,7 @@ func TestBTPCLITransport(t *testing.T) {
 			count := 1
 
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				assert.Equal(t, fmt.Sprintf("token-%d", count-1), r.Header.Get(HeaderCLIRefreshToken))
-
-				w.Header().Set(HeaderCLIReplacementRefreshToken, fmt.Sprintf("token-%d", count))
+				assert.Equal(t, fmt.Sprintf("/path-%d", count-1), r.URL.Path)
 
 				if test.returnAdditionalHeadersInCall == count {
 					for k, v := range test.returnAdditionalHeaders {
@@ -81,8 +79,8 @@ func TestBTPCLITransport(t *testing.T) {
 				}
 
 				if count < test.redirectXtimes+1 {
+					http.RedirectHandler(fmt.Sprintf("/path-%d", count), http.StatusTemporaryRedirect).ServeHTTP(w, r)
 					count = count + 1
-					http.RedirectHandler("", http.StatusTemporaryRedirect).ServeHTTP(w, r)
 					return
 				}
 
@@ -92,8 +90,7 @@ func TestBTPCLITransport(t *testing.T) {
 
 			client := injectBTPCLITransport(srv.Client())
 
-			req, err := http.NewRequest(http.MethodGet, srv.URL, nil)
-			req.Header.Set(HeaderCLIRefreshToken, "token-0")
+			req, err := http.NewRequest(http.MethodGet, srv.URL+"/path-0", nil)
 
 			assert.NoError(t, err)
 
@@ -101,7 +98,6 @@ func TestBTPCLITransport(t *testing.T) {
 
 			assert.NoError(t, err)
 			assert.Equal(t, test.returnStatus, res.StatusCode)
-			assert.Equal(t, fmt.Sprintf("token-%d", test.redirectXtimes+1), res.Header.Get(HeaderCLIReplacementRefreshToken))
 		})
 	}
 }

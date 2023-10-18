@@ -70,15 +70,17 @@ func TestV2Client_Login(t *testing.T) {
 			simulation: v2SimulationConfig{
 				srvExpectBody:    `{"customIdp":"","subdomain":"subdomain","userName":"john.doe","password":"pass"}`,
 				srvReturnStatus:  http.StatusOK,
-				srvReturnContent: `{"issuer": "accounts.sap.com","user":"john.doe","mail":"john.doe@test.com","refreshToken":"abc"}`,
+				srvReturnContent: `{"issuer": "accounts.sap.com","user":"john.doe","mail":"john.doe@test.com"}`,
+				srvReturnHeader: map[string]string{
+					HeaderCLISessionId: "sessionid",
+				},
 				expectResponse: &LoginResponse{
-					Issuer:       "accounts.sap.com",
-					Username:     "john.doe",
-					Email:        "john.doe@test.com",
-					RefreshToken: "abc",
+					Issuer:   "accounts.sap.com",
+					Username: "john.doe",
+					Email:    "john.doe@test.com",
 				},
 				expectClientSession: &Session{
-					RefreshToken:           "abc",
+					SessionId:              "sessionid",
 					IdentityProvider:       "",
 					GlobalAccountSubdomain: "subdomain",
 					LoggedInUser: &v2LoggedInUser{
@@ -95,15 +97,17 @@ func TestV2Client_Login(t *testing.T) {
 			simulation: v2SimulationConfig{
 				srvExpectBody:    `{"customIdp":"my.custom.idp","subdomain":"subdomain","userName":"john.doe","password":"pass"}`,
 				srvReturnStatus:  http.StatusOK,
-				srvReturnContent: `{"issuer": "customidp.accounts.ondemand.com","user":"john.doe","mail":"john.doe@test.com","refreshToken":"abc"}`,
+				srvReturnContent: `{"issuer": "customidp.accounts.ondemand.com","user":"john.doe","mail":"john.doe@test.com"}`,
+				srvReturnHeader: map[string]string{
+					HeaderCLISessionId: "sessionid",
+				},
 				expectResponse: &LoginResponse{
-					Issuer:       "customidp.accounts.ondemand.com",
-					Username:     "john.doe",
-					Email:        "john.doe@test.com",
-					RefreshToken: "abc",
+					Issuer:   "customidp.accounts.ondemand.com",
+					Username: "john.doe",
+					Email:    "john.doe@test.com",
 				},
 				expectClientSession: &Session{
-					RefreshToken:           "abc",
+					SessionId:              "sessionid",
 					GlobalAccountSubdomain: "subdomain",
 					IdentityProvider:       "my.custom.idp",
 					LoggedInUser: &v2LoggedInUser{
@@ -193,16 +197,15 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 				srvReturnStatus:  http.StatusOK,
 				srvReturnContent: `{"issuer": "idp.from.idtoken","user":"john.doe","mail":"john.doe@test.com"}`,
 				srvReturnHeader: map[string]string{
-					HeaderCLIRefreshToken: "sessionid",
+					HeaderCLISessionId: "sessionid",
 				},
 				expectResponse: &LoginResponse{
-					Issuer:       "idp.from.idtoken",
-					Username:     "john.doe",
-					Email:        "john.doe@test.com",
-					RefreshToken: "",
+					Issuer:   "idp.from.idtoken",
+					Username: "john.doe",
+					Email:    "john.doe@test.com",
 				},
 				expectClientSession: &Session{
-					RefreshToken:           "sessionid",
+					SessionId:              "sessionid",
 					IdentityProvider:       "idp.from.idtoken",
 					GlobalAccountSubdomain: "subdomain",
 					LoggedInUser: &v2LoggedInUser{
@@ -365,10 +368,9 @@ func TestV2Client_Logout(t *testing.T) {
 			description:   "happy path",
 			logoutRequest: NewLogoutRequest("subdomain"),
 			simulation: v2SimulationConfig{
-				srvExpectBody:    `{"customIdp":"","subdomain":"subdomain","refreshToken":""}`,
-				srvReturnStatus:  http.StatusOK,
-				srvReturnContent: `{"issuer": "","user":"john.doe","mail":"john.doe@test.com","refreshToken":"abc"}`,
-				expectResponse:   &LogoutResponse{},
+				srvExpectBody:   `{"customIdp":"","subdomain":"subdomain","refreshToken":""}`,
+				srvReturnStatus: http.StatusOK,
+				expectResponse:  &LogoutResponse{},
 			},
 		},
 		{

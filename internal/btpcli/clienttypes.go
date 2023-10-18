@@ -50,10 +50,9 @@ type PasscodeLoginRequest struct {
 }
 
 type LoginResponse struct {
-	RefreshToken string `json:"refreshToken"`
-	Username     string `json:"user"`
-	Email        string `json:"mail"`
-	Issuer       string `json:"issuer"`
+	Username string `json:"user"`
+	Email    string `json:"mail"`
+	Issuer   string `json:"issuer"`
 }
 
 /* Logout */
