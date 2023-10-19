@@ -3,8 +3,9 @@ package provider
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"regexp"
+
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -146,7 +147,7 @@ func (rs *globalaccountTrustConfigurationResource) Read(ctx context.Context, req
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.Trust.GetByGlobalAccount(ctx, state.Id.ValueString())
+	cliRes, _, err := rs.cli.Security.Trust.GetByGlobalAccount(ctx, state.Origin.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Trust Configuration (Global Account)", fmt.Sprintf("%s", err))
 		return
@@ -263,7 +264,7 @@ func (rs *globalaccountTrustConfigurationResource) Delete(ctx context.Context, r
 		return
 	}
 
-	_, _, err := rs.cli.Security.Trust.DeleteByGlobalAccount(ctx, state.Id.ValueString())
+	_, _, err := rs.cli.Security.Trust.DeleteByGlobalAccount(ctx, state.Origin.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Trust Configuration (Global Account)", fmt.Sprintf("%s", err))
 		return
@@ -271,5 +272,5 @@ func (rs *globalaccountTrustConfigurationResource) Delete(ctx context.Context, r
 }
 
 func (rs *globalaccountTrustConfigurationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+	resource.ImportStatePassthroughID(ctx, path.Root("origin"), req, resp)
 }
