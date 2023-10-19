@@ -3,6 +3,8 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -169,7 +171,7 @@ func (rs *subaccountTrustConfigurationResource) Read(ctx context.Context, req re
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.Trust.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
+	cliRes, _, err := rs.cli.Security.Trust.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Origin.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Trust Configuration (Subaccount)", fmt.Sprintf("%s", err))
 		return
@@ -315,7 +317,7 @@ func (rs *subaccountTrustConfigurationResource) Delete(ctx context.Context, req 
 		return
 	}
 
-	_, _, err := rs.cli.Security.Trust.DeleteBySubaccount(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
+	_, _, err := rs.cli.Security.Trust.DeleteBySubaccount(ctx, state.SubaccountId.ValueString(), state.Origin.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Trust Configuration (Subaccount)", fmt.Sprintf("%s", err))
 		return
@@ -323,5 +325,16 @@ func (rs *subaccountTrustConfigurationResource) Delete(ctx context.Context, req 
 }
 
 func (rs *subaccountTrustConfigurationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+	idParts := strings.Split(req.ID, ",")
+
+	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
+		resp.Diagnostics.AddError(
+			"Unexpected Import Identifier",
+			fmt.Sprintf("Expected import identifier with format: subaccount_id,origin. Got: %q", req.ID),
+		)
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("origin"), idParts[1])...)
 }
