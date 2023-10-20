@@ -24,6 +24,8 @@ import (
 const userPasswordFlow = "userPasswordFlow"
 const x509Flow = "x509Flow"
 const idTokenFlow = "idTokenFlow"
+const errorMessagePostfixWithEnv = "If either is already set, ensure the value is not empty."
+const errorMessagePostfixWithoutEnv = "If it is already set, ensure the value is not empty."
 
 func New() provider.Provider {
 	return NewWithClient(http.DefaultClient)
@@ -376,7 +378,7 @@ func validateUserPasswordFlow(userName string, password string, resp *provider.C
 			"Missing Username",
 			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the username. "+
 				"Set the username value in the configuration or use the BTP_USERNAME environment variable. "+
-				"If either is already set, ensure the value is not empty.",
+				errorMessagePostfixWithEnv,
 		)
 	}
 
@@ -386,7 +388,7 @@ func validateUserPasswordFlow(userName string, password string, resp *provider.C
 			"Missing Password",
 			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the password. "+
 				"Set the password value in the configuration or use the BTP_PASSWORD environment variable. "+
-				"If either is already set, ensure the value is not empty.",
+				errorMessagePostfixWithEnv,
 		)
 
 	}
@@ -400,7 +402,7 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 			"Missing Username",
 			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the username. "+
 				"Set the username value in the configuration or use the BTP_USERNAME environment variable. "+
-				"If either is already set, ensure the value is not empty.",
+				errorMessagePostfixWithEnv,
 		)
 	}
 
@@ -410,7 +412,7 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 			"Missing IDP URL (only required for x509 auth)",
 			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the idp_url (only required for x509 auth). "+
 				"Set the idp_url value in the configuration. "+
-				"If it is already set, ensure the value is not empty.",
+				errorMessagePostfixWithoutEnv,
 		)
 	}
 
@@ -420,7 +422,7 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 			"Missing PEM Encoded Private Key",
 			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the tls_client_key (PEM encoded private key). "+
 				"Set the tls_client_key value in the configuration. "+
-				"If it is already set, ensure the value is not empty.",
+				errorMessagePostfixWithoutEnv,
 		)
 	}
 
@@ -430,7 +432,7 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 			"Missing PEM Encoded Certificate",
 			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the tls_client_certificate (PEM encoded certificate). "+
 				"Set the tls_client_certificate value in the configuration. "+
-				"If it is already set, ensure the value is not empty.",
+				errorMessagePostfixWithoutEnv,
 		)
 	}
 }
