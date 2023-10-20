@@ -36,18 +36,17 @@ func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL) *v2Clien
 }
 
 const (
-	HeaderCorrelationID              string = "X-Correlationid"
-	HeaderIDToken                    string = "X-Id-Token"
-	HeaderCLIFormat                  string = "X-Cpcli-Format"
-	HeaderCLIRefreshToken            string = "X-Cpcli-Refreshtoken"
-	HeaderCLIReplacementRefreshToken string = "X-Cpcli-Replacementrefreshtoken"
-	HeaderCLISubdomain               string = "X-Cpcli-Subdomain"
-	HeaderCLICustomIDP               string = "X-Cpcli-Customidp"
-	HeaderCLIBackendStatus           string = "X-Cpcli-Backend-Status"
-	HeaderCLIBackendMessage          string = "X-Cpcli-Backend-Message"
-	HeaderCLIBackendMediaType        string = "X-Cpcli-Backend-Mediatype"
-	HeaderCLIClientUpdate            string = "X-Cpcli-Client-Update"
-	HeaderCLIServerMessage           string = "X-Cpcli-Server-Message"
+	HeaderCorrelationID       string = "X-Correlationid"
+	HeaderIDToken             string = "X-Id-Token"
+	HeaderCLIFormat           string = "X-Cpcli-Format"
+	HeaderCLISessionId        string = "X-Cpcli-Sessionid"
+	HeaderCLISubdomain        string = "X-Cpcli-Subdomain"
+	HeaderCLICustomIDP        string = "X-Cpcli-Customidp"
+	HeaderCLIBackendStatus    string = "X-Cpcli-Backend-Status"
+	HeaderCLIBackendMessage   string = "X-Cpcli-Backend-Message"
+	HeaderCLIBackendMediaType string = "X-Cpcli-Backend-Mediatype"
+	HeaderCLIClientUpdate     string = "X-Cpcli-Client-Update"
+	HeaderCLIServerMessage    string = "X-Cpcli-Server-Message"
 )
 
 const cliTargetProtocolVersion string = "v2.49.0"
@@ -100,7 +99,7 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 		v2.session.Lock()
 		defer v2.session.Unlock()
 
-		req.Header.Set(HeaderCLIRefreshToken, v2.session.RefreshToken)
+		req.Header.Set(HeaderCLISessionId, v2.session.SessionId)
 		req.Header.Set(HeaderCLISubdomain, v2.session.GlobalAccountSubdomain)
 		req.Header.Set(HeaderCLICustomIDP, v2.session.IdentityProvider)
 	}
@@ -110,11 +109,6 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 	}
 
 	res, err := v2.httpClient.Do(req)
-
-	if v2.session != nil && err == nil && res.Header.Get(HeaderCLIReplacementRefreshToken) != "" {
-		// Only update the refresh token if the request was successful and the server returned a replacement refresh token
-		v2.session.RefreshToken = res.Header.Get(HeaderCLIReplacementRefreshToken)
-	}
 
 	return res, err
 }
@@ -189,7 +183,7 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 			Email:    loginResponse.Email,
 			Issuer:   loginResponse.Issuer,
 		},
-		RefreshToken: loginResponse.RefreshToken,
+		SessionId: res.Header.Get(HeaderCLISessionId),
 	}
 
 	return &loginResponse, nil
@@ -226,7 +220,7 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 			Email:    loginResponse.Email,
 			Issuer:   loginResponse.Issuer,
 		},
-		RefreshToken: res.Header.Get(HeaderCLIRefreshToken),
+		SessionId: res.Header.Get(HeaderCLISessionId),
 	}
 
 	return &loginResponse, nil
@@ -296,8 +290,7 @@ func (v2 *v2Client) Logout(ctx context.Context, logoutReq *LogoutRequest) (*Logo
 		return nil, err
 	}
 
-	var logoutResponse LogoutResponse
-	return &logoutResponse, v2.parseResponse(ctx, res, &logoutResponse, http.StatusOK, map[int]string{
+	return &LogoutResponse{}, v2.parseResponse(ctx, res, nil, http.StatusOK, map[int]string{
 		http.StatusGatewayTimeout: "Logout timed out. Please try again later.",
 	})
 }

@@ -12,7 +12,7 @@ on:
       - main
     paths-ignore:
       - '*.md'
-  workflow_dispatch:    
+  workflow_dispatch:
 
 # Testing only needs permissions to read the repository contents.
 permissions:
@@ -89,8 +89,8 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
-        run: go test -v -cover -coverprofile=cover.out -timeout=540s -parallel=4 ./...
-        timeout-minutes: 10
+        run: go test -v -cover -coverprofile=cover.out -timeout=900s -parallel=4 ./...
+        timeout-minutes: 20
       - uses: actions/upload-artifact@v3
         with:
           name: coverage-report

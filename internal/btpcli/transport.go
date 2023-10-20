@@ -34,7 +34,6 @@ func (bt *btpcliTransport) copyResponseHeaderToRequestHeader(req *http.Request, 
 }
 
 func (bt *btpcliTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	bt.copyResponseHeaderToRequestHeader(req, HeaderCLIReplacementRefreshToken, HeaderCLIRefreshToken)
 	bt.copyResponseHeaderToRequestHeader(req, HeaderCLISubdomain, HeaderCLISubdomain)
 	bt.copyResponseHeaderToRequestHeader(req, HeaderIDToken, HeaderIDToken)
 

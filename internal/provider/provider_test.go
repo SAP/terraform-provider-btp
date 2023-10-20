@@ -122,7 +122,7 @@ func setupVCR(t *testing.T, cassetteName string) (*recorder.Recorder, TestUser) 
 
 	rec.SetMatcher(cliServerRequestMatcher(t))
 	rec.AddHook(hookRedactIntegrationUserCredentials(user), recorder.BeforeSaveHook)
-	rec.AddHook(hookRedactTokensInHeader(), recorder.BeforeSaveHook)
+	rec.AddHook(hookRedactTokensAndSessionIds(), recorder.BeforeSaveHook)
 
 	return rec, user
 }
@@ -214,19 +214,22 @@ func hookRedactIntegrationUserCredentials(user TestUser) func(i *cassette.Intera
 	}
 }
 
-func hookRedactTokensInHeader() func(i *cassette.Interaction) error {
+func hookRedactTokensAndSessionIds() func(i *cassette.Interaction) error {
 	return func(i *cassette.Interaction) error {
-		redactTokenHeaders := func(headers map[string][]string) {
+		redact := func(headers map[string][]string) {
 			for key := range headers {
-				if strings.Contains(strings.ToLower(key), "token") {
+				if strings.Contains(strings.ToLower(key), "token") ||
+					strings.Contains(strings.ToLower(key), "session") {
 					headers[key] = []string{"redacted"}
 				}
 			}
 		}
 
-		redactTokenHeaders(i.Request.Headers)
-		redactTokenHeaders(i.Response.Headers)
+		redact(i.Request.Headers)
+		redact(i.Response.Headers)
 
+		// TODO: this can be removed as soon as the btp CLI server no longer
+		//  includes the refresh token in the body for compatibility reasons
 		re := regexp.MustCompile(`"refreshToken":"(.*?)"`)
 		i.Request.Body = re.ReplaceAllString(i.Request.Body, `"refreshToken":"redacted"`)
 		i.Response.Body = re.ReplaceAllString(i.Response.Body, `"refreshToken":"redacted"`)

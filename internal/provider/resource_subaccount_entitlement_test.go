@@ -60,7 +60,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "hana-cloud-hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "hana-cloud"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "3"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},

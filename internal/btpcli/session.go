@@ -12,7 +12,7 @@ type v2LoggedInUser struct {
 
 type Session struct {
 	GlobalAccountSubdomain string
-	RefreshToken           string
+	SessionId              string
 	IdentityProvider       string
 	LoggedInUser           *v2LoggedInUser
 
