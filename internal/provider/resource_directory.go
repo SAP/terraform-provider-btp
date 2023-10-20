@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"maps"
 	"net/http"
 	"regexp"
 	"slices"
@@ -14,7 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -128,10 +128,6 @@ __Further documentation:__
 				},
 				MarkdownDescription: "Contains information about the labels assigned to a specified global account. Labels are represented in a JSON array of key-value pairs; each key has up to 10 corresponding values.",
 				Optional:            true,
-				Computed:            true,
-				PlanModifiers: []planmodifier.Map{
-					mapplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",
@@ -230,11 +226,10 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 		args.Subdomain = &subdomain
 	}
 
-	if !plan.Labels.IsUnknown() {
-		var labels map[string][]string
-		plan.Labels.ElementsAs(ctx, &labels, false)
-		args.Labels = labels
-	}
+	var labels map[string][]string
+	plan.Labels.ElementsAs(ctx, &labels, false)
+	args.Labels = map[string][]string{}
+	maps.Copy(args.Labels, labels)
 
 	if !plan.Features.IsUnknown() {
 		var features []string
@@ -312,11 +307,10 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 		args.Description = &description
 	}
 
-	if !plan.Labels.IsUnknown() {
-		var labels map[string][]string
-		plan.Labels.ElementsAs(ctx, &labels, false)
-		args.Labels = labels
-	}
+	var labels map[string][]string
+	plan.Labels.ElementsAs(ctx, &labels, false)
+	args.Labels = map[string][]string{}
+	maps.Copy(args.Labels, labels)
 
 	//We do not support the update of features (distinct command in CLI). We raise an error if the user tries to update the features
 	var planFeatures []string

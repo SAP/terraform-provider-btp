@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"maps"
 	"net/http"
 	"regexp"
 	"time"
@@ -12,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -95,8 +95,8 @@ __Further documentation:__
 			},
 			"parent_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.",
-				Optional:            true,
 				Computed:            true,
+				Optional:            true,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
@@ -110,11 +110,7 @@ __Further documentation:__
 					ElemType: types.StringType,
 				},
 				MarkdownDescription: "The set of words or phrases assigned to the subaccount.",
-				Computed:            true,
 				Optional:            true,
-				PlanModifiers: []planmodifier.Map{
-					mapplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"beta_enabled": schema.BoolAttribute{
 				MarkdownDescription: "Shows whether the subaccount can use beta services and applications.",
@@ -253,11 +249,10 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		args.BetaEnabled = betaEnabled
 	}
 
-	if !plan.Labels.IsUnknown() {
-		var labels map[string][]string
-		plan.Labels.ElementsAs(ctx, &labels, false)
-		args.Labels = labels
-	}
+	var labels map[string][]string
+	plan.Labels.ElementsAs(ctx, &labels, false)
+	args.Labels = map[string][]string{}
+	maps.Copy(args.Labels, labels)
 
 	args.UsedForProduction = mapUsageToUsedForProduction(plan.Usage.ValueString())
 
@@ -322,7 +317,8 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 
 	var labels map[string][]string
 	plan.Labels.ElementsAs(ctx, &labels, false)
-	args.Labels = labels
+	args.Labels = map[string][]string{}
+	maps.Copy(args.Labels, labels)
 
 	args.UsedForProduction = mapUsageToUsedForProduction(plan.Usage.ValueString())
 
