@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"maps"
 	"net/http"
 	"regexp"
 	"slices"
@@ -225,11 +226,10 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 		args.Subdomain = &subdomain
 	}
 
-	if !plan.Labels.IsUnknown() {
-		var labels map[string][]string
-		plan.Labels.ElementsAs(ctx, &labels, false)
-		args.Labels = labels
-	}
+	var labels map[string][]string
+	plan.Labels.ElementsAs(ctx, &labels, false)
+	args.Labels = map[string][]string{}
+	maps.Copy(args.Labels, labels)
 
 	if !plan.Features.IsUnknown() {
 		var features []string
@@ -307,11 +307,10 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 		args.Description = &description
 	}
 
-	if !plan.Labels.IsUnknown() {
-		var labels map[string][]string
-		plan.Labels.ElementsAs(ctx, &labels, false)
-		args.Labels = labels
-	}
+	var labels map[string][]string
+	plan.Labels.ElementsAs(ctx, &labels, false)
+	args.Labels = map[string][]string{}
+	maps.Copy(args.Labels, labels)
 
 	//We do not support the update of features (distinct command in CLI). We raise an error if the user tries to update the features
 	var planFeatures []string

@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"maps"
 	"net/http"
 	"regexp"
 	"time"
@@ -248,11 +249,10 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		args.BetaEnabled = betaEnabled
 	}
 
-	if !plan.Labels.IsUnknown() {
-		var labels map[string][]string
-		plan.Labels.ElementsAs(ctx, &labels, false)
-		args.Labels = labels
-	}
+	var labels map[string][]string
+	plan.Labels.ElementsAs(ctx, &labels, false)
+	args.Labels = map[string][]string{}
+	maps.Copy(args.Labels, labels)
 
 	args.UsedForProduction = mapUsageToUsedForProduction(plan.Usage.ValueString())
 
@@ -317,7 +317,8 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 
 	var labels map[string][]string
 	plan.Labels.ElementsAs(ctx, &labels, false)
-	args.Labels = labels
+	args.Labels = map[string][]string{}
+	maps.Copy(args.Labels, labels)
 
 	args.UsedForProduction = mapUsageToUsedForProduction(plan.Usage.ValueString())
 

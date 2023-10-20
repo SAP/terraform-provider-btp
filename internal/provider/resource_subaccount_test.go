@@ -156,7 +156,7 @@ func TestResourceSubaccount(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path full config", func(t *testing.T) {
+	t.Run("happy path full config with update", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount.full_config")
 		defer stopQuietly(rec)
 
@@ -183,7 +183,7 @@ func TestResourceSubaccount(t *testing.T) {
 				},
 				{
 					// Update name wo change of usage but omit optional parameters
-					Config: hclProviderFor(user) + hclResourceSubaccountAll("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn", "My subaccount description", "NOT_USED_FOR_PRODUCTION", true),
+					Config: hclProviderFor(user) + hclResourceSubaccount("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
@@ -196,7 +196,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "NOT_USED_FOR_PRODUCTION"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount.uut", "labels.foo.0", "bar"),
+						resource.TestCheckNoResourceAttr("btp_subaccount.uut", "labels"),
 					),
 				},
 				{

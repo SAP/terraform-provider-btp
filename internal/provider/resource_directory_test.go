@@ -91,7 +91,7 @@ func TestResourceDirectory(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path full config", func(t *testing.T) {
+	t.Run("happy path full config with update", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_directory.full_config")
 		defer stopQuietly(rec)
 
@@ -114,7 +114,7 @@ func TestResourceDirectory(t *testing.T) {
 				},
 				{
 					// Update name wo change of usage but omit optional parameters
-					Config: hclProviderFor(user) + hclResourceDirectoryAll("uut", "my-new-directory", "This is a updated directory"),
+					Config: hclProviderFor(user) + hclResourceDirectory("uut", "my-new-directory", "This is a updated directory"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),
@@ -122,7 +122,7 @@ func TestResourceDirectory(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_directory.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-new-directory"),
 						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is a updated directory"),
-						resource.TestCheckResourceAttr("btp_directory.uut", "labels.foo.0", "bar"),
+						resource.TestCheckNoResourceAttr("btp_directory.uut", "labels"),
 						resource.TestCheckResourceAttr("btp_directory.uut", "features.#", "3"),
 					),
 				},
