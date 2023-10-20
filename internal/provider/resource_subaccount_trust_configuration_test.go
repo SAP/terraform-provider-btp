@@ -2,9 +2,11 @@ package provider
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceSubaccountTrustConfiguration(t *testing.T) {
@@ -56,6 +58,12 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "read_only", "false"),
 					),
 				},
+				{
+					ResourceName:      "btp_subaccount_trust_configuration.uut",
+					ImportStateIdFunc: getTrustConfigIdForImport("btp_subaccount_trust_configuration.uut"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
 			},
 		})
 	})
@@ -106,10 +114,37 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "read_only", "false"),
 					),
 				},
+				{
+					ResourceName:      "btp_subaccount_trust_configuration.uut",
+					ImportStateIdFunc: getTrustConfigIdForImport("btp_subaccount_trust_configuration.uut"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
 			},
 		})
 	})
 
+	t.Run("error path - import failure", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration.import_error")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimal("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com"),
+				},
+				{
+					ResourceName:      "btp_subaccount_trust_configuration.uut",
+					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+					ImportState:       true,
+					ImportStateVerify: true,
+					ExpectError:       regexp.MustCompile(`Unexpected Import Identifier`),
+				},
+			},
+		})
+	})
 }
 
 func hclResourceSubaccountTrustConfigurationComplete(resourceName string, subaccountId string, identityProvider string, domain string, name string, description string, linkText string, availableForUserLogin bool, autoCreateShadowUsers bool, status string) string {
@@ -137,4 +172,15 @@ resource "btp_subaccount_trust_configuration" "%s" {
 }`
 
 	return fmt.Sprintf(template, resourceName, subaccountId, identityProvider)
+}
+
+func getTrustConfigIdForImport(resourceName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+
+		return fmt.Sprintf("%s,%s", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", rs.Primary.ID), nil
+	}
 }

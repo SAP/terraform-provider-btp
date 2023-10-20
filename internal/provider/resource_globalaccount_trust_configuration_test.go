@@ -48,6 +48,11 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "read_only", "false"),
 					),
 				},
+				{
+					ResourceName:      "btp_globalaccount_trust_configuration.uut",
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
 			},
 		})
 	})
@@ -89,6 +94,11 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "status", "active"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "read_only", "false"),
 					),
+				},
+				{
+					ResourceName:      "btp_globalaccount_trust_configuration.uut",
+					ImportState:       true,
+					ImportStateVerify: true,
 				},
 			},
 		})
