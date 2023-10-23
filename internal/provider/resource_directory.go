@@ -388,11 +388,6 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 				return subRes, "DELETED", nil
 			}
 
-			//TODO: Temporary workaround for inconsistent response from server
-			if err != nil && strings.Contains(err.Error(), "Status: 404") {
-				return subRes, "DELETED", nil
-			}
-
 			if err != nil {
 				return subRes, subRes.EntityState, err
 			}
