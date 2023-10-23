@@ -36,32 +36,3 @@ func TestLoginRequest(t *testing.T) {
 		}
 	})
 }
-
-func TestLogoutRequest(t *testing.T) {
-	t.Run("NewLogoutRequest(...) doesn't set default idp", func(t *testing.T) {
-		uut := NewLogoutRequest("")
-		assert.Empty(t, uut.IdentityProvider)
-		assert.Empty(t, uut.GlobalAccountSubdomain)
-		assert.Empty(t, uut.RefreshToken)
-	})
-	t.Run("NewLogoutRequest(...) uses all given values", func(t *testing.T) {
-		uut := NewLogoutRequest("my-subdomain")
-		assert.Empty(t, uut.IdentityProvider)
-		assert.Equal(t, "my-subdomain", uut.GlobalAccountSubdomain)
-		assert.Empty(t, uut.RefreshToken)
-	})
-	t.Run("NewLogoutRequestWithCustomIDP(...) respects custom idp", func(t *testing.T) {
-		uut := NewLogoutRequestWithCustomIDP("my-idp", "")
-		assert.Equal(t, "my-idp", uut.IdentityProvider)
-	})
-	t.Run("LogoutRequest can be marshalled", func(t *testing.T) {
-		uut := NewLogoutRequestWithCustomIDP("my-idp", "my-subdomain")
-		uut.RefreshToken = "a-refresh-token"
-
-		b, err := json.Marshal(uut)
-
-		if assert.NoError(t, err) {
-			assert.Equal(t, `{"customIdp":"my-idp","subdomain":"my-subdomain","refreshToken":"a-refresh-token"}`, string(b))
-		}
-	})
-}

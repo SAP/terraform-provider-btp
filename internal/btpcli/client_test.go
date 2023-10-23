@@ -355,54 +355,6 @@ func TestV2Client_PasscodeLogin(t *testing.T) {
 	})
 }
 
-func TestV2Client_Logout(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		description string
-
-		logoutRequest *LogoutRequest
-		simulation    v2SimulationConfig
-	}{
-		{
-			description:   "happy path",
-			logoutRequest: NewLogoutRequest("subdomain"),
-			simulation: v2SimulationConfig{
-				srvExpectBody:   `{"customIdp":"","subdomain":"subdomain","refreshToken":""}`,
-				srvReturnStatus: http.StatusOK,
-				expectResponse:  &LogoutResponse{},
-			},
-		},
-		{
-			description:   "error path - login request times out [504]]",
-			logoutRequest: NewLogoutRequest("subdomain"),
-			simulation: v2SimulationConfig{
-				srvReturnStatus: http.StatusGatewayTimeout,
-				expectErrorMsg:  "Logout timed out. Please try again later. [Status: 504; Correlation ID: fake-correlation-id]",
-			},
-		},
-		{
-			description:   "error path - unexpected error",
-			logoutRequest: NewLogoutRequest("subdomain"),
-			simulation: v2SimulationConfig{
-				srvReturnStatus: http.StatusTeapot,
-				expectErrorMsg:  "received response with unexpected status [Status: 418; Correlation ID: fake-correlation-id]",
-			},
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.description, func(t *testing.T) {
-			test.simulation.srvExpectPath = path.Join("/logout", cliTargetProtocolVersion)
-			test.simulation.callFunctionUnderTest = func(ctx context.Context, uut *v2Client) (any, error) {
-				return uut.Logout(ctx, test.logoutRequest)
-			}
-
-			simulateV2Call(t, test.simulation)
-		})
-	}
-}
-
 func TestV2Client_Execute(t *testing.T) {
 	t.Run("every request must have a unique correlation ID", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

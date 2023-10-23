@@ -55,28 +55,6 @@ type LoginResponse struct {
 	Issuer   string `json:"issuer"`
 }
 
-/* Logout */
-
-func NewLogoutRequest(globalaccountSubdomain string) *LogoutRequest {
-	return NewLogoutRequestWithCustomIDP("", globalaccountSubdomain)
-}
-
-func NewLogoutRequestWithCustomIDP(idp string, globalaccountSubdomain string) *LogoutRequest {
-	return &LogoutRequest{
-		IdentityProvider:       idp,
-		GlobalAccountSubdomain: globalaccountSubdomain,
-	}
-}
-
-type LogoutRequest struct {
-	IdentityProvider       string `json:"customIdp"`
-	GlobalAccountSubdomain string `json:"subdomain"`
-	RefreshToken           string `json:"refreshToken"`
-}
-
-type LogoutResponse struct {
-}
-
 /* Command */
 func NewCommandRequest(action Action, command string, args any) *CommandRequest {
 	return &CommandRequest{
