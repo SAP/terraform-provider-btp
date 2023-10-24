@@ -100,8 +100,8 @@ func (f servicesInstanceFacade) Update(ctx context.Context, args *ServiceInstanc
 		params["labels"] = computedLabels
 	}
 
-	//TODO workaround for NGPBUG-359662 => needs to be rebuilt after fix
-	//return doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
+	// The CLI server returns a BTP CLI specific response - no return of doExecute possible
+	// Solution:
 	// 1. Call the update directly without deserialize the response
 	// 2. Do a consequent GET request to get a consistent response of the instance.
 
