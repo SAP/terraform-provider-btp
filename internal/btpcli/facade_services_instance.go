@@ -78,7 +78,6 @@ func (f servicesInstanceFacade) Create(ctx context.Context, args *ServiceInstanc
 
 type ServiceInstanceUpdateInput struct {
 	Id            string  `btpcli:"id"`
-	Name          string  `btpcli:"name"`
 	NewName       string  `btpcli:"newName"`
 	Subaccount    string  `btpcli:"subaccount"`
 	ServicePlanId string  `btpcli:"plan"`
@@ -101,7 +100,7 @@ func (f servicesInstanceFacade) Update(ctx context.Context, args *ServiceInstanc
 		params["labels"] = computedLabels
 	}
 
-	//TODO workaround for NGPBUG-359662 and NGPBUG-350117 => needs to be rebuilt after fix
+	//TODO workaround for NGPBUG-359662 => needs to be rebuilt after fix
 	//return doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
 	// 1. Call the update directly without deserialize the response
 	// 2. Do a consequent GET request to get a consistent response of the instance.
@@ -118,7 +117,6 @@ func (f servicesInstanceFacade) Update(ctx context.Context, args *ServiceInstanc
 		err = fmt.Errorf("the backend responded with an unknown error: %d", res.StatusCode)
 		return servicemanager.ServiceInstanceResponseObject{}, res, err
 	}
-
 }
 
 func (f servicesInstanceFacade) Delete(ctx context.Context, subaccountId string, serviceId string) (CommandResponse, error) {

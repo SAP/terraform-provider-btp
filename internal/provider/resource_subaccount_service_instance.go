@@ -254,10 +254,8 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	}
 
 	cliReq := btpcli.ServiceInstanceUpdateInput{
-		Subaccount: plan.SubaccountId.ValueString(),
-		Id:         plan.Id.ValueString(),
-		//TODO workaround for NGPBUG-359662 and NGPBUG-350117 => Name needs to be removed after fix, ID must be sufficient
-		Name:          stateCurrent.Name.ValueString(),
+		Subaccount:    plan.SubaccountId.ValueString(),
+		Id:            plan.Id.ValueString(),
 		NewName:       plan.Name.ValueString(),
 		ServicePlanId: plan.ServicePlanId.ValueString(),
 	}
