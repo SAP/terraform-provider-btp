@@ -15,7 +15,7 @@ import (
 	uuid "github.com/hashicorp/go-uuid"
 )
 
-const DefaultServerURL string = "https://cpcli.cf.eu10.hana.ondemand.com"
+const DefaultServerURL string = "https://cli.btp.cloud.sap"
 
 func NewV2Client(serverURL *url.URL) *v2Client {
 	return NewV2ClientWithHttpClient(http.DefaultClient, serverURL)
