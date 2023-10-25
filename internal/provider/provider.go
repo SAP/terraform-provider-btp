@@ -45,7 +45,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 		MarkdownDescription: `The Terraform provider for SAP BTP enables you to automate the provisioning, management, and configuration of resources on [SAP Business Technology Platform](https://account.hana.ondemand.com/). By leveraging this provider, you can simplify and streamline the deployment and maintenance of BTP services and applications.`,
 		Attributes: map[string]schema.Attribute{
 			"cli_server_url": schema.StringAttribute{
-				MarkdownDescription: "The URL of the BTP CLI server (e.g. `https://cpcli.cf.eu10.hana.ondemand.com`).",
+				MarkdownDescription: "The URL of the BTP CLI server (e.g. `https://cli.btp.cloud.sap`).",
 				Optional:            true, // TODO validate URL
 			},
 			"globalaccount": schema.StringAttribute{

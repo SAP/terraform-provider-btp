@@ -50,7 +50,7 @@ var redactedTestUser = TestUser{
 }
 
 func hclProviderFor(user TestUser) string {
-	return hclProvider("https://cpcli.cf.sap.hana.ondemand.com", user)
+	return hclProvider("https://canary.cli.btp.int.sap", user)
 }
 
 func hclProviderForCLIServerAt(cliServerURL string) string {
