@@ -280,21 +280,6 @@ func (v2 *v2Client) PasscodeLogin(ctx context.Context, loginReq *PasscodeLoginRe
 	})
 }
 
-// Logout invalidates the current user session
-func (v2 *v2Client) Logout(ctx context.Context, logoutReq *LogoutRequest) (*LogoutResponse, error) {
-	ctx = v2.initTrace(ctx)
-
-	res, err := v2.doPostRequest(ctx, path.Join("logout", cliTargetProtocolVersion), logoutReq)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &LogoutResponse{}, v2.parseResponse(ctx, res, nil, http.StatusOK, map[int]string{
-		http.StatusGatewayTimeout: "Logout timed out. Please try again later.",
-	})
-}
-
 // Execute executes a command
 func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options ...CommandOptions) (cmdRes CommandResponse, err error) {
 	ctx = v2.initTrace(ctx)
