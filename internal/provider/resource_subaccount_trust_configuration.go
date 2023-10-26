@@ -333,10 +333,10 @@ func (rs *subaccountTrustConfigurationResource) Delete(ctx context.Context, req 
 	}
 
 	//If the sap.default IdP is managed via Terraform we must skip the explicit deletion
-	//It cannot be deleted and it is sufficient to remove it from the state and bring it out of 
+	//It cannot be deleted and it is sufficient to remove it from the state
 	if state.Origin.ValueString() == OriginSapDefault {
 		resp.Diagnostics.AddWarning("SAP Default cannot be deleted",
-			"It is not posiible to delete the trust configuration for origin sap.default "+
+			"It is not possible to delete the trust configuration for origin 'sap.default'. "+
 				"Skipping the deletion")
 		return
 	}
