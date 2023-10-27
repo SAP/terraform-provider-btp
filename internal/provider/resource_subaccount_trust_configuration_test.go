@@ -145,6 +145,22 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - missing identity provider", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration.error_missing_identityprovider")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimal("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", ""),
+					ExpectError: regexp.MustCompile(`Empty Identity Provider`),
+				},
+			},
+		})
+	})
 }
 
 func hclResourceSubaccountTrustConfigurationComplete(resourceName string, subaccountId string, identityProvider string, domain string, name string, description string, linkText string, availableForUserLogin bool, autoCreateShadowUsers bool, status string) string {

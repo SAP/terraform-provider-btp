@@ -19,6 +19,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
+const OriginSapDefault = "sap.default"
+
 func newSubaccountTrustConfigurationResource() resource.Resource {
 	return &subaccountTrustConfigurationResource{}
 }
@@ -59,9 +61,8 @@ __Further documentation:__
 			"identity_provider": schema.StringAttribute{
 				MarkdownDescription: "The name of the Identity Authentication tenant that you want to connect to the subaccount.",
 				Required:            true,
-				Validators: []validator.String{
-					stringvalidator.LengthAtLeast(1),
-				},
+				// No validation for the identity provider name, it is validated by the API
+				// Needed for handling of sap.default IdP which has no value for this field
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "The tenant's domain which should be used for user logon.",
@@ -193,6 +194,13 @@ func (rs *subaccountTrustConfigurationResource) Create(ctx context.Context, req 
 		return
 	}
 
+	// Manual check of IdentityProvider field - not possible via schema validation due to handling of sap.default
+	// Create only possible for custom IdP -> value for field must be provided
+	if plan.IdentityProvider.ValueString() == "" {
+		resp.Diagnostics.AddAttributeError(path.Root("identity_provider"), "Empty Identity Provider", "To create a trust configuration you must provide a non-empty value for the identity provider")
+		return
+	}
+
 	cliCreateReq := btpcli.TrustConfigurationCreateInput{
 		IdentityProvider: plan.IdentityProvider.ValueString(),
 	}
@@ -263,6 +271,13 @@ func (rs *subaccountTrustConfigurationResource) Update(ctx context.Context, req 
 		return
 	}
 
+	// sap.default and custom IdP must be handled in different ways
+	// Manual check for identity provider needed if the origin is not sap.default
+	if state.Origin.ValueString() != OriginSapDefault && plan.IdentityProvider.ValueString() == "" {
+		resp.Diagnostics.AddAttributeError(path.Root("identity_provider"), "Empty Identity Provider", "To update a trust configuration you must provide a non-empty value for the identity provider")
+		return
+	}
+
 	idp := plan.IdentityProvider.ValueString()
 	availableForUserLogon := plan.AvailableForUserLogon.ValueBool()
 	autoCreateShadowUsers := plan.AutoCreateShadowUsers.ValueBool()
@@ -314,6 +329,15 @@ func (rs *subaccountTrustConfigurationResource) Delete(ctx context.Context, req 
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	//If the sap.default IdP is managed via Terraform we must skip the explicit deletion
+	//It cannot be deleted and it is sufficient to remove it from the state
+	if state.Origin.ValueString() == OriginSapDefault {
+		resp.Diagnostics.AddWarning("SAP Default cannot be deleted",
+			"It is not possible to delete the trust configuration for origin 'sap.default'. "+
+				"Skipping the deletion")
 		return
 	}
 
