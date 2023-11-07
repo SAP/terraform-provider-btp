@@ -172,9 +172,10 @@ func (rs *subaccountTrustConfigurationResource) Read(ctx context.Context, req re
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.Trust.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Origin.ValueString())
+	cliRes, rawRes, err := rs.cli.Security.Trust.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Origin.ValueString())
+
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Trust Configuration (Subaccount)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Trust Configuration (Subaccount)")
 		return
 	}
 
