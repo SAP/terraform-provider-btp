@@ -207,9 +207,9 @@ func (rs *subaccountResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	cliRes, _, err := rs.cli.Accounts.Subaccount.Get(ctx, data.ID.ValueString())
+	cliRes, rawRes, err := rs.cli.Accounts.Subaccount.Get(ctx, data.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Subaccount", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Subaccount")
 		return
 	}
 

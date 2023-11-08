@@ -192,9 +192,9 @@ func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource
 		return
 	}
 
-	cliRes, _, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
+	cliRes, rawRes, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Subscription (Subaccount)")
 		return
 	}
 

@@ -156,14 +156,16 @@ func (rs *directoryEntitlementResource) Read(ctx context.Context, req resource.R
 		return
 	}
 
-	entitlement, _, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+	entitlement, rawRes, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Entitlement (Directory)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Entitlement (Directory)")
 		return
 	}
 
 	if entitlement == nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Entitlement (Directory)", "Resource not found")
+		// Treat "Not Found" as a signal to recreate resource see https://developer.hashicorp.com/terraform/plugin/framework/resources/read#recommendations
+		resp.State.RemoveResource(ctx)
 		return
 	}
 

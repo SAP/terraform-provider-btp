@@ -159,15 +159,16 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
 	parentId, isParentGlobalAccount := determineParentId(rs.cli, ctx, subaccountData.ParentGUID)
 
-	entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
+	entitlement, rawRes, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Entitlement (Subaccount)")
 		return
 	}
 
 	if entitlement == nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Entitlement (Subaccount)", "Resource not found")
+		// Treat "Not Found" as a signal to recreate resource see https://developer.hashicorp.com/terraform/plugin/framework/resources/read#recommendations
+		resp.State.RemoveResource(ctx)
 		return
 	}
 
