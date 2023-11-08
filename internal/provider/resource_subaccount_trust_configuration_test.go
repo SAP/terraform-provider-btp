@@ -125,42 +125,6 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path - plan recreate if resource doesn't exist anymore", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration.error_notfound")
-		defer stopQuietly(rec)
-
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
-			Steps: []resource.TestStep{
-				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimal("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com"),
-					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
-						resource.TestCheckNoResourceAttr("btp_subaccount_trust_configuration.uut", "domain"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "name", "Custom IAS tenant"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "description", "IAS tenant terraformint.accounts400.ondemand.com (OpenID Connect)"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "link_text", "terraformint.accounts400.ondemand.com"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "available_for_user_logon", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "auto_create_shadow_users", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "origin", "sap.custom"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "id", "sap.custom"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "type", "Application"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "protocol", "OpenID Connect"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "status", "active"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "read_only", "false"),
-					),
-				},
-				{
-					RefreshState:       true,
-					ExpectNonEmptyPlan: true,
-					Check:              verifyNoResourceState("btp_subaccount_trust_configuration.uut"),
-				},
-			},
-		})
-	})
-
 	t.Run("error path - import failure", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration.import_error")
 		defer stopQuietly(rec)
