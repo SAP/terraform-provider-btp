@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 	"testing"
@@ -199,15 +198,5 @@ func getTrustConfigIdForImport(resourceName string) resource.ImportStateIdFunc {
 		}
 
 		return fmt.Sprintf("%s,%s", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", rs.Primary.ID), nil
-	}
-}
-
-func verifyNoResourceState(resource string) resource.TestCheckFunc {
-	return func(state *terraform.State) error {
-		_, ok := state.RootModule().Resources[resource]
-		if ok {
-			return errors.New("expect State to be cleaned up")
-		}
-		return nil
 	}
 }
