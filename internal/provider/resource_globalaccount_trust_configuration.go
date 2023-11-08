@@ -147,9 +147,9 @@ func (rs *globalaccountTrustConfigurationResource) Read(ctx context.Context, req
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.Trust.GetByGlobalAccount(ctx, state.Origin.ValueString())
+	cliRes, rawRes, err := rs.cli.Security.Trust.GetByGlobalAccount(ctx, state.Origin.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Trust Configuration (Global Account)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Trust Configuration (Global Account)")
 		return
 	}
 

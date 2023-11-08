@@ -26,7 +26,7 @@ func timeToValue(t time.Time) types.String {
 }
 
 func handleReadErrors(ctx context.Context, rawRes btpcli.CommandResponse, resp *resource.ReadResponse, err error, resLogName string) {
-	// Treat HTTP 404 Not Found status as a signal to recreate resource
+	// Treat HTTP 404 Not Found status as a signal to recreate resource see https://developer.hashicorp.com/terraform/plugin/framework/resources/read#recommendations
 	if rawRes.StatusCode == 404 {
 		resp.State.RemoveResource(ctx)
 	} else {

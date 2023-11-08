@@ -184,9 +184,9 @@ func (rs *directoryResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	cliRes, _, err := rs.cli.Accounts.Directory.Get(ctx, state.ID.ValueString())
+	cliRes, rawRes, err := rs.cli.Accounts.Directory.Get(ctx, state.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Directory", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Directory")
 		return
 	}
 

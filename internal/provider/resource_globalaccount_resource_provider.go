@@ -111,9 +111,9 @@ func (rs *resourceGlobalaccountProviderResource) Read(ctx context.Context, req r
 		return
 	}
 
-	cliRes, _, err := rs.cli.Accounts.ResourceProvider.Get(ctx, state.Provider.ValueString(), state.TechnicalName.ValueString())
+	cliRes, rawRes, err := rs.cli.Accounts.ResourceProvider.Get(ctx, state.Provider.ValueString(), state.TechnicalName.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Resource Provider (Global Account)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Resource Provider (Global Account)")
 		return
 	}
 

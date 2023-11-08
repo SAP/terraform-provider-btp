@@ -145,9 +145,9 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 	}
 	timeoutsLocal := state.Timeouts
 
-	cliRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
+	cliRes, rawRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Service Instance (Subaccount)")
 		return
 	}
 

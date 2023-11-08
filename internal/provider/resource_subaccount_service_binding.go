@@ -141,9 +141,9 @@ func (rs *subaccountServiceBindingResource) Read(ctx context.Context, req resour
 		return
 	}
 
-	cliRes, _, err := rs.cli.Services.Binding.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
+	cliRes, rawRes, err := rs.cli.Services.Binding.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Service Binding (Subaccount)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Service Binding (Subaccount)")
 		return
 	}
 

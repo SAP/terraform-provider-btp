@@ -206,9 +206,9 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 
 	timeoutsLocal := state.Timeouts
 
-	cliRes, _, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
+	cliRes, rawRes, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Environment Instance (Subaccount)")
 		return
 	}
 

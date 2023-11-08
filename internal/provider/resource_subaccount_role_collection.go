@@ -132,9 +132,9 @@ func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resour
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.RoleCollection.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Name.ValueString())
+	cliRes, rawRes, err := rs.cli.Security.RoleCollection.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Name.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Role Collection (Subaccount)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Role Collection (Subaccount)")
 		return
 	}
 
