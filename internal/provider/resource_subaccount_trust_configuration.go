@@ -67,6 +67,10 @@ __Further documentation:__
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "The tenant's domain which should be used for user logon.",
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The display name of the trust configuration.",
@@ -216,7 +220,7 @@ func (rs *subaccountTrustConfigurationResource) Create(ctx context.Context, req 
 		cliCreateReq.Description = &description
 	}
 
-	if !plan.Domain.IsNull() {
+	if !plan.Domain.IsUnknown() {
 		domain := plan.Domain.ValueString()
 		cliCreateReq.Domain = &domain
 	}
@@ -291,7 +295,7 @@ func (rs *subaccountTrustConfigurationResource) Update(ctx context.Context, req 
 		Status:                &status,
 	}
 
-	if !plan.Domain.IsNull() {
+	if !plan.Domain.IsUnknown() {
 		domain := plan.Domain.ValueString()
 		cliUpdateReq.Domain = &domain
 	}
