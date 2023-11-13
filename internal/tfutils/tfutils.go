@@ -39,6 +39,8 @@ func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 		}
 
 		switch fieldProps.Type.String() {
+		case "int":
+			setInt(field, tagValue, out)
 		case "string":
 			setString(field, tagValue, out)
 		case "basetypes.StringValue":
@@ -96,6 +98,11 @@ loop:
 	}
 
 	return v, false, nil
+}
+
+func setInt(field reflect.Value, tagValue string, out map[string]string) {
+	fieldVal := field.Interface().(int)
+	out[tagValue] = fmt.Sprintf("%v", fieldVal)
 }
 
 func setStringValue(field reflect.Value, tagValue string, out map[string]string) {
