@@ -72,8 +72,17 @@ func (f servicesInstanceFacade) Create(ctx context.Context, args *ServiceInstanc
 		return servicemanager.ServiceInstanceResponseObject{}, CommandResponse{}, err
 	}
 
-	return doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
+	serviceInstanceResponseObject, cmdRes, err := doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 
+	//Workaround for NGPBUG-350117 => fix not feasible, keeping workaround
+	if cmdRes.StatusCode != 202 && err == nil {
+		return serviceInstanceResponseObject, cmdRes, err
+	} else if cmdRes.StatusCode == 202 && err == nil {
+		return f.GetByName(ctx, args.Subaccount, args.Name)
+	} else {
+		// Error case as default
+		return servicemanager.ServiceInstanceResponseObject{}, cmdRes, err
+	}
 }
 
 type ServiceInstanceUpdateInput struct {
