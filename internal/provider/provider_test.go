@@ -327,7 +327,7 @@ provider "btp" {
 	username               = ""
 	tls_client_key         = "tlsClientKey"
 	tls_client_certificate = "tlsClientCertificate"
-	idp_url                = "idpUrl"
+	tls_idp_url            = "idpUrl"
 }
 data "btp_whoami" "me" {}`,
 					ExpectError: regexp.MustCompile(`empty value for the username`),
@@ -339,7 +339,7 @@ provider "btp" {
 	username               = "username"
 	tls_client_key         = ""
 	tls_client_certificate = "tlsClientCertificate"
-	idp_url                = "idpUrl"
+	tls_idp_url            = "idpUrl"
 }
 data "btp_whoami" "me" {}`,
 					ExpectError: regexp.MustCompile(`empty value for the tls_client_key`),
@@ -351,7 +351,7 @@ provider "btp" {
 	username               = "username"
 	tls_client_key         = "tlsClientKey"
 	tls_client_certificate = ""
-	idp_url                = "idpUrl"
+	tls_idp_url            = "idpUrl"
 }
 data "btp_whoami" "me" {}`,
 					ExpectError: regexp.MustCompile(`empty value for the tls_client_certificate`),
@@ -363,10 +363,10 @@ provider "btp" {
 	username               = "username"
 	tls_client_key         = "tlsClientKey"
 	tls_client_certificate = "tlsClientCertificate"
-	idp_url                = ""
+	tls_idp_url            = ""
 }
 data "btp_whoami" "me" {}`,
-					ExpectError: regexp.MustCompile(`empty value for the idp_url`),
+					ExpectError: regexp.MustCompile(`empty value for the tls_idp_url`),
 				},
 			},
 		})

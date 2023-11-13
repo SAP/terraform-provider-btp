@@ -69,7 +69,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
-					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("idp"), path.MatchRoot("idp_url"), path.MatchRoot("tls_client_key"), path.MatchRoot("tls_client_certificate")),
+					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("idp"), path.MatchRoot("tls_idp_url"), path.MatchRoot("tls_client_key"), path.MatchRoot("tls_client_certificate")),
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
@@ -77,7 +77,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				MarkdownDescription: "The identity provider to be used for authentication (default: SAP ID service with origin `sap.default`).",
 				Optional:            true,
 			},
-			"idp_url": schema.StringAttribute{
+			"tls_idp_url": schema.StringAttribute{
 				MarkdownDescription: "The URL of the identity provider to be used for authentication (only required for x509 auth).",
 				Optional:            true,
 				Validators: []validator.String{
@@ -86,19 +86,19 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				},
 			},
 			"tls_client_key": schema.StringAttribute{
-				MarkdownDescription: "PEM encoded private key",
+				MarkdownDescription: "PEM encoded private key (only required for x509 auth).",
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
-					stringvalidator.AlsoRequires(path.MatchRoot("idp_url"), path.MatchRoot("tls_client_certificate")),
+					stringvalidator.AlsoRequires(path.MatchRoot("tls_idp_url"), path.MatchRoot("tls_client_certificate")),
 				},
 			},
 			"tls_client_certificate": schema.StringAttribute{
-				MarkdownDescription: "PEM encoded certificate",
+				MarkdownDescription: "PEM encoded certificate (only required for x509 auth).",
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
-					stringvalidator.AlsoRequires(path.MatchRoot("idp_url"), path.MatchRoot("tls_client_key")),
+					stringvalidator.AlsoRequires(path.MatchRoot("tls_idp_url"), path.MatchRoot("tls_client_key")),
 				},
 			},
 		},
@@ -112,7 +112,7 @@ type providerData struct {
 	Password             types.String `tfsdk:"password"`
 	IdToken              types.String `tfsdk:"idtoken"`
 	IdentityProvider     types.String `tfsdk:"idp"`
-	IdentityProviderURL  types.String `tfsdk:"idp_url"`
+	IdentityProviderURL  types.String `tfsdk:"tls_idp_url"`
 	TLSClientKey         types.String `tfsdk:"tls_client_key"`
 	TLSClientCertificate types.String `tfsdk:"tls_client_certificate"`
 }
@@ -408,10 +408,10 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 
 	if len(identityProviderUrl) == 0 {
 		resp.Diagnostics.AddAttributeError(
-			path.Root("idp_url"),
-			"Missing IDP URL (only required for x509 auth)",
-			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the idp_url (only required for x509 auth). "+
-				"Set the idp_url value in the configuration. "+
+			path.Root("tls_idp_url"),
+			"Missing TLS IDP URL (only required for x509 auth)",
+			"The provider cannot create the Terraform BTP client as there is a missing or empty value for the tls_idp_url (only required for x509 auth). "+
+				"Set the tls_idp_url value in the configuration. "+
 				errorMessagePostfixWithoutEnv,
 		)
 	}

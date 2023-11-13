@@ -37,11 +37,11 @@ provider "btp" {
 
 - `cli_server_url` (String) The URL of the BTP CLI server (e.g. `https://cli.btp.cloud.sap`).
 - `idp` (String) The identity provider to be used for authentication (default: SAP ID service with origin `sap.default`).
-- `idp_url` (String) The URL of the identity provider to be used for authentication (only required for x509 auth).
 - `idtoken` (String, Sensitive) A valid id token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_IDTOKEN` environment variable. (SAP-internal usage only)
 - `password` (String, Sensitive) Your password. Note that two-factor authentication is not supported. This can also be sourced from the `BTP_PASSWORD` environment variable.
-- `tls_client_certificate` (String) PEM encoded certificate
-- `tls_client_key` (String) PEM encoded private key
+- `tls_client_certificate` (String) PEM encoded certificate (only required for x509 auth).
+- `tls_client_key` (String) PEM encoded private key (only required for x509 auth).
+- `tls_idp_url` (String) The URL of the identity provider to be used for authentication (only required for x509 auth).
 - `username` (String) Your user name, usually an e-mail address. This can also be sourced from the `BTP_USERNAME` environment variable.
 
 ## Get Started
