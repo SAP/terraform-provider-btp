@@ -79,15 +79,10 @@ func (f servicesInstanceFacade) Create(ctx context.Context, args *ServiceInstanc
 		return serviceInstanceResponseObject, cmdRes, err
 	} else if cmdRes.StatusCode == 202 && err == nil {
 		return f.GetByName(ctx, args.Subaccount, args.Name)
-	} else if err != nil {
-		// Error case
-		return servicemanager.ServiceInstanceResponseObject{}, cmdRes, err
 	} else {
-		// Fallback for unknown errors from service manager
-		err = fmt.Errorf("the backend responded with an unknown error: %d", cmdRes.StatusCode)
+		// Error case as default
 		return servicemanager.ServiceInstanceResponseObject{}, cmdRes, err
 	}
-
 }
 
 type ServiceInstanceUpdateInput struct {
