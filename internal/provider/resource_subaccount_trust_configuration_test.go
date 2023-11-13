@@ -44,7 +44,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
-						resource.TestCheckNoResourceAttr("btp_subaccount_trust_configuration.uut", "domain"),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "domain", "terraformint.accounts400.ondemand.com"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "name", "Custom IAS tenant for apps"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "description", "Description for terraformint.accounts400.ondemand.com"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "link_text", "custom link text"),
