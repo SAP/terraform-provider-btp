@@ -36,7 +36,7 @@ data "btp_subaccount_security_settings" "subaccount" {
 
 - `subaccount_id` (String) The ID of the subaccount.
 
-### Optional
+### Read-Only
 
 - `access_token_validity` (Number) The validity of the access token.
 - `custom_email_domains` (Set of String) Set of domains which are allowed to be used for user authentication.
