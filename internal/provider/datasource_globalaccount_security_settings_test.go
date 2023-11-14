@@ -19,7 +19,7 @@ func TestDataSourceGlobalAccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceGlobalaccountSecuritySettingbyId("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountSecuritySettingbyId("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_security_settings.uut", "custom_email_domains.#", "0"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_security_settings.uut", "default_identity_provider", "sap.default"),
@@ -34,9 +34,7 @@ func TestDataSourceGlobalAccountSecuritySettings(t *testing.T) {
 	})
 }
 
-func hclDatasourceGlobalaccountSecuritySettingbyId(resourceName string, subaccountId string) string {
-	template := `data "btp_globalaccount_security_settings" "%s" {
-		subaccount_id = "%s"
-	}`
-	return fmt.Sprintf(template, resourceName, subaccountId)
+func hclDatasourceGlobalaccountSecuritySettingbyId(resourceName string) string {
+	template := `data "btp_globalaccount_security_settings" "%s" { }`
+	return fmt.Sprintf(template, resourceName)
 }
