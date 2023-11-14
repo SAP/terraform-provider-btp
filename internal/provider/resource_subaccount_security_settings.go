@@ -124,8 +124,13 @@ func (rs *subaccountSecuritySettingsResource) Create(ctx context.Context, req re
 		return
 	}
 
+	var customEmailDomains []string
+
+	diags = plan.CustomEmailDomains.ElementsAs(ctx, &customEmailDomains, false)
+	resp.Diagnostics.Append(diags...)
+
 	res, _, err := rs.cli.Security.Settings.UpdateBySubaccount(ctx, plan.SubaccountId.ValueString(), btpcli.SecuritySettingsUpdateInput{
-		//CustomEmail: "[]",
+		CustomEmail:                       customEmailDomains,
 		DefaultIDPForNonInteractiveLogon:  plan.DefaultIdentityProvider.ValueString(),
 		TreatUsersWithSameEmailAsSameUser: plan.TreatUsersWithSameEmailAsSameUser.ValueBool(),
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
@@ -158,8 +163,13 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 		return
 	}
 
+	var customEmailDomains []string
+
+	diags = plan.CustomEmailDomains.ElementsAs(ctx, &customEmailDomains, false)
+	resp.Diagnostics.Append(diags...)
+
 	res, _, err := rs.cli.Security.Settings.UpdateBySubaccount(ctx, plan.SubaccountId.ValueString(), btpcli.SecuritySettingsUpdateInput{
-		//CustomEmail: "[]",
+		CustomEmail:                       customEmailDomains,
 		DefaultIDPForNonInteractiveLogon:  plan.DefaultIdentityProvider.ValueString(),
 		TreatUsersWithSameEmailAsSameUser: plan.TreatUsersWithSameEmailAsSameUser.ValueBool(),
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
@@ -188,7 +198,7 @@ func (rs *subaccountSecuritySettingsResource) Delete(ctx context.Context, req re
 	}
 
 	_, _, err := rs.cli.Security.Settings.UpdateBySubaccount(ctx, state.SubaccountId.ValueString(), btpcli.SecuritySettingsUpdateInput{
-		CustomEmail:                       "[]",
+		CustomEmail:                       []string{},
 		DefaultIDPForNonInteractiveLogon:  "sap.default",
 		TreatUsersWithSameEmailAsSameUser: false,
 		AccessTokenValidity:               -1,

@@ -32,13 +32,13 @@ func (f *securitySettingsFacade) ListBySubaccount(ctx context.Context, subaccoun
 }
 
 type SecuritySettingsUpdateInput struct {
-	IFrame                            string `btpcli:"iFrameDomain"`
-	CustomEmail                       string `btpcli:"customEmailDomains"`
-	DefaultIDPForNonInteractiveLogon  string `btpcli:"defaultIdp"`
-	TreatUsersWithSameEmailAsSameUser bool   `btpcli:"treatUsersWithSameEmailAsSameUser"`
-	HomeRedirect                      string `btpcli:"homeRedirect"`
-	AccessTokenValidity               int    `btpcli:"accessTokenValidity"`
-	RefreshTokenValidity              int    `btpcli:"refreshTokenValidity"`
+	IFrame                            string   `btpcli:"iFrameDomain"`
+	CustomEmail                       []string `btpcli:"customEmailDomains,json"`
+	DefaultIDPForNonInteractiveLogon  string   `btpcli:"defaultIdp"`
+	TreatUsersWithSameEmailAsSameUser bool     `btpcli:"treatUsersWithSameEmailAsSameUser"`
+	HomeRedirect                      string   `btpcli:"homeRedirect"`
+	AccessTokenValidity               int      `btpcli:"accessTokenValidity"`
+	RefreshTokenValidity              int      `btpcli:"refreshTokenValidity"`
 }
 
 func (f *securitySettingsFacade) UpdateByGlobalAccount(ctx context.Context, args SecuritySettingsUpdateInput) (xsuaa_settings.TenantSettingsResp, CommandResponse, error) {

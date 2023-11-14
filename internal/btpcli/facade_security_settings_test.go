@@ -70,7 +70,7 @@ func TestSecuritySettingsFacade_UpdateByGlobalAccount(t *testing.T) {
 			assertCall(t, r, command, ActionUpdate, map[string]string{
 				"globalAccount":                     globalAccountId,
 				"iFrameDomain":                      "https://my-iframe-domain-1",
-				"customEmailDomains":                "[\"https://customemaildomain1.com\", \"https://customemaildomain2.com\"]",
+				"customEmailDomains":                "[\"customemaildomain1.com\",\"customemaildomain2.com\"]",
 				"defaultIdp":                        "my-idp",
 				"treatUsersWithSameEmailAsSameUser": "true",
 				"homeRedirect":                      "my-new-redirect",
@@ -82,7 +82,7 @@ func TestSecuritySettingsFacade_UpdateByGlobalAccount(t *testing.T) {
 
 		_, res, err := uut.Security.Settings.UpdateByGlobalAccount(context.TODO(), SecuritySettingsUpdateInput{
 			IFrame:                            "https://my-iframe-domain-1",
-			CustomEmail:                       "[\"https://customemaildomain1.com\", \"https://customemaildomain2.com\"]",
+			CustomEmail:                       []string{"customemaildomain1.com", "customemaildomain2.com"},
 			DefaultIDPForNonInteractiveLogon:  "my-idp",
 			TreatUsersWithSameEmailAsSameUser: true,
 			HomeRedirect:                      "my-new-redirect",
@@ -110,7 +110,7 @@ func TestSecuritySettingsFacade_UpdateBySubaccount(t *testing.T) {
 			assertCall(t, r, command, ActionUpdate, map[string]string{
 				"subaccount":                        subaccountId,
 				"iFrameDomain":                      "https://my-iframe-domain-1",
-				"customEmailDomains":                "[\"https://customemaildomain1.com\", \"https://customemaildomain2.com\"]",
+				"customEmailDomains":                "[\"customemaildomain1.com\",\"customemaildomain2.com\"]",
 				"defaultIdp":                        "my-idp",
 				"treatUsersWithSameEmailAsSameUser": "true",
 				"homeRedirect":                      "my-new-redirect",
@@ -122,7 +122,7 @@ func TestSecuritySettingsFacade_UpdateBySubaccount(t *testing.T) {
 
 		_, res, err := uut.Security.Settings.UpdateBySubaccount(context.TODO(), subaccountId, SecuritySettingsUpdateInput{
 			IFrame:                            "https://my-iframe-domain-1",
-			CustomEmail:                       "[\"https://customemaildomain1.com\", \"https://customemaildomain2.com\"]",
+			CustomEmail:                       []string{"customemaildomain1.com", "customemaildomain2.com"},
 			DefaultIDPForNonInteractiveLogon:  "my-idp",
 			TreatUsersWithSameEmailAsSameUser: true,
 			HomeRedirect:                      "my-new-redirect",
