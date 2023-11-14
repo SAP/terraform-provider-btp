@@ -45,27 +45,22 @@ __Further documentation:__
 			"custom_email_domains": schema.SetAttribute{
 				ElementType:         types.StringType,
 				MarkdownDescription: "Set of domains which are allowed to be used for user authentication.",
-				Optional:            true,
 				Computed:            true,
 			},
 			"default_identity_provider": schema.StringAttribute{
 				MarkdownDescription: "The default identity provider which is used for noninteractive logon.",
-				Optional:            true,
 				Computed:            true,
 			},
 			"treat_users_with_same_email_as_same_user": schema.BoolAttribute{
 				MarkdownDescription: "If set to true, users with the same email are treated as same users.",
-				Optional:            true,
 				Computed:            true,
 			},
 			"access_token_validity": schema.Int64Attribute{
 				MarkdownDescription: "The validity of the access token.",
-				Optional:            true,
 				Computed:            true,
 			},
 			"refresh_token_validity": schema.Int64Attribute{
 				MarkdownDescription: "The validity of the refresh token.",
-				Optional:            true,
 				Computed:            true,
 			},
 		},
