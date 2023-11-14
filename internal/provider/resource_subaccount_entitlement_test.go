@@ -51,7 +51,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlement("uut", "47a7c342-1a90-4ed7-a218-cb0b1cadb062", "hana-cloud", "hana"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlement("uut", "4e981c0f-de50-4442-a26e-54798120f141", "hana-cloud", "hana"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -66,7 +66,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_entitlement.uut",
-					ImportStateId:     "47a7c342-1a90-4ed7-a218-cb0b1cadb062,hana-cloud,hana",
+					ImportStateId:     "4e981c0f-de50-4442-a26e-54798120f141,hana-cloud,hana",
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
