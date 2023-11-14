@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
@@ -52,9 +52,7 @@ __Further documentation:__
 				MarkdownDescription: "Set of domains which are allowed to be used for user authentication.",
 				Optional:            true,
 				Computed:            true,
-				Validators: []validator.Set{
-					setvalidator.IsRequired(),
-				},
+				Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 			},
 			"default_identity_provider": schema.StringAttribute{
 				MarkdownDescription: "The default identity provider which is used for noninteractive logon.",
