@@ -2,7 +2,8 @@
 This directory contains Terraform definitions for setting up a Global Account for integration testing and fixture recording.
 
 # Prerequisite
-- Global Account
+- Global Account with Role Collections:
+  - HANA Cloud: hana
 - Technical User
 
 # Setup

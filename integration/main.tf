@@ -85,3 +85,19 @@ resource "btp_directory" "dir_se_static" {
   }
 }
 
+###
+# Global Account Role Collection Assignments
+###
+
+resource "btp_globalaccount_role_collection_assignment" "globalaccount_administrators" {
+  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
+  role_collection_name = "Global Account Administrator"
+  group_name           = each.value
+  origin               = "terraform-platform"
+}
+
+###
+# Global Account Role Collection Assignments
+###
+
+
