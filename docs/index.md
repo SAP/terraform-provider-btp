@@ -36,7 +36,7 @@ provider "btp" {
 ### Optional
 
 - `cli_server_url` (String) The URL of the BTP CLI server (e.g. `https://cli.btp.cloud.sap`).
-- `idp` (String) The identity provider to be used for authentication (default: SAP ID service with origin `sap.default`).
+- `idp` (String) The identity provider to be used for authentication (only required for custom idp).
 - `idtoken` (String, Sensitive) A valid id token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_IDTOKEN` environment variable. (SAP-internal usage only)
 - `password` (String, Sensitive) Your password. Note that two-factor authentication is not supported. This can also be sourced from the `BTP_PASSWORD` environment variable.
 - `tls_client_certificate` (String) PEM encoded certificate (only required for x509 auth).
@@ -48,9 +48,7 @@ provider "btp" {
 
 If you're not familiar with Terraform yet, see the [Fundamentals](https://developer.hashicorp.com/terraform/tutorials/cli) section with a lot of helpful tutorials. 
 
-To install the provider, create a Terraform configuration file `provider.tf` with the example above as content and execute `terraform init`. 
-
-Then you can create *.tf files for the resources and execute `terraform plan` and, if everything looks fine, execute `terraform apply`.
+To learn how to use this provider, see the [Get Started with the Terraform Provider for SAP BTP](https://developers.sap.com/tutorials/btp-terraform-get-started.html) tutorial in the SAP Developer Center.
 
 ## Best Practices
 
