@@ -33,7 +33,7 @@ data "btp_globalaccount_security_settings" "this" {}
 ### Read-Only
 
 - `access_token_validity` (Number) The validity of the access token.
-- `custom_email_domains` (Set of String) Set of domains which are allowed to be used for user authentication.
-- `default_identity_provider` (String) The default identity provider which is used for noninteractive logon.
+- `custom_email_domains` (Set of String) Set of domains allowed to be used for user authentication.
+- `default_identity_provider` (String) The global account's default identity provider for platform users. Used to log on to platform tools such as SAP BTP cockpit or the btp CLI.
 - `refresh_token_validity` (Number) The validity of the refresh token.
 - `treat_users_with_same_email_as_same_user` (Boolean) If set to true, users with the same email are treated as same users.

@@ -53,11 +53,11 @@ __Further documentation:__
 			},
 			"custom_email_domains": schema.SetAttribute{
 				ElementType:         types.StringType,
-				MarkdownDescription: "Set of domains which are allowed to be used for user authentication.",
+				MarkdownDescription: "Set of domains that are allowed to be used for user authentication.",
 				Computed:            true,
 			},
 			"default_identity_provider": schema.StringAttribute{
-				MarkdownDescription: "The default identity provider which is used for noninteractive logon.",
+				MarkdownDescription: "The subaccount's default identity provider for business application users.",
 				Computed:            true,
 			},
 			"treat_users_with_same_email_as_same_user": schema.BoolAttribute{
