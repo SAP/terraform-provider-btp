@@ -49,13 +49,13 @@ __Further documentation:__
 		Attributes: map[string]schema.Attribute{
 			"custom_email_domains": schema.SetAttribute{
 				ElementType:         types.StringType,
-				MarkdownDescription: "Set of domains which are allowed to be used for user authentication.",
+				MarkdownDescription: "Set of domains that are allowed to be used for user authentication.",
 				Optional:            true,
 				Computed:            true,
 				Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 			},
 			"default_identity_provider": schema.StringAttribute{
-				MarkdownDescription: "The default identity provider which is used for noninteractive logon.",
+				MarkdownDescription: "The global account's default identity provider for platform users. Used to log on to platform tools such as SAP BTP cockpit or the btp CLI.",
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString("sap.default"),

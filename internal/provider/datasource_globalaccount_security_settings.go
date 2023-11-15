@@ -44,7 +44,7 @@ __Further documentation:__
 		Attributes: map[string]schema.Attribute{
 			"custom_email_domains": schema.SetAttribute{
 				ElementType:         types.StringType,
-				MarkdownDescription: "Set of domains allowed to be used for user authentication.",
+				MarkdownDescription: "Set of domains that are allowed to be used for user authentication.",
 				Computed:            true,
 			},
 			"default_identity_provider": schema.StringAttribute{
