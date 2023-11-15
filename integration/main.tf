@@ -48,7 +48,7 @@ resource "btp_subaccount" "sa_services_static" {
   description = "Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions"
 }
 
-resource "btp_subaccount" "sa_security-settings" {
+resource "btp_subaccount" "sa_security_settings" {
   name      = local.integration_test_security_settings
   subdomain = local.integration_test_security_settings
   region    = var.region
@@ -97,7 +97,38 @@ resource "btp_globalaccount_role_collection_assignment" "globalaccount_administr
 }
 
 ###
-# Global Account Role Collection Assignments
+# Subaccount Role Collection Assignments
 ###
 
+resource "btp_subaccount_role_collection_assignment" "subaccount_administrators_sa_acc_static" {
+  subaccount_id        = btp_subaccount.sa_acc_static.id
+  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
+  role_collection_name = "Subaccount Administrator"
+  group_name           = each.value
+  origin               = "terraform-platform"
+}
+
+resource "btp_subaccount_role_collection_assignment" "subaccount_administrators_sa_acc_entitlements_stacked" {
+  subaccount_id        = btp_subaccount.sa_acc_entitlements_stacked.id
+  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
+  role_collection_name = "Subaccount Administrator"
+  group_name           = each.value
+  origin               = "terraform-platform"
+}
+
+resource "btp_subaccount_role_collection_assignment" "subaccount_administrators_sa_services_static" {
+  subaccount_id        = btp_subaccount.sa_services_static.id
+  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
+  role_collection_name = "Subaccount Administrator"
+  group_name           = each.value
+  origin               = "terraform-platform"
+}
+
+resource "btp_subaccount_role_collection_assignment" "subaccount_administrators_sa_security_settings" {
+  subaccount_id        = btp_subaccount.sa_security_settings.id
+  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
+  role_collection_name = "Subaccount Administrator"
+  group_name           = each.value
+  origin               = "terraform-platform"
+}
 

@@ -4,7 +4,8 @@ This directory contains Terraform definitions for setting up a Global Account fo
 # Prerequisite
 - Global Account with Role Collections:
   - HANA Cloud: hana
-- Technical User
+- IDP with Technical User
+  - Groups need to be properly configured
 
 # Setup
 To setup a global account set the following environment variables:
