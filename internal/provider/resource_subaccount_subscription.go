@@ -222,6 +222,16 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 		return
 	}
 
+	// For usability: Check if the subaccount is entitled to the plan
+	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, plan.SubaccountId.ValueString())
+	parentId, isParentGlobalAccount := determineParentId(rs.cli, ctx, subaccountData.ParentGUID)
+
+	entitlement, _, _ := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString(), isParentGlobalAccount, parentId)
+	if entitlement == nil {
+		resp.Diagnostics.AddError("Error Creating Resource Subscription (Subaccount)", fmt.Sprintf("The subaccount %s is not entitled to the plan %s of app %s", plan.SubaccountId.ValueString(), plan.PlanName.ValueString(), plan.AppName.ValueString()))
+		return
+	}
+
 	_, _, err := rs.cli.Accounts.Subaccount.Subscribe(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString(), plan.Parameters.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))

@@ -170,6 +170,13 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 		return
 	}
 
+	// For usability: Check if the subaccount is entitled to the plan => if plan ID is valid a plan name is available and subaccount is entitled
+	planRes, _, err := rs.cli.Services.Plan.GetById(ctx, plan.SubaccountId.ValueString(), plan.ServicePlanId.ValueString())
+	if planRes.Name == "" && err != nil {
+		resp.Diagnostics.AddError("Error Creating Resource Service Instance (Subaccount)", fmt.Sprintf("A plan with ID %s of service %s is not assigned to the subaccount %s", plan.ServicePlanId.ValueString(), plan.Name.ValueString(), plan.SubaccountId.ValueString()))
+		return
+	}
+
 	cliReq := btpcli.ServiceInstanceCreateInput{
 		Subaccount:    plan.SubaccountId.ValueString(),
 		Name:          plan.Name.ValueString(),

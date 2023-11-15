@@ -42,6 +42,23 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - no entitlement for subscription", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription.no_entitlement")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProviderFor(user) + hclResourceSubaccountSubscription("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "hana-cloud", "hana"),
+					ExpectError: regexp.MustCompile(`The subaccount .* is not entitled`),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
