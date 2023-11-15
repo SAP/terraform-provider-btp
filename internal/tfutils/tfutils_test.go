@@ -109,16 +109,44 @@ func TestToBTPCLIParamsMap(t *testing.T) {
 				},
 			},
 		},
-
+		{
+			description: "happy path - slice as json",
+			uut: struct {
+				Features []string `btpcli:"directoryFeatures,json"`
+			}{
+				Features: []string{"DEFAULT", "AUTHORIZATIONS", "ENTITLEMENTS"},
+			},
+			expects: expects{
+				output: map[string]string{
+					"directoryFeatures": "[\"DEFAULT\",\"AUTHORIZATIONS\",\"ENTITLEMENTS\"]",
+				},
+			},
+		},
+		{
+			description: "happy path - map as json",
+			uut: struct {
+				Labels map[string]string `btpcli:"labels,json"`
+			}{
+				Labels: map[string]string{
+					"a": "b",
+				},
+			},
+			expects: expects{
+				output: map[string]string{
+					"labels": "{\"a\":\"b\"}",
+				},
+			},
+		},
 		{
 			description: "error case - unsupported attribute type",
 			uut: struct {
 				AListField types.List `tfsdk:"a_list" btpcli:"aList"`
 			}{},
 			expects: expects{
-				errorMessage: "the type 'basetypes.ListValue' assigned to 'aList' is not yet supported",
+				errorMessage: "unable to encode 'aList': unsupported type 'basetypes.ListValue'",
 			},
 		},
+
 		// TODO check that strings get properly escaped
 	}
 

@@ -28,45 +28,51 @@ func ToBTPCLIParamsMap(a any) (map[string]string, error) {
 
 	for i := 0; i < v.NumField(); i++ {
 		fieldProps := v.Type().Field(i)
-		tagValue := fieldProps.Tag.Get(btpcliTag)
-		if len(tagValue) == 0 {
+
+		cliParameter, encoder, found := parseCliTag(fieldProps.Tag)
+
+		if !found {
 			continue
 		}
 
 		field := v.FieldByName(fieldProps.Name)
+
 		if !field.IsValid() {
 			return nil, fmt.Errorf("invalid field")
 		}
 
-		switch fieldProps.Type.String() {
-		case "string":
-			setString(field, tagValue, out)
-		case "basetypes.StringValue":
-			setStringValue(field, tagValue, out)
-		case "*string":
-			setStringPointer(field, tagValue, out)
-		case "bool":
-			setBool(field, tagValue, out)
-		case "basetypes.BoolValue":
-			setBoolValue(field, tagValue, out)
-		case "*bool":
-			setBoolPointer(field, tagValue, out)
-		case "map[string][]string": // TODO would be nice to have `encodethisasjson` tag, instead of an explicit type mapping
-			if !field.IsNil() {
-				valueArr, err := json.Marshal(field.Interface())
-				if err != nil {
-					return nil, err
-				}
-				out[tagValue] = string(valueArr)
-			}
-		case "[]string":
-			setStringSlice(field, tagValue, out)
-		default:
-			return nil, fmt.Errorf("the type '%s' assigned to '%s' is not yet supported", fieldProps.Type.String(), tagValue)
+		fieldValue, err := encoder.Encode(fieldProps.Type, field)
+
+		if err != nil {
+			return nil, fmt.Errorf("unable to encode '%s': %w", cliParameter, err)
 		}
+
+		if len(fieldValue) == 0 {
+			continue
+		}
+
+		out[cliParameter] = fieldValue
 	}
 
 	return out, nil
+}
+
+func parseCliTag(tag reflect.StructTag) (cliParam string, encoder paramsEncoder, found bool) {
+	tagValue := strings.Split(tag.Get(btpcliTag), ",")
+
+	found = len(tagValue) > 0 && len(tagValue[0]) > 0
+
+	if found {
+		cliParam = tagValue[0]
+	}
+
+	if len(tagValue) > 1 && tagValue[1] == "json" {
+		encoder = &jsonEncoder{}
+	} else {
+		encoder = &autoEncoder{}
+	}
+
+	return
 }
 
 func unwrapToStruct(a any) (reflect.Value, bool, error) {
@@ -98,50 +104,109 @@ loop:
 	return v, false, nil
 }
 
-func setStringValue(field reflect.Value, tagValue string, out map[string]string) {
+func CalculateDelayAndMinTimeOut(timeout time.Duration) (delay time.Duration, minTimeout time.Duration) {
+	// We define the polling interval as 1/100 of the timeout value in seconds
+	// For 10 minutes this results in 6 seconds polling interval
+	// For 1 hour this results in 36 seconds polling interval
+	delay = time.Duration(math.Round(timeout.Seconds()/100)) * time.Second
+
+	// We set the minTimeout equal to the polling interval
+	minTimeout = delay
+	return
+}
+
+type paramsEncoder interface {
+	Encode(fieldType reflect.Type, field reflect.Value) (string, error)
+}
+
+type autoEncoder struct {
+}
+
+func (ae *autoEncoder) Encode(fieldType reflect.Type, field reflect.Value) (string, error) {
+	switch fieldType.String() {
+	case "int":
+		return ae.encodeInt(field)
+	case "string":
+		return ae.encodeString(field)
+	case "basetypes.StringValue":
+		return ae.encodeStringValue(field)
+	case "*string":
+		return ae.encodeStringPointer(field)
+	case "bool":
+		return ae.encodeBool(field)
+	case "basetypes.BoolValue":
+		return ae.encodeBoolValue(field)
+	case "*bool":
+		return ae.encodeBoolPointer(field)
+	case "map[string][]string":
+		if field.IsNil() {
+			return "", nil
+		}
+
+		valueArr, err := json.Marshal(field.Interface())
+		if err != nil {
+			return "", err
+		}
+		return string(valueArr), nil
+	case "[]string":
+		return ae.encodeStringSlice(field)
+	default:
+		return "", fmt.Errorf("unsupported type '%s'", fieldType)
+	}
+}
+
+func (ae *autoEncoder) encodeInt(field reflect.Value) (string, error) {
+	return fmt.Sprintf("%v", field.Interface().(int)), nil
+}
+
+func (ae *autoEncoder) encodeStringValue(field reflect.Value) (string, error) {
 	fieldVal := field.Interface().(types.String)
-	if !(fieldVal.IsUnknown() || fieldVal.IsNull()) {
-		out[tagValue] = fieldVal.ValueString()
+	if fieldVal.IsUnknown() || fieldVal.IsNull() {
+		return "", nil
 	}
+
+	return fieldVal.ValueString(), nil
 }
 
-func setString(field reflect.Value, tagValue string, out map[string]string) {
-	fieldVal := field.Interface().(string)
-	if fieldVal != "" {
-		out[tagValue] = fieldVal
-	}
+func (ae *autoEncoder) encodeString(field reflect.Value) (string, error) {
+	return field.Interface().(string), nil
 }
 
-func setStringPointer(field reflect.Value, tagValue string, out map[string]string) {
-	if !field.IsNil() {
-		out[tagValue] = field.Elem().Interface().(string)
+func (ae *autoEncoder) encodeStringPointer(field reflect.Value) (string, error) {
+	if field.IsNil() {
+		return "", nil
 	}
+
+	return field.Elem().Interface().(string), nil
 }
 
-func setBoolValue(field reflect.Value, tagValue string, out map[string]string) {
+func (ae *autoEncoder) encodeBoolValue(field reflect.Value) (string, error) {
 	fieldVal := field.Interface().(types.Bool)
-	if !(fieldVal.IsUnknown() || fieldVal.IsNull()) {
-		out[tagValue] = fmt.Sprintf("%v", fieldVal.ValueBool())
+	if fieldVal.IsUnknown() || fieldVal.IsNull() {
+		return "", nil
 	}
+
+	return fmt.Sprintf("%v", fieldVal.ValueBool()), nil
 }
 
-func setBool(field reflect.Value, tagValue string, out map[string]string) {
-	fieldVal := field.Interface().(bool)
-	out[tagValue] = fmt.Sprintf("%v", fieldVal)
+func (ae *autoEncoder) encodeBool(field reflect.Value) (string, error) {
+	return fmt.Sprintf("%v", field.Interface().(bool)), nil
 }
 
-func setBoolPointer(field reflect.Value, tagValue string, out map[string]string) {
-	if !field.IsNil() {
-		fieldVal := field.Elem().Interface().(bool)
-		out[tagValue] = fmt.Sprintf("%v", fieldVal)
+func (ae *autoEncoder) encodeBoolPointer(field reflect.Value) (string, error) {
+	if field.IsNil() {
+		return "", nil
+	}
 
-	}
+	return fmt.Sprintf("%v", field.Elem().Interface().(bool)), nil
 }
-func setStringSlice(field reflect.Value, tagValue string, out map[string]string) {
-	if !field.IsNil() {
-		valueString := fmt.Sprintf("%v", strings.Join(field.Interface().([]string), ","))
-		out[tagValue] = valueString
+
+func (ae *autoEncoder) encodeStringSlice(field reflect.Value) (string, error) {
+	if field.IsNil() {
+		return "", nil
 	}
+
+	return fmt.Sprintf("%v", strings.Join(field.Interface().([]string), ",")), nil
 }
 
 // TODO This is a utility function to compute to be removed and to be added substructures in resource configurations.
@@ -167,13 +232,11 @@ func setContains[S ~[]E, E any](set S, element E, isEqual equalityPredicate[E]) 
 	return false
 }
 
-func CalculateDelayAndMinTimeOut(timeout time.Duration) (delay time.Duration, minTimeout time.Duration) {
-	// We define the polling interval as 1/100 of the timeout value in seconds
-	// For 10 minutes this results in 6 seconds polling interval
-	// For 1 hour this results in 36 seconds polling interval
-	delay = time.Duration(math.Round(timeout.Seconds()/100)) * time.Second
+type jsonEncoder struct {
+}
 
-	// We set the minTimeout equal to the polling interval
-	minTimeout = delay
-	return
+func (je *jsonEncoder) Encode(_ reflect.Type, field reflect.Value) (string, error) {
+	arr, err := json.Marshal(field.Interface())
+
+	return string(arr), err
 }
