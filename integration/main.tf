@@ -132,3 +132,13 @@ resource "btp_subaccount_role_collection_assignment" "subaccount_administrators_
   origin               = "terraform-platform"
 }
 
+###
+# Directory Entitlements
+###
+
+resource "btp_directory_entitlement" "entitlement_hana_cloud_dir_entitlements" {
+  directory_id = btp_directory.dir_entitlements.id
+  service_name = "hana-cloud"
+  plan_name    = "hana"
+}
+

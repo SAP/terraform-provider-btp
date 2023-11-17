@@ -2,8 +2,11 @@
 This directory contains Terraform definitions for setting up a Global Account for integration testing and fixture recording.
 
 # Prerequisite
-- Global Account with Role Collections:
-  - HANA Cloud: hana
+- Global Account with:
+  - Services:
+    - SAP HANA Cloud | hana-cloud
+  - Entitlements:
+    - HANA Cloud: hana (Canary | Quota: 3)
 - IDP with Technical User
   - Groups need to be properly configured
 
