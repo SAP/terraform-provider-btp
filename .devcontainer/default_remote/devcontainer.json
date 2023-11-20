@@ -1,9 +1,11 @@
 {
-	"name": "Terraform provider for SAP BTP - Development (with env file)",
+	"name": "Terraform provider for SAP BTP - Development (with remote state)",
 	"image": "mcr.microsoft.com/devcontainers/go:1.21-bullseye",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
-		"ghcr.io/devcontainers/features/terraform:1": {},
+		"ghcr.io/devcontainers/features/terraform:1": {
+			"version": "1.5.7"
+		},
 		"ghcr.io/devcontainers/features/github-cli:1": {}
 	},
 	"customizations": {
@@ -17,19 +19,11 @@
 		},
 		"codespaces": {}
 	},
-	"postCreateCommand": "cp ./assets/provider-config-local.txt ~/.terraformrc",
+	"postCreateCommand": "cp ./assets/provider-config-local.txt ~/.terraformrc && mkdir ~/.terraform.d && cp ./assets/credentials.tfrc.json.txt ~/.terraform.d/credentials.tfrc.json",
 	"hostRequirements": {
 		"memory": "4gb"
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-	"remoteUser": "vscode",
-	// This devcontainer expects a file named .devcontainer/devcontainer.env to exist.
-	// you should place the following environment variables in that file:
-	// - BTP_USERNAME
-	// - BTP_PASSWORD
-	"runArgs": [
-		"--env-file",
-		".devcontainer/devcontainer.env"
-	]
+	"remoteUser": "vscode"
 }

@@ -12,6 +12,11 @@ First, you need to setup your development environment. The following sections de
 
 **Step 2:** There is no step 2 😎.
 
+The following variants are supported for the GitHub Codespace:
+
+* "Terraform provider for SAP BTP - Development" - the configuration in [.devcontainer/default/devcontainer.json](.devcontainer/default/devcontainer.json) contains the development override for the Terraform provider so that the local build is used. You must set the environment variables `BTP_USERNAME` and `BTP_PASSWORD` yourself.
+* "Terraform provider for SAP BTP - Development (with remote state)" - the configuration in [.devcontainer/default_remote/devcontainer.json](.devcontainer/default_remote/devcontainer.json) enhances the "Terraform provider for SAP BTP - Development" by adding the configuration JSON for a state backend of type `remote`. To complete the setup you must add your access token to the file `~/.terraform.d/credentials.tfrc.json`.
+
 ## Dev Container
 
 > **Note**: In order to use dev containers, you must have a container runtime up and running on the machine. For details, we refer to the official documentation about [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers).
@@ -32,8 +37,10 @@ Then open the cloned repository in [Visual Studio Code](https://code.visualstudi
 
 This will trigger the start of the dev container. You can choose to open a dev container with two configurations:
 
-* without considering a `devcontainer.env` file using [.devcontainer/default/devcontainer.json](.devcontainer/default/devcontainer.json). Use this if you don't need to debug in the container.
-* loading a `.env` file using [.devcontainer/withenvfile/devcontainer.json](.devcontainer/withenvfile/devcontainer.json). This configuration expects a file called `devcontainer.env` in the folder `.devcontainer`, which is needed for debugging.
+* "Terraform provider for SAP BTP - Development" - the configuration in [.devcontainer/default/devcontainer.json](.devcontainer/default/devcontainer.json) contains the development override for the Terraform provider so that the local build is used. You must set the environment variables `BTP_USERNAME` and `BTP_PASSWORD` yourself.
+* "Terraform provider for SAP BTP - Development (with remote state)" - the configuration in [.devcontainer/default_remote/devcontainer.json](.devcontainer/default_remote/devcontainer.json) enhances the "Terraform provider for SAP BTP - Development" by adding the configuration JSON for a state backend of type `remote`. To complete the setup you must add your access token to the file `~/.terraform.d/credentials.tfrc.json`.
+* Terraform provider for SAP BTP - Development (with env file) - the configuration in [.devcontainer/withenvfile/devcontainer.json](.devcontainer/withenvfile/devcontainer.json) enhances the "Terraform provider for SAP BTP - Development" to load environment variables (like username and password) when the container is started. This configuration expects a file called `devcontainer.env` in the folder `.devcontainer`.
+* Terraform provider for SAP BTP - Development (with env file and remote state) - the configuration in [.devcontainer/withenvfile_remote/devcontainer.json](.devcontainer/withenvfile_remote/devcontainer.json) enhances the "Terraform provider for SAP BTP - Development (with remote state)" to load environment variables (like username and password) when the container is started. This configuration expects a file called `devcontainer.env` in the folder `.devcontainer`.
 
 > **Note**: `.env` files are excluded from git via `.gitignore`. You can use the file to store the environment variables `BTP_USERNAME` and `BTP_PASSWORD` that are needed when developing tests.
 
