@@ -155,3 +155,20 @@ resource "btp_directory_entitlement" "entitlement_auditlog_dir_se_static" {
   amount       = 1
 }
 
+###
+# Global Account Resource Pprovider
+###
+
+resource "btp_globalaccount_resource_provider" "ga_resource_provider_aws" {
+  technical_name = "tf_test_resource_provider"
+  display_name   = "Test AWS Resource Provider"
+  description    = "Description of the resource provider"
+  provider_type  = "AWS"
+  configuration  = jsonencode({
+    access_key_id     = "AWSACCESSKEY"
+    secret_access_key = "AWSSECRETKEY"
+    vpc_id            = "vpc-test"
+    region            = "eu-central-1"
+  })
+}
+
