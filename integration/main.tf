@@ -142,3 +142,10 @@ resource "btp_directory_entitlement" "entitlement_hana_cloud_dir_entitlements" {
   plan_name    = "hana"
 }
 
+resource "btp_directory_entitlement" "entitlement_alert_notification_dir_se_static" {
+  directory_id = btp_directory.dir_se_static.id
+  service_name = "alert-notification"
+  plan_name    = "lite"
+}
+
+
