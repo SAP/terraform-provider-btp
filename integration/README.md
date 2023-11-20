@@ -5,8 +5,10 @@ This directory contains Terraform definitions for setting up a Global Account fo
 - Global Account with:
   - Services:
     - SAP HANA Cloud | hana-cloud
+    - Data Privacy Integration | data-privacy-integration-service
   - Entitlements:
     - HANA Cloud: hana (Canary | Quota: 3)
+    - Data Privacy Integration | data-privacy-integration-service: standard (Quota: 3)
 - IDP with Technical User
   - Groups need to be properly configured
 
