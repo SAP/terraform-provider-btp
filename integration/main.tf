@@ -133,6 +133,18 @@ resource "btp_subaccount_role_collection_assignment" "subaccount_administrators_
 }
 
 ###
+# Directory Role Collection Assignments
+###
+
+resource "btp_directory_role_collection_assignment" "directory_administrators_dir_se_static" {
+  directory_id         = btp_directory.dir_se_static.id
+  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
+  role_collection_name = "Directory Administrator"
+  group_name           = each.value
+  origin               = "terraform-platform"
+}
+
+###
 # Directory Entitlements
 ###
 
@@ -148,4 +160,10 @@ resource "btp_directory_entitlement" "entitlement_alert_notification_dir_se_stat
   plan_name    = "lite"
 }
 
+resource "btp_directory_entitlement" "entitlement_auditlog_dir_se_static" {
+  directory_id = btp_directory.dir_se_static.id
+  service_name = "auditlog"
+  plan_name    = "standard"
+  amount       = 1
+}
 
