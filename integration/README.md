@@ -3,6 +3,7 @@ This directory contains Terraform definitions for setting up a Global Account fo
 
 # Prerequisite
 - Global Account with:
+  - Use For: Testing
   - Services:
     - SAP HANA Cloud | hana-cloud
     - Data Privacy Integration | data-privacy-integration-service

@@ -172,3 +172,24 @@ resource "btp_globalaccount_resource_provider" "ga_resource_provider_aws" {
   })
 }
 
+###
+# Global Account Trust Configuration
+###
+
+resource "btp_globalaccount_trust_configuration" "idp_terraformint" {
+  identity_provider = "terraformint.accounts400.ondemand.com"
+  name              = "terraformint-platform"
+  description       = "Custom Platform Identity Provider"
+  origin            = "terraformint-platform"
+}
+
+###
+# Subaccount Subscriptions
+###
+
+resource "btp_subaccount_subscription" "subscription_sa_services_static_content_agent_ui" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  app_name      = "content-agent-ui"
+  plan_name     = "free"
+}
+
