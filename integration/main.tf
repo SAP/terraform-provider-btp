@@ -198,6 +198,12 @@ resource "btp_subaccount_subscription" "subscription_sa_services_static_content_
 # Subaccount Entitlements
 ###
 
+resource "btp_subaccount_entitlement" "entitlement_sa_services_static_auditlog_viewer" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  service_name  = "auditlog-viewer"
+  plan_name     = "free"
+}
+
 resource "btp_subaccount_entitlement" "entitlement_sa_services_static_alert_notification" {
   subaccount_id = btp_subaccount.sa_services_static.id
   service_name  = "alert-notification"
