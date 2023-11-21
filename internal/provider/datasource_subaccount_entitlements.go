@@ -127,7 +127,7 @@ func (ds *subaccountEntitlementsDataSource) Read(ctx context.Context, req dataso
 	// Determine the parent of the subaccount
 	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the "List" call
 	subaccountData, _, _ := ds.cli.Accounts.Subaccount.Get(ctx, data.SubaccountId.ValueString())
-	parentId, isParentGlobalAccount := determineParentId(ds.cli, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount := determineParentIdForEntitlement(ds.cli, ctx, subaccountData.ParentGUID)
 
 	if isParentGlobalAccount {
 		cliRes, _, err = ds.cli.Accounts.Entitlement.ListBySubaccount(ctx, data.SubaccountId.ValueString())

@@ -368,7 +368,15 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	cliRes, _, err := rs.cli.Accounts.Subaccount.Delete(ctx, state.ID.ValueString())
+	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+
+	var directoryId string
+
+	if !isParentGlobalAccount {
+		directoryId = parentId
+	}
+
+	cliRes, _, err := rs.cli.Accounts.Subaccount.Delete(ctx, state.ID.ValueString(), directoryId)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Subaccount", fmt.Sprintf("%s", err))
 		return
