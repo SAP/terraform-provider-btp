@@ -12,7 +12,7 @@ This directory contains Terraform definitions for setting up a Global Account fo
   - Entitlements:
     - HANA Cloud: hana (Canary | Quota: 3)
     - Data Privacy Integration | data-privacy-integration-service: standard (Quota: 3)
-    - Alert Notification | alert-notification: lite (Quota: 1)
+    - Alert Notification | alert-notification: lite (Quota: 1), free (Quota: 1)
     - Audit Log Service | auditlog: standard (Quota: 1)
 - IDP with Technical User
   - Groups need to be properly configured
