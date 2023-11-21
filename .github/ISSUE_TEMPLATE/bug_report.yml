@@ -12,11 +12,18 @@ body:
           required: true
   - type: input
     attributes:
-      label: What version of Terraform are you using?
-      description: What version of Terraform are you using?
+      label: What version of Terraform provider are you using?
+      description: What version of Terraform provider for SAP BTP are you using?
       placeholder: 0.6.0-beta2
     validations:
       required: true
+  - type: input
+    attributes:
+      label: What version of Terraform CLI are you using?
+      description: What version of Terraform CLI are you using?
+      placeholder: 1.6.3
+    validations:
+      required: true    
   - type: dropdown
     id: area
     attributes:
@@ -61,6 +68,18 @@ body:
         ```
     validations:
       required: false
+  - type: textarea
+    attributes:
+      label: User's Role Collections
+      description: |
+        List the role collections that are assigned to the user executing the Terraform script.
+
+        This is especially important if you are facing authorization issues like errors with status code 403.
+      placeholder: |
+        - Global Account Viewer
+        - Subaccount Administrator
+    validations:
+      required: false      
   - type: textarea
     attributes:
       label: Add screenshots to help explain your problem
