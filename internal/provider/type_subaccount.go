@@ -6,8 +6,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
 )
+
+const EntitlementFeature = "ENTITLEMENTS"
+const AuthorizationFeature = "AUTHORIZATIONS"
 
 type subaccountType struct {
 	ID             types.String `tfsdk:"id"`
@@ -51,4 +55,46 @@ func subaccountValueFrom(ctx context.Context, value cis.SubaccountResponseObject
 	diagnostics.Append(diags...)
 
 	return subaccount, diagnostics
+}
+
+func determineParentIdByFeature(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string, featureType string) (parentId string, isParentGlobalAccount bool) {
+
+	parentId = ""
+	isParentGlobalAccount = false
+
+	parentData, _, err := cli.Accounts.Directory.Get(ctx, parentIdToVerify)
+
+	// The parent is the global account
+	if err != nil {
+		isParentGlobalAccount = true
+		return
+	}
+
+	if hasFeature(parentData.DirectoryFeatures, featureType) {
+		// Parent is a directory with entitlements feature enabled
+		parentId = parentIdToVerify
+	} else {
+		// Parent is a directory, but not with entitlements feature enabled -> step up the hierarchy
+		parentId, isParentGlobalAccount = determineParentIdByFeature(cli, ctx, parentData.ParentGUID, featureType)
+	}
+
+	return
+}
+
+func hasFeature(features []string, featureType string) (featureTypeFound bool) {
+
+	for _, f := range features {
+		if f == featureType {
+			featureTypeFound = true
+		}
+	}
+	return
+}
+
+func determineParentIdForEntitlement(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalAccount bool) {
+	return determineParentIdByFeature(cli, ctx, parentIdToVerify, EntitlementFeature)
+}
+
+func determineParentIdForAuthorization(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalAccount bool) {
+	return determineParentIdByFeature(cli, ctx, parentIdToVerify, AuthorizationFeature)
 }
