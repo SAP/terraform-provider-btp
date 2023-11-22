@@ -152,6 +152,14 @@ resource "btp_subaccount_role_collection_assignment" "srca_sa_security_settings_
   origin               = "terraform-platform"
 }
 
+resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_static_jenny_ga_viewer" {
+  subaccount_id        = btp_subaccount.sa_acc_static.id
+  for_each             = toset(["sap.default", "terraformint-platform"])
+  role_collection_name = "Subaccount Viewer"
+  user_name            = "jenny.doe@test.com"
+  origin               = each.value
+}
+
 ###
 # directory entitlements
 ###
