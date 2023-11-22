@@ -373,6 +373,7 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 	var directoryId string
 
 	if !isParentGlobalAccount {
+		//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
 		directoryId = parentId
 	}
 

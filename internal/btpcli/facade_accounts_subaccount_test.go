@@ -189,7 +189,7 @@ func TestAccountsSubaccountFacade_Delete(t *testing.T) {
 				"subaccount":  subaccountId,
 				"confirm":     "true",
 				"forceDelete": "true",
-				"directory":   directoryId,
+				"directoryID": directoryId,
 			})
 
 		}))
