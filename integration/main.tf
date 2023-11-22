@@ -26,7 +26,7 @@ resource "btp_subaccount" "sa_acc_static" {
   description = local.disclaimer_description
   subdomain   = local.integration_test_account_static
   region      = var.region
-  labels = {
+  labels      = {
     label1 = [
       "label text 1"
     ]
