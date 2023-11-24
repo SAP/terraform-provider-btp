@@ -46,7 +46,6 @@ resource "btp_subaccount" "sa_services_static" {
   subdomain    = local.integration_test_services_static
   region       = var.region
   description  = "Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions"
-  beta_enabled = true
 }
 
 resource "btp_subaccount" "sa_security_settings" {
@@ -237,12 +236,11 @@ resource "btp_subaccount_entitlement" "se_sa_services_static_alert_notification"
   plan_name     = "free"
 }
 
-#resource "btp_subaccount_entitlement" "se_sa_services_static_iban" {
-#  subaccount_id = btp_subaccount.sa_services_static.id
-#  service_name  = "ibanservice"
-#  plan_name     = "default"
-#  amount        = 1
-#}
+resource "btp_subaccount_entitlement" "se_sa_services_static_malware_scanner" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  service_name  = "malware-scanner"
+  plan_name     = "clamav"
+}
 
 ###
 # subaccount service instances
@@ -263,25 +261,25 @@ resource "btp_subaccount_service_instance" "ssi_sa_services_static_alert_notific
   name           = "tf-testacc-alertnotification-instance"
 }
 
-#data "btp_subaccount_service_plan" "ssp_sa_services_static_iban_default" {
-#  subaccount_id = btp_subaccount.sa_services_static.id
-#  name          = "default"
-#  offering_name = "ibanservice"
-#  depends_on    = [
-#    btp_subaccount_entitlement.se_sa_services_static_iban
-#  ]
-#}
+data "btp_subaccount_service_plan" "ssp_sa_services_static_malware_scanner_default" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  name          = "clamav"
+  offering_name = "malware-scanner"
+  depends_on    = [
+    btp_subaccount_entitlement.se_sa_services_static_malware_scanner
+  ]
+}
 
-#resource "btp_subaccount_service_instance" "ssi_sa_services_static_iban_default" {
-#  subaccount_id  = btp_subaccount.sa_services_static.id
-#  serviceplan_id = data.btp_subaccount_service_plan.ssp_sa_services_static_iban_default.id
-#  name           = "tf-testacc-iban-sample"
-#  labels         = {
-#    org          = [
-#      "testvalue"
-#    ]
-#  }
-#}
+resource "btp_subaccount_service_instance" "ssi_sa_services_static_malware_scanner_default" {
+  subaccount_id  = btp_subaccount.sa_services_static.id
+  serviceplan_id = data.btp_subaccount_service_plan.ssp_sa_services_static_malware_scanner_default.id
+  name           = "tf-testacc-malware-scanner-sample"
+  labels         = {
+    org          = [
+      "testvalue"
+    ]
+  }
+}
 
 ###
 # subaccount service bindings
@@ -299,9 +297,9 @@ resource "btp_subaccount_service_binding" "binding_sa_services_static_alert_noti
   name                = "test-service-binding-two"
 }
 
-#resource "btp_subaccount_service_binding" "binding_sa_services_static_iban_default_sb_test" {
-#  subaccount_id       = btp_subaccount.sa_services_static.id
-#  service_instance_id = btp_subaccount_service_instance.ssi_sa_services_static_iban_default.id
-#  name                = "test-service-binding-iban"
-#}
+resource "btp_subaccount_service_binding" "binding_sa_services_static_malware_scanner_default_sb_test" {
+  subaccount_id       = btp_subaccount.sa_services_static.id
+  service_instance_id = btp_subaccount_service_instance.ssi_sa_services_static_malware_scanner_default.id
+  name                = "test-service-binding-malware-scanner"
+}
 
