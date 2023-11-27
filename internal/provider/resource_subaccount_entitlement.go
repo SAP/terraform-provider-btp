@@ -157,7 +157,7 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 	// Determine the parent of the subaccount
 	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
-	parentId, isParentGlobalAccount := determineParentId(rs.cli, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount := determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
 
 	entitlement, rawRes, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
@@ -239,7 +239,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 	// Determine the parent of the subaccount
 	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, plan.SubaccountId.ValueString())
-	parentId, isParentGlobalAccount := determineParentId(rs.cli, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount := determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
 
 	// wait for the entitlement to become effective
 	createStateConf := &tfutils.StateChangeConf{
@@ -333,7 +333,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 	// Determine the parent of the subaccount
 	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
-	parentId, isParentGlobalAccount := determineParentId(rs.cli, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount := determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
 
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},

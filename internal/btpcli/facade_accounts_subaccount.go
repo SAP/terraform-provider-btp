@@ -90,12 +90,20 @@ func (f *accountsSubaccountFacade) Update(ctx context.Context, args *SubaccountU
 	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
 }
 
-func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId string) (cis.SubaccountResponseObject, CommandResponse, error) {
-	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
+func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId string, directoryId string) (cis.SubaccountResponseObject, CommandResponse, error) {
+
+	requestArgs := map[string]string{
 		"subaccount":  subaccountId,
 		"confirm":     "true",
 		"forceDelete": "true",
-	}))
+	}
+
+	if len(directoryId) > 0 {
+		//if the parent of the subaccount is a managed directory, the directoryID must be set to make sure the right authorizations are validated
+		requestArgs["directoryID"] = directoryId
+	}
+
+	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), requestArgs))
 }
 
 func (f *accountsSubaccountFacade) Subscribe(ctx context.Context, subaccountId string, appName string, planName string, parameters string) (saas_manager_service.SubscriptionAssignmentResponseObject, CommandResponse, error) {

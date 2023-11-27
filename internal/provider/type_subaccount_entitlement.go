@@ -36,38 +36,3 @@ func subaccountEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedAs
 		CreatedDate:  timeToValue(value.Assignment.CreatedDate.Time()),
 	}, diag.Diagnostics{}
 }
-
-func determineParentId(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalAccount bool) {
-
-	parentId = ""
-	isParentGlobalAccount = false
-
-	parentData, _, err := cli.Accounts.Directory.Get(ctx, parentIdToVerify)
-
-	// The parent is the global account
-	if err != nil {
-		isParentGlobalAccount = true
-		return
-	}
-
-	if hasEntitlementFeature(parentData.DirectoryFeatures) {
-		// Parent is a directory with entitlements feature enabled
-		parentId = parentIdToVerify
-	} else {
-		// Parent is a directory, but not with entitlements feature enabled -> step up the hierarchy
-		parentId, isParentGlobalAccount = determineParentId(cli, ctx, parentData.ParentGUID)
-	}
-
-	return
-}
-
-func hasEntitlementFeature(features []string) (entitlementFeatureFound bool) {
-	const entitlementFeature = "ENTITLEMENTS"
-
-	for _, f := range features {
-		if f == entitlementFeature {
-			entitlementFeatureFound = true
-		}
-	}
-	return
-}
