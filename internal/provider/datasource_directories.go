@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
 )
 
 var directoryObjType = types.ObjectType{
@@ -83,18 +82,6 @@ You must be assigned to the admin or viewer role of the global account, director
 	}
 }
 
-func recursivelyMapDirectories(ctx context.Context, resp *datasource.ReadResponse, dirs []directoryType, dirResponses []cis.DirectoryResponseObject) []directoryType {
-	for _, dirRes := range dirResponses {
-		dir, diags := directoryValueFrom(ctx, dirRes)
-		resp.Diagnostics.Append(diags...)
-		dirs = append(dirs, dir)
-		if len(dirRes.Children) > 0 {
-			dirs = recursivelyMapDirectories(ctx, resp, dirs, dirRes.Children)
-		}
-	}
-	return dirs
-}
-
 func (ds *directoriesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data directoriesType
 
@@ -111,8 +98,7 @@ func (ds *directoriesDataSource) Read(ctx context.Context, req datasource.ReadRe
 		return
 	}
 
-	dirs := []directoryType{}
-	dirs = recursivelyMapDirectories(ctx, resp, dirs, gaRes.Children)
+	dirs := getAllDirectories(ctx, resp, gaRes.Children)
 
 	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
 
