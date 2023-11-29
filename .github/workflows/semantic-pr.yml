@@ -6,13 +6,16 @@ on:
     types:
       - opened
       - edited
+      - reopened
       - synchronize
+      - ready_for_review
 
 permissions:
   pull-requests: read
 
 jobs:
   main:
+    if: github.event.pull_request.draft == false
     name: Validate PR title
     runs-on: ubuntu-latest
     steps:

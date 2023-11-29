@@ -9,6 +9,12 @@ on:
       - '*.tf'
   pull_request:
     branches: [ "main" ]
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - ready_for_review
     paths-ignore:
       - '*.md'
       - '*.md.tmpl'
@@ -19,6 +25,7 @@ on:
     
 jobs:
   analyze:
+    if: github.event.pull_request.draft == false
     name: Analyze
     runs-on: ubuntu-latest
     permissions:
