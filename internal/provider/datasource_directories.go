@@ -75,7 +75,7 @@ You must be assigned to the admin or viewer role of the global account, director
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: dataSourceDirectorySchemaAttributes,
 				},
-				MarkdownDescription: "The subaccounts contained in the global account.",
+				MarkdownDescription: "The directories contained in the global account.",
 				Computed:            true,
 			},
 		},
