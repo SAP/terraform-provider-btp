@@ -22,7 +22,7 @@ You must be assigned to the admin or viewer role of the global account, director
 ### Read-Only
 
 - `id` (String, Deprecated) The ID of the global account.
-- `values` (Attributes List) The subaccounts contained in the global account. (see [below for nested schema](#nestedatt--values))
+- `values` (Attributes List) The directories contained in the global account. (see [below for nested schema](#nestedatt--values))
 
 <a id="nestedatt--values"></a>
 ### Nested Schema for `values`
