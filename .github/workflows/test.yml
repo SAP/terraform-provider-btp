@@ -5,6 +5,12 @@ name: Terraform Provider Tests
 # Optionally, you can turn it on using a schedule for regular testing.
 on:
   pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - ready_for_review
     paths-ignore:
       - '*.md'
   push:
@@ -38,6 +44,8 @@ jobs:
           version: latest
 
   generate:
+    if: github.event.pull_request.draft == false
+    name: Docu Generation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4 # v4.0.0
@@ -52,6 +60,7 @@ jobs:
             (echo; echo "Unexpected difference in directories after code generation. Run 'go generate ./...' command and commit."; exit 1)
 
   fixtureDriftDetect:
+    if: github.event.pull_request.draft == false
     name: Fixture Drift Detection
     runs-on: ubuntu-latest
     steps:
@@ -62,6 +71,7 @@ jobs:
 
   # Run acceptance tests in a matrix with Terraform CLI versions
   test:
+    if: github.event.pull_request.draft == false
     name: Terraform Provider Acceptance Tests
     needs: build
     runs-on: ubuntu-latest
@@ -97,6 +107,7 @@ jobs:
           path: cover.out
 
   sonarcloud:
+    if: github.event.pull_request.draft == false
     name: SonarCloud
     needs: test
     runs-on: ubuntu-latest
