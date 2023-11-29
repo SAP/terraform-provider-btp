@@ -61,7 +61,7 @@ func (ds *subaccountUserDataSource) Schema(_ context.Context, _ datasource.Schem
 				},
 			},
 			"origin": schema.StringAttribute{
-				MarkdownDescription: "The identity provider that hosts the user. The default value is 'ldap'",
+				MarkdownDescription: "The identity provider that hosts the user. Only needed for custom identity provider.",
 				Computed:            true,
 				Optional:            true,
 				Validators: []validator.String{

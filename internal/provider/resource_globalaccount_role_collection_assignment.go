@@ -115,7 +115,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 				},
 			},
 			"origin": schema.StringAttribute{
-				MarkdownDescription: "The identity provider that hosts the user or group. The default value is `ldap`.",
+				MarkdownDescription: "The identity provider that hosts the user or group. Only needed for custom identity provider.",
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString("ldap"),

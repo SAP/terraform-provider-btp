@@ -36,7 +36,7 @@ data "btp_subaccount_user" "someone_else" {
 
 ### Optional
 
-- `origin` (String) The identity provider that hosts the user. The default value is 'ldap'
+- `origin` (String) The identity provider that hosts the user. Only needed for custom identity provider.
 
 ### Read-Only
 

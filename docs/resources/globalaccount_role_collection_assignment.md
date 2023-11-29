@@ -37,7 +37,7 @@ resource "btp_globalaccount_role_collection_assignment" "globalaccount_viewer_gr
 - `attribute_name` (String) The name of the attribute to assign.
 - `attribute_value` (String) The value of the attribute to assign.
 - `group_name` (String) The name of the group to assign.
-- `origin` (String) The identity provider that hosts the user or group. The default value is `ldap`.
+- `origin` (String) The identity provider that hosts the user or group. Only needed for custom identity provider.
 - `user_name` (String) The name of the user to assign.
 
 ### Read-Only
