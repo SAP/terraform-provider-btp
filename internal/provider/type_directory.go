@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -51,4 +52,21 @@ func directoryValueFrom(ctx context.Context, value cis.DirectoryResponseObject) 
 	summary.Append(diags...)
 
 	return directory, summary
+}
+
+func getAllDirectories(ctx context.Context, resp *datasource.ReadResponse, dirResponses []cis.DirectoryResponseObject) []directoryType {
+	dirs := []directoryType{}
+	return recursivelyMapDirectories(ctx, resp, dirs, dirResponses)
+}
+
+func recursivelyMapDirectories(ctx context.Context, resp *datasource.ReadResponse, dirs []directoryType, dirResponses []cis.DirectoryResponseObject) []directoryType {
+	for _, dirRes := range dirResponses {
+		dir, diags := directoryValueFrom(ctx, dirRes)
+		resp.Diagnostics.Append(diags...)
+		dirs = append(dirs, dir)
+		if len(dirRes.Children) > 0 {
+			dirs = recursivelyMapDirectories(ctx, resp, dirs, dirRes.Children)
+		}
+	}
+	return dirs
 }

@@ -23,3 +23,10 @@ func (f *accountsGlobalAccountFacade) Get(ctx context.Context) (cis.GlobalAccoun
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 	}))
 }
+
+func (f *accountsGlobalAccountFacade) GetWithHierarchy(ctx context.Context) (cis.GlobalAccountResponseObject, CommandResponse, error) {
+	return doExecute[cis.GlobalAccountResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
+		"showHierarchy": "true",
+	}))
+}

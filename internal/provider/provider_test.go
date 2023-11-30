@@ -457,6 +457,7 @@ func TestProvider_HasResources(t *testing.T) {
 func TestProvider_HasDatasources(t *testing.T) {
 	expectedDataSources := []string{
 		"btp_directory",
+		"btp_directories",
 		/*
 			"btp_directory_app",
 			"btp_directory_apps",
