@@ -49,6 +49,16 @@ var redactedTestUser = TestUser{
 	Lastname:  "Doe",
 }
 
+var testGlobalAccount = getenv("BTP_GLOBALACCOUNT", "terraformintcanary")
+
+func getenv(key, fallback string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return fallback
+	}
+	return value
+}
+
 func hclProviderFor(user TestUser) string {
 	return hclProvider("https://canary.cli.btp.int.sap", user)
 }
@@ -62,12 +72,12 @@ func hclProvider(cliServerURL string, user TestUser) string {
 	return fmt.Sprintf(`
 provider "btp" {
     cli_server_url = "%s"
-    globalaccount  = "terraformintcanary"
+    globalaccount  = "%s"
     username       = "%s"
     password       = "%s"
     idp            = "%s"
 }
-    `, cliServerURL, user.Username, user.Password, user.Idp)
+    `, cliServerURL, testGlobalAccount, user.Username, user.Password, user.Idp)
 }
 
 func getProviders(httpClient *http.Client) map[string]func() (tfprotov6.ProviderServer, error) {
@@ -292,7 +302,7 @@ func TestProvider_ConfigurationFlows(t *testing.T) {
 				{
 					Config: `
 provider "btp" {
-	globalaccount  = "terraformintcanary"
+	globalaccount  = "ga"
 	username       = ""
 	password       = "password"
 }
@@ -302,7 +312,7 @@ data "btp_whoami" "me" {}`,
 				{
 					Config: `
 provider "btp" {
-	globalaccount  = "terraformintcanary"
+	globalaccount  = "ga"
 	username       = "username"
 	password       = ""
 }
@@ -323,7 +333,7 @@ data "btp_whoami" "me" {}`,
 				{
 					Config: `
 provider "btp" {
-	globalaccount          = "terraformintcanary"
+	globalaccount          = "ga"
 	username               = ""
 	tls_client_key         = "tlsClientKey"
 	tls_client_certificate = "tlsClientCertificate"
@@ -335,7 +345,7 @@ data "btp_whoami" "me" {}`,
 				{
 					Config: `
 provider "btp" {
-	globalaccount          = "terraformintcanary"
+	globalaccount          = "ga"
 	username               = "username"
 	tls_client_key         = ""
 	tls_client_certificate = "tlsClientCertificate"
@@ -347,7 +357,7 @@ data "btp_whoami" "me" {}`,
 				{
 					Config: `
 provider "btp" {
-	globalaccount          = "terraformintcanary"
+	globalaccount          = "ga"
 	username               = "username"
 	tls_client_key         = "tlsClientKey"
 	tls_client_certificate = ""
@@ -359,7 +369,7 @@ data "btp_whoami" "me" {}`,
 				{
 					Config: `
 provider "btp" {
-	globalaccount          = "terraformintcanary"
+	globalaccount          = "ga"
 	username               = "username"
 	tls_client_key         = "tlsClientKey"
 	tls_client_certificate = "tlsClientCertificate"
@@ -382,7 +392,7 @@ func TestProvider_ConfigurationWithIdToken(t *testing.T) {
 				{
 					Config: `
 provider "btp" {
-	globalaccount  = "terraformintcanary"
+	globalaccount  = "ga"
 	username       = "username"
 	idtoken        = "idtoken"
 }
@@ -392,7 +402,7 @@ data "btp_whoami" "me" {}`,
 				{
 					Config: `
 provider "btp" {
-	globalaccount  = "terraformintcanary"
+	globalaccount  = "ga"
 	password       = "password"
 	idtoken        = "idtoken"
 }
@@ -402,7 +412,7 @@ data "btp_whoami" "me" {}`,
 				{
 					Config: `
 provider "btp" {
-	globalaccount  = "terraformintcanary"
+	globalaccount  = "ga"
 	idp            = "idp"
 	idtoken        = "idtoken"
 }
