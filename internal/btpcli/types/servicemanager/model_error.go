@@ -13,5 +13,6 @@ type ModelError struct {
 	// The name of the error.
 	Error_ string `json:"error,omitempty"`
 	// The description of the error.
-	Description string `json:"description,omitempty"`
+	Description string            `json:"description,omitempty"`
+	BrokerError *ErrorBrokerError `json:"brokerError,omitempty"`
 }
