@@ -22,10 +22,8 @@ func TestDataSourceDirectoryEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDirectoryEntitlements("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryEntitlements("uut", "integration-test-dir-se-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_directory_entitlements.uut", "id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
-						resource.TestCheckResourceAttr("data.btp_directory_entitlements.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 						resource.TestCheckResourceAttr("data.btp_directory_entitlements.uut", "values.%", "2"),
 					),
 				},
@@ -38,7 +36,7 @@ func TestDataSourceDirectoryEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceDirectoryEntitlements("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceDirectoryEntitlementsByDirectoryId("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute directory_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -71,7 +69,7 @@ func TestDataSourceDirectoryEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryEntitlements("uut", "5357bda0-8651-4eab-a69d-12d282bc3247"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryEntitlements("uut", "integration-test-dir-se-static"),
 					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -79,10 +77,19 @@ func TestDataSourceDirectoryEntitlements(t *testing.T) {
 	})
 }
 
-func hclDatasourceDirectoryEntitlements(resourceName string, directoryId string) string {
+func hclDatasourceDirectoryEntitlementsByDirectoryId(resourceName string, directoryId string) string {
 	template := `
 data "btp_directory_entitlements" "%s" {
     directory_id = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, directoryId)
+}
+
+func hclDatasourceDirectoryEntitlements(resourceName string, directoryName string) string {
+	template := `
+data "btp_directories" "all" {}
+data "btp_directory_entitlements" "%s" {
+    directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
+}`
+	return fmt.Sprintf(template, resourceName, directoryName)
 }
