@@ -22,9 +22,9 @@ func TestDataSourceDirectoryRoleCollections(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDirectoryRoleCollections("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryRoleCollections("uut", "integration-test-dir-se-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_directory_role_collections.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+						resource.TestMatchResourceAttr("data.btp_directory_role_collections.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_directory_role_collections.uut", "values.#", "2"),
 					),
 				},
@@ -40,7 +40,7 @@ func TestDataSourceDirectoryRoleCollections(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclDatasourceDirectoryRoleCollections("uut", "5357bda0-8651-4eab-a69d-12d282bc3247"),
+					Config:      hclProviderFor(user) + hclDatasourceDirectoryRoleCollections("uut", "integration-test-dir-static"),
 					ExpectError: regexp.MustCompile(`Access forbidden due to insufficient authorization.*`), //error message has a line break, we only check the first part
 				},
 			},
@@ -64,7 +64,7 @@ func TestDataSourceDirectoryRoleCollections(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceDirectoryRoleCollections("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceDirectoryRoleCollectionsByDirectoryId("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute directory_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -85,7 +85,7 @@ func TestDataSourceDirectoryRoleCollections(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryRoleCollections("uut", "5357bda0-8651-4eab-a69d-12d282bc3247"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryRoleCollections("uut", "integration-test-dir-static"),
 					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -93,6 +93,15 @@ func TestDataSourceDirectoryRoleCollections(t *testing.T) {
 	})
 }
 
-func hclDatasourceDirectoryRoleCollections(resourceName string, id string) string {
-	return fmt.Sprintf(`data "btp_directory_role_collections" "%s" { directory_id = "%s" }`, resourceName, id)
+func hclDatasourceDirectoryRoleCollectionsByDirectoryId(resourceName string, directoryId string) string {
+	return fmt.Sprintf(`data "btp_directory_role_collections" "%s" { directory_id = "%s" }`, resourceName, directoryId)
+}
+
+func hclDatasourceDirectoryRoleCollections(resourceName string, directoryName string) string {
+	template := `
+data "btp_directories" "all" {}
+data "btp_directory_role_collections" "%s" {
+	directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
+}`
+	return fmt.Sprintf(template, resourceName, directoryName)
 }
