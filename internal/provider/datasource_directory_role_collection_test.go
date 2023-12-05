@@ -23,7 +23,6 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config: hclProviderFor(user) + hclDatasourceDirectoryRoleCollection("uut", "integration-test-dir-se-static", "Directory Viewer"),
-					//Config: hclProviderFor(user) + hclDatasourceDirectoryRoleCollectionByDirectoryId("uut", "c009e317-aa79-40d0-9da8-c9399f066dc1", "Directory Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "name", "Directory Viewer"),
