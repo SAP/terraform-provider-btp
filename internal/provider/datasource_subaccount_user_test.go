@@ -22,16 +22,16 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountUserWithCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "jenny.doe@test.com", "sap.default"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountUserWithCustomIdp("uut", "integration-test-acc-static", "jenny.doe@test.com", "sap.default"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_user.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "user_name", "jenny.doe@test.com"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "origin", "sap.default"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "active", "true"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "family_name", "unknown"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "given_name", "unknown"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "family_name", ""),
+						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "given_name", ""),
 						resource.TestMatchResourceAttr("data.btp_subaccount_user.uut", "id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "role_collections.#", "0"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "role_collections.#", "1"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_user.uut", "verified", "false"),
 					),
 				},
@@ -44,7 +44,7 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountUserWithCustomIdp("uut", "this-is-not-a-uuid", "jenny.doe@test.com", "sap.default"),
+					Config:      hclDatasourceSubaccountUserWithCustomIdpBySubaccountId("uut", "this-is-not-a-uuid", "jenny.doe@test.com", "sap.default"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -56,7 +56,7 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      `data "btp_directory_user" "uut" {}`,
+					Config:      `data "btp_subaccount_user" "uut" {}`,
 					ExpectError: regexp.MustCompile(`The argument "(subaccount_id|user_name)" is required, but no definition was found.`),
 				},
 			},
@@ -68,7 +68,7 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceDirectoryUserCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "", "terraformint"),
+					Config:      hclDatasourceSubaccountUserWithCustomIdp("uut", "integration-test-acc-static", "", "terraformint"),
 					ExpectError: regexp.MustCompile(`Attribute user_name string length must be between 1 and 256, got: 0`),
 				},
 			},
@@ -80,7 +80,7 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceDirectoryUserCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "jenny.doe@test.com", ""),
+					Config:      hclDatasourceSubaccountUserWithCustomIdp("uut", "integration-test-acc-static", "jenny.doe@test.com", ""),
 					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
 				},
 			},
@@ -101,7 +101,7 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountUserWithCustomIdp("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "jenny.doe@test.com", "sap.default"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountUserWithCustomIdp("uut", "integration-test-acc-static", "jenny.doe@test.com", "sap.default"),
 					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -109,13 +109,23 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 	})
 }
 
-func hclDatasourceSubaccountUserWithCustomIdp(resourceName string, subaccountId string, userName string, origin string) string {
+func hclDatasourceSubaccountUserWithCustomIdpBySubaccountId(resourceName string, subaccountId string, userName string, origin string) string {
 	template := `
 data "btp_subaccount_user" "%s" {
 	subaccount_id = "%s"
 	user_name 	 = "%s"
   	origin    	 = "%s"
 }`
-
 	return fmt.Sprintf(template, resourceName, subaccountId, userName, origin)
+}
+
+func hclDatasourceSubaccountUserWithCustomIdp(resourceName string, subaccountName string, userName string, origin string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_user" "%s" {
+	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+	user_name 	 = "%s"
+  	origin    	 = "%s"
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName, userName, origin)
 }
