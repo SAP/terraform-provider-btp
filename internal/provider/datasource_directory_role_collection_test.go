@@ -22,9 +22,10 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDirectoryRoleCollection("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "Directory Viewer"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryRoleCollection("uut", "integration-test-dir-se-static", "Directory Viewer"),
+					//Config: hclProviderFor(user) + hclDatasourceDirectoryRoleCollectionByDirectoryId("uut", "c009e317-aa79-40d0-9da8-c9399f066dc1", "Directory Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+						resource.TestMatchResourceAttr("data.btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "name", "Directory Viewer"),
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "description", "Read-only access to the directory"),
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "read_only", "true"),
@@ -43,7 +44,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclDatasourceDirectoryRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Directory Viewer"),
+					Config:      hclProviderFor(user) + hclDatasourceDirectoryRoleCollection("uut", "integration-test-dir-static", "Directory Viewer"),
 					ExpectError: regexp.MustCompile(`Access forbidden due to insufficient authorization.*`), //error message has a line break, we only check the first part
 				},
 			},
@@ -67,7 +68,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceDirectoryRoleCollection("uut", "this-is-not-a-uuid", "Directory Viewer"),
+					Config:      hclDatasourceDirectoryRoleCollectionByDirectoryId("uut", "this-is-not-a-uuid", "Directory Viewer"),
 					ExpectError: regexp.MustCompile(`Attribute directory_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -79,7 +80,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceDirectoryRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", ""),
+					Config:      hclDatasourceDirectoryRoleCollectionByDirectoryId("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", ""),
 					ExpectError: regexp.MustCompile(`Attribute name string length must be at least 1, got: 0`),
 				},
 			},
@@ -100,7 +101,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Directory Viewer"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryRoleCollectionByDirectoryId("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Directory Viewer"),
 					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -108,11 +109,21 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 	})
 }
 
-func hclDatasourceDirectoryRoleCollection(resourceName string, id string, name string) string {
+func hclDatasourceDirectoryRoleCollectionByDirectoryId(resourceName string, directoryId string, name string) string {
 	template := `
 data "btp_directory_role_collection" "%s" {
     directory_id = "%s"
     name         = "%s"
 }`
-	return fmt.Sprintf(template, resourceName, id, name)
+	return fmt.Sprintf(template, resourceName, directoryId, name)
+}
+
+func hclDatasourceDirectoryRoleCollection(resourceName string, directoryName string, name string) string {
+	template := `
+data "btp_directories" "all" {}
+data "btp_directory_role_collection" "%s" {
+    directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
+    name         = "%s"
+}`
+	return fmt.Sprintf(template, resourceName, directoryName, name)
 }
