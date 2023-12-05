@@ -22,10 +22,10 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDirectoryUsersDefaultIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryUsersDefaultIdp("uut", "integration-test-dir-se-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
-						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "7"),
+						resource.TestMatchResourceAttr("data.btp_directory_users.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "1"),
 					),
 				},
 			},
@@ -40,10 +40,10 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDirectoryUsersWithCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryUsersWithCustomIdp("uut", "integration-test-dir-se-static", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "directory_id", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
-						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "4"),
+						resource.TestMatchResourceAttr("data.btp_directory_users.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "1"),
 					),
 				},
 			},
@@ -58,7 +58,7 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclDatasourceDirectoryUsersWithCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "this-doesnt-exist"),
+					Config:      hclProviderFor(user) + hclDatasourceDirectoryUsersWithCustomIdp("uut", "integration-test-dir-se-static", "this-doesnt-exist"),
 					ExpectError: regexp.MustCompile(`API Error Reading Resource Users \(Directory\)`),
 				},
 			},
@@ -82,7 +82,7 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceDirectoryUsersDefaultIdp("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceDirectoryUsersDefaultIdpByDirectoryId("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute directory_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -94,7 +94,7 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceDirectoryUsersWithCustomIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", ""),
+					Config:      hclDatasourceDirectoryUsersWithCustomIdp("uut", "integration-test-dir-se-static", ""),
 					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
 				},
 			},
@@ -115,7 +115,7 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryUsersDefaultIdp("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryUsersDefaultIdpByDirectoryId("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9"),
 					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -123,17 +123,26 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 	})
 }
 
-func hclDatasourceDirectoryUsersDefaultIdp(resourceName string, directoryId string) string {
+func hclDatasourceDirectoryUsersDefaultIdpByDirectoryId(resourceName string, directoryId string) string {
 	template := `data "btp_directory_users" "%s" { directory_id = "%s" }`
-
 	return fmt.Sprintf(template, resourceName, directoryId)
 }
 
-func hclDatasourceDirectoryUsersWithCustomIdp(resourceName string, directoryId string, origin string) string {
+func hclDatasourceDirectoryUsersDefaultIdp(resourceName string, directoryName string) string {
 	template := `
+data "btp_directories" "all" {}
 data "btp_directory_users" "%s" {
-    directory_id = "%s"
+	directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
+}`
+	return fmt.Sprintf(template, resourceName, directoryName)
+}
+
+func hclDatasourceDirectoryUsersWithCustomIdp(resourceName string, directoryName string, origin string) string {
+	template := `
+data "btp_directories" "all" {}
+data "btp_directory_users" "%s" {
+    directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
     origin       = "%s"
 }`
-	return fmt.Sprintf(template, resourceName, directoryId, origin)
+	return fmt.Sprintf(template, resourceName, directoryName, origin)
 }
