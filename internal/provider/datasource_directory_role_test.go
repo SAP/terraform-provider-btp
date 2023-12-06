@@ -97,7 +97,7 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
-				{ // integration-test-dir-se-static
+				{
 					Config:      hclDatasourceDirectoryRoleByDirectoryId("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "a", "", "c"),
 					ExpectError: regexp.MustCompile(`Attribute role_template_name string length must be at least 1, got: 0`),
 				},
