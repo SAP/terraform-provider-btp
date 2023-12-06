@@ -20,9 +20,9 @@ func TestDataSourceSubaccountApps(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountApps("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountApps("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_apps.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_apps.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_apps.uut", "values.#", "15"),
 					),
 				},
@@ -48,7 +48,7 @@ func TestDataSourceSubaccountApps(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountApps("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceSubaccountAppsBySubaccountId("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -56,9 +56,19 @@ func TestDataSourceSubaccountApps(t *testing.T) {
 	})
 }
 
-func hclDatasourceSubaccountApps(resourceName string, subaccountId string) string {
-	template := `data "btp_subaccount_apps" "%s" {
+func hclDatasourceSubaccountAppsBySubaccountId(resourceName string, subaccountId string) string {
+	template := `
+data "btp_subaccount_apps" "%s" {
 	subaccount_id = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId)
+}
+
+func hclDatasourceSubaccountApps(resourceName string, subaccountName string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_apps" "%s" {
+	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName)
 }
