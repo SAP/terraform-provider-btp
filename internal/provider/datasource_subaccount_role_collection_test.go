@@ -22,9 +22,9 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountRoleCollection("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Subaccount Viewer"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountRoleCollection("uut", "integration-test-acc-static", "Subaccount Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_role_collection.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "name", "Subaccount Viewer"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "description", "Read-only access to the subaccount"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "read_only", "true"),
@@ -52,7 +52,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountRoleCollection("uut", "this-is-not-a-uuid", "Subaccount Viewer"),
+					Config:      hclDatasourceSubaccountRoleCollectionBySubaccountId("uut", "this-is-not-a-uuid", "Subaccount Viewer"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -64,7 +64,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountRoleCollection("uut", "this-is-not-a-uuid", ""),
+					Config:      hclDatasourceSubaccountRoleCollectionBySubaccountId("uut", "this-is-not-a-uuid", ""),
 					ExpectError: regexp.MustCompile(`Attribute name string length must be at least 1, got: 0`),
 				},
 			},
@@ -85,7 +85,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountRoleCollection("uut", "5357bda0-8651-4eab-a69d-12d282bc3247", "Subaccount Viewer"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountRoleCollectionBySubaccountId("uut", "00000000-0000-0000-0000-000000000000", "Subaccount Viewer"),
 					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -93,11 +93,21 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 	})
 }
 
-func hclDatasourceSubaccountRoleCollection(resourceName string, id string, name string) string {
+func hclDatasourceSubaccountRoleCollectionBySubaccountId(resourceName string, subaccountId string, name string) string {
 	template := `
 data "btp_subaccount_role_collection" "%s" {
     subaccount_id = "%s"
     name          = "%s"
 }`
-	return fmt.Sprintf(template, resourceName, id, name)
+	return fmt.Sprintf(template, resourceName, subaccountId, name)
+}
+
+func hclDatasourceSubaccountRoleCollection(resourceName string, subaccountName string, name string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_role_collection" "%s" {
+    subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+    name          = "%s"
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName, name)
 }
