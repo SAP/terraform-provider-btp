@@ -22,9 +22,9 @@ func TestDataSourceSubaccountEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountEntitlements("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountEntitlements("uut", "integration-test-acc-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "subaccount_id", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_entitlements.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "values.%", "1"),
 					),
 				},
@@ -37,7 +37,7 @@ func TestDataSourceSubaccountEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountEntitlements("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceSubaccountEntitlementsBySubaccountId("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -70,7 +70,7 @@ func TestDataSourceSubaccountEntitlements(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountEntitlements("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountEntitlementsBySubaccountId("uut", "00000000-0000-0000-0000-000000000000"),
 					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -78,8 +78,16 @@ func TestDataSourceSubaccountEntitlements(t *testing.T) {
 	})
 }
 
-func hclDatasourceSubaccountEntitlements(resourceName string, subaccountId string) string {
+func hclDatasourceSubaccountEntitlementsBySubaccountId(resourceName string, subaccountId string) string {
 	template := `data "btp_subaccount_entitlements" "%s" { subaccount_id = "%s" }`
-
 	return fmt.Sprintf(template, resourceName, subaccountId)
+}
+
+func hclDatasourceSubaccountEntitlements(resourceName string, subaccountName string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_entitlements" "%s" {
+	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName)
 }
