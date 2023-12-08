@@ -20,9 +20,9 @@ func TestDataSourceSubaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountSecuritySettingbyId("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountSecuritySettingbyId("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "custom_email_domains.#", "0"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "default_identity_provider", "sap.default"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "treat_users_with_same_email_as_same_user", "false"),
@@ -49,11 +49,13 @@ func TestDataSourceSubaccountSecuritySettings(t *testing.T) {
 	})
 }
 
-func hclDatasourceSubaccountSecuritySettingbyId(resourceName string, subaccountId string) string {
-	template := `data "btp_subaccount_security_settings" "%s" {
-		subaccount_id = "%s"
-	}`
-	return fmt.Sprintf(template, resourceName, subaccountId)
+func hclDatasourceSubaccountSecuritySettingbyId(resourceName string, subaccountName string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_security_settings" "%s" {
+	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName)
 }
 
 func hclDatasourceSubaccountSecuritySettingNoSubaccount(resourceName string) string {
