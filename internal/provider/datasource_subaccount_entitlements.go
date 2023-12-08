@@ -142,16 +142,25 @@ func (ds *subaccountEntitlementsDataSource) Read(ctx context.Context, req dataso
 
 	values := map[string]entitledService{}
 
-	for _, service := range cliRes.EntitledServices {
+	// For subaccounts the relevant information is in the "AssignedServices" section - especially the quota information
+	for _, service := range cliRes.AssignedServices {
+
+		entitledServiceFromList := determineServiceFromEntitledList(service.Name, cliRes.EntitledServices)
+
 		for _, servicePlan := range service.ServicePlans {
+
+			assignedQuota, remainingQuota := calculateQuotaValues(servicePlan.AssignmentInfo)
+
+			servicePlanDescription := determineServicePlanDescription(servicePlan.Name, servicePlan.DisplayName, entitledServiceFromList.ServicePlans)
+
 			values[fmt.Sprintf("%s:%s", service.Name, servicePlan.Name)] = entitledService{
 				ServiceName:        types.StringValue(service.Name),
 				ServiceDisplayName: types.StringValue(service.DisplayName),
 				PlanName:           types.StringValue(servicePlan.Name),
 				PlanDisplayName:    types.StringValue(servicePlan.DisplayName),
-				PlanDescription:    types.StringValue(servicePlan.Description),
-				QuotaAssigned:      types.Float64Value(servicePlan.Amount),
-				QuotaRemaining:     types.Float64Value(servicePlan.RemainingAmount),
+				PlanDescription:    types.StringValue(servicePlanDescription),
+				QuotaAssigned:      types.Float64Value(assignedQuota),
+				QuotaRemaining:     types.Float64Value(remainingQuota),
 				Category:           types.StringValue(servicePlan.Category),
 			}
 		}
@@ -163,4 +172,37 @@ func (ds *subaccountEntitlementsDataSource) Read(ctx context.Context, req dataso
 
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)
+}
+
+func calculateQuotaValues(assignmentInformation []cis_entitlements.AssignedServicePlanSubaccountDto) (assignedQuota float64, remainingQuota float64) {
+	for _, assignment := range assignmentInformation {
+		assignedQuota += assignment.Amount
+		remainingQuota += assignment.ParentRemainingAmount
+	}
+
+	return
+}
+
+func determineServicePlanDescription(servicePlanName string, servicePlanDisplayName string, servicePlans []cis_entitlements.ServicePlanResponseObject) (servicePlanDescription string) {
+
+	servicePlanDescription = servicePlanDisplayName
+
+	for _, servicePlan := range servicePlans {
+		if servicePlan.Name == servicePlanName {
+			servicePlanDescription = servicePlan.Description
+			return
+		}
+	}
+
+	return
+}
+
+func determineServiceFromEntitledList(serviceName string, serviceEntitlements []cis_entitlements.EntitledServicesResponseObject) (entitledService cis_entitlements.EntitledServicesResponseObject) {
+	for _, service := range serviceEntitlements {
+		if service.Name == serviceName {
+			return service
+		}
+	}
+
+	return
 }
