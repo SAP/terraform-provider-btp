@@ -20,10 +20,10 @@ func TestDataSourceSubaccountSubscriptions(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountSubscriptions("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountSubscriptionsBySubaccount("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_subscriptions.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_subscriptions.uut", "values.#", "11"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_subscriptions.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_subaccount_subscriptions.uut", "values.#", "5"),
 					),
 				},
 			},
@@ -48,7 +48,7 @@ func TestDataSourceSubaccountSubscriptions(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountSubscriptions("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceSubaccountSubscriptionsBySubaccountId("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -56,9 +56,18 @@ func TestDataSourceSubaccountSubscriptions(t *testing.T) {
 	})
 }
 
-func hclDatasourceSubaccountSubscriptions(resourceName string, subaccountId string) string {
+func hclDatasourceSubaccountSubscriptionsBySubaccountId(resourceName string, subaccountId string) string {
 	template := `data "btp_subaccount_subscriptions" "%s" {
 	subaccount_id = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId)
+}
+
+func hclDatasourceSubaccountSubscriptionsBySubaccount(resourceName string, subaccountName string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_subscriptions" "%s" {
+	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName)
 }
