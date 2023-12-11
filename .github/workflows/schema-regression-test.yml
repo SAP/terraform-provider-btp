@@ -1,0 +1,81 @@
+name: Regression Test - Terraform Provider
+
+# Idea: 
+# 1. Setup infrastructure with stable release of the provider in the live environment
+# 2. Switch to a local build of the provider
+# 3. Execute a terraform plan and check for deviations
+# 4. Destroy the infrastructure
+
+on:
+  workflow_dispatch:
+
+env:
+  PATH_TO_SCRIPT: '../../regression-test'
+jobs:
+  execute_regression_test:
+    name: Regression Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        id: checkout_repo
+        uses: actions/checkout@v4
+      - name: Setup Terraform
+        id : setup_terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+          terraform_version: latest
+      - name: Terraform Init with stable provider
+        id: terraform_init
+        shell: bash
+        run: |
+          terraform -chdir=${{ env.PATH_TO_SCRIPT }} init -no-color
+      - name: Terraform apply with stable provider
+        id: terraform_apply
+        shell: bash
+        run: |
+          export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
+          export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
+          export 
+          terraform -chdir=${{ env.PATH_TO_SCRIPT }} apply -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -auto-approve -no-color 
+      - name: Install local Terraform provider
+        id: build_provider
+        shell: bash
+        run: |
+          make install
+      - name: Remove init data and place override
+        id: set_to_override
+        shell: bash
+        run: |
+          rm -rf .terraform && rm -rf .terraform.lock.hcl && cp ./assets/provider-config-local.txt ~/.terraformrc
+      - name: Execute plan with local provider
+        id: execute_plan_local
+        shell: bash
+        run: |
+          terraform -chdir=${{ env.PATH_TO_SCRIPT }} plan -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -auto-approve -no-color         
+      - name: Check for deviations
+        id: check_for_deviations
+        shell: bash
+        run: |
+          if [[ echo ${{ steps.execute_plan_local.outputs.stdout }} | grep -c "") -ne 1 ]]; then
+            echo "Deviations found"
+          fi
+      - name: Remove init data and override
+        id: remove_override
+        shell: bash
+        run: |
+          rm -rf .terraform && rm -rf .terraform.lock.hcl && rm -rf ~/.terraformrc
+      - name: Terraform Init with stable provider
+        id: terraform_reinit
+        shell: bash
+        run: |
+          terraform -chdir=${{ env.PATH_TO_SCRIPT }} init -no-color          
+      - name: Terraform destroy with stable provider
+        id: terraform_destroy
+        shell: bash
+        run: |
+          export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
+          export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
+          terraform -chdir=${{ env.PATH_TO_SCRIPT }} destroy -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -auto-approve -no-color 
+          
