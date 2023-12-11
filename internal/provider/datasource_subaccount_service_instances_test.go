@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
+func TestDataSourceSubaccountServiceInstances(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - service instances for subaccount", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances.all")
@@ -19,9 +19,9 @@ func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceInstanceBySubaccount("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceInstanceBySubaccount("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "2"),
 					),
 				},
@@ -38,9 +38,9 @@ func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountInstancesBySubaccountAndFields("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "false"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountInstancesBySubaccountAndFields("uut", "integration-test-services-static", "false"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "0"),
 					),
 				},
@@ -57,9 +57,9 @@ func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountInstancesBySubaccountAndFields("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "true"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountInstancesBySubaccountAndFields("uut", "integration-test-services-static", "true"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "2"),
 					),
 				},
@@ -76,9 +76,9 @@ func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountInstancesBySubaccountAndLabels("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountInstancesBySubaccountAndLabels("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "1"),
 					),
 				},
@@ -104,7 +104,7 @@ func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountServiceInstanceBySubaccount("uut", "this-is-not-a-uuid"),
+					Config:      hclDatasourceSubaccountServiceInstanceBySubaccountId("uut", "this-is-not-a-uuid"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -113,31 +113,39 @@ func TestDataSourceSubaccountServiceInstancess(t *testing.T) {
 
 }
 
-func hclDatasourceSubaccountServiceInstanceBySubaccount(resourceName string, subaccountId string) string {
+func hclDatasourceSubaccountServiceInstanceBySubaccountId(resourceName string, subaccountId string) string {
 	template := `
 data "btp_subaccount_service_instances" "%s" {
      subaccount_id = "%s"
 }`
-
 	return fmt.Sprintf(template, resourceName, subaccountId)
 }
 
-func hclDatasourceSubaccountInstancesBySubaccountAndFields(resourceName string, subaccountId string, usable string) string {
+func hclDatasourceSubaccountServiceInstanceBySubaccount(resourceName string, subaccountName string) string {
 	template := `
+data "btp_subaccounts" "all" {}
 data "btp_subaccount_service_instances" "%s" {
-     subaccount_id = "%s"
+     subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName)
+}
+
+func hclDatasourceSubaccountInstancesBySubaccountAndFields(resourceName string, subaccountName string, usable string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_service_instances" "%s" {
+     subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	 fields_filter = "usable eq '%s'"
 }`
-
-	return fmt.Sprintf(template, resourceName, subaccountId, usable)
+	return fmt.Sprintf(template, resourceName, subaccountName, usable)
 }
 
-func hclDatasourceSubaccountInstancesBySubaccountAndLabels(resourceName string, subaccountId string) string {
+func hclDatasourceSubaccountInstancesBySubaccountAndLabels(resourceName string, subaccountName string) string {
 	template := `
+data "btp_subaccounts" "all" {}
 data "btp_subaccount_service_instances" "%s" {
-     subaccount_id = "%s"
+     subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	 labels_filter = "org eq 'testvalue'"
 }`
-
-	return fmt.Sprintf(template, resourceName, subaccountId)
+	return fmt.Sprintf(template, resourceName, subaccountName)
 }
