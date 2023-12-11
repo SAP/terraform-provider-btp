@@ -109,18 +109,9 @@ resource "btp_globalaccount_role_collection_assignment" "grca_jenny_ga_viewer" {
 ###
 resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_static_subaccount_administrators" {
   subaccount_id        = btp_subaccount.sa_acc_static.id
-  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
   role_collection_name = "Subaccount Administrator"
-  group_name           = each.value
+  user_name            = "jenny.doe@test.com"
 }
-
-resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_entitlements_stacked_subaccount_administrators" {
-  subaccount_id        = btp_subaccount.sa_acc_entitlements_stacked.id
-  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
-  role_collection_name = "Subaccount Administrator"
-  group_name           = each.value
-}
-
 
 ###
 # directory entitlements
