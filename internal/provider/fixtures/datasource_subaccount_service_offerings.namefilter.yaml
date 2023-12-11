@@ -6,7 +6,7 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 124
+        content_length: 131
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -19,9 +19,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - 73f36405-05df-1336-57ac-999a7852e514
+                - 44a1dd1f-abb5-305d-7a03-13d2800840f1
             X-Cpcli-Format:
                 - json
         url: https://canary.cli.btp.int.sap/login/v2.49.0
@@ -32,18 +32,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 163
+        content_length: 167
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "163"
+                - "167"
             Content-Type:
                 - application/json
             Date:
-                - Wed, 18 Oct 2023 16:45:38 GMT
+                - Mon, 11 Dec 2023 11:16:24 GMT
             Expires:
                 - "0"
             Pragma:
@@ -59,17 +59,87 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 9b72c4d9-6d34-4c3b-4578-a678a6f8d585
+                - 3beb80bc-15b9-435e-4944-2062509129cd
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 290.101084ms
+        duration: 485.421087ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
+        content_length: 63
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
+            X-Correlationid:
+                - 71b37fe5-fc19-e770-0baf-e9038c5d31b5
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"value":[{"guid":"dd7a94c7-dd92-4697-87ee-9c78e650e7e5","technicalName":"dd7a94c7-dd92-4697-87ee-9c78e650e7e5","displayName":"integration-test-security-settings","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentType":"ROOT","region":"eu12","subdomain":"integration-test-security-settings","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2023, 10:32:39 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:32:59 AM"},{"guid":"cc8917a8-c888-430d-87bb-08fefdb5c835","technicalName":"cc8917a8-c888-430d-87bb-08fefdb5c835","displayName":"integration-test-services-static","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentType":"ROOT","region":"eu12","subdomain":"integration-test-services-static","betaEnabled":false,"usedForProduction":"UNSET","description":"Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2023, 10:32:35 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:32:52 AM"},{"guid":"34564cea-ee6a-4cf2-9f32-71fedefa7126","technicalName":"34564cea-ee6a-4cf2-9f32-71fedefa7126","displayName":"integration-test-acc-static","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-static","betaEnabled":false,"usedForProduction":"UNSET","description":"Please don\u0027t modify. This is used for integration tests.","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"34564cea-ee6a-4cf2-9f32-71fedefa7126","key":"label2","value":""},{"accountGUID":"34564cea-ee6a-4cf2-9f32-71fedefa7126","key":"label1","value":"label text 1"}],"labels":{"label1":["label text 1"],"label2":[]},"createdDate":"Nov 24, 2023, 10:32:40 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:33:04 AM"},{"guid":"e305b127-c328-4abb-b9fa-b1364daa0efb","technicalName":"e305b127-c328-4abb-b9fa-b1364daa0efb","displayName":"integration-test-acc-entitlements-stacked","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"f3bd4f06-0528-4851-a53d-6fcb341c00bc","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-acc-entitlements-stacked","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2023, 10:33:16 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:33:37 AM"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Mon, 11 Dec 2023 11:16:24 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 3f7c20a6-1f5e-4242-4ad2-ff820a6ace62
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 168.56603ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         content_length: 113
         transfer_encoding: []
         trailer: {}
@@ -77,15 +147,15 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"cc8917a8-c888-430d-87bb-08fefdb5c835"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - df73b654-9df2-0fee-4e04-587fb48268f5
+                - 3463f183-ed92-1821-bd32-17ba3df6c6d1
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -111,7 +181,7 @@ interactions:
             Content-Length:
                 - "0"
             Date:
-                - Wed, 18 Oct 2023 16:45:38 GMT
+                - Mon, 11 Dec 2023 11:16:24 GMT
             Expires:
                 - "0"
             Location:
@@ -125,19 +195,19 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Cpcli-Subdomain:
-                - integration-test-services-4ie3yr1a
+                - integration-test-services-static
             X-Frame-Options:
                 - DENY
             X-Id-Token:
                 - redacted
             X-Vcap-Request-Id:
-                - 31f9126d-cf8e-44a8-434b-a045903b539b
+                - 9fcd5cdb-93dc-4c3a-551b-cf7e6fd501ea
             X-Xss-Protection:
                 - "0"
         status: 307 Temporary Redirect
         code: 307
-        duration: 117.007667ms
-    - id: 2
+        duration: 152.506907ms
+    - id: 3
       request:
         proto: ""
         proto_major: 0
@@ -149,7 +219,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"cc8917a8-c888-430d-87bb-08fefdb5c835"}}
         form: {}
         headers:
             Content-Type:
@@ -157,9 +227,9 @@ interactions:
             Referer:
                 - https://canary.cli.btp.int.sap/command/v2.49.0/services/offering?list
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - df73b654-9df2-0fee-4e04-587fb48268f5
+                - 3463f183-ed92-1821-bd32-17ba3df6c6d1
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -167,7 +237,7 @@ interactions:
             X-Cpcli-Sessionid:
                 - redacted
             X-Cpcli-Subdomain:
-                - integration-test-services-4ie3yr1a
+                - integration-test-services-static
             X-Id-Token:
                 - redacted
         url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.49.0/services/offering?list
@@ -180,14 +250,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '[{"id":"23f7803c-57e2-419e-95c3-ea1c86ed2c68","ready":true,"name":"html5-apps-repo","description":"Enables storage of HTML5 applications and provides runtime environment for HTML5 applications.","bindable":true,"instances_retrievable":false,"bindings_retrievable":false,"plan_updateable":false,"allow_context_updates":false,"tags":["html5appsrepo","html5-apps-repo-rt","html5-apps-rt","html5-apps-repo-dt","html5-apps-dt"],"metadata":{"displayName":"HTML5 Application Repository","documentationUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/11d77aa154f64c2e83cc9652a78bb985.html","longDescription":"The HTML5 Application Repository service enables central storage of HTML5 applications in SAP BTP. In runtime, the service enables the consuming application, typically the application router, to access HTML5 application static content in a secure and efficient manner.","supportUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9220a2fd35d84c888c0ae870ca62bfb7.html","imageUrl":"data:image/svg+xml;base64,PHN2ZyBpZD0iaHRtbDUtYXBwbGljYXRpb25zIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQyLjMsMTlhOC4wMDgsOC4wMDgsMCwwLDAtNC4wNzgtNC40QTYuOTQ0LDYuOTQ0LDAsMCwwLDI3Ljc2OSw5LjkyOCw5LjQ1Myw5LjQ1MywwLDAsMCwxOS4wNiw0QzkuMDc4LDQsOS44LDE0LjYyMSw5LjgsMTQuNjIxYTguMzg3LDguMzg3LDAsMCwwLDIuNjEzLDE2LjM2NUgyOC4wMDd2LTNIMTIuNDEzYTUuMzg3LDUuMzg3LDAsMCwxLTEuNjc2LTEwLjUxNWwyLjMwOS0uNzU5TDEyLjc4MywxNC4zYTguMTE0LDguMTE0LDAsMCwxLDEuNS01LjI4NCw2LjQ4NCw2LjQ4NCwwLDAsMSwxMC43LDIuMDIybDEuMzA3LDMuMjlMMjkuMzE4LDEyLjVhMy45MjMsMy45MjMsMCwwLDEsMi4wNDQtLjU5MSwzLjk4OCwzLjk4OCwwLDAsMSwzLjkxNCwzLjI0OWwuMjg5LDEuNTI5LDEuNDE1LjY0NkE0LjgsNC44LDAsMCwxLDM4LjkzMywxOVoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzQuMDcgMjQuNjkxIDM1LjMwOCAyNC42OTEgMzUuMzA4IDI2LjA0NiAzNi42NiAyNi4wNDYgMzYuNjYgMjIgMzUuMzA4IDIyIDM1LjMwOCAyMy4zMzYgMzQuMDcgMjMuMzM2IDM0LjA3IDIyIDMyLjcxOCAyMiAzMi43MTggMjYuMDQ2IDM0LjA3IDI2LjA0NiAzNC4wNyAyNC42OTEiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzguNDM5IDI2LjA0NiAzOS43OTIgMjYuMDQ2IDM5Ljc5MiAyMy4zNDIgNDAuOTgzIDIzLjM0MiA0MC45ODMgMjIgMzcuMjQ4IDIyIDM3LjI0OCAyMy4zNDIgMzguNDM5IDIzLjM0MiAzOC40MzkgMjYuMDQ2Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjQyLjg5OSAyNC4wNCA0My44MyAyNS40NzkgNDMuODU0IDI1LjQ3OSA0NC43ODQgMjQuMDQgNDQuNzg0IDI2LjA0NiA0Ni4xMzEgMjYuMDQ2IDQ2LjEzMSAyMiA0NC43MiAyMiA0My44NTQgMjMuNDIxIDQyLjk4NiAyMiA0MS41NzYgMjIgNDEuNTc2IDI2LjA0NiA0Mi44OTkgMjYuMDQ2IDQyLjg5OSAyNC4wNCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI1MC4wNTkgMjQuNzA4IDQ4LjE1NyAyNC43MDggNDguMTU3IDIyIDQ2LjgwNCAyMiA0Ni44MDQgMjYuMDQ2IDUwLjA1OSAyNi4wNDYgNTAuMDU5IDI0LjcwOCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIzNi4xNyAzNC40OTEgMzYuNjg1IDQwLjI2OCA0MS4zNjMgNDAuMjY4IDQxLjM3NyA0MC4yNjggNDMuOTQ1IDQwLjI2OCA0My43MDIgNDIuOTg2IDQxLjM2MyA0My42MTcgNDEuMzYzIDQzLjYxOCA0MS4zNjEgNDMuNjE4IDM5LjAyNiA0Mi45ODggMzguODc2IDQxLjMxNiAzNy43NDIgNDEuMzE2IDM2Ljc3MSA0MS4zMTYgMzcuMDY1IDQ0LjYwNyA0MS4zNjEgNDUuNzk5IDQxLjM3IDQ1Ljc5NiA0MS4zNyA0NS43OTYgNDUuNjYyIDQ0LjYwNyA0NS42OTMgNDQuMjUzIDQ2LjE4NiAzOC43MzUgNDYuMjM3IDM4LjE3MiA0NS42NzIgMzguMTcyIDQxLjM3NyAzOC4xNzIgNDEuMzYzIDM4LjE3MiAzOC42MDMgMzguMTcyIDM4LjQxMSAzNi4wMjUgNDEuMzcgMzYuMDI1IDQxLjM3NyAzNi4wMjUgNDYuNDI4IDM2LjAyNSA0Ni40MzUgMzYuMDI1IDQ2LjQ3NyAzNS41NTQgNDYuNTczIDM0LjQ5MSA0Ni42MjMgMzMuOTI5IDQxLjM3NyAzMy45MjkgNDEuMzcgMzMuOTI5IDM2LjEyIDMzLjkyOSAzNi4xNyAzNC40OTEiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMC43NCwyNy45LDMyLjY3NCw0OS41OSw0MS4zNTcsNTJsOC43MDYtMi40MTNMNTIsMjcuOVpNNDcuNjg2LDQ3LjM1OCw0MS4zNyw0OS4xMDlsLTYuMzE2LTEuNzUxTDMzLjU2NywzMC43MTZoMTUuNloiLz48L3N2Zz4=","serviceInventoryId":"SERVICE-234"},"broker_id":"e5e75ccc-7963-42cc-b4d1-1314f5ddc6f3","catalog_id":"14f042c6-0175-43ef-9a5d-33bd10890e2a","catalog_name":"html5-apps-repo","created_at":"2020-08-18T16:05:37.292133Z","updated_at":"2023-10-18T10:48:48.502544Z"}]'
+        body: '[{"id":"23f7803c-57e2-419e-95c3-ea1c86ed2c68","ready":true,"name":"html5-apps-repo","description":"Enables storage of HTML5 applications and provides runtime environment for HTML5 applications.","bindable":true,"instances_retrievable":false,"bindings_retrievable":false,"plan_updateable":false,"allow_context_updates":false,"tags":["html5appsrepo","html5-apps-repo-rt","html5-apps-rt","html5-apps-repo-dt","html5-apps-dt"],"metadata":{"displayName":"HTML5 Application Repository","documentationUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/11d77aa154f64c2e83cc9652a78bb985.html","longDescription":"The HTML5 Application Repository service enables central storage of HTML5 applications in SAP BTP. In runtime, the service enables the consuming application, typically the application router, to access HTML5 application static content in a secure and efficient manner.","supportUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9220a2fd35d84c888c0ae870ca62bfb7.html","imageUrl":"data:image/svg+xml;base64,PHN2ZyBpZD0iaHRtbDUtYXBwbGljYXRpb25zIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQyLjMsMTlhOC4wMDgsOC4wMDgsMCwwLDAtNC4wNzgtNC40QTYuOTQ0LDYuOTQ0LDAsMCwwLDI3Ljc2OSw5LjkyOCw5LjQ1Myw5LjQ1MywwLDAsMCwxOS4wNiw0QzkuMDc4LDQsOS44LDE0LjYyMSw5LjgsMTQuNjIxYTguMzg3LDguMzg3LDAsMCwwLDIuNjEzLDE2LjM2NUgyOC4wMDd2LTNIMTIuNDEzYTUuMzg3LDUuMzg3LDAsMCwxLTEuNjc2LTEwLjUxNWwyLjMwOS0uNzU5TDEyLjc4MywxNC4zYTguMTE0LDguMTE0LDAsMCwxLDEuNS01LjI4NCw2LjQ4NCw2LjQ4NCwwLDAsMSwxMC43LDIuMDIybDEuMzA3LDMuMjlMMjkuMzE4LDEyLjVhMy45MjMsMy45MjMsMCwwLDEsMi4wNDQtLjU5MSwzLjk4OCwzLjk4OCwwLDAsMSwzLjkxNCwzLjI0OWwuMjg5LDEuNTI5LDEuNDE1LjY0NkE0LjgsNC44LDAsMCwxLDM4LjkzMywxOVoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzQuMDcgMjQuNjkxIDM1LjMwOCAyNC42OTEgMzUuMzA4IDI2LjA0NiAzNi42NiAyNi4wNDYgMzYuNjYgMjIgMzUuMzA4IDIyIDM1LjMwOCAyMy4zMzYgMzQuMDcgMjMuMzM2IDM0LjA3IDIyIDMyLjcxOCAyMiAzMi43MTggMjYuMDQ2IDM0LjA3IDI2LjA0NiAzNC4wNyAyNC42OTEiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzguNDM5IDI2LjA0NiAzOS43OTIgMjYuMDQ2IDM5Ljc5MiAyMy4zNDIgNDAuOTgzIDIzLjM0MiA0MC45ODMgMjIgMzcuMjQ4IDIyIDM3LjI0OCAyMy4zNDIgMzguNDM5IDIzLjM0MiAzOC40MzkgMjYuMDQ2Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjQyLjg5OSAyNC4wNCA0My44MyAyNS40NzkgNDMuODU0IDI1LjQ3OSA0NC43ODQgMjQuMDQgNDQuNzg0IDI2LjA0NiA0Ni4xMzEgMjYuMDQ2IDQ2LjEzMSAyMiA0NC43MiAyMiA0My44NTQgMjMuNDIxIDQyLjk4NiAyMiA0MS41NzYgMjIgNDEuNTc2IDI2LjA0NiA0Mi44OTkgMjYuMDQ2IDQyLjg5OSAyNC4wNCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI1MC4wNTkgMjQuNzA4IDQ4LjE1NyAyNC43MDggNDguMTU3IDIyIDQ2LjgwNCAyMiA0Ni44MDQgMjYuMDQ2IDUwLjA1OSAyNi4wNDYgNTAuMDU5IDI0LjcwOCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIzNi4xNyAzNC40OTEgMzYuNjg1IDQwLjI2OCA0MS4zNjMgNDAuMjY4IDQxLjM3NyA0MC4yNjggNDMuOTQ1IDQwLjI2OCA0My43MDIgNDIuOTg2IDQxLjM2MyA0My42MTcgNDEuMzYzIDQzLjYxOCA0MS4zNjEgNDMuNjE4IDM5LjAyNiA0Mi45ODggMzguODc2IDQxLjMxNiAzNy43NDIgNDEuMzE2IDM2Ljc3MSA0MS4zMTYgMzcuMDY1IDQ0LjYwNyA0MS4zNjEgNDUuNzk5IDQxLjM3IDQ1Ljc5NiA0MS4zNyA0NS43OTYgNDUuNjYyIDQ0LjYwNyA0NS42OTMgNDQuMjUzIDQ2LjE4NiAzOC43MzUgNDYuMjM3IDM4LjE3MiA0NS42NzIgMzguMTcyIDQxLjM3NyAzOC4xNzIgNDEuMzYzIDM4LjE3MiAzOC42MDMgMzguMTcyIDM4LjQxMSAzNi4wMjUgNDEuMzcgMzYuMDI1IDQxLjM3NyAzNi4wMjUgNDYuNDI4IDM2LjAyNSA0Ni40MzUgMzYuMDI1IDQ2LjQ3NyAzNS41NTQgNDYuNTczIDM0LjQ5MSA0Ni42MjMgMzMuOTI5IDQxLjM3NyAzMy45MjkgNDEuMzcgMzMuOTI5IDM2LjEyIDMzLjkyOSAzNi4xNyAzNC40OTEiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMC43NCwyNy45LDMyLjY3NCw0OS41OSw0MS4zNTcsNTJsOC43MDYtMi40MTNMNTIsMjcuOVpNNDcuNjg2LDQ3LjM1OCw0MS4zNyw0OS4xMDlsLTYuMzE2LTEuNzUxTDMzLjU2NywzMC43MTZoMTUuNloiLz48L3N2Zz4=","serviceInventoryId":"SERVICE-234"},"broker_id":"e5e75ccc-7963-42cc-b4d1-1314f5ddc6f3","catalog_id":"14f042c6-0175-43ef-9a5d-33bd10890e2a","catalog_name":"html5-apps-repo","created_at":"2020-08-18T16:05:37.292133Z","updated_at":"2023-12-11T11:08:16.937613Z"}]'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Type:
                 - application/json
             Date:
-                - Wed, 18 Oct 2023 16:45:38 GMT
+                - Mon, 11 Dec 2023 11:16:24 GMT
             Expires:
                 - "0"
             Pragma:
@@ -207,106 +277,36 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 1f376494-05d4-4b32-6718-278d5900354b
+                - 64563c5b-f1ee-45a8-47f9-bbe396993418
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 160.036458ms
-    - id: 3
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 124
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
-            X-Correlationid:
-                - 6d5ff3cd-05ea-51a0-891d-893f92e30280
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 163
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "163"
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 18 Oct 2023 16:45:39 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - 1d458b14-a947-4483-7708-5d2bf5c2390e
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 443.41325ms
+        duration: 194.126139ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 113
+        content_length: 131
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - 84b7af3e-9e28-39cf-1616-4ac200166937
-            X-Cpcli-Customidp:
-                - identityProvider
+                - f8f1748d-41a8-35d8-dab6-bd4e5eda226f
             X-Cpcli-Format:
                 - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/services/offering?list
+        url: https://canary.cli.btp.int.sap/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -314,20 +314,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 0
+        content_length: 167
         uncompressed: false
-        body: ""
+        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "0"
+                - "167"
+            Content-Type:
+                - application/json
             Date:
-                - Wed, 18 Oct 2023 16:45:39 GMT
+                - Mon, 11 Dec 2023 11:16:25 GMT
             Expires:
                 - "0"
-            Location:
-                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.49.0/services/offering?list
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -336,42 +336,38 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Subdomain:
-                - integration-test-services-4ie3yr1a
+            X-Cpcli-Sessionid:
+                - redacted
             X-Frame-Options:
                 - DENY
-            X-Id-Token:
-                - redacted
             X-Vcap-Request-Id:
-                - 54792f55-5bb3-408d-5e02-a5fdd385cb48
+                - 2528bc4e-14c6-4c37-434c-8f6673049103
             X-Xss-Protection:
                 - "0"
-        status: 307 Temporary Redirect
-        code: 307
-        duration: 127.345834ms
+        status: 200 OK
+        code: 200
+        duration: 583.020677ms
     - id: 5
       request:
-        proto: ""
-        proto_major: 0
-        proto_minor: 0
-        content_length: 113
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 63
         transfer_encoding: []
         trailer: {}
-        host: ""
+        host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
-            Referer:
-                - https://canary.cli.btp.int.sap/command/v2.49.0/services/offering?list
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - 84b7af3e-9e28-39cf-1616-4ac200166937
+                - 9321442a-1f50-b5d4-2129-d08cde647e94
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -379,10 +375,8 @@ interactions:
             X-Cpcli-Sessionid:
                 - redacted
             X-Cpcli-Subdomain:
-                - integration-test-services-4ie3yr1a
-            X-Id-Token:
-                - redacted
-        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.49.0/services/offering?list
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -392,14 +386,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '[{"id":"23f7803c-57e2-419e-95c3-ea1c86ed2c68","ready":true,"name":"html5-apps-repo","description":"Enables storage of HTML5 applications and provides runtime environment for HTML5 applications.","bindable":true,"instances_retrievable":false,"bindings_retrievable":false,"plan_updateable":false,"allow_context_updates":false,"tags":["html5appsrepo","html5-apps-repo-rt","html5-apps-rt","html5-apps-repo-dt","html5-apps-dt"],"metadata":{"displayName":"HTML5 Application Repository","documentationUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/11d77aa154f64c2e83cc9652a78bb985.html","longDescription":"The HTML5 Application Repository service enables central storage of HTML5 applications in SAP BTP. In runtime, the service enables the consuming application, typically the application router, to access HTML5 application static content in a secure and efficient manner.","supportUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9220a2fd35d84c888c0ae870ca62bfb7.html","imageUrl":"data:image/svg+xml;base64,PHN2ZyBpZD0iaHRtbDUtYXBwbGljYXRpb25zIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQyLjMsMTlhOC4wMDgsOC4wMDgsMCwwLDAtNC4wNzgtNC40QTYuOTQ0LDYuOTQ0LDAsMCwwLDI3Ljc2OSw5LjkyOCw5LjQ1Myw5LjQ1MywwLDAsMCwxOS4wNiw0QzkuMDc4LDQsOS44LDE0LjYyMSw5LjgsMTQuNjIxYTguMzg3LDguMzg3LDAsMCwwLDIuNjEzLDE2LjM2NUgyOC4wMDd2LTNIMTIuNDEzYTUuMzg3LDUuMzg3LDAsMCwxLTEuNjc2LTEwLjUxNWwyLjMwOS0uNzU5TDEyLjc4MywxNC4zYTguMTE0LDguMTE0LDAsMCwxLDEuNS01LjI4NCw2LjQ4NCw2LjQ4NCwwLDAsMSwxMC43LDIuMDIybDEuMzA3LDMuMjlMMjkuMzE4LDEyLjVhMy45MjMsMy45MjMsMCwwLDEsMi4wNDQtLjU5MSwzLjk4OCwzLjk4OCwwLDAsMSwzLjkxNCwzLjI0OWwuMjg5LDEuNTI5LDEuNDE1LjY0NkE0LjgsNC44LDAsMCwxLDM4LjkzMywxOVoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzQuMDcgMjQuNjkxIDM1LjMwOCAyNC42OTEgMzUuMzA4IDI2LjA0NiAzNi42NiAyNi4wNDYgMzYuNjYgMjIgMzUuMzA4IDIyIDM1LjMwOCAyMy4zMzYgMzQuMDcgMjMuMzM2IDM0LjA3IDIyIDMyLjcxOCAyMiAzMi43MTggMjYuMDQ2IDM0LjA3IDI2LjA0NiAzNC4wNyAyNC42OTEiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzguNDM5IDI2LjA0NiAzOS43OTIgMjYuMDQ2IDM5Ljc5MiAyMy4zNDIgNDAuOTgzIDIzLjM0MiA0MC45ODMgMjIgMzcuMjQ4IDIyIDM3LjI0OCAyMy4zNDIgMzguNDM5IDIzLjM0MiAzOC40MzkgMjYuMDQ2Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjQyLjg5OSAyNC4wNCA0My44MyAyNS40NzkgNDMuODU0IDI1LjQ3OSA0NC43ODQgMjQuMDQgNDQuNzg0IDI2LjA0NiA0Ni4xMzEgMjYuMDQ2IDQ2LjEzMSAyMiA0NC43MiAyMiA0My44NTQgMjMuNDIxIDQyLjk4NiAyMiA0MS41NzYgMjIgNDEuNTc2IDI2LjA0NiA0Mi44OTkgMjYuMDQ2IDQyLjg5OSAyNC4wNCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI1MC4wNTkgMjQuNzA4IDQ4LjE1NyAyNC43MDggNDguMTU3IDIyIDQ2LjgwNCAyMiA0Ni44MDQgMjYuMDQ2IDUwLjA1OSAyNi4wNDYgNTAuMDU5IDI0LjcwOCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIzNi4xNyAzNC40OTEgMzYuNjg1IDQwLjI2OCA0MS4zNjMgNDAuMjY4IDQxLjM3NyA0MC4yNjggNDMuOTQ1IDQwLjI2OCA0My43MDIgNDIuOTg2IDQxLjM2MyA0My42MTcgNDEuMzYzIDQzLjYxOCA0MS4zNjEgNDMuNjE4IDM5LjAyNiA0Mi45ODggMzguODc2IDQxLjMxNiAzNy43NDIgNDEuMzE2IDM2Ljc3MSA0MS4zMTYgMzcuMDY1IDQ0LjYwNyA0MS4zNjEgNDUuNzk5IDQxLjM3IDQ1Ljc5NiA0MS4zNyA0NS43OTYgNDUuNjYyIDQ0LjYwNyA0NS42OTMgNDQuMjUzIDQ2LjE4NiAzOC43MzUgNDYuMjM3IDM4LjE3MiA0NS42NzIgMzguMTcyIDQxLjM3NyAzOC4xNzIgNDEuMzYzIDM4LjE3MiAzOC42MDMgMzguMTcyIDM4LjQxMSAzNi4wMjUgNDEuMzcgMzYuMDI1IDQxLjM3NyAzNi4wMjUgNDYuNDI4IDM2LjAyNSA0Ni40MzUgMzYuMDI1IDQ2LjQ3NyAzNS41NTQgNDYuNTczIDM0LjQ5MSA0Ni42MjMgMzMuOTI5IDQxLjM3NyAzMy45MjkgNDEuMzcgMzMuOTI5IDM2LjEyIDMzLjkyOSAzNi4xNyAzNC40OTEiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMC43NCwyNy45LDMyLjY3NCw0OS41OSw0MS4zNTcsNTJsOC43MDYtMi40MTNMNTIsMjcuOVpNNDcuNjg2LDQ3LjM1OCw0MS4zNyw0OS4xMDlsLTYuMzE2LTEuNzUxTDMzLjU2NywzMC43MTZoMTUuNloiLz48L3N2Zz4=","serviceInventoryId":"SERVICE-234"},"broker_id":"e5e75ccc-7963-42cc-b4d1-1314f5ddc6f3","catalog_id":"14f042c6-0175-43ef-9a5d-33bd10890e2a","catalog_name":"html5-apps-repo","created_at":"2020-08-18T16:05:37.292133Z","updated_at":"2023-10-18T10:48:48.502544Z"}]'
+        body: '{"value":[{"guid":"cc8917a8-c888-430d-87bb-08fefdb5c835","technicalName":"cc8917a8-c888-430d-87bb-08fefdb5c835","displayName":"integration-test-services-static","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentType":"ROOT","region":"eu12","subdomain":"integration-test-services-static","betaEnabled":false,"usedForProduction":"UNSET","description":"Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2023, 10:32:35 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:32:52 AM"},{"guid":"dd7a94c7-dd92-4697-87ee-9c78e650e7e5","technicalName":"dd7a94c7-dd92-4697-87ee-9c78e650e7e5","displayName":"integration-test-security-settings","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentType":"ROOT","region":"eu12","subdomain":"integration-test-security-settings","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2023, 10:32:39 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:32:59 AM"},{"guid":"34564cea-ee6a-4cf2-9f32-71fedefa7126","technicalName":"34564cea-ee6a-4cf2-9f32-71fedefa7126","displayName":"integration-test-acc-static","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-static","betaEnabled":false,"usedForProduction":"UNSET","description":"Please don\u0027t modify. This is used for integration tests.","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"34564cea-ee6a-4cf2-9f32-71fedefa7126","key":"label2","value":""},{"accountGUID":"34564cea-ee6a-4cf2-9f32-71fedefa7126","key":"label1","value":"label text 1"}],"labels":{"label1":["label text 1"],"label2":[]},"createdDate":"Nov 24, 2023, 10:32:40 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:33:04 AM"},{"guid":"e305b127-c328-4abb-b9fa-b1364daa0efb","technicalName":"e305b127-c328-4abb-b9fa-b1364daa0efb","displayName":"integration-test-acc-entitlements-stacked","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"f3bd4f06-0528-4851-a53d-6fcb341c00bc","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-acc-entitlements-stacked","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2023, 10:33:16 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:33:37 AM"}]}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Type:
                 - application/json
             Date:
-                - Wed, 18 Oct 2023 16:45:39 GMT
+                - Mon, 11 Dec 2023 11:16:26 GMT
             Expires:
                 - "0"
             Pragma:
@@ -411,89 +405,23 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Cpcli-Backend-Mediatype:
-                - application/json
+                - application/json;charset=UTF-8
             X-Cpcli-Backend-Status:
                 - "200"
-            X-Cpcli-Sessionid:
-                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 208cb0b3-324b-46f6-4c61-c8f12a6c5119
+                - 0824e9e9-e954-46ef-61ba-487765155bc3
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 148.641041ms
+        duration: 148.484024ms
     - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 124
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
-            X-Correlationid:
-                - 6dc15296-37d2-5db8-89fc-736157c15d48
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 163
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "163"
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 18 Oct 2023 16:45:39 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - f513b16e-6619-4d8a-445a-e478f0a84c24
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 209.53225ms
-    - id: 7
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
         content_length: 113
         transfer_encoding: []
         trailer: {}
@@ -501,15 +429,15 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"cc8917a8-c888-430d-87bb-08fefdb5c835"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - 0105f33d-c500-6be2-830f-1fbd03244a35
+                - 46d582a7-1b35-48f9-8c28-65aacc7fbb2e
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -535,7 +463,7 @@ interactions:
             Content-Length:
                 - "0"
             Date:
-                - Wed, 18 Oct 2023 16:45:39 GMT
+                - Mon, 11 Dec 2023 11:16:26 GMT
             Expires:
                 - "0"
             Location:
@@ -549,19 +477,19 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Cpcli-Subdomain:
-                - integration-test-services-4ie3yr1a
+                - integration-test-services-static
             X-Frame-Options:
                 - DENY
             X-Id-Token:
                 - redacted
             X-Vcap-Request-Id:
-                - e002e019-988e-4f48-437b-5a41f321ea74
+                - 886a9576-e99c-4394-4dee-64f39bbeeb10
             X-Xss-Protection:
                 - "0"
         status: 307 Temporary Redirect
         code: 307
-        duration: 127.320042ms
-    - id: 8
+        duration: 261.218594ms
+    - id: 7
       request:
         proto: ""
         proto_major: 0
@@ -573,7 +501,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"cc8917a8-c888-430d-87bb-08fefdb5c835"}}
         form: {}
         headers:
             Content-Type:
@@ -581,9 +509,9 @@ interactions:
             Referer:
                 - https://canary.cli.btp.int.sap/command/v2.49.0/services/offering?list
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - 0105f33d-c500-6be2-830f-1fbd03244a35
+                - 46d582a7-1b35-48f9-8c28-65aacc7fbb2e
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -591,7 +519,7 @@ interactions:
             X-Cpcli-Sessionid:
                 - redacted
             X-Cpcli-Subdomain:
-                - integration-test-services-4ie3yr1a
+                - integration-test-services-static
             X-Id-Token:
                 - redacted
         url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.49.0/services/offering?list
@@ -604,14 +532,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '[{"id":"23f7803c-57e2-419e-95c3-ea1c86ed2c68","ready":true,"name":"html5-apps-repo","description":"Enables storage of HTML5 applications and provides runtime environment for HTML5 applications.","bindable":true,"instances_retrievable":false,"bindings_retrievable":false,"plan_updateable":false,"allow_context_updates":false,"tags":["html5appsrepo","html5-apps-repo-rt","html5-apps-rt","html5-apps-repo-dt","html5-apps-dt"],"metadata":{"displayName":"HTML5 Application Repository","documentationUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/11d77aa154f64c2e83cc9652a78bb985.html","longDescription":"The HTML5 Application Repository service enables central storage of HTML5 applications in SAP BTP. In runtime, the service enables the consuming application, typically the application router, to access HTML5 application static content in a secure and efficient manner.","supportUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9220a2fd35d84c888c0ae870ca62bfb7.html","imageUrl":"data:image/svg+xml;base64,PHN2ZyBpZD0iaHRtbDUtYXBwbGljYXRpb25zIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQyLjMsMTlhOC4wMDgsOC4wMDgsMCwwLDAtNC4wNzgtNC40QTYuOTQ0LDYuOTQ0LDAsMCwwLDI3Ljc2OSw5LjkyOCw5LjQ1Myw5LjQ1MywwLDAsMCwxOS4wNiw0QzkuMDc4LDQsOS44LDE0LjYyMSw5LjgsMTQuNjIxYTguMzg3LDguMzg3LDAsMCwwLDIuNjEzLDE2LjM2NUgyOC4wMDd2LTNIMTIuNDEzYTUuMzg3LDUuMzg3LDAsMCwxLTEuNjc2LTEwLjUxNWwyLjMwOS0uNzU5TDEyLjc4MywxNC4zYTguMTE0LDguMTE0LDAsMCwxLDEuNS01LjI4NCw2LjQ4NCw2LjQ4NCwwLDAsMSwxMC43LDIuMDIybDEuMzA3LDMuMjlMMjkuMzE4LDEyLjVhMy45MjMsMy45MjMsMCwwLDEsMi4wNDQtLjU5MSwzLjk4OCwzLjk4OCwwLDAsMSwzLjkxNCwzLjI0OWwuMjg5LDEuNTI5LDEuNDE1LjY0NkE0LjgsNC44LDAsMCwxLDM4LjkzMywxOVoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzQuMDcgMjQuNjkxIDM1LjMwOCAyNC42OTEgMzUuMzA4IDI2LjA0NiAzNi42NiAyNi4wNDYgMzYuNjYgMjIgMzUuMzA4IDIyIDM1LjMwOCAyMy4zMzYgMzQuMDcgMjMuMzM2IDM0LjA3IDIyIDMyLjcxOCAyMiAzMi43MTggMjYuMDQ2IDM0LjA3IDI2LjA0NiAzNC4wNyAyNC42OTEiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzguNDM5IDI2LjA0NiAzOS43OTIgMjYuMDQ2IDM5Ljc5MiAyMy4zNDIgNDAuOTgzIDIzLjM0MiA0MC45ODMgMjIgMzcuMjQ4IDIyIDM3LjI0OCAyMy4zNDIgMzguNDM5IDIzLjM0MiAzOC40MzkgMjYuMDQ2Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjQyLjg5OSAyNC4wNCA0My44MyAyNS40NzkgNDMuODU0IDI1LjQ3OSA0NC43ODQgMjQuMDQgNDQuNzg0IDI2LjA0NiA0Ni4xMzEgMjYuMDQ2IDQ2LjEzMSAyMiA0NC43MiAyMiA0My44NTQgMjMuNDIxIDQyLjk4NiAyMiA0MS41NzYgMjIgNDEuNTc2IDI2LjA0NiA0Mi44OTkgMjYuMDQ2IDQyLjg5OSAyNC4wNCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI1MC4wNTkgMjQuNzA4IDQ4LjE1NyAyNC43MDggNDguMTU3IDIyIDQ2LjgwNCAyMiA0Ni44MDQgMjYuMDQ2IDUwLjA1OSAyNi4wNDYgNTAuMDU5IDI0LjcwOCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIzNi4xNyAzNC40OTEgMzYuNjg1IDQwLjI2OCA0MS4zNjMgNDAuMjY4IDQxLjM3NyA0MC4yNjggNDMuOTQ1IDQwLjI2OCA0My43MDIgNDIuOTg2IDQxLjM2MyA0My42MTcgNDEuMzYzIDQzLjYxOCA0MS4zNjEgNDMuNjE4IDM5LjAyNiA0Mi45ODggMzguODc2IDQxLjMxNiAzNy43NDIgNDEuMzE2IDM2Ljc3MSA0MS4zMTYgMzcuMDY1IDQ0LjYwNyA0MS4zNjEgNDUuNzk5IDQxLjM3IDQ1Ljc5NiA0MS4zNyA0NS43OTYgNDUuNjYyIDQ0LjYwNyA0NS42OTMgNDQuMjUzIDQ2LjE4NiAzOC43MzUgNDYuMjM3IDM4LjE3MiA0NS42NzIgMzguMTcyIDQxLjM3NyAzOC4xNzIgNDEuMzYzIDM4LjE3MiAzOC42MDMgMzguMTcyIDM4LjQxMSAzNi4wMjUgNDEuMzcgMzYuMDI1IDQxLjM3NyAzNi4wMjUgNDYuNDI4IDM2LjAyNSA0Ni40MzUgMzYuMDI1IDQ2LjQ3NyAzNS41NTQgNDYuNTczIDM0LjQ5MSA0Ni42MjMgMzMuOTI5IDQxLjM3NyAzMy45MjkgNDEuMzcgMzMuOTI5IDM2LjEyIDMzLjkyOSAzNi4xNyAzNC40OTEiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMC43NCwyNy45LDMyLjY3NCw0OS41OSw0MS4zNTcsNTJsOC43MDYtMi40MTNMNTIsMjcuOVpNNDcuNjg2LDQ3LjM1OCw0MS4zNyw0OS4xMDlsLTYuMzE2LTEuNzUxTDMzLjU2NywzMC43MTZoMTUuNloiLz48L3N2Zz4=","serviceInventoryId":"SERVICE-234"},"broker_id":"e5e75ccc-7963-42cc-b4d1-1314f5ddc6f3","catalog_id":"14f042c6-0175-43ef-9a5d-33bd10890e2a","catalog_name":"html5-apps-repo","created_at":"2020-08-18T16:05:37.292133Z","updated_at":"2023-10-18T10:48:48.502544Z"}]'
+        body: '[{"id":"23f7803c-57e2-419e-95c3-ea1c86ed2c68","ready":true,"name":"html5-apps-repo","description":"Enables storage of HTML5 applications and provides runtime environment for HTML5 applications.","bindable":true,"instances_retrievable":false,"bindings_retrievable":false,"plan_updateable":false,"allow_context_updates":false,"tags":["html5appsrepo","html5-apps-repo-rt","html5-apps-rt","html5-apps-repo-dt","html5-apps-dt"],"metadata":{"displayName":"HTML5 Application Repository","documentationUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/11d77aa154f64c2e83cc9652a78bb985.html","longDescription":"The HTML5 Application Repository service enables central storage of HTML5 applications in SAP BTP. In runtime, the service enables the consuming application, typically the application router, to access HTML5 application static content in a secure and efficient manner.","supportUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9220a2fd35d84c888c0ae870ca62bfb7.html","imageUrl":"data:image/svg+xml;base64,PHN2ZyBpZD0iaHRtbDUtYXBwbGljYXRpb25zIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQyLjMsMTlhOC4wMDgsOC4wMDgsMCwwLDAtNC4wNzgtNC40QTYuOTQ0LDYuOTQ0LDAsMCwwLDI3Ljc2OSw5LjkyOCw5LjQ1Myw5LjQ1MywwLDAsMCwxOS4wNiw0QzkuMDc4LDQsOS44LDE0LjYyMSw5LjgsMTQuNjIxYTguMzg3LDguMzg3LDAsMCwwLDIuNjEzLDE2LjM2NUgyOC4wMDd2LTNIMTIuNDEzYTUuMzg3LDUuMzg3LDAsMCwxLTEuNjc2LTEwLjUxNWwyLjMwOS0uNzU5TDEyLjc4MywxNC4zYTguMTE0LDguMTE0LDAsMCwxLDEuNS01LjI4NCw2LjQ4NCw2LjQ4NCwwLDAsMSwxMC43LDIuMDIybDEuMzA3LDMuMjlMMjkuMzE4LDEyLjVhMy45MjMsMy45MjMsMCwwLDEsMi4wNDQtLjU5MSwzLjk4OCwzLjk4OCwwLDAsMSwzLjkxNCwzLjI0OWwuMjg5LDEuNTI5LDEuNDE1LjY0NkE0LjgsNC44LDAsMCwxLDM4LjkzMywxOVoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzQuMDcgMjQuNjkxIDM1LjMwOCAyNC42OTEgMzUuMzA4IDI2LjA0NiAzNi42NiAyNi4wNDYgMzYuNjYgMjIgMzUuMzA4IDIyIDM1LjMwOCAyMy4zMzYgMzQuMDcgMjMuMzM2IDM0LjA3IDIyIDMyLjcxOCAyMiAzMi43MTggMjYuMDQ2IDM0LjA3IDI2LjA0NiAzNC4wNyAyNC42OTEiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzguNDM5IDI2LjA0NiAzOS43OTIgMjYuMDQ2IDM5Ljc5MiAyMy4zNDIgNDAuOTgzIDIzLjM0MiA0MC45ODMgMjIgMzcuMjQ4IDIyIDM3LjI0OCAyMy4zNDIgMzguNDM5IDIzLjM0MiAzOC40MzkgMjYuMDQ2Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjQyLjg5OSAyNC4wNCA0My44MyAyNS40NzkgNDMuODU0IDI1LjQ3OSA0NC43ODQgMjQuMDQgNDQuNzg0IDI2LjA0NiA0Ni4xMzEgMjYuMDQ2IDQ2LjEzMSAyMiA0NC43MiAyMiA0My44NTQgMjMuNDIxIDQyLjk4NiAyMiA0MS41NzYgMjIgNDEuNTc2IDI2LjA0NiA0Mi44OTkgMjYuMDQ2IDQyLjg5OSAyNC4wNCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI1MC4wNTkgMjQuNzA4IDQ4LjE1NyAyNC43MDggNDguMTU3IDIyIDQ2LjgwNCAyMiA0Ni44MDQgMjYuMDQ2IDUwLjA1OSAyNi4wNDYgNTAuMDU5IDI0LjcwOCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIzNi4xNyAzNC40OTEgMzYuNjg1IDQwLjI2OCA0MS4zNjMgNDAuMjY4IDQxLjM3NyA0MC4yNjggNDMuOTQ1IDQwLjI2OCA0My43MDIgNDIuOTg2IDQxLjM2MyA0My42MTcgNDEuMzYzIDQzLjYxOCA0MS4zNjEgNDMuNjE4IDM5LjAyNiA0Mi45ODggMzguODc2IDQxLjMxNiAzNy43NDIgNDEuMzE2IDM2Ljc3MSA0MS4zMTYgMzcuMDY1IDQ0LjYwNyA0MS4zNjEgNDUuNzk5IDQxLjM3IDQ1Ljc5NiA0MS4zNyA0NS43OTYgNDUuNjYyIDQ0LjYwNyA0NS42OTMgNDQuMjUzIDQ2LjE4NiAzOC43MzUgNDYuMjM3IDM4LjE3MiA0NS42NzIgMzguMTcyIDQxLjM3NyAzOC4xNzIgNDEuMzYzIDM4LjE3MiAzOC42MDMgMzguMTcyIDM4LjQxMSAzNi4wMjUgNDEuMzcgMzYuMDI1IDQxLjM3NyAzNi4wMjUgNDYuNDI4IDM2LjAyNSA0Ni40MzUgMzYuMDI1IDQ2LjQ3NyAzNS41NTQgNDYuNTczIDM0LjQ5MSA0Ni42MjMgMzMuOTI5IDQxLjM3NyAzMy45MjkgNDEuMzcgMzMuOTI5IDM2LjEyIDMzLjkyOSAzNi4xNyAzNC40OTEiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMC43NCwyNy45LDMyLjY3NCw0OS41OSw0MS4zNTcsNTJsOC43MDYtMi40MTNMNTIsMjcuOVpNNDcuNjg2LDQ3LjM1OCw0MS4zNyw0OS4xMDlsLTYuMzE2LTEuNzUxTDMzLjU2NywzMC43MTZoMTUuNloiLz48L3N2Zz4=","serviceInventoryId":"SERVICE-234"},"broker_id":"e5e75ccc-7963-42cc-b4d1-1314f5ddc6f3","catalog_id":"14f042c6-0175-43ef-9a5d-33bd10890e2a","catalog_name":"html5-apps-repo","created_at":"2020-08-18T16:05:37.292133Z","updated_at":"2023-12-11T11:08:16.937613Z"}]'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Type:
                 - application/json
             Date:
-                - Wed, 18 Oct 2023 16:45:40 GMT
+                - Mon, 11 Dec 2023 11:16:26 GMT
             Expires:
                 - "0"
             Pragma:
@@ -631,18 +559,18 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 519dd0b3-ce85-4c54-76a2-f6601f065cbf
+                - ef9ff05c-6373-42b6-6601-5b124cf61249
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 176.841291ms
-    - id: 9
+        duration: 290.505736ms
+    - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 124
+        content_length: 131
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -655,9 +583,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - 2a50398c-8758-d078-50e6-255e09c23c09
+                - cedc8a2d-f940-442a-6acd-a928bdd9859e
             X-Cpcli-Format:
                 - json
         url: https://canary.cli.btp.int.sap/login/v2.49.0
@@ -668,18 +596,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 163
+        content_length: 167
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "163"
+                - "167"
             Content-Type:
                 - application/json
             Date:
-                - Wed, 18 Oct 2023 16:45:40 GMT
+                - Mon, 11 Dec 2023 11:16:27 GMT
             Expires:
                 - "0"
             Pragma:
@@ -695,12 +623,82 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 2bf3fd6c-81c4-4411-7b08-f66d16dd9b71
+                - 1134b98e-c814-4bc6-55eb-c4315957b39d
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 268.344417ms
+        duration: 255.291547ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 63
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
+            X-Correlationid:
+                - dfe6661e-ffca-e1dd-0686-b9b0a01a337b
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"value":[{"guid":"34564cea-ee6a-4cf2-9f32-71fedefa7126","technicalName":"34564cea-ee6a-4cf2-9f32-71fedefa7126","displayName":"integration-test-acc-static","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-static","betaEnabled":false,"usedForProduction":"UNSET","description":"Please don\u0027t modify. This is used for integration tests.","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"34564cea-ee6a-4cf2-9f32-71fedefa7126","key":"label2","value":""},{"accountGUID":"34564cea-ee6a-4cf2-9f32-71fedefa7126","key":"label1","value":"label text 1"}],"labels":{"label1":["label text 1"],"label2":[]},"createdDate":"Nov 24, 2023, 10:32:40 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:33:04 AM"},{"guid":"cc8917a8-c888-430d-87bb-08fefdb5c835","technicalName":"cc8917a8-c888-430d-87bb-08fefdb5c835","displayName":"integration-test-services-static","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentType":"ROOT","region":"eu12","subdomain":"integration-test-services-static","betaEnabled":false,"usedForProduction":"UNSET","description":"Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2023, 10:32:35 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:32:52 AM"},{"guid":"dd7a94c7-dd92-4697-87ee-9c78e650e7e5","technicalName":"dd7a94c7-dd92-4697-87ee-9c78e650e7e5","displayName":"integration-test-security-settings","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentType":"ROOT","region":"eu12","subdomain":"integration-test-security-settings","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2023, 10:32:39 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:32:59 AM"},{"guid":"e305b127-c328-4abb-b9fa-b1364daa0efb","technicalName":"e305b127-c328-4abb-b9fa-b1364daa0efb","displayName":"integration-test-acc-entitlements-stacked","globalAccountGUID":"e497d362-bf7f-4069-bb49-449d726a08aa","parentGUID":"f3bd4f06-0528-4851-a53d-6fcb341c00bc","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-acc-entitlements-stacked","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2023, 10:33:16 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 24, 2023, 10:33:37 AM"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Mon, 11 Dec 2023 11:16:27 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - c5c94ed2-f017-469f-6cf6-7c07e3076b75
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 172.07711ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -713,15 +711,15 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"cc8917a8-c888-430d-87bb-08fefdb5c835"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - 433e543f-191d-5a55-9d36-97dea95e89c2
+                - 8effdc2c-5b87-1dd5-725b-da96fd6ffbc3
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -747,7 +745,7 @@ interactions:
             Content-Length:
                 - "0"
             Date:
-                - Wed, 18 Oct 2023 16:45:40 GMT
+                - Mon, 11 Dec 2023 11:16:27 GMT
             Expires:
                 - "0"
             Location:
@@ -761,18 +759,18 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Cpcli-Subdomain:
-                - integration-test-services-4ie3yr1a
+                - integration-test-services-static
             X-Frame-Options:
                 - DENY
             X-Id-Token:
                 - redacted
             X-Vcap-Request-Id:
-                - 541b06a5-c151-43b4-6e15-a5a4770fc51b
+                - 65c34c57-7f2b-417b-6cbb-30a79d4acfed
             X-Xss-Protection:
                 - "0"
         status: 307 Temporary Redirect
         code: 307
-        duration: 112.6905ms
+        duration: 169.628181ms
     - id: 11
       request:
         proto: ""
@@ -785,7 +783,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"cc8917a8-c888-430d-87bb-08fefdb5c835"}}
         form: {}
         headers:
             Content-Type:
@@ -793,9 +791,9 @@ interactions:
             Referer:
                 - https://canary.cli.btp.int.sap/command/v2.49.0/services/offering?list
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - 433e543f-191d-5a55-9d36-97dea95e89c2
+                - 8effdc2c-5b87-1dd5-725b-da96fd6ffbc3
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -803,7 +801,7 @@ interactions:
             X-Cpcli-Sessionid:
                 - redacted
             X-Cpcli-Subdomain:
-                - integration-test-services-4ie3yr1a
+                - integration-test-services-static
             X-Id-Token:
                 - redacted
         url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.49.0/services/offering?list
@@ -816,14 +814,14 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '[{"id":"23f7803c-57e2-419e-95c3-ea1c86ed2c68","ready":true,"name":"html5-apps-repo","description":"Enables storage of HTML5 applications and provides runtime environment for HTML5 applications.","bindable":true,"instances_retrievable":false,"bindings_retrievable":false,"plan_updateable":false,"allow_context_updates":false,"tags":["html5appsrepo","html5-apps-repo-rt","html5-apps-rt","html5-apps-repo-dt","html5-apps-dt"],"metadata":{"displayName":"HTML5 Application Repository","documentationUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/11d77aa154f64c2e83cc9652a78bb985.html","longDescription":"The HTML5 Application Repository service enables central storage of HTML5 applications in SAP BTP. In runtime, the service enables the consuming application, typically the application router, to access HTML5 application static content in a secure and efficient manner.","supportUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9220a2fd35d84c888c0ae870ca62bfb7.html","imageUrl":"data:image/svg+xml;base64,PHN2ZyBpZD0iaHRtbDUtYXBwbGljYXRpb25zIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQyLjMsMTlhOC4wMDgsOC4wMDgsMCwwLDAtNC4wNzgtNC40QTYuOTQ0LDYuOTQ0LDAsMCwwLDI3Ljc2OSw5LjkyOCw5LjQ1Myw5LjQ1MywwLDAsMCwxOS4wNiw0QzkuMDc4LDQsOS44LDE0LjYyMSw5LjgsMTQuNjIxYTguMzg3LDguMzg3LDAsMCwwLDIuNjEzLDE2LjM2NUgyOC4wMDd2LTNIMTIuNDEzYTUuMzg3LDUuMzg3LDAsMCwxLTEuNjc2LTEwLjUxNWwyLjMwOS0uNzU5TDEyLjc4MywxNC4zYTguMTE0LDguMTE0LDAsMCwxLDEuNS01LjI4NCw2LjQ4NCw2LjQ4NCwwLDAsMSwxMC43LDIuMDIybDEuMzA3LDMuMjlMMjkuMzE4LDEyLjVhMy45MjMsMy45MjMsMCwwLDEsMi4wNDQtLjU5MSwzLjk4OCwzLjk4OCwwLDAsMSwzLjkxNCwzLjI0OWwuMjg5LDEuNTI5LDEuNDE1LjY0NkE0LjgsNC44LDAsMCwxLDM4LjkzMywxOVoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzQuMDcgMjQuNjkxIDM1LjMwOCAyNC42OTEgMzUuMzA4IDI2LjA0NiAzNi42NiAyNi4wNDYgMzYuNjYgMjIgMzUuMzA4IDIyIDM1LjMwOCAyMy4zMzYgMzQuMDcgMjMuMzM2IDM0LjA3IDIyIDMyLjcxOCAyMiAzMi43MTggMjYuMDQ2IDM0LjA3IDI2LjA0NiAzNC4wNyAyNC42OTEiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzguNDM5IDI2LjA0NiAzOS43OTIgMjYuMDQ2IDM5Ljc5MiAyMy4zNDIgNDAuOTgzIDIzLjM0MiA0MC45ODMgMjIgMzcuMjQ4IDIyIDM3LjI0OCAyMy4zNDIgMzguNDM5IDIzLjM0MiAzOC40MzkgMjYuMDQ2Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjQyLjg5OSAyNC4wNCA0My44MyAyNS40NzkgNDMuODU0IDI1LjQ3OSA0NC43ODQgMjQuMDQgNDQuNzg0IDI2LjA0NiA0Ni4xMzEgMjYuMDQ2IDQ2LjEzMSAyMiA0NC43MiAyMiA0My44NTQgMjMuNDIxIDQyLjk4NiAyMiA0MS41NzYgMjIgNDEuNTc2IDI2LjA0NiA0Mi44OTkgMjYuMDQ2IDQyLjg5OSAyNC4wNCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI1MC4wNTkgMjQuNzA4IDQ4LjE1NyAyNC43MDggNDguMTU3IDIyIDQ2LjgwNCAyMiA0Ni44MDQgMjYuMDQ2IDUwLjA1OSAyNi4wNDYgNTAuMDU5IDI0LjcwOCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIzNi4xNyAzNC40OTEgMzYuNjg1IDQwLjI2OCA0MS4zNjMgNDAuMjY4IDQxLjM3NyA0MC4yNjggNDMuOTQ1IDQwLjI2OCA0My43MDIgNDIuOTg2IDQxLjM2MyA0My42MTcgNDEuMzYzIDQzLjYxOCA0MS4zNjEgNDMuNjE4IDM5LjAyNiA0Mi45ODggMzguODc2IDQxLjMxNiAzNy43NDIgNDEuMzE2IDM2Ljc3MSA0MS4zMTYgMzcuMDY1IDQ0LjYwNyA0MS4zNjEgNDUuNzk5IDQxLjM3IDQ1Ljc5NiA0MS4zNyA0NS43OTYgNDUuNjYyIDQ0LjYwNyA0NS42OTMgNDQuMjUzIDQ2LjE4NiAzOC43MzUgNDYuMjM3IDM4LjE3MiA0NS42NzIgMzguMTcyIDQxLjM3NyAzOC4xNzIgNDEuMzYzIDM4LjE3MiAzOC42MDMgMzguMTcyIDM4LjQxMSAzNi4wMjUgNDEuMzcgMzYuMDI1IDQxLjM3NyAzNi4wMjUgNDYuNDI4IDM2LjAyNSA0Ni40MzUgMzYuMDI1IDQ2LjQ3NyAzNS41NTQgNDYuNTczIDM0LjQ5MSA0Ni42MjMgMzMuOTI5IDQxLjM3NyAzMy45MjkgNDEuMzcgMzMuOTI5IDM2LjEyIDMzLjkyOSAzNi4xNyAzNC40OTEiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMC43NCwyNy45LDMyLjY3NCw0OS41OSw0MS4zNTcsNTJsOC43MDYtMi40MTNMNTIsMjcuOVpNNDcuNjg2LDQ3LjM1OCw0MS4zNyw0OS4xMDlsLTYuMzE2LTEuNzUxTDMzLjU2NywzMC43MTZoMTUuNloiLz48L3N2Zz4=","serviceInventoryId":"SERVICE-234"},"broker_id":"e5e75ccc-7963-42cc-b4d1-1314f5ddc6f3","catalog_id":"14f042c6-0175-43ef-9a5d-33bd10890e2a","catalog_name":"html5-apps-repo","created_at":"2020-08-18T16:05:37.292133Z","updated_at":"2023-10-18T10:48:48.502544Z"}]'
+        body: '[{"id":"23f7803c-57e2-419e-95c3-ea1c86ed2c68","ready":true,"name":"html5-apps-repo","description":"Enables storage of HTML5 applications and provides runtime environment for HTML5 applications.","bindable":true,"instances_retrievable":false,"bindings_retrievable":false,"plan_updateable":false,"allow_context_updates":false,"tags":["html5appsrepo","html5-apps-repo-rt","html5-apps-rt","html5-apps-repo-dt","html5-apps-dt"],"metadata":{"displayName":"HTML5 Application Repository","documentationUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/11d77aa154f64c2e83cc9652a78bb985.html","longDescription":"The HTML5 Application Repository service enables central storage of HTML5 applications in SAP BTP. In runtime, the service enables the consuming application, typically the application router, to access HTML5 application static content in a secure and efficient manner.","supportUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9220a2fd35d84c888c0ae870ca62bfb7.html","imageUrl":"data:image/svg+xml;base64,PHN2ZyBpZD0iaHRtbDUtYXBwbGljYXRpb25zIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQyLjMsMTlhOC4wMDgsOC4wMDgsMCwwLDAtNC4wNzgtNC40QTYuOTQ0LDYuOTQ0LDAsMCwwLDI3Ljc2OSw5LjkyOCw5LjQ1Myw5LjQ1MywwLDAsMCwxOS4wNiw0QzkuMDc4LDQsOS44LDE0LjYyMSw5LjgsMTQuNjIxYTguMzg3LDguMzg3LDAsMCwwLDIuNjEzLDE2LjM2NUgyOC4wMDd2LTNIMTIuNDEzYTUuMzg3LDUuMzg3LDAsMCwxLTEuNjc2LTEwLjUxNWwyLjMwOS0uNzU5TDEyLjc4MywxNC4zYTguMTE0LDguMTE0LDAsMCwxLDEuNS01LjI4NCw2LjQ4NCw2LjQ4NCwwLDAsMSwxMC43LDIuMDIybDEuMzA3LDMuMjlMMjkuMzE4LDEyLjVhMy45MjMsMy45MjMsMCwwLDEsMi4wNDQtLjU5MSwzLjk4OCwzLjk4OCwwLDAsMSwzLjkxNCwzLjI0OWwuMjg5LDEuNTI5LDEuNDE1LjY0NkE0LjgsNC44LDAsMCwxLDM4LjkzMywxOVoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzQuMDcgMjQuNjkxIDM1LjMwOCAyNC42OTEgMzUuMzA4IDI2LjA0NiAzNi42NiAyNi4wNDYgMzYuNjYgMjIgMzUuMzA4IDIyIDM1LjMwOCAyMy4zMzYgMzQuMDcgMjMuMzM2IDM0LjA3IDIyIDMyLjcxOCAyMiAzMi43MTggMjYuMDQ2IDM0LjA3IDI2LjA0NiAzNC4wNyAyNC42OTEiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzguNDM5IDI2LjA0NiAzOS43OTIgMjYuMDQ2IDM5Ljc5MiAyMy4zNDIgNDAuOTgzIDIzLjM0MiA0MC45ODMgMjIgMzcuMjQ4IDIyIDM3LjI0OCAyMy4zNDIgMzguNDM5IDIzLjM0MiAzOC40MzkgMjYuMDQ2Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjQyLjg5OSAyNC4wNCA0My44MyAyNS40NzkgNDMuODU0IDI1LjQ3OSA0NC43ODQgMjQuMDQgNDQuNzg0IDI2LjA0NiA0Ni4xMzEgMjYuMDQ2IDQ2LjEzMSAyMiA0NC43MiAyMiA0My44NTQgMjMuNDIxIDQyLjk4NiAyMiA0MS41NzYgMjIgNDEuNTc2IDI2LjA0NiA0Mi44OTkgMjYuMDQ2IDQyLjg5OSAyNC4wNCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI1MC4wNTkgMjQuNzA4IDQ4LjE1NyAyNC43MDggNDguMTU3IDIyIDQ2LjgwNCAyMiA0Ni44MDQgMjYuMDQ2IDUwLjA1OSAyNi4wNDYgNTAuMDU5IDI0LjcwOCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIzNi4xNyAzNC40OTEgMzYuNjg1IDQwLjI2OCA0MS4zNjMgNDAuMjY4IDQxLjM3NyA0MC4yNjggNDMuOTQ1IDQwLjI2OCA0My43MDIgNDIuOTg2IDQxLjM2MyA0My42MTcgNDEuMzYzIDQzLjYxOCA0MS4zNjEgNDMuNjE4IDM5LjAyNiA0Mi45ODggMzguODc2IDQxLjMxNiAzNy43NDIgNDEuMzE2IDM2Ljc3MSA0MS4zMTYgMzcuMDY1IDQ0LjYwNyA0MS4zNjEgNDUuNzk5IDQxLjM3IDQ1Ljc5NiA0MS4zNyA0NS43OTYgNDUuNjYyIDQ0LjYwNyA0NS42OTMgNDQuMjUzIDQ2LjE4NiAzOC43MzUgNDYuMjM3IDM4LjE3MiA0NS42NzIgMzguMTcyIDQxLjM3NyAzOC4xNzIgNDEuMzYzIDM4LjE3MiAzOC42MDMgMzguMTcyIDM4LjQxMSAzNi4wMjUgNDEuMzcgMzYuMDI1IDQxLjM3NyAzNi4wMjUgNDYuNDI4IDM2LjAyNSA0Ni40MzUgMzYuMDI1IDQ2LjQ3NyAzNS41NTQgNDYuNTczIDM0LjQ5MSA0Ni42MjMgMzMuOTI5IDQxLjM3NyAzMy45MjkgNDEuMzcgMzMuOTI5IDM2LjEyIDMzLjkyOSAzNi4xNyAzNC40OTEiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMC43NCwyNy45LDMyLjY3NCw0OS41OSw0MS4zNTcsNTJsOC43MDYtMi40MTNMNTIsMjcuOVpNNDcuNjg2LDQ3LjM1OCw0MS4zNyw0OS4xMDlsLTYuMzE2LTEuNzUxTDMzLjU2NywzMC43MTZoMTUuNloiLz48L3N2Zz4=","serviceInventoryId":"SERVICE-234"},"broker_id":"e5e75ccc-7963-42cc-b4d1-1314f5ddc6f3","catalog_id":"14f042c6-0175-43ef-9a5d-33bd10890e2a","catalog_name":"html5-apps-repo","created_at":"2020-08-18T16:05:37.292133Z","updated_at":"2023-12-11T11:08:16.937613Z"}]'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Type:
                 - application/json
             Date:
-                - Wed, 18 Oct 2023 16:45:40 GMT
+                - Mon, 11 Dec 2023 11:16:28 GMT
             Expires:
                 - "0"
             Pragma:
@@ -843,18 +841,18 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 50e9b6fa-adfa-464e-545d-9aecd3db2c52
+                - cb85ccce-5d68-433e-52b9-bbc0e3c78d66
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 147.541167ms
+        duration: 256.986745ms
     - id: 12
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 124
+        content_length: 131
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -867,9 +865,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - 42c3e2a3-d167-4ace-81ee-f77548fdf5bc
+                - 0ab84689-7994-3305-0320-ab6ee6364056
             X-Cpcli-Format:
                 - json
         url: https://canary.cli.btp.int.sap/login/v2.49.0
@@ -880,18 +878,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 163
+        content_length: 167
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "163"
+                - "167"
             Content-Type:
                 - application/json
             Date:
-                - Wed, 18 Oct 2023 16:45:41 GMT
+                - Mon, 11 Dec 2023 11:16:29 GMT
             Expires:
                 - "0"
             Pragma:
@@ -907,221 +905,9 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 5c0405d2-1bf6-47c3-4e02-08feebede7dd
+                - d67bda6d-fb8c-407a-7028-aa3056208029
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 242.599667ms
-    - id: 13
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 113
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
-            X-Correlationid:
-                - 1acf216b-f1c5-a6af-780a-cfce9e714abf
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/services/offering?list
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "0"
-            Date:
-                - Wed, 18 Oct 2023 16:45:41 GMT
-            Expires:
-                - "0"
-            Location:
-                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.49.0/services/offering?list
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Subdomain:
-                - integration-test-services-4ie3yr1a
-            X-Frame-Options:
-                - DENY
-            X-Id-Token:
-                - redacted
-            X-Vcap-Request-Id:
-                - 91253e5a-2e7a-426c-6853-b0bec17c1430
-            X-Xss-Protection:
-                - "0"
-        status: 307 Temporary Redirect
-        code: 307
-        duration: 104.699208ms
-    - id: 14
-      request:
-        proto: ""
-        proto_major: 0
-        proto_minor: 0
-        content_length: 113
-        transfer_encoding: []
-        trailer: {}
-        host: ""
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"fieldsFilter":"name eq 'html5-apps-repo'","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            Referer:
-                - https://canary.cli.btp.int.sap/command/v2.49.0/services/offering?list
-            User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
-            X-Correlationid:
-                - 1acf216b-f1c5-a6af-780a-cfce9e714abf
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - integration-test-services-4ie3yr1a
-            X-Id-Token:
-                - redacted
-        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.49.0/services/offering?list
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '[{"id":"23f7803c-57e2-419e-95c3-ea1c86ed2c68","ready":true,"name":"html5-apps-repo","description":"Enables storage of HTML5 applications and provides runtime environment for HTML5 applications.","bindable":true,"instances_retrievable":false,"bindings_retrievable":false,"plan_updateable":false,"allow_context_updates":false,"tags":["html5appsrepo","html5-apps-repo-rt","html5-apps-rt","html5-apps-repo-dt","html5-apps-dt"],"metadata":{"displayName":"HTML5 Application Repository","documentationUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/11d77aa154f64c2e83cc9652a78bb985.html","longDescription":"The HTML5 Application Repository service enables central storage of HTML5 applications in SAP BTP. In runtime, the service enables the consuming application, typically the application router, to access HTML5 application static content in a secure and efficient manner.","supportUrl":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9220a2fd35d84c888c0ae870ca62bfb7.html","imageUrl":"data:image/svg+xml;base64,PHN2ZyBpZD0iaHRtbDUtYXBwbGljYXRpb25zIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NiA1NiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMwNTNiNzA7fS5jbHMtMntmaWxsOiMwYTZlZDE7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQyLjMsMTlhOC4wMDgsOC4wMDgsMCwwLDAtNC4wNzgtNC40QTYuOTQ0LDYuOTQ0LDAsMCwwLDI3Ljc2OSw5LjkyOCw5LjQ1Myw5LjQ1MywwLDAsMCwxOS4wNiw0QzkuMDc4LDQsOS44LDE0LjYyMSw5LjgsMTQuNjIxYTguMzg3LDguMzg3LDAsMCwwLDIuNjEzLDE2LjM2NUgyOC4wMDd2LTNIMTIuNDEzYTUuMzg3LDUuMzg3LDAsMCwxLTEuNjc2LTEwLjUxNWwyLjMwOS0uNzU5TDEyLjc4MywxNC4zYTguMTE0LDguMTE0LDAsMCwxLDEuNS01LjI4NCw2LjQ4NCw2LjQ4NCwwLDAsMSwxMC43LDIuMDIybDEuMzA3LDMuMjlMMjkuMzE4LDEyLjVhMy45MjMsMy45MjMsMCwwLDEsMi4wNDQtLjU5MSwzLjk4OCwzLjk4OCwwLDAsMSwzLjkxNCwzLjI0OWwuMjg5LDEuNTI5LDEuNDE1LjY0NkE0LjgsNC44LDAsMCwxLDM4LjkzMywxOVoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzQuMDcgMjQuNjkxIDM1LjMwOCAyNC42OTEgMzUuMzA4IDI2LjA0NiAzNi42NiAyNi4wNDYgMzYuNjYgMjIgMzUuMzA4IDIyIDM1LjMwOCAyMy4zMzYgMzQuMDcgMjMuMzM2IDM0LjA3IDIyIDMyLjcxOCAyMiAzMi43MTggMjYuMDQ2IDM0LjA3IDI2LjA0NiAzNC4wNyAyNC42OTEiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMzguNDM5IDI2LjA0NiAzOS43OTIgMjYuMDQ2IDM5Ljc5MiAyMy4zNDIgNDAuOTgzIDIzLjM0MiA0MC45ODMgMjIgMzcuMjQ4IDIyIDM3LjI0OCAyMy4zNDIgMzguNDM5IDIzLjM0MiAzOC40MzkgMjYuMDQ2Ii8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjQyLjg5OSAyNC4wNCA0My44MyAyNS40NzkgNDMuODU0IDI1LjQ3OSA0NC43ODQgMjQuMDQgNDQuNzg0IDI2LjA0NiA0Ni4xMzEgMjYuMDQ2IDQ2LjEzMSAyMiA0NC43MiAyMiA0My44NTQgMjMuNDIxIDQyLjk4NiAyMiA0MS41NzYgMjIgNDEuNTc2IDI2LjA0NiA0Mi44OTkgMjYuMDQ2IDQyLjg5OSAyNC4wNCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI1MC4wNTkgMjQuNzA4IDQ4LjE1NyAyNC43MDggNDguMTU3IDIyIDQ2LjgwNCAyMiA0Ni44MDQgMjYuMDQ2IDUwLjA1OSAyNi4wNDYgNTAuMDU5IDI0LjcwOCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIzNi4xNyAzNC40OTEgMzYuNjg1IDQwLjI2OCA0MS4zNjMgNDAuMjY4IDQxLjM3NyA0MC4yNjggNDMuOTQ1IDQwLjI2OCA0My43MDIgNDIuOTg2IDQxLjM2MyA0My42MTcgNDEuMzYzIDQzLjYxOCA0MS4zNjEgNDMuNjE4IDM5LjAyNiA0Mi45ODggMzguODc2IDQxLjMxNiAzNy43NDIgNDEuMzE2IDM2Ljc3MSA0MS4zMTYgMzcuMDY1IDQ0LjYwNyA0MS4zNjEgNDUuNzk5IDQxLjM3IDQ1Ljc5NiA0MS4zNyA0NS43OTYgNDUuNjYyIDQ0LjYwNyA0NS42OTMgNDQuMjUzIDQ2LjE4NiAzOC43MzUgNDYuMjM3IDM4LjE3MiA0NS42NzIgMzguMTcyIDQxLjM3NyAzOC4xNzIgNDEuMzYzIDM4LjE3MiAzOC42MDMgMzguMTcyIDM4LjQxMSAzNi4wMjUgNDEuMzcgMzYuMDI1IDQxLjM3NyAzNi4wMjUgNDYuNDI4IDM2LjAyNSA0Ni40MzUgMzYuMDI1IDQ2LjQ3NyAzNS41NTQgNDYuNTczIDM0LjQ5MSA0Ni42MjMgMzMuOTI5IDQxLjM3NyAzMy45MjkgNDEuMzcgMzMuOTI5IDM2LjEyIDMzLjkyOSAzNi4xNyAzNC40OTEiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMC43NCwyNy45LDMyLjY3NCw0OS41OSw0MS4zNTcsNTJsOC43MDYtMi40MTNMNTIsMjcuOVpNNDcuNjg2LDQ3LjM1OCw0MS4zNyw0OS4xMDlsLTYuMzE2LTEuNzUxTDMzLjU2NywzMC43MTZoMTUuNloiLz48L3N2Zz4=","serviceInventoryId":"SERVICE-234"},"broker_id":"e5e75ccc-7963-42cc-b4d1-1314f5ddc6f3","catalog_id":"14f042c6-0175-43ef-9a5d-33bd10890e2a","catalog_name":"html5-apps-repo","created_at":"2020-08-18T16:05:37.292133Z","updated_at":"2023-10-18T10:48:48.502544Z"}]'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 18 Oct 2023 16:45:41 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - 44cfaaf4-ceac-4075-4f9f-9d81112b4435
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 139.783875ms
-    - id: 15
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 124
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
-            X-Correlationid:
-                - 9db81b40-26f0-28d2-78ee-347a06b54ff7
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 163
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "163"
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 18 Oct 2023 16:45:41 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - f725ba7b-fa1d-496a-401f-42684c53bf14
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 284.027792ms
+        duration: 405.416571ms
