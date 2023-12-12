@@ -6,7 +6,7 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 124
+        content_length: 131
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -19,9 +19,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - ecbb9515-e508-2f20-071a-bc1c446a15d6
+                - a59c2fae-9d01-1798-1cae-9c34a2ce1bff
             X-Cpcli-Format:
                 - json
         url: https://canary.cli.btp.int.sap/login/v2.49.0
@@ -32,18 +32,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 163
+        content_length: 167
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "163"
+                - "167"
             Content-Type:
                 - application/json
             Date:
-                - Wed, 18 Oct 2023 16:45:35 GMT
+                - Tue, 12 Dec 2023 11:39:09 GMT
             Expires:
                 - "0"
             Pragma:
@@ -59,12 +59,12 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - c9c2d0f2-9401-4cf9-5aa9-10fdd0467c6c
+                - d0437763-e601-44f0-7bd8-5485ac21cc11
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 365.875ms
+        duration: 318.340306ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -77,15 +77,15 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"origin":"fuh","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
+            {"paramValues":{"origin":"fuh","subaccount":"00000000-0000-0000-0000-000000000000"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
+                - Terraform/1.6.5-dev terraform-provider-btp/dev
             X-Correlationid:
-                - 28cfe45e-683f-1b77-a335-015e66a06f62
+                - 3322aa7b-382b-c898-2917-1c6c448037b8
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -111,83 +111,7 @@ interactions:
             Content-Length:
                 - "0"
             Date:
-                - Wed, 18 Oct 2023 16:45:35 GMT
-            Expires:
-                - "0"
-            Location:
-                - https://cpcli.cf.eu12.hana.ondemand.com/command/v2.49.0/security/trust?get
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Subdomain:
-                - integration-test-acc-static-b8xxozer
-            X-Frame-Options:
-                - DENY
-            X-Id-Token:
-                - redacted
-            X-Vcap-Request-Id:
-                - 926a8bf8-56aa-4c7b-433b-0008e890e71d
-            X-Xss-Protection:
-                - "0"
-        status: 307 Temporary Redirect
-        code: 307
-        duration: 114.023833ms
-    - id: 2
-      request:
-        proto: ""
-        proto_major: 0
-        proto_minor: 0
-        content_length: 85
-        transfer_encoding: []
-        trailer: {}
-        host: ""
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"origin":"fuh","subaccount":"ef23ace8-6ade-4d78-9c1f-8df729548bbf"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            Referer:
-                - https://canary.cli.btp.int.sap/command/v2.49.0/security/trust?get
-            User-Agent:
-                - Terraform/1.5.7 terraform-provider-btp/dev
-            X-Correlationid:
-                - 28cfe45e-683f-1b77-a335-015e66a06f62
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - integration-test-acc-static-b8xxozer
-            X-Id-Token:
-                - redacted
-        url: https://cpcli.cf.eu12.hana.ondemand.com/command/v2.49.0/security/trust?get
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: ""
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 18 Oct 2023 16:45:36 GMT
+                - Tue, 12 Dec 2023 11:39:09 GMT
             Expires:
                 - "0"
             Pragma:
@@ -198,16 +122,14 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Backend-Status:
-                - "404"
-            X-Cpcli-Sessionid:
-                - redacted
+            X-Cpcli-Server-Message:
+                - Subaccount '00000000-0000-0000-0000-000000000000' does not exist in the current global account and thus did not entitle you to execute the command.
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - f3b77b94-909e-49e7-7651-f68cbc136f92
+                - bef50cbf-ac1b-40ad-5f31-dee2c30508e0
             X-Xss-Protection:
                 - "0"
-        status: 200 OK
-        code: 200
-        duration: 91.386125ms
+        status: 403 Forbidden
+        code: 403
+        duration: 180.541086ms
