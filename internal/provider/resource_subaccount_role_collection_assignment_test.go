@@ -19,7 +19,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignment("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "jenny.doe@test.com"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "jenny.doe@test.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
@@ -40,7 +40,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOrigin("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
@@ -61,7 +61,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndGroup("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "tf-test-group", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndGroupBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "tf-test-group", "terraformint-platform"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
@@ -83,7 +83,7 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndAttribute("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "tf_attr_name_test", "tf_attr_val_test", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndAttributeBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "tf_attr_name_test", "tf_attr_val_test", "terraformint-platform"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
@@ -106,11 +106,10 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignment("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "Destination Administrator", "jenny.doe@test.com"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "jenny.doe@test.com"),
 				},
 				{
 					ResourceName:      "btp_subaccount_role_collection_assignment.uut",
-					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf",
 					ImportState:       true,
 					ImportStateVerify: true,
 					ExpectError:       regexp.MustCompile(`Import Not Supported`),
@@ -146,46 +145,46 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 	})
 }
 
-func hclResourceRoleCollectionAssignment(resourceName string, subaccountId string, roleCollectionName string, userName string) string {
-
+func hclResourceRoleCollectionAssignmentBySubaccount(resourceName string, subaccountName string, roleCollectionName string, userName string) string {
 	return fmt.Sprintf(`
+data "btp_subaccounts" "all" {}
 resource "btp_subaccount_role_collection_assignment" "%s"{
-    subaccount_id        = "%s"
+    subaccount_id        = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	role_collection_name = "%s"
 	user_name            = "%s"
-}`, resourceName, subaccountId, roleCollectionName, userName)
+}`, resourceName, subaccountName, roleCollectionName, userName)
 }
 
-func hclResourceRoleCollectionAssignmentWithOrigin(resourceName string, subaccountId string, roleCollectionName string, userName string, origin string) string {
-
+func hclResourceRoleCollectionAssignmentWithOriginBySubaccount(resourceName string, subaccountName string, roleCollectionName string, userName string, origin string) string {
 	return fmt.Sprintf(`
+data "btp_subaccounts" "all" {}
 resource "btp_subaccount_role_collection_assignment" "%s"{
-    subaccount_id        = "%s"
+    subaccount_id        = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	role_collection_name = "%s"
 	user_name            = "%s"
 	origin               = "%s"
-}`, resourceName, subaccountId, roleCollectionName, userName, origin)
+}`, resourceName, subaccountName, roleCollectionName, userName, origin)
 }
 
-func hclResourceRoleCollectionAssignmentWithOriginAndGroup(resourceName string, subaccountId string, roleCollectionName string, groupName string, origin string) string {
-
+func hclResourceRoleCollectionAssignmentWithOriginAndGroupBySubaccount(resourceName string, subaccountName string, roleCollectionName string, groupName string, origin string) string {
 	return fmt.Sprintf(`
+data "btp_subaccounts" "all" {}
 resource "btp_subaccount_role_collection_assignment" "%s"{
-    subaccount_id        = "%s"
+    subaccount_id        = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	role_collection_name = "%s"
 	origin               = "%s"
 	group_name           = "%s"
-}`, resourceName, subaccountId, roleCollectionName, origin, groupName)
+}`, resourceName, subaccountName, roleCollectionName, origin, groupName)
 }
 
-func hclResourceRoleCollectionAssignmentWithOriginAndAttribute(resourceName string, subaccountId string, roleCollectionName string, attributeName string, attributeValue string, origin string) string {
-
+func hclResourceRoleCollectionAssignmentWithOriginAndAttributeBySubaccount(resourceName string, subaccountName string, roleCollectionName string, attributeName string, attributeValue string, origin string) string {
 	return fmt.Sprintf(`
+data "btp_subaccounts" "all" {}
 resource "btp_subaccount_role_collection_assignment" "%s"{
-    subaccount_id        = "%s"
+    subaccount_id        = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	role_collection_name = "%s"
 	origin               = "%s"
 	attribute_name       = "%s"
 	attribute_value      = "%s"
-}`, resourceName, subaccountId, roleCollectionName, origin, attributeName, attributeValue)
+}`, resourceName, subaccountName, roleCollectionName, origin, attributeName, attributeValue)
 }
