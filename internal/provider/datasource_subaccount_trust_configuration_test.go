@@ -22,7 +22,7 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountTrustConfiguration("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "sap.default"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurationBySubaccount("uut", "integration-test-acc-static", "sap.default"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "id", "sap.default"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "description", ""),
@@ -46,7 +46,7 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountTrustConfiguration("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurationBySubaccount("uut", "integration-test-acc-static", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "id", "terraformint-platform"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "description", "Custom Platform Identity Provider"),
@@ -70,7 +70,7 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclDatasourceSubaccountTrustConfiguration("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "fuh"),
+					Config:      hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurationBySubaccountId("uut", "00000000-0000-0000-0000-000000000000", "fuh"),
 					ExpectError: regexp.MustCompile(`API Error Reading Resource Trust Configuration \(Subaccount\)`),
 				},
 			},
@@ -82,7 +82,7 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountTrustConfiguration("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", ""),
+					Config:      hclDatasourceSubaccountTrustConfigurationBySubaccountId("uut", "00000000-0000-0000-0000-000000000000", ""),
 					ExpectError: regexp.MustCompile(`Attribute origin string length must be at least 1, got: 0`),
 				},
 			},
@@ -103,7 +103,7 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountTrustConfiguration("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "sap.default"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountTrustConfigurationBySubaccountId("uut", "00000000-0000-0000-0000-000000000000", "sap.default"),
 					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -111,11 +111,21 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 	})
 }
 
-func hclDatasourceSubaccountTrustConfiguration(resourceName string, subaccountId string, origin string) string {
+func hclDatasourceSubaccountTrustConfigurationBySubaccountId(resourceName string, subaccountId string, origin string) string {
 	template := `
 data "btp_subaccount_trust_configuration" "%s" {
     subaccount_id = "%s"
 	origin = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId, origin)
+}
+
+func hclDatasourceSubaccountTrustConfigurationBySubaccount(resourceName string, subaccountName string, origin string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_trust_configuration" "%s" {
+    subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+	origin = "%s"
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName, origin)
 }
