@@ -9,6 +9,7 @@
 package servicemanager
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -29,7 +30,7 @@ type UpdatedServiceInstanceResponseObject struct {
 	// Whether the service instance is shared.
 	Shared bool `json:"shared,omitempty"`
 	// Contextual data for the resource.
-	Context map[string]string `json:"context,omitempty"`
+	Context json.RawMessage `json:"context,omitempty"`
 	// The maintenance info for the resource.
 	MaintenanceInfo map[string]string `json:"maintenance_info,omitempty"`
 	Usable          bool              `json:"usable,omitempty"`

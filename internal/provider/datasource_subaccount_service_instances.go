@@ -110,8 +110,7 @@ func (ds *subaccountServiceInstancesDataSource) Schema(_ context.Context, _ data
 							MarkdownDescription: "The platform ID.",
 							Computed:            true,
 						},
-						"context": schema.MapAttribute{
-							ElementType:         types.StringType,
+						"context": schema.StringAttribute{
 							MarkdownDescription: "Contextual data for the resource.",
 							Computed:            true,
 						},

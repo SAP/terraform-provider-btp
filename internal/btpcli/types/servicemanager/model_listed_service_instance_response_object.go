@@ -9,6 +9,7 @@
 package servicemanager
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -30,7 +31,7 @@ type ListedServiceInstanceResponseObject struct {
 	// Whether the service instance is shared.
 	Shared bool `json:"shared,omitempty"`
 	// Contextual data for the resource.
-	Context map[string]string `json:"context,omitempty"`
+	Context json.RawMessage `json:"context,omitempty"`
 	// The maintenance information associated with the service instance.
 	MaintenanceInfo map[string]string `json:"maintenance_info,omitempty"`
 	// Whether the service instance can be used.

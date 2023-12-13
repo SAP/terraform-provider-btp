@@ -72,8 +72,7 @@ func (ds *subaccountServiceBindingDataSource) Schema(_ context.Context, _ dataso
 				MarkdownDescription: "The ID of the service instance associated with the binding.",
 				Computed:            true,
 			},
-			"context": schema.MapAttribute{
-				ElementType:         types.StringType,
+			"context": schema.StringAttribute{
 				MarkdownDescription: "Contextual data for the resource.",
 				Computed:            true,
 			},
