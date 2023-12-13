@@ -64,7 +64,7 @@ resource "btp_subaccount_service_instance" "alert_notification_free" {
 
 ### Read-Only
 
-- `context` (Map of String) Contextual data for the resource.
+- `context` (String) Contextual data for the resource.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `id` (String) The ID of the service instance.
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.

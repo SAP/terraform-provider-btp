@@ -52,7 +52,7 @@ Optional:
 Read-Only:
 
 - `bind_resource` (Map of String) Contains the resources associated with the binding.
-- `context` (Map of String) Contextual data for the resource.
+- `context` (String) Contextual data for the resource.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `credentials` (String, Sensitive) The credentials to access the binding.
 - `labels` (Map of Set of String) The set of words or phrases assigned to the binding.

@@ -48,7 +48,7 @@ resource "btp_subaccount_service_binding" "my_parameterized_binding" {
 ### Read-Only
 
 - `bind_resource` (Map of String) Contains the resources associated with the binding.
-- `context` (Map of String) The contextual data for the resource.
+- `context` (String) The contextual data for the resource.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `credentials` (String, Sensitive) The credentials to access the binding.
 - `id` (String) The ID of the service binding.
