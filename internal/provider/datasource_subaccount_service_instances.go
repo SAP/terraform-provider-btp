@@ -24,7 +24,7 @@ type subaccountServiceInstancesValueConfig struct {
 	Ready         types.Bool   `tfsdk:"ready"`
 	ServicePlanId types.String `tfsdk:"serviceplan_id"`
 	PlatformId    types.String `tfsdk:"platform_id"`
-	Context       types.Map    `tfsdk:"context"`
+	Context       types.String `tfsdk:"context"`
 	Usable        types.Bool   `tfsdk:"usable"`
 	CreatedDate   types.String `tfsdk:"created_date"`
 	LastModified  types.String `tfsdk:"last_modified"`
@@ -175,12 +175,10 @@ func (ds *subaccountServiceInstancesDataSource) Read(ctx context.Context, req da
 			ServicePlanId: types.StringValue(serviceInstance.ServicePlanId),
 			PlatformId:    types.StringValue(serviceInstance.PlatformId),
 			Usable:        types.BoolValue(serviceInstance.Usable),
+			Context:       types.StringValue(string(serviceInstance.Context)),
 			CreatedDate:   timeToValue(serviceInstance.CreatedAt),
 			LastModified:  timeToValue(serviceInstance.UpdatedAt),
 		}
-
-		val.Context, diags = types.MapValueFrom(ctx, types.StringType, serviceInstance.Context)
-		resp.Diagnostics.Append(diags...)
 
 		val.Labels, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, serviceInstance.Labels)
 		resp.Diagnostics.Append(diags...)

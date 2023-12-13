@@ -23,7 +23,7 @@ type subaccountServiceBindingValue struct {
 	Name              types.String `tfsdk:"name"`
 	Ready             types.Bool   `tfsdk:"ready"`
 	ServiceInstanceId types.String `tfsdk:"service_instance_id"`
-	Context           types.Map    `tfsdk:"context"`
+	Context           types.String `tfsdk:"context"`
 	BindResource      types.Map    `tfsdk:"bind_resource"`
 	Credentials       types.String `tfsdk:"credentials"`
 	CreatedDate       types.String `tfsdk:"created_date"`
@@ -179,11 +179,10 @@ func (ds *subaccountServiceBindingsDataSource) Read(ctx context.Context, req dat
 			Ready:             types.BoolValue(binding.Ready),
 			ServiceInstanceId: types.StringValue(binding.ServiceInstanceId),
 			Credentials:       types.StringValue(string(binding.Credentials)),
+			Context:           types.StringValue(string(binding.Context)),
 			CreatedDate:       timeToValue(binding.CreatedAt),
 			LastModified:      timeToValue(binding.UpdatedAt),
 		}
-		bindingValue.Context, diags = types.MapValueFrom(ctx, types.StringType, binding.Context)
-		resp.Diagnostics.Append(diags...)
 
 		bindingValue.BindResource, diags = types.MapValueFrom(ctx, types.StringType, binding.BindResource)
 		resp.Diagnostics.Append(diags...)

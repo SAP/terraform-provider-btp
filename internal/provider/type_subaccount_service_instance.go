@@ -68,7 +68,7 @@ type subaccountServiceInstanceDataSourceType struct {
 	PlatformId           types.String `tfsdk:"platform_id"`
 	ReferencedInstanceId types.String `tfsdk:"referenced_instance_id"`
 	Shared               types.Bool   `tfsdk:"shared"`
-	Context              types.Map    `tfsdk:"context"`
+	Context              types.String `tfsdk:"context"`
 	Usable               types.Bool   `tfsdk:"usable"`
 	State                types.String `tfsdk:"state"`
 	CreatedDate          types.String `tfsdk:"created_date"`
@@ -88,14 +88,12 @@ func subaccountServiceInstanceDataSourceValueFrom(ctx context.Context, value ser
 		Shared:               types.BoolValue(value.Shared),
 		Usable:               types.BoolValue(value.Usable),
 		State:                types.StringValue(value.LastOperation.State),
+		Context:              types.StringValue(string(value.Context)),
 		CreatedDate:          timeToValue(value.CreatedAt),
 		LastModified:         timeToValue(value.UpdatedAt),
 	}
 
 	var diags, diagnostics diag.Diagnostics
-
-	serviceInstance.Context, diags = types.MapValueFrom(ctx, types.StringType, value.Context)
-	diagnostics.Append(diags...)
 
 	//Remove computed labels to avoid state inconsistencies
 	value.Labels = tfutils.RemoveComputedlabels(value.Labels)
