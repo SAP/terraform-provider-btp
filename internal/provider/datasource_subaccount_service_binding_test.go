@@ -20,11 +20,11 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindingbyId("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "b02e4b22-906b-40c5-9c5e-dbb6a9068444"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindingBySubaccountNameByBindingName("uut", "integration-test-services-static", "test-service-binding-malware-scanner"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "id", "b02e4b22-906b-40c5-9c5e-dbb6a9068444"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "name", "test-service-binding-iban"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "name", "test-service-binding-malware-scanner"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "ready", "true"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "last_modified", regexpValidRFC3999Format),
@@ -44,11 +44,11 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindingbyName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "test-service-binding-iban"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindingByNameBySubaccountNameByBindingName("uut", "integration-test-services-static", "test-service-binding-malware-scanner"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "id", "b02e4b22-906b-40c5-9c5e-dbb6a9068444"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "name", "test-service-binding-iban"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "name", "test-service-binding-malware-scanner"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "ready", "true"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "last_modified", regexpValidRFC3999Format),
@@ -58,13 +58,14 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 		})
 
 	})
+
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountServiceBindingNoSubaccount("uut", "test-service-binding-iban"),
+					Config:      hclDatasourceSubaccountServiceBindingNoSubaccount("uut", "any-sb-name"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -77,19 +78,20 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountServiceBindingNoIdOrName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					Config:      hclDatasourceSubaccountServiceBindingNoIdOrName("uut", "00000000-0000-0000-0000-000000000000"),
 					ExpectError: regexp.MustCompile(`Error: Invalid Attribute Combination`),
 				},
 			},
 		})
 	})
+
 	t.Run("error path - subaccount_id not a valid UUID", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountServiceBindingbyName("uut", "this-is-not-a-uuid", "test-service-binding-iban"),
+					Config:      hclDatasourceSubaccountServiceBindingByNameBySubaccountIdByBindingName("uut", "this-is-not-a-uuid", "any-sb-name"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -97,20 +99,35 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 	})
 }
 
-func hclDatasourceSubaccountServiceBindingbyId(resourceName string, subaccountId string, bindingId string) string {
-	template := `data "btp_subaccount_service_binding" "%s" {
-	subaccount_id = "%s"
-	id            = "%s"
+func hclDatasourceSubaccountServiceBindingBySubaccountNameByBindingName(resourceName string, subaccountName string, bindingName string) string {
+	template := `
+data "btp_subaccounts" "allsas" {}
+data "btp_subaccount_service_bindings" "allsbs" {
+  subaccount_id = [for sa in data.btp_subaccounts.allsas.values : sa.id if sa.name == "%[2]s"][0]
+}
+data "btp_subaccount_service_binding" "%[1]s" {
+	subaccount_id = [for sa in data.btp_subaccounts.allsas.values : sa.id if sa.name == "%[2]s"][0]
+	id            = [for sb in data.btp_subaccount_service_bindings.allsbs.values : sb.id if sb.name == "%[3]s"][0]
 }`
-	return fmt.Sprintf(template, resourceName, subaccountId, bindingId)
+	return fmt.Sprintf(template, resourceName, subaccountName, bindingName)
 }
 
-func hclDatasourceSubaccountServiceBindingbyName(resourceName string, subaccountId string, bindingName string) string {
+func hclDatasourceSubaccountServiceBindingByNameBySubaccountIdByBindingName(resourceName string, subaccountId string, bindingName string) string {
 	template := `data "btp_subaccount_service_binding" "%s" {
 	subaccount_id = "%s"
 	name          = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, subaccountId, bindingName)
+}
+
+func hclDatasourceSubaccountServiceBindingByNameBySubaccountNameByBindingName(resourceName string, subaccountName string, bindingName string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_service_binding" "%s" {
+	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+	name          = "%s"
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName, bindingName)
 }
 
 func hclDatasourceSubaccountServiceBindingNoSubaccount(resourceName string, bindingName string) string {
