@@ -20,11 +20,11 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindingBySubaccountNameByBindingName("uut", "integration-test-services-static", "test-service-binding-malware-scanner"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindingBySubaccountNameByBindingName("uut", "integration-test-services-static", "test-service-binding"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "name", "test-service-binding-malware-scanner"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "name", "test-service-binding"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "ready", "true"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "last_modified", regexpValidRFC3999Format),
@@ -44,11 +44,11 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindingByNameBySubaccountNameByBindingName("uut", "integration-test-services-static", "test-service-binding-malware-scanner"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindingByNameBySubaccountNameByBindingName("uut", "integration-test-services-static", "test-service-binding-two"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "name", "test-service-binding-malware-scanner"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "name", "test-service-binding-two"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_binding.uut", "ready", "true"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_binding.uut", "last_modified", regexpValidRFC3999Format),
