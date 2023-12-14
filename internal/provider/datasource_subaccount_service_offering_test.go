@@ -8,8 +8,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestDataSourceSubaccountServiceoffering(t *testing.T) {
+func TestDataSourceSubaccountServiceOffering(t *testing.T) {
 	t.Parallel()
+
 	t.Run("happy path - service offering by id", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_offering.by_id")
 		defer stopQuietly(rec)
@@ -19,10 +20,10 @@ func TestDataSourceSubaccountServiceoffering(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountOfferingById("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "d67ff82d-9bfe-43e3-abd2-f2e21a5362c5"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceOfferingByIdBySubaccountIdFilteredFromList("uut", "integration-test-services-static", "xsuaa"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_offering.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_offering.uut", "id", "d67ff82d-9bfe-43e3-abd2-f2e21a5362c5"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_offering.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_offering.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offering.uut", "name", "xsuaa"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offering.uut", "ready", "true"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offering.uut", "bindable", "true"),
@@ -37,6 +38,7 @@ func TestDataSourceSubaccountServiceoffering(t *testing.T) {
 			},
 		})
 	})
+
 	t.Run("happy path service offering by name", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_offering.by_name")
 		defer stopQuietly(rec)
@@ -46,10 +48,10 @@ func TestDataSourceSubaccountServiceoffering(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountOfferingByName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "xsuaa"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceOfferingByNameBySubaccountIdFilteredFromList("uut", "integration-test-services-static", "xsuaa"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_offering.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_offering.uut", "id", "d67ff82d-9bfe-43e3-abd2-f2e21a5362c5"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_offering.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("data.btp_subaccount_service_offering.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offering.uut", "name", "xsuaa"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offering.uut", "ready", "true"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_offering.uut", "bindable", "true"),
@@ -71,7 +73,7 @@ func TestDataSourceSubaccountServiceoffering(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclDatasourceSubaccountServiceOfferingIdName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "standard"),
+					Config:      hclDatasourceSubaccountServiceOfferingIdName("uut", "00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000", "standard"),
 					ExpectError: regexp.MustCompile(`Error: Invalid Attribute Combination`),
 				},
 			},
@@ -93,23 +95,27 @@ func TestDataSourceSubaccountServiceoffering(t *testing.T) {
 
 }
 
-func hclDatasourceSubaccountOfferingById(resourceName string, subaccountId string, offeringId string) string {
+func hclDatasourceSubaccountServiceOfferingByIdBySubaccountIdFilteredFromList(resourceName string, subaccountName string, serviceOfferingName string) string {
 	template := `
-data "btp_subaccount_service_offering" "%s" {
-     subaccount_id = "%s"
-	 id            = "%s"
+data "btp_subaccounts" "allsas" {}
+data "btp_subaccount_service_offerings" "allssos" {
+  subaccount_id = [for sa in data.btp_subaccounts.allsas.values : sa.id if sa.name == "%[2]s"][0]
+}
+data "btp_subaccount_service_offering" "%[1]s" {
+     subaccount_id = [for sa in data.btp_subaccounts.allsas.values : sa.id if sa.name == "%[2]s"][0]
+	 id            = [for sso in data.btp_subaccount_service_offerings.allssos.values : sso.id if sso.name == "%[3]s"][0]
 }`
-
-	return fmt.Sprintf(template, resourceName, subaccountId, offeringId)
+	return fmt.Sprintf(template, resourceName, subaccountName, serviceOfferingName)
 }
 
-func hclDatasourceSubaccountOfferingByName(resourceName string, subaccountId string, offeringName string) string {
+func hclDatasourceSubaccountServiceOfferingByNameBySubaccountIdFilteredFromList(resourceName string, subaccountName string, offeringName string) string {
 	template := `
+data "btp_subaccounts" "all" {}
 data "btp_subaccount_service_offering" "%s" {
-    subaccount_id = "%s"
+    subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
     name          = "%s"
 }`
-	return fmt.Sprintf(template, resourceName, subaccountId, offeringName)
+	return fmt.Sprintf(template, resourceName, subaccountName, offeringName)
 }
 
 func hclDatasourceSubaccountServiceOfferingIdName(resourceName string, subaccountId string, offeringId string, offeringName string) string {
