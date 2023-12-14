@@ -20,7 +20,7 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountPlanByIdBySubaccountIdFromFilteredList("uut", "integration-test-services-static", "lite"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountPlanByIdBySubaccountIdFromFilteredList("uut", "integration-test-services-static", "lite", "destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_plan.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_plan.uut", "id", regexpValidUUID),
@@ -89,18 +89,22 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 
 }
 
-func hclDatasourceSubaccountPlanByIdBySubaccountIdFromFilteredList(resourceName string, subaccountName string, planName string) string {
+func hclDatasourceSubaccountPlanByIdBySubaccountIdFromFilteredList(resourceName string, subaccountName string, planName string, offeringName string) string {
 	template := `
 data "btp_subaccounts" "allsas" {}
 data "btp_subaccount_service_plans" "allssps" {
-  subaccount_id = [for sa in data.btp_subaccounts.allsas.values : sa.id if sa.name == "%[2]s"][0]
+	subaccount_id = [for sa in data.btp_subaccounts.allsas.values : sa.id if sa.name == "%[2]s"][0]
+}
+data "btp_subaccount_service_offering" "sso" {
+	subaccount_id = [for sa in data.btp_subaccounts.allsas.values : sa.id if sa.name == "%[2]s"][0]
+	name          = "%[4]s"
 }
 data "btp_subaccount_service_plan" "%[1]s" {
-     subaccount_id = [for sa in data.btp_subaccounts.allsas.values : sa.id if sa.name == "%[2]s"][0]
-	 id            = [for ssp in data.btp_subaccount_service_plans.allssps.values : ssp.id if ssp.name == "%[3]s"][0]
+    subaccount_id = [for sa in data.btp_subaccounts.allsas.values : sa.id if sa.name == "%[2]s"][0]
+	id            = [for ssp in data.btp_subaccount_service_plans.allssps.values : ssp.id if ssp.name == "%[3]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.sso.id][0]
 }`
 
-	return fmt.Sprintf(template, resourceName, subaccountName, planName)
+	return fmt.Sprintf(template, resourceName, subaccountName, planName, offeringName)
 }
 
 func hclDatasourceSubaccountPlanByNameByOfferingBySubaccountIdFromFilteredList(resourceName string, subaccountName string, planName string, offeringName string) string {
