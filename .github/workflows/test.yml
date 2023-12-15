@@ -23,6 +23,10 @@ on:
 permissions:
   contents: read
 
+# Define the latest Terraform version to use for upload of coverage report  
+env: 
+  LATEST_VERSION: 16
+  
 jobs:
   # Ensure project builds before running testing matrix
   build:
@@ -100,7 +104,11 @@ jobs:
           TF_ACC: "1"
         run: go test -v -cover -coverprofile=cover.out -timeout=900s -parallel=4 ./...
         timeout-minutes: 20
-      - uses: actions/upload-artifact@v3
+      # Determine stripped version of Terraform
+      - run: echo "CURRENT_TF_VERSION=$(echo ${{ matrix.terraform }} | sed 's/[^a-zA-Z0-9]//g')" >> $GITHUB_ENV
+      # Upload coverage report for latest Terraform version only to avoid nameing issues in upload (see also https://github.com/actions/upload-artifact/tree/v4/?tab=readme-ov-file#breaking-changes)
+      - uses: actions/upload-artifact@v4
+        if: ${{ env.CURRENT_TF_VERSION == env.LATEST_VERSION}}  
         with:
           name: coverage-report
           path: cover.out
