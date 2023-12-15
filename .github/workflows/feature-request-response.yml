@@ -1,0 +1,31 @@
+name: "Feature Request - Community Note"
+
+on:
+  issues:
+    types:
+      - opened
+      
+jobs:
+  community_note:
+    name: 'Add Community Note'
+    if: ${{ github.event.label.name == 'enhancement' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Add community note to new Issues'
+        uses: peter-evans/create-or-update-comment@23ff15729ef2fc348714a3bb66d2f655ca9066f2 # v3.1.0
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Thanks for the feature request. We evaluate it and update the issue accordingly.
+            
+            ## Community Note
+
+            ### Voting for Prioritization
+
+            * Please vote on this issue by adding a 👍 [reaction](https://blog.github.com/2016-03-10-add-reactions-to-pull-requests-issues-and-comments/) to the original post to help the community and maintainers prioritize this request.
+            * Please **do not** leave "+1" or other comments that do not add relevant new information or questions, they generate extra noise for issue followers and do not help prioritize the request.
+
+            ### Volunteering to Work on This Issue
+
+            * If you are interested in working on this issue, please leave a comment.
+            * If this would be your first contribution, please review the [contribution guide](https://github.com/SAP/terraform-provider-btp/blob/main/CONTRIBUTING.md).
