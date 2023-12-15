@@ -3,10 +3,12 @@ package provider
 import (
 	"encoding/json"
 	"fmt"
+
 	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 // Needed for JSON mapping - fails with data types of directoryRoleCollectionRoleRefType struct
@@ -27,7 +29,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescriptionByDirectory("uut", "integration-test-dir-se-static", "My own role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
@@ -36,7 +38,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_directory_role_collection.uut",
-					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9,My own role collection",
+					ImportStateIdFunc: getIdForDirectoryRoleCollectionImportId("btp_directory_role_collection.uut", "My own role collection"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -53,7 +55,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionWithDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My own role collection", "This is my new role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionWithDescriptionByDirectory("uut", "integration-test-dir-se-static", "My own role collection", "This is my new role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
@@ -63,7 +65,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_directory_role_collection.uut",
-					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9,My own role collection",
+					ImportStateIdFunc: getIdForDirectoryRoleCollectionImportId("btp_directory_role_collection.uut", "My own role collection"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -80,9 +82,9 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollection(
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionByDirectory(
 						"uut",
-						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
+						"integration-test-dir-se-static",
 						"My role collection",
 						"This is my new role collection",
 						directoryRoleCollectionRoleRefTestType{
@@ -104,7 +106,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_directory_role_collection.uut",
-					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9,My role collection",
+					ImportStateIdFunc: getIdForDirectoryRoleCollectionImportId("btp_directory_role_collection.uut", "My role collection"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -121,9 +123,9 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionWithDescription(
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionWithDescriptionByDirectory(
 						"uut",
-						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
+						"integration-test-dir-se-static",
 						"My own role collection",
 						"This is my new role collection",
 						"Directory Viewer",
@@ -138,9 +140,9 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollection(
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionByDirectory(
 						"uut",
-						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
+						"integration-test-dir-se-static",
 						"My own role collection",
 						"This is my updated role collection",
 						directoryRoleCollectionRoleRefTestType{
@@ -161,9 +163,9 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescription(
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescriptionByDirectory(
 						"uut",
-						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
+						"integration-test-dir-se-static",
 						"My own role collection",
 						"Directory Viewer",
 						"cis-central!b13",
@@ -177,9 +179,9 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionWithDescription(
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionWithDescriptionByDirectory(
 						"uut",
-						"05368777-4934-41e8-9f3c-6ec5f4d564b9",
+						"integration-test-dir-se-static",
 						"My own role collection",
 						"",
 						"Directory Viewer",
@@ -195,7 +197,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_directory_role_collection.uut",
-					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9,My own role collection",
+					ImportStateIdFunc: getIdForDirectoryRoleCollectionImportId("btp_directory_role_collection.uut", "My own role collection"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -212,11 +214,11 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescription("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "My special role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescriptionByDirectory("uut", "integration-test-dir-se-static", "My special role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
 				},
 				{
 					ResourceName:      "btp_directory_role_collection.uut",
-					ImportStateId:     "05368777-4934-41e8-9f3c-6ec5f4d564b9",
+					ImportStateIdFunc: getIdForDirectoryRoleCollectionImportId("btp_directory_role_collection.uut", ""),
 					ImportState:       true,
 					ImportStateVerify: true,
 					ExpectError:       regexp.MustCompile(`Expected import identifier with format: directory_id, name. Got:`),
@@ -265,51 +267,66 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 }
 
-func hclResourceDirectoryRoleCollectionNoDescription(resourceName string, directoryId string, roleCollectionName string, roleName string, RoleTemplateAppId string, RoleTemplateName string) string {
+func createRoles(roleName string, roleTemplateAppId string, roleTemplateName string) string {
 	roles := []directoryRoleCollectionRoleRefTestType{}
-
 	roles = append(roles, directoryRoleCollectionRoleRefTestType{
 		Name:              roleName,
-		RoleTemplateAppId: RoleTemplateAppId,
-		RoleTemplateName:  RoleTemplateName,
+		RoleTemplateAppId: roleTemplateAppId,
+		RoleTemplateName:  roleTemplateName,
 	})
 	rolesJson, _ := json.Marshal(roles)
-
-	return fmt.Sprintf(`resource "btp_directory_role_collection" "%s" {
-        directory_id = "%s"
-        name         = "%s"
-        roles  		 = %v
-    }`, resourceName, directoryId, roleCollectionName, string(rolesJson))
+	return string(rolesJson)
 }
 
-func hclResourceDirectoryRoleCollectionWithDescription(resourceName string, directoryId string, roleCollectionName string, roleCollectionDescription string, roleName string, RoleTemplateAppId string, RoleTemplateName string) string {
-	roles := []directoryRoleCollectionRoleRefTestType{}
-
-	roles = append(roles, directoryRoleCollectionRoleRefTestType{
-		Name:              roleName,
-		RoleTemplateAppId: RoleTemplateAppId,
-		RoleTemplateName:  RoleTemplateName,
-	})
-	rolesJson, _ := json.Marshal(roles)
-
-	return fmt.Sprintf(`resource "btp_directory_role_collection" "%s" {
-        directory_id = "%s"
-        name         = "%s"
-		description  = "%s"
-        roles  		 = %v
-    }`, resourceName, directoryId, roleCollectionName, roleCollectionDescription, string(rolesJson))
-}
-
-func hclResourceDirectoryRoleCollection(resourceName string, directoryId string, roleCollectionName string, roleCollectionDescription string, roles ...directoryRoleCollectionRoleRefTestType) string {
+func createEmptyRolesIfNil(roles []directoryRoleCollectionRoleRefTestType) string {
 	if roles == nil {
 		roles = []directoryRoleCollectionRoleRefTestType{}
 	}
 	rolesJson, _ := json.Marshal(roles)
+	return string(rolesJson)
+}
 
-	return fmt.Sprintf(`resource "btp_directory_role_collection" "%s" {
-        directory_id = "%s"
+func hclResourceDirectoryRoleCollectionNoDescriptionByDirectory(resourceName string, directoryName string, roleCollectionName string, roleName string, roleTemplateAppId string, roleTemplateName string) string {
+	return fmt.Sprintf(`
+	data "btp_directories" "all" {}
+	resource "btp_directory_role_collection" "%s" {
+        directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
+        name         = "%s"
+        roles  		 = %v
+    }`, resourceName, directoryName, roleCollectionName, createRoles(roleName, roleTemplateAppId, roleTemplateName))
+}
+
+func hclResourceDirectoryRoleCollectionWithDescriptionByDirectory(resourceName string, directoryName string, roleCollectionName string, roleCollectionDescription string, roleName string, roleTemplateAppId string, roleTemplateName string) string {
+	return fmt.Sprintf(`
+	data "btp_directories" "all" {}
+	resource "btp_directory_role_collection" "%s" {
+        directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
         name         = "%s"
 		description  = "%s"
         roles  		 = %v
-    }`, resourceName, directoryId, roleCollectionName, roleCollectionDescription, string(rolesJson))
+    }`, resourceName, directoryName, roleCollectionName, roleCollectionDescription, createRoles(roleName, roleTemplateAppId, roleTemplateName))
+}
+
+func hclResourceDirectoryRoleCollectionByDirectory(resourceName string, directoryName string, roleCollectionName string, roleCollectionDescription string, roles ...directoryRoleCollectionRoleRefTestType) string {
+	return fmt.Sprintf(`
+	data "btp_directories" "all" {}
+	resource "btp_directory_role_collection" "%s" {
+        directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
+        name         = "%s"
+		description  = "%s"
+        roles  		 = %v
+    }`, resourceName, directoryName, roleCollectionName, roleCollectionDescription, createEmptyRolesIfNil(roles))
+}
+
+func getIdForDirectoryRoleCollectionImportId(resourceName string, name string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+		if name != "" {
+			return fmt.Sprintf("%s,%s", rs.Primary.Attributes["directory_id"], name), nil
+		}
+		return rs.Primary.Attributes["directory_id"], nil
+	}
 }
