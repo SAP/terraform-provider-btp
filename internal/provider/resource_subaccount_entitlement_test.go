@@ -6,10 +6,12 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceSubaccountEntitlement(t *testing.T) {
 	t.Parallel()
+
 	t.Run("happy path - no amount", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.no_amount")
 		defer stopQuietly(rec)
@@ -19,7 +21,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlement("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "hana-cloud", "hana"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -34,7 +36,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_entitlement.uut",
-					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,hana-cloud,hana",
+					ImportStateIdFunc: getImportStateIdForSubaccountEntitlement("btp_subaccount_entitlement.uut", "hana-cloud", "hana"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -51,7 +53,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlement("uut", "4e981c0f-de50-4442-a26e-54798120f141", "hana-cloud", "hana"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementBySubaccount("uut", "integration-test-acc-entitlements-stacked", "hana-cloud", "hana"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -66,7 +68,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_entitlement.uut",
-					ImportStateId:     "4e981c0f-de50-4442-a26e-54798120f141,hana-cloud,hana",
+					ImportStateIdFunc: getImportStateIdForSubaccountEntitlement("btp_subaccount_entitlement.uut", "hana-cloud", "hana"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -83,7 +85,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "3"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "data-privacy-integration-service", "standard", "3"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -98,7 +100,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_entitlement.uut",
-					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,data-privacy-integration-service,standard",
+					ImportStateIdFunc: getImportStateIdForSubaccountEntitlement("btp_subaccount_entitlement.uut", "data-privacy-integration-service", "standard"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -115,7 +117,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "1"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "data-privacy-integration-service", "standard", "1"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -129,7 +131,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "2"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "data-privacy-integration-service", "standard", "2"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -143,7 +145,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlement("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementBySubaccount("uut", "integration-test-acc-static", "data-privacy-integration-service", "standard"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -166,30 +168,43 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountEntitlementWithAmount("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "data-privacy-integration-service", "standard", "0"),
+					Config:      hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "data-privacy-integration-service", "standard", "0"),
 					ExpectError: regexp.MustCompile(`Attribute amount value must be between 1 and 2000000000, got: 0`),
 				},
 			},
 		})
 	})
+
 }
 
-func hclResourceSubaccountEntitlement(resourceName string, subaccountId string, serviceName string, planName string) string {
+func hclResourceSubaccountEntitlementBySubaccount(resourceName string, subaccountName string, serviceName string, planName string) string {
 	template := `
+data "btp_subaccounts" "all" {}
 resource "btp_subaccount_entitlement" "%s" {
-    subaccount_id = "%s"
+    subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
     service_name  = "%s"
     plan_name     = "%s"
 }`
-
-	return fmt.Sprintf(template, resourceName, subaccountId, serviceName, planName)
+	return fmt.Sprintf(template, resourceName, subaccountName, serviceName, planName)
 }
 
-func hclResourceSubaccountEntitlementWithAmount(resourceName string, subaccountId string, serviceName string, planName string, amount string) string {
-	return fmt.Sprintf(`resource "btp_subaccount_entitlement" "%s" {
-        subaccount_id      = "%s"
-        service_name    = "%s"
-        plan_name = "%s"
-        amount = %s
-    }`, resourceName, subaccountId, serviceName, planName, amount)
+func hclResourceSubaccountEntitlementWithAmountBySubaccount(resourceName string, subaccountName string, serviceName string, planName string, amount string) string {
+	return fmt.Sprintf(`
+	data "btp_subaccounts" "all" {}
+	resource "btp_subaccount_entitlement" "%s" {
+        subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+        service_name  = "%s"
+        plan_name     = "%s"
+        amount        = %s
+    }`, resourceName, subaccountName, serviceName, planName, amount)
+}
+
+func getImportStateIdForSubaccountEntitlement(resourceName string, serviceName string, planName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+		return fmt.Sprintf("%s,%s,%s", rs.Primary.Attributes["subaccount_id"], serviceName, planName), nil
+	}
 }
