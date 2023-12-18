@@ -9,6 +9,7 @@
 package servicemanager
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -32,7 +33,7 @@ type ServiceInstanceResponseObject struct {
 	// Whether the service instance is shared.
 	Shared bool `json:"shared,omitempty"`
 	// Contextual data for the resource.
-	Context map[string]string `json:"context,omitempty"`
+	Context json.RawMessage `json:"context,omitempty"`
 	// The maintenance info for the resource.
 	MaintenanceInfo map[string]string `json:"maintenance_info,omitempty"`
 	// Wheher the resource can be used.
@@ -56,7 +57,7 @@ type ServiceInstanceListResponseObject struct {
 	// The platform ID.
 	PlatformId string `json:"platform_id,omitempty"`
 	// Contextual data for the resource.
-	Context map[string]string `json:"context,omitempty"`
+	Context json.RawMessage `json:"context,omitempty"`
 	// Wheher the resource can be used.
 	Usable bool `json:"usable,omitempty"`
 	// The id of the subaccount

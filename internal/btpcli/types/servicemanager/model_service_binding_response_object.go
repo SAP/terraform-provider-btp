@@ -26,7 +26,7 @@ type ServiceBindingResponseObject struct {
 	// The ID of the subaccount.
 	SubaccountId string `json:"subaccount_id,omitempty"`
 	// Contextual data for the resource.
-	Context map[string]string `json:"context,omitempty"`
+	Context json.RawMessage `json:"context,omitempty"`
 	// Credentials to access the binding.
 	Credentials json.RawMessage `json:"credentials,omitempty"`
 	// The bound resources.

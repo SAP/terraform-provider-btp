@@ -95,8 +95,7 @@ func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource
 				MarkdownDescription: "Shows whether the service binding is ready.",
 				Computed:            true,
 			},
-			"context": schema.MapAttribute{
-				ElementType:         types.StringType,
+			"context": schema.StringAttribute{
 				MarkdownDescription: "The contextual data for the resource.",
 				Computed:            true,
 			},

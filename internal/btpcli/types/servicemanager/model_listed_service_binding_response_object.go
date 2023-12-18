@@ -9,6 +9,7 @@
 package servicemanager
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -22,7 +23,7 @@ type ListedServiceBindingResponseObject struct {
 	// The ID of the service instance associated with the binding.
 	ServiceInstanceId string `json:"service_instance_id,omitempty"`
 	// Contextual data for the resource.
-	Context map[string]string `json:"context,omitempty"`
+	Context json.RawMessage `json:"context,omitempty"`
 	// Contains the resources associated with the binding.
 	BindResource map[string]string `json:"bind_resource,omitempty"`
 	// Credentials to access the binding.
