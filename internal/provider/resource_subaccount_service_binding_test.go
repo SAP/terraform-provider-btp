@@ -3,6 +3,7 @@ package provider
 import (
 	"fmt"
 	"regexp"
+
 	//"regexp"
 	"testing"
 
@@ -194,6 +195,6 @@ func getServiceBindingImportStateIdNoServiceBindingId(resourceName string) resou
 		if !ok {
 			return "", fmt.Errorf("not found: %s", resourceName)
 		}
-		return fmt.Sprintf("%s", rs.Primary.Attributes["subaccount_id"]), nil
+		return rs.Primary.Attributes["subaccount_id"], nil
 	}
 }
