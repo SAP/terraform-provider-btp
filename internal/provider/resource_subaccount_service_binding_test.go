@@ -3,6 +3,8 @@ package provider
 import (
 	"fmt"
 	"regexp"
+
+	//"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -20,17 +22,17 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBinding("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "df532d07-57a7-415e-a261-23a398ef068a", "tfint-test-alert-sb"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBindingByServiceInstanceBySubaccount("uut", "integration-test-services-static", "tf-testacc-alertnotification-instance", "tfint-test-alert-sb"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_service_binding.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "last_modified", regexpValidRFC3999Format),
 					),
 				},
 				{
 					ResourceName:      "btp_subaccount_service_binding.uut",
-					ImportStateIdFunc: getServiceBindingImportStateId("btp_subaccount_service_binding.uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+					ImportStateIdFunc: getServiceBindingImportStateId("btp_subaccount_service_binding.uut"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -47,10 +49,10 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBindingWithLabels("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "df532d07-57a7-415e-a261-23a398ef068a", "tfint-test-alert-sb"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBindingWithLabelsByServiceInstanceBySubaccount("uut", "integration-test-services-static", "tf-testacc-alertnotification-instance", "tfint-test-alert-sb"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_service_binding.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_binding.uut", "labels.foo.0", "bar"),
@@ -59,13 +61,14 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			},
 		})
 	})
+
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountServiceBindingNoSubaccountId("uut", "df532d07-57a7-415e-a261-23a398ef068a", "tfint-test-alert-sb"),
+					Config:      hclResourceSubaccountServiceBindingNoSubaccountId("uut", "00000000-0000-0000-0000-000000000000", "tfint-test-alert-sb"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},
 			},
@@ -78,7 +81,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountServiceBindingNoServiceInstanceId("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "tfint-test-alert-sb"),
+					Config:      hclResourceSubaccountServiceBindingNoServiceInstanceId("uut", "00000000-0000-0000-0000-000000000000", "tfint-test-alert-sb"),
 					ExpectError: regexp.MustCompile(`The argument "service_instance_id" is required, but no definition was found`),
 				},
 			},
@@ -91,7 +94,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountServiceBindingNoName("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "df532d07-57a7-415e-a261-23a398ef068a"),
+					Config:      hclResourceSubaccountServiceBindingNoName("uut", "00000000-0000-0000-0000-00000000000", "00000000-0000-0000-0000-00000000000"),
 					ExpectError: regexp.MustCompile(`The argument "name" is required, but no definition was found`),
 				},
 			},
@@ -107,11 +110,11 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBinding("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "df532d07-57a7-415e-a261-23a398ef068a", "tfint-test-alert-sb"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBindingByServiceInstanceBySubaccount("uut", "integration-test-services-static", "tf-testacc-alertnotification-instance", "tfint-test-alert-sb"),
 				},
 				{
 					ResourceName:      "btp_subaccount_service_binding.uut",
-					ImportStateId:     "59cd458e-e66e-4b60-b6d8-8f219379f9a5",
+					ImportStateIdFunc: getServiceBindingImportStateIdNoServiceBindingId("btp_subaccount_service_binding.uut"),
 					ImportState:       true,
 					ImportStateVerify: true,
 					ExpectError:       regexp.MustCompile(`Unexpected Import Identifier`),
@@ -122,25 +125,31 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 
 }
 
-func hclResourceSubaccountServiceBinding(resourceName string, subaccountId string, serviceInstanceId string, name string) string {
-
+func hclResourceSubaccountServiceBindingByServiceInstanceBySubaccount(resourceName string, subaccountId string, serviceInstanceId string, name string) string {
 	return fmt.Sprintf(`
-		resource "btp_subaccount_service_binding" "%s"{
-		    subaccount_id       = "%s"
-			service_instance_id = "%s"
-			name                = "%s"
+		data "btp_subaccounts" "all" {}
+		data "btp_subaccount_service_instances" "all" {
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+		}
+		resource "btp_subaccount_service_binding" "%[1]s"{
+		    subaccount_id       = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			service_instance_id = [for ssi in data.btp_subaccount_service_instances.all.values : ssi.id if ssi.name == "%[3]s"][0]
+			name                = "%[4]s"
 		}`, resourceName, subaccountId, serviceInstanceId, name)
 }
 
-func hclResourceSubaccountServiceBindingWithLabels(resourceName string, subaccountId string, serviceInstanceId string, name string) string {
-
+func hclResourceSubaccountServiceBindingWithLabelsByServiceInstanceBySubaccount(resourceName string, subaccountName string, serviceInstanceName string, name string) string {
 	return fmt.Sprintf(`
-		resource "btp_subaccount_service_binding" "%s"{
-		    subaccount_id       = "%s"
-			service_instance_id = "%s"
-			name                = "%s"
+		data "btp_subaccounts" "all" {}
+		data "btp_subaccount_service_instances" "all" {
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+		}
+		resource "btp_subaccount_service_binding" "%[1]s"{
+		    subaccount_id       = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			service_instance_id = [for ssi in data.btp_subaccount_service_instances.all.values : ssi.id if ssi.name == "%[3]s"][0]
+			name                = "%[4]s"
 			labels              = {"foo" = ["bar"]}
-		}`, resourceName, subaccountId, serviceInstanceId, name)
+		}`, resourceName, subaccountName, serviceInstanceName, name)
 }
 
 func hclResourceSubaccountServiceBindingNoSubaccountId(resourceName string, serviceInstanceId string, name string) string {
@@ -170,13 +179,22 @@ func hclResourceSubaccountServiceBindingNoName(resourceName string, subaccountId
 		}`, resourceName, subaccountId, serviceInstanceId)
 }
 
-func getServiceBindingImportStateId(resourceName string, subaccountId string) resource.ImportStateIdFunc {
+func getServiceBindingImportStateId(resourceName string) resource.ImportStateIdFunc {
 	return func(state *terraform.State) (string, error) {
 		rs, ok := state.RootModule().Resources[resourceName]
 		if !ok {
 			return "", fmt.Errorf("not found: %s", resourceName)
 		}
+		return fmt.Sprintf("%s,%s", rs.Primary.Attributes["subaccount_id"], rs.Primary.ID), nil
+	}
+}
 
-		return fmt.Sprintf("%s,%s", subaccountId, rs.Primary.ID), nil
+func getServiceBindingImportStateIdNoServiceBindingId(resourceName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+		return rs.Primary.Attributes["subaccount_id"], nil
 	}
 }
