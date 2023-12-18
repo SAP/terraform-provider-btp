@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 // Needed for JSON mapping - fails with data types of resource
@@ -26,9 +27,9 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionBySubaccount(
 						"uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"My new role collection",
 						"Description of my new role collection",
 						subaccountRoleCollectionRoleRefTestType{
@@ -49,7 +50,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_role_collection.uut",
-					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,My new role collection",
+					ImportStateIdFunc: getImportIdForRoleCollection("btp_subaccount_role_collection.uut", "My new role collection"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -66,9 +67,9 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionBySubaccount(
 						"uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"My new role collection",
 						"Description of my new role collection",
 						subaccountRoleCollectionRoleRefTestType{
@@ -88,9 +89,9 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionBySubaccount(
 						"uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"My new role collection",
 						"Updated description of my new role collection",
 						subaccountRoleCollectionRoleRefTestType{
@@ -107,7 +108,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_role_collection.uut",
-					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,My new role collection",
+					ImportStateIdFunc: getImportIdForRoleCollection("btp_subaccount_role_collection.uut", "My new role collection"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -124,9 +125,9 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionBySubaccount(
 						"uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"My new role collection",
 						"Description of my new role collection",
 						subaccountRoleCollectionRoleRefTestType{
@@ -146,9 +147,9 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionBySubaccount(
 						"uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"My new role collection",
 						"",
 						subaccountRoleCollectionRoleRefTestType{
@@ -165,7 +166,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_role_collection.uut",
-					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,My new role collection",
+					ImportStateIdFunc: getImportIdForRoleCollection("btp_subaccount_role_collection.uut", "My new role collection"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -182,9 +183,9 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionBySubaccount(
 						"uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"My new role collection",
 						"Description of my new role collection",
 						subaccountRoleCollectionRoleRefTestType{
@@ -204,9 +205,9 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionWoDescription(
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionWoDescriptionBySubaccount(
 						"uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"My new role collection",
 						subaccountRoleCollectionRoleRefTestType{
 							Name:              "Subaccount Service Auditor",
@@ -222,7 +223,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_role_collection.uut",
-					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf,My new role collection",
+					ImportStateIdFunc: getImportIdForRoleCollection("btp_subaccount_role_collection.uut", "My new role collection"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -239,7 +240,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollection("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "My new role collection", "Description of my new role collection"),
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionBySubaccount("uut", "integration-test-acc-static", "My new role collection", "Description of my new role collection"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
@@ -248,7 +249,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_role_collection.uut",
-					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+					ImportStateId:     "00000000-0000-0000-0000-000000000000",
 					ImportState:       true,
 					ImportStateVerify: true,
 					ExpectError:       regexp.MustCompile(`Expected import identifier with format: subaccount_id, name. Got:`),
@@ -263,7 +264,7 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubAccountRoleCollection("uut", "this-is-not-a-uuid", "My new role collection", "Description of my new role collection"),
+					Config:      hclResourceSubAccountRoleCollectionBySubaccountId("uut", "this-is-not-a-uuid", "My new role collection", "Description of my new role collection"),
 					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
 				},
 			},
@@ -285,24 +286,37 @@ func TestResourceSubAccountRoleCollection(t *testing.T) {
 
 }
 
-func hclResourceSubAccountRoleCollection(resourceName string, subaccountId string, displayName string, description string, roles ...subaccountRoleCollectionRoleRefTestType) string {
+func getEmptyRolesOrDefault(roles []subaccountRoleCollectionRoleRefTestType) string {
 	if roles == nil {
 		roles = []subaccountRoleCollectionRoleRefTestType{}
 	}
 	rolesJson, _ := json.Marshal(roles)
+	return string(rolesJson)
+}
 
-	return fmt.Sprintf(`resource "btp_subaccount_role_collection" "%s" {
+func hclResourceSubAccountRoleCollectionBySubaccountId(resourceName string, subaccountId string, displayName string, description string, roles ...subaccountRoleCollectionRoleRefTestType) string {
+	return fmt.Sprintf(`
+	resource "btp_subaccount_role_collection" "%s" {
         subaccount_id       = "%s"
 		name      			= "%s"
         description      	= "%s"
 		roles               = %v
-    }`, resourceName, subaccountId, displayName, description, string(rolesJson))
+    }`, resourceName, subaccountId, displayName, description, getEmptyRolesOrDefault(roles))
+}
+
+func hclResourceSubAccountRoleCollectionBySubaccount(resourceName string, subaccountName string, displayName string, description string, roles ...subaccountRoleCollectionRoleRefTestType) string {
+	return fmt.Sprintf(`
+	data "btp_subaccounts" "all" {}
+	resource "btp_subaccount_role_collection" "%s" {
+        subaccount_id       = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+		name      			= "%s"
+        description      	= "%s"
+		roles               = %v
+    }`, resourceName, subaccountName, displayName, description, getEmptyRolesOrDefault(roles))
 }
 
 func hclResourceSubAccountRoleCollectionNoSubaccountId(resourceName string, displayName string, description string) string {
-
 	roles := []subaccountRoleCollectionRoleRefTestType{}
-
 	roles = append(roles, subaccountRoleCollectionRoleRefTestType{
 		Name:              "Subaccount Viewer",
 		RoleTemplateAppId: "cis-local!b2",
@@ -324,15 +338,22 @@ func hclResourceSubAccountRoleCollectionNoSubaccountId(resourceName string, disp
     }`, resourceName, displayName, description, string(rolesJson))
 }
 
-func hclResourceSubAccountRoleCollectionWoDescription(resourceName string, subaccountId string, displayName string, roles ...subaccountRoleCollectionRoleRefTestType) string {
-	if roles == nil {
-		roles = []subaccountRoleCollectionRoleRefTestType{}
-	}
-	rolesJson, _ := json.Marshal(roles)
-
-	return fmt.Sprintf(`resource "btp_subaccount_role_collection" "%s" {
-        subaccount_id       = "%s"
+func hclResourceSubAccountRoleCollectionWoDescriptionBySubaccount(resourceName string, subaccountName string, displayName string, roles ...subaccountRoleCollectionRoleRefTestType) string {
+	return fmt.Sprintf(`
+	data "btp_subaccounts" "all" {}
+	resource "btp_subaccount_role_collection" "%s" {
+        subaccount_id       = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 		name      			= "%s"
 		roles               = %v
-    }`, resourceName, subaccountId, displayName, string(rolesJson))
+    }`, resourceName, subaccountName, displayName, getEmptyRolesOrDefault(roles))
+}
+
+func getImportIdForRoleCollection(resourceName string, roleCollectionDisplayName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+		return fmt.Sprintf("%s,%s", rs.Primary.Attributes["subaccount_id"], roleCollectionDisplayName), nil
+	}
 }
