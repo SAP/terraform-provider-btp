@@ -14,8 +14,17 @@ permissions:
   contents: write
 
 jobs:
+  call-workflow-test:
+    uses: ./.github/workflows/test.yml
+
+  call-workflow-regression-test:
+    uses: ./.github/workflows/schema-regression-test.yml  
+
   goreleaser:
     runs-on: ubuntu-latest
+    needs: 
+      - call-workflow-test
+      - call-workflow-regression-test
     steps:
       - uses: actions/checkout@v4 # v4.0.0
         with:

@@ -4,6 +4,11 @@ variable "globalaccount" {
 }
 
 
+variable "idp" {
+  type        = string
+  description = "The IDP to use for authentication."  
+}
+
 variable "cli_server" {
   type        = string
   description = "The URL of the CLI server"
