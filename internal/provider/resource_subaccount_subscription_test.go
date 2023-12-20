@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceSubaccountSubscription(t *testing.T) {
@@ -18,10 +19,10 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSubscription("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "auditlog-viewer", "free"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccount("uut", "integration-test-services-static", "auditlog-viewer", "free"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", "59cd458e-e66e-4b60-b6d8-8f219379f9a5"),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "auditlog-viewer"),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_id", "auditlog-viewer!t49"),
@@ -35,7 +36,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_subscription.uut",
-					ImportStateId:     "59cd458e-e66e-4b60-b6d8-8f219379f9a5,auditlog-viewer,free",
+					ImportStateIdFunc: getSubscriptionImportStateId("btp_subaccount_subscription.uut", "auditlog-viewer", "free"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -74,7 +75,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountSubscriptionNoPlan("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "auditlog-viewer"),
+					Config:      hclResourceSubaccountSubscriptionNoPlan("uut", "00000000-0000-0000-0000-000000000000", "auditlog-viewer"),
 					ExpectError: regexp.MustCompile(`The argument "plan_name" is required, but no definition was found`),
 				},
 			},
@@ -90,11 +91,11 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSubscription("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "auditlog-viewer", "free"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccount("uut", "integration-test-services-static", "auditlog-viewer", "free"),
 				},
 				{
 					ResourceName:      "btp_subaccount_subscription.uut",
-					ImportStateId:     "59cd458e-e66e-4b60-b6d8-8f219379f9a5",
+					ImportStateIdFunc: getSubscriptionImportStateIdNoAppNameNoPlanName("btp_subaccount_subscription.uut"),
 					ImportState:       true,
 					ImportStateVerify: true,
 					ExpectError:       regexp.MustCompile(`Unexpected Import Identifier`),
@@ -105,14 +106,14 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 
 }
 
-func hclResourceSubaccountSubscription(resourceName string, subaccountId string, appName string, planName string) string {
-
+func hclResourceSubaccountSubscriptionBySubaccount(resourceName string, subaccountName string, appName string, planName string) string {
 	return fmt.Sprintf(`
+		data "btp_subaccounts" "all" {}
 		resource "btp_subaccount_subscription" "%s"{
-		    subaccount_id    = "%s"
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 			app_name         = "%s"
 			plan_name        = "%s"
-		}`, resourceName, subaccountId, appName, planName)
+		}`, resourceName, subaccountName, appName, planName)
 }
 
 func hclResourceSubaccountSubscriptionNoSubaccountId(resourceName string, appName string, planName string) string {
@@ -140,4 +141,24 @@ func hclResourceSubaccountSubscriptionNoPlan(resourceName string, subaccountId s
 		    subaccount_id    = "%s"
 			app_name         = "%s"
 		}`, resourceName, subaccountId, appName)
+}
+
+func getSubscriptionImportStateId(resourceName string, appName string, planName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+		return fmt.Sprintf("%s,%s,%s", rs.Primary.Attributes["subaccount_id"], appName, planName), nil
+	}
+}
+
+func getSubscriptionImportStateIdNoAppNameNoPlanName(resourceName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+		return fmt.Sprintf("%s", rs.Primary.Attributes["subaccount_id"]), nil
+	}
 }
