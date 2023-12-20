@@ -217,6 +217,6 @@ func getTrustConfigIdForImportNoTrustConfigId(resourceName string) resource.Impo
 			return "", fmt.Errorf("not found: %s", resourceName)
 		}
 
-		return fmt.Sprintf("%s", rs.Primary.Attributes["subaccount_id"]), nil
+		return rs.Primary.Attributes["subaccount_id"], nil
 	}
 }
