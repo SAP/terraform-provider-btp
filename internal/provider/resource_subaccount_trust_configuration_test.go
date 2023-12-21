@@ -21,7 +21,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationComplete("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com", "terraformint.accounts400.ondemand.com", "Custom IAS tenant for apps", "Description for terraformint.accounts400.ondemand.com", "custom link text", false, false, "inactive"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationCompleteBySubaccount("uut", "integration-test-acc-static", "terraformint.accounts400.ondemand.com", "terraformint.accounts400.ondemand.com", "Custom IAS tenant for apps", "Description for terraformint.accounts400.ondemand.com", "custom link text", false, false, "inactive"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
@@ -40,7 +40,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimal("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", "terraformint.accounts400.ondemand.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
@@ -77,7 +77,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimal("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", "terraformint.accounts400.ondemand.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
@@ -96,7 +96,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationComplete("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformtest.accounts400.ondemand.com", "terraformtest.accounts400.ondemand.com", "Custom IAS tenant for apps", "Description for terraformint.accounts400.ondemand.com", "custom link text", false, false, "inactive"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationCompleteBySubaccount("uut", "integration-test-acc-static", "terraformtest.accounts400.ondemand.com", "terraformtest.accounts400.ondemand.com", "Custom IAS tenant for apps", "Description for terraformint.accounts400.ondemand.com", "custom link text", false, false, "inactive"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformtest.accounts400.ondemand.com"),
@@ -133,11 +133,11 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimal("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", "terraformint.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", "terraformint.accounts400.ondemand.com"),
 				},
 				{
 					ResourceName:      "btp_subaccount_trust_configuration.uut",
-					ImportStateId:     "ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+					ImportStateIdFunc: getTrustConfigIdForImportNoTrustConfigId("btp_subaccount_trust_configuration.uut"),
 					ImportState:       true,
 					ImportStateVerify: true,
 					ExpectError:       regexp.MustCompile(`Unexpected Import Identifier`),
@@ -155,7 +155,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimal("uut", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", ""),
+					Config:      hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccountId("uut", "00000000-0000-0000-0000-000000000000", ""),
 					ExpectError: regexp.MustCompile(`Empty Identity Provider`),
 				},
 			},
@@ -163,10 +163,11 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 	})
 }
 
-func hclResourceSubaccountTrustConfigurationComplete(resourceName string, subaccountId string, identityProvider string, domain string, name string, description string, linkText string, availableForUserLogin bool, autoCreateShadowUsers bool, status string) string {
+func hclResourceSubaccountTrustConfigurationCompleteBySubaccount(resourceName string, subaccountName string, identityProvider string, domain string, name string, description string, linkText string, availableForUserLogin bool, autoCreateShadowUsers bool, status string) string {
 	template := `
+data "btp_subaccounts" "all" {}
 resource "btp_subaccount_trust_configuration" "%s" {
-    subaccount_id            = "%s"
+    subaccount_id            = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
     identity_provider        = "%s"
     domain                   = "%s"
     name                     = "%s"
@@ -176,17 +177,25 @@ resource "btp_subaccount_trust_configuration" "%s" {
     auto_create_shadow_users = %t
     status                   = "%s"
 }`
-
-	return fmt.Sprintf(template, resourceName, subaccountId, identityProvider, domain, name, description, linkText, availableForUserLogin, autoCreateShadowUsers, status)
+	return fmt.Sprintf(template, resourceName, subaccountName, identityProvider, domain, name, description, linkText, availableForUserLogin, autoCreateShadowUsers, status)
 }
 
-func hclResourceSubaccountTrustConfigurationMinimal(resourceName string, subaccountId string, identityProvider string) string {
+func hclResourceSubaccountTrustConfigurationMinimalBySubaccountId(resourceName string, subaccountId string, identityProvider string) string {
 	template := `
 resource "btp_subaccount_trust_configuration" "%s" {
     subaccount_id 		= "%s"
     identity_provider  	= "%s"
 }`
+	return fmt.Sprintf(template, resourceName, subaccountId, identityProvider)
+}
 
+func hclResourceSubaccountTrustConfigurationMinimalBySubaccount(resourceName string, subaccountId string, identityProvider string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+resource "btp_subaccount_trust_configuration" "%s" {
+    subaccount_id 		= [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+    identity_provider  	= "%s"
+}`
 	return fmt.Sprintf(template, resourceName, subaccountId, identityProvider)
 }
 
@@ -197,6 +206,17 @@ func getTrustConfigIdForImport(resourceName string) resource.ImportStateIdFunc {
 			return "", fmt.Errorf("not found: %s", resourceName)
 		}
 
-		return fmt.Sprintf("%s,%s", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", rs.Primary.ID), nil
+		return fmt.Sprintf("%s,%s", rs.Primary.Attributes["subaccount_id"], rs.Primary.ID), nil
+	}
+}
+
+func getTrustConfigIdForImportNoTrustConfigId(resourceName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+
+		return rs.Primary.Attributes["subaccount_id"], nil
 	}
 }
