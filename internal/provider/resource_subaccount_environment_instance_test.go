@@ -32,7 +32,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCF("uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"cloudFoundry-from-terraform",
 						"standard",
 						"cf-eu12",
@@ -69,7 +69,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCFTimeout("uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"cloudFoundry-from-terraform",
 						"standard",
 						"cf-eu12",
@@ -94,7 +94,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 				},
 				{
 					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCFTimeout("uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"cloudFoundry-from-terraform",
 						"standard",
 						"cf-eu12",
@@ -130,7 +130,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCF("uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"cloudFoundry-from-terraform",
 						"standard",
 						"cf-eu12",
@@ -149,7 +149,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 				},
 				{
 					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCF("uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"cloudFoundry-from-terraform",
 						"standard",
 						"cf-eu12",
@@ -169,7 +169,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 				},
 				{
 					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCFWithOrgParamsWoLandscapeLabel("uut",
-						"ef23ace8-6ade-4d78-9c1f-8df729548bbf",
+						"integration-test-acc-static",
 						"cloudFoundry-from-terraform",
 						"standard",
 						cfOrgParameters{
@@ -195,7 +195,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 	// See also: https://github.com/hashicorp/terraform-plugin-testing/issues/85
 }
 
-func hclResourceSubaccountEnvironmentInstanceCF(resourceName string, subaccountId string, name string, planName string, landscapeLabel string, orgName string, user string) string {
+func hclResourceSubaccountEnvironmentInstanceCF(resourceName string, subaccountName string, name string, planName string, landscapeLabel string, orgName string, user string) string {
 	cfParameters := cfOrgParameters{
 		InstanceName: orgName,
 		Users: []cfUsers{
@@ -205,40 +205,41 @@ func hclResourceSubaccountEnvironmentInstanceCF(resourceName string, subaccountI
 			},
 		},
 	}
-
-	return hclResourceSubaccountEnvironmentInstanceCFWithOrgParams(resourceName, subaccountId, name, planName, landscapeLabel, cfParameters)
+	return hclResourceSubaccountEnvironmentInstanceCFWithOrgParamsBySubaccount(resourceName, subaccountName, name, planName, landscapeLabel, cfParameters)
 }
 
-func hclResourceSubaccountEnvironmentInstanceCFWithOrgParams(resourceName string, subaccountId string, name string, planName string, landscapeLabel string, cfParameters cfOrgParameters) string {
+func hclResourceSubaccountEnvironmentInstanceCFWithOrgParamsBySubaccount(resourceName string, subaccountName string, name string, planName string, landscapeLabel string, cfParameters cfOrgParameters) string {
 	jsonCfParameters, _ := json.Marshal(cfParameters)
 
 	return fmt.Sprintf(`
+data "btp_subaccounts" "all" {}
 resource "btp_subaccount_environment_instance" "%s"{
-    subaccount_id    = "%s"
+    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	name             = "%s"
 	environment_type = "cloudfoundry"
 	plan_name        = "%s"
 	service_name     = "cloudfoundry"
 	landscape_label  = "%s"
 	parameters       = %q
-}`, resourceName, subaccountId, name, planName, landscapeLabel, string(jsonCfParameters))
+}`, resourceName, subaccountName, name, planName, landscapeLabel, string(jsonCfParameters))
 }
 
-func hclResourceSubaccountEnvironmentInstanceCFWithOrgParamsWoLandscapeLabel(resourceName string, subaccountId string, name string, planName string, cfParameters cfOrgParameters) string {
+func hclResourceSubaccountEnvironmentInstanceCFWithOrgParamsWoLandscapeLabel(resourceName string, subaccountName string, name string, planName string, cfParameters cfOrgParameters) string {
 	jsonCfParameters, _ := json.Marshal(cfParameters)
 
 	return fmt.Sprintf(`
+data "btp_subaccounts" "all" {}
 resource "btp_subaccount_environment_instance" "%s"{
-    subaccount_id    = "%s"
+    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	name             = "%s"
 	environment_type = "cloudfoundry"
 	plan_name        = "%s"
 	service_name     = "cloudfoundry"
 	parameters       = %q
-}`, resourceName, subaccountId, name, planName, string(jsonCfParameters))
+}`, resourceName, subaccountName, name, planName, string(jsonCfParameters))
 }
 
-func hclResourceSubaccountEnvironmentInstanceCFTimeout(resourceName string, subaccountId string, name string, planName string, landscapeLabel string, orgName string, user string, createTimeout string, updateTimeout string, deleteTimeout string) string {
+func hclResourceSubaccountEnvironmentInstanceCFTimeout(resourceName string, subaccountName string, name string, planName string, landscapeLabel string, orgName string, user string, createTimeout string, updateTimeout string, deleteTimeout string) string {
 	cfParameters := cfOrgParameters{
 		InstanceName: orgName,
 		Users: []cfUsers{
@@ -252,8 +253,9 @@ func hclResourceSubaccountEnvironmentInstanceCFTimeout(resourceName string, suba
 	jsonCfParameters, _ := json.Marshal(cfParameters)
 
 	return fmt.Sprintf(`
+data "btp_subaccounts" "all" {}
 resource "btp_subaccount_environment_instance" "%s"{
-    subaccount_id    = "%s"
+    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	name             = "%s"
 	environment_type = "cloudfoundry"
 	plan_name        = "%s"
@@ -265,7 +267,7 @@ resource "btp_subaccount_environment_instance" "%s"{
 		update = "%s"
 		delete = "%s"
 	  }
-}`, resourceName, subaccountId, name, planName, landscapeLabel, string(jsonCfParameters), createTimeout, updateTimeout, deleteTimeout)
+}`, resourceName, subaccountName, name, planName, landscapeLabel, string(jsonCfParameters), createTimeout, updateTimeout, deleteTimeout)
 }
 
 func getEnvironmentInstanceIdForImport(resourceName string) resource.ImportStateIdFunc {
@@ -274,7 +276,6 @@ func getEnvironmentInstanceIdForImport(resourceName string) resource.ImportState
 		if !ok {
 			return "", fmt.Errorf("not found: %s", resourceName)
 		}
-
-		return fmt.Sprintf("%s,%s", "ef23ace8-6ade-4d78-9c1f-8df729548bbf", rs.Primary.ID), nil
+		return fmt.Sprintf("%s,%s", rs.Primary.Attributes["subaccount_id"], rs.Primary.ID), nil
 	}
 }
