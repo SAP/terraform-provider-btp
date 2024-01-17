@@ -3,27 +3,26 @@
 ###
 
 locals {
-  datetime                                                  = formatdate("YYYYMMDDhhmmss", timestamp())
-  prefix_integration_test                                   = "integration-test-"
-  prefix_integration_test_dir                               = "${local.prefix_integration_test}dir-"
-  prefix_integration_test_account                           = "${local.prefix_integration_test}acc-"
-  integration_test_account_static                           = "${local.prefix_integration_test_account}static"
-  integration_test_account_static_timestamped               = "${local.integration_test_account_static}-${local.datetime}"
-  integration_test_account_entitlements_stacked             = "${local.prefix_integration_test_account}entitlements-stacked"
-  integration_test_account_entitlements_stacked_timestamped = "${local.integration_test_account_entitlements_stacked}-${local.datetime}"
-  integration_test_services_static                          = "${local.prefix_integration_test}services-static"
-  integration_test_services_static_timestamped              = "${local.integration_test_services_static}-${local.datetime}"
-  integration_test_security_settings                        = "${local.prefix_integration_test}security-settings"
-  integration_test_security_settings_timestamped            = "${local.integration_test_security_settings}-${local.datetime}"
-  integration_test_dir_static                               = "${local.prefix_integration_test_dir}static"
-  integration_test_dir_se_static                            = "${local.prefix_integration_test_dir}se-static"
-  integration_test_dir_entitlements                         = "${local.prefix_integration_test_dir}entitlements"
-  integration_test_dir_entitlements_stacked                 = "${local.prefix_integration_test_dir}entitlements-stacked"
-  disclaimer_description                                    = "Please don't modify. This is used for integration tests."
-  testing_idps                                              = ["sap.default", btp_globalaccount_trust_configuration.gtc_idp_testing.origin]
-  idp_groups                                                = ["BTP Terraform Administrator", "BTP Terraform Developer"]
-  testing_idps_group_mapping                                = {for val in setproduct(var.trusted_idp_origin_keys, local.idp_groups):
-                                                                "${val[0]}-${val[1]}" => val}
+  prefix_integration_test                                = "integration-test-"
+  prefix_integration_test_dir                            = "${local.prefix_integration_test}dir-"
+  prefix_integration_test_account                        = "${local.prefix_integration_test}acc-"
+  integration_test_account_static                        = "${local.prefix_integration_test_account}static"
+  integration_test_account_static_extended               = "${local.integration_test_account_static}-${var.subaccount_subdomain_extension}"
+  integration_test_account_entitlements_stacked          = "${local.prefix_integration_test_account}entitlements-stacked"
+  integration_test_account_entitlements_stacked_extended = "${local.integration_test_account_entitlements_stacked}-${var.subaccount_subdomain_extension}"
+  integration_test_services_static                       = "${local.prefix_integration_test}services-static"
+  integration_test_services_static_extended              = "${local.integration_test_services_static}-${var.subaccount_subdomain_extension}"
+  integration_test_security_settings                     = "${local.prefix_integration_test}security-settings"
+  integration_test_security_settings_extended            = "${local.integration_test_security_settings}-${var.subaccount_subdomain_extension}"
+  integration_test_dir_static                            = "${local.prefix_integration_test_dir}static"
+  integration_test_dir_se_static                         = "${local.prefix_integration_test_dir}se-static"
+  integration_test_dir_entitlements                      = "${local.prefix_integration_test_dir}entitlements"
+  integration_test_dir_entitlements_stacked              = "${local.prefix_integration_test_dir}entitlements-stacked"
+  disclaimer_description                                 = "Please don't modify. This is used for integration tests."
+  testing_idps                                           = ["sap.default", btp_globalaccount_trust_configuration.gtc_idp_testing.origin]
+  idp_groups                                             = ["BTP Terraform Administrator", "BTP Terraform Developer"]
+  testing_idps_group_mapping                             = {for val in setproduct(var.trusted_idp_origin_keys, local.idp_groups):
+                                                             "${val[0]}-${val[1]}" => val}
 }
 
 ###
@@ -33,7 +32,7 @@ locals {
 resource "btp_subaccount" "sa_acc_static" {
   name        = local.integration_test_account_static
   description = local.disclaimer_description
-  subdomain   = local.integration_test_account_static_timestamped
+  subdomain   = local.integration_test_account_static_extended
   region      = var.region
   labels      = {
     label1 = [
@@ -46,20 +45,20 @@ resource "btp_subaccount" "sa_acc_static" {
 resource "btp_subaccount" "sa_acc_entitlements_stacked" {
   parent_id = btp_directory.dir_entitlements_stacked.id
   name      = local.integration_test_account_entitlements_stacked
-  subdomain = local.integration_test_account_entitlements_stacked_timestamped
+  subdomain = local.integration_test_account_entitlements_stacked_extended
   region    = var.region
 }
 
 resource "btp_subaccount" "sa_services_static" {
   name         = local.integration_test_services_static
-  subdomain    = local.integration_test_services_static_timestamped
+  subdomain    = local.integration_test_services_static_extended
   region       = var.region
   description  = "Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions"
 }
 
 resource "btp_subaccount" "sa_security_settings" {
   name      = local.integration_test_security_settings
-  subdomain = local.integration_test_security_settings_timestamped
+  subdomain = local.integration_test_security_settings_extended
   region    = var.region
 }
 
