@@ -42,19 +42,33 @@ func (f servicesInstanceFacade) List(ctx context.Context, subaccountId string, f
 }
 
 func (f servicesInstanceFacade) GetById(ctx context.Context, subaccountId string, instanceId string) (servicemanager.ServiceInstanceResponseObject, CommandResponse, error) {
-	return doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+	return f.doGet(ctx, map[string]string{
 		"subaccount": subaccountId,
 		"id":         instanceId,
 		"parameters": "false",
-	}))
+	})
 }
 
 func (f servicesInstanceFacade) GetByName(ctx context.Context, subaccountId string, instanceName string) (servicemanager.ServiceInstanceResponseObject, CommandResponse, error) {
-	return doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+	return f.doGet(ctx, map[string]string{
 		"subaccount": subaccountId,
 		"name":       instanceName,
 		"parameters": "false",
-	}))
+	})
+}
+
+func (f servicesInstanceFacade) doGet(ctx context.Context, params map[string]string) (sir servicemanager.ServiceInstanceResponseObject, cr CommandResponse, err error) {
+	for _, showParameters := range []string{"true", "false"} {
+		params["parameters"] = showParameters
+
+		sir, cr, err = doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+
+		if err == nil {
+			break
+		}
+	}
+
+	return
 }
 
 type ServiceInstanceCreateInput struct {
