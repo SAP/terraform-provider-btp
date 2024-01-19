@@ -3,18 +3,26 @@
 ###
 
 locals {
-  prefix_integration_test                       = "integration-test-"
-  prefix_integration_test_dir                   = "${local.prefix_integration_test}dir-"
-  prefix_integration_test_account               = "${local.prefix_integration_test}acc-"
-  integration_test_account_static               = "${local.prefix_integration_test_account}static"
-  integration_test_account_entitlements_stacked = "${local.prefix_integration_test_account}entitlements-stacked"
-  integration_test_services_static              = "${local.prefix_integration_test}services-static"
-  integration_test_security_settings            = "${local.prefix_integration_test}security-settings"
-  integration_test_dir_static                   = "${local.prefix_integration_test_dir}static"
-  integration_test_dir_se_static                = "${local.prefix_integration_test_dir}se-static"
-  integration_test_dir_entitlements             = "${local.prefix_integration_test_dir}entitlements"
-  integration_test_dir_entitlements_stacked     = "${local.prefix_integration_test_dir}entitlements-stacked"
-  disclaimer_description                        = "Please don't modify. This is used for integration tests."
+  prefix_integration_test                                = "integration-test-"
+  prefix_integration_test_dir                            = "${local.prefix_integration_test}dir-"
+  prefix_integration_test_account                        = "${local.prefix_integration_test}acc-"
+  integration_test_account_static                        = "${local.prefix_integration_test_account}static"
+  integration_test_account_static_extended               = "${local.integration_test_account_static}-${var.subaccount_subdomain_extension}"
+  integration_test_account_entitlements_stacked          = "${local.prefix_integration_test_account}entitlements-stacked"
+  integration_test_account_entitlements_stacked_extended = "${local.integration_test_account_entitlements_stacked}-${var.subaccount_subdomain_extension}"
+  integration_test_services_static                       = "${local.prefix_integration_test}services-static"
+  integration_test_services_static_extended              = "${local.integration_test_services_static}-${var.subaccount_subdomain_extension}"
+  integration_test_security_settings                     = "${local.prefix_integration_test}security-settings"
+  integration_test_security_settings_extended            = "${local.integration_test_security_settings}-${var.subaccount_subdomain_extension}"
+  integration_test_dir_static                            = "${local.prefix_integration_test_dir}static"
+  integration_test_dir_se_static                         = "${local.prefix_integration_test_dir}se-static"
+  integration_test_dir_entitlements                      = "${local.prefix_integration_test_dir}entitlements"
+  integration_test_dir_entitlements_stacked              = "${local.prefix_integration_test_dir}entitlements-stacked"
+  disclaimer_description                                 = "Please don't modify. This is used for integration tests."
+  testing_idps                                           = ["sap.default", btp_globalaccount_trust_configuration.gtc_idp_testing.origin]
+  idp_groups                                             = ["BTP Terraform Administrator", "BTP Terraform Developer"]
+  testing_idps_group_mapping                             = {for val in setproduct(var.trusted_idp_origin_keys, local.idp_groups):
+                                                             "${val[0]}-${val[1]}" => val}
 }
 
 ###
@@ -24,7 +32,7 @@ locals {
 resource "btp_subaccount" "sa_acc_static" {
   name        = local.integration_test_account_static
   description = local.disclaimer_description
-  subdomain   = local.integration_test_account_static
+  subdomain   = local.integration_test_account_static_extended
   region      = var.region
   labels      = {
     label1 = [
@@ -37,20 +45,20 @@ resource "btp_subaccount" "sa_acc_static" {
 resource "btp_subaccount" "sa_acc_entitlements_stacked" {
   parent_id = btp_directory.dir_entitlements_stacked.id
   name      = local.integration_test_account_entitlements_stacked
-  subdomain = local.integration_test_account_entitlements_stacked
+  subdomain = local.integration_test_account_entitlements_stacked_extended
   region    = var.region
 }
 
 resource "btp_subaccount" "sa_services_static" {
   name         = local.integration_test_services_static
-  subdomain    = local.integration_test_services_static
+  subdomain    = local.integration_test_services_static_extended
   region       = var.region
   description  = "Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions"
 }
 
 resource "btp_subaccount" "sa_security_settings" {
   name      = local.integration_test_security_settings
-  subdomain = local.integration_test_security_settings
+  subdomain = local.integration_test_security_settings_extended
   region    = var.region
 }
 
@@ -90,29 +98,22 @@ resource "btp_directory" "dir_se_static" {
 ###
 
 resource "btp_directory_role_collection_assignment" "drca_dir_se_static_jenny_directory_viewer" {
-  for_each             = toset(["sap.default", "terraformint-platform"])
+  count                = length(local.testing_idps)
   directory_id         = btp_directory.dir_se_static.id
   role_collection_name = "Directory Viewer"
   user_name            = "jenny.doe@test.com"
-  origin               = each.value
+  origin               = local.testing_idps[count.index]
 }
 
 ###
 # global account role collection assignments
 ###
 
-resource "btp_globalaccount_role_collection_assignment" "grca_globalaccount_administrators" {
-  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
-  role_collection_name = "Global Account Administrator"
-  group_name           = each.value
-  origin               = "terraform-platform"
-}
-
 resource "btp_globalaccount_role_collection_assignment" "grca_jenny_ga_viewer" {
-  for_each             = toset(["sap.default", "terraformint-platform"])
+  count                = length(local.testing_idps)
   role_collection_name = "Global Account Viewer"
   user_name            = "jenny.doe@test.com"
-  origin               = each.value
+  origin               = local.testing_idps[count.index]
 }
 
 ###
@@ -121,42 +122,42 @@ resource "btp_globalaccount_role_collection_assignment" "grca_jenny_ga_viewer" {
 
 resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_static_subaccount_administrators" {
   subaccount_id        = btp_subaccount.sa_acc_static.id
-  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
+  for_each             = local.testing_idps_group_mapping
   role_collection_name = "Subaccount Administrator"
-  group_name           = each.value
-  origin               = "terraform-platform"
+  group_name           = each.value[1]
+  origin               = each.value[0]
 }
 
 resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_entitlements_stacked_subaccount_administrators" {
   subaccount_id        = btp_subaccount.sa_acc_entitlements_stacked.id
-  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
+  for_each             = local.testing_idps_group_mapping
   role_collection_name = "Subaccount Administrator"
-  group_name           = each.value
-  origin               = "terraform-platform"
+  group_name           = each.value[1]
+  origin               = each.value[0]
 }
 
 resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_subaccount_administrators" {
   subaccount_id        = btp_subaccount.sa_services_static.id
-  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
+  for_each             = local.testing_idps_group_mapping
   role_collection_name = "Subaccount Administrator"
-  group_name           = each.value
-  origin               = "terraform-platform"
+  group_name           = each.value[1]
+  origin               = each.value[0]
 }
 
 resource "btp_subaccount_role_collection_assignment" "srca_sa_security_settings_subaccount_administrators" {
   subaccount_id        = btp_subaccount.sa_security_settings.id
-  for_each             = toset(["BTP Terraform Administrator", "BTP Terraform Developer"])
+  for_each             = local.testing_idps_group_mapping
   role_collection_name = "Subaccount Administrator"
-  group_name           = each.value
-  origin               = "terraform-platform"
+  group_name           = each.value[1]
+  origin               = each.value[0]
 }
 
 resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_static_jenny_ga_viewer" {
+  count                = length(local.testing_idps)
   subaccount_id        = btp_subaccount.sa_acc_static.id
-  for_each             = toset(["sap.default", "terraformint-platform"])
   role_collection_name = "Subaccount Viewer"
   user_name            = "jenny.doe@test.com"
-  origin               = each.value
+  origin               = local.testing_idps[count.index]
 }
 
 ###
@@ -203,11 +204,10 @@ resource "btp_globalaccount_resource_provider" "grp_aws" {
 # global account trust configuration
 ###
 
-resource "btp_globalaccount_trust_configuration" "gtc_idp_terraformint" {
-  identity_provider = "terraformint.accounts400.ondemand.com"
-  name              = "terraformint-platform"
-  description       = "Custom Platform Identity Provider"
-  origin            = "terraformint-platform"
+resource "btp_globalaccount_trust_configuration" "gtc_idp_testing" {
+  identity_provider = var.testing_idp
+  name              = split(".", var.testing_idp)[0]
+  description       = "Custom Platform Identity Provider for Test Cases"
 }
 
 ###

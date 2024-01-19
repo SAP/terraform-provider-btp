@@ -17,7 +17,7 @@ This directory contains Terraform definitions for setting up a Global Account fo
     - Audit Log Service | auditlog: standard (Quota: 1)
     - Malware Scanning Service | malware-scanner: clamav (Quota: 1)
 - IDP with Technical User
-  - Groups need to be properly configured
+  - Using groups is required for automatic resource assignments (see variables.tf)
 
 # Setup
 To setup a global account set the following environment variables:
