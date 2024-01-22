@@ -60,6 +60,38 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - simple service creation wo parameters", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_parameters")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithParametersJSONBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-xsuaa", "application", "xsuaa", "{\"xsappname\": \"my-test-application\"}"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-xsuaa"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "xsuaa"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "parameters['xsappname']", "my-test-application"),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_service_instance.uut",
+					ImportStateIdFunc: getServiceInstanceIdForImport("btp_subaccount_service_instance.uut"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
 	t.Run("happy path - simple service creation with timeout", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance_with_timeouts")
 		defer stopQuietly(rec)
@@ -303,6 +335,24 @@ func hclResourceSubaccountServiceInstanceWoParametersBySubaccountByServicePlan(r
 			name             = "%[3]s"
 		    serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
 		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName)
+}
+
+func hclResourceSubaccountServiceInstanceWithParametersJSONBySubaccountByServicePlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string, parametersJSON string) string {
+	return fmt.Sprintf(`
+		data "btp_subaccounts" "all" {}
+		data "btp_subaccount_service_plans" "all" {
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+		}
+		data "btp_subaccount_service_offering" "so" {
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			name =  "%[5]s"
+		}
+		resource "btp_subaccount_service_instance" "%[1]s"{
+		    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			name             = "%[3]s"
+		    serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
+            parameters       = "%s"
+		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName, parametersJSON)
 }
 
 func hclResourceSubaccountServiceInstanceWoParametersWithTimeoutsBySubaccountByServicePlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string, createTimeout string, updateTimeout string, deleteTimeout string) string {
