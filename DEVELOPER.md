@@ -12,10 +12,9 @@ First, you need to setup your development environment. The following sections de
 
 **Step 2:** There is no step 2 😎.
 
-The following variants are supported for the GitHub Codespace:
+The following variant is supported for the GitHub Codespace:
 
 * "Terraform provider for SAP BTP - Development" - the configuration in [.devcontainer/default/devcontainer.json](.devcontainer/default/devcontainer.json) contains the development override for the Terraform provider so that the local build is used. You must set the environment variables `BTP_USERNAME` and `BTP_PASSWORD` yourself.
-* "Terraform provider for SAP BTP - Development (with remote state)" - the configuration in [.devcontainer/default_remote/devcontainer.json](.devcontainer/default_remote/devcontainer.json) enhances the "Terraform provider for SAP BTP - Development" by adding the configuration JSON for a state backend of type `remote`. To complete the setup you must add your access token to the file `~/.terraform.d/credentials.tfrc.json`.
 
 ## Dev Container
 
