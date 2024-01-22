@@ -60,7 +60,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path - simple service creation wo parameters", func(t *testing.T) {
+	t.Run("happy path - simple service creation with parameters", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_parameters")
 		defer stopQuietly(rec)
 
@@ -69,7 +69,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithParametersJSONBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-xsuaa", "application", "xsuaa", "{\"xsappname\": \"my-test-application\"}"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithParametersJSONBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-xsuaa", "application", "xsuaa", "{\\\"xsappname\\\": \\\"my-test-application\\\"}"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
@@ -78,8 +78,8 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-xsuaa"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "xsuaa"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "parameters['xsappname']", "my-test-application"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "parameters", "{\"xsappname\": \"my-test-application\"}"),
 					),
 				},
 				{
@@ -351,7 +351,7 @@ func hclResourceSubaccountServiceInstanceWithParametersJSONBySubaccountByService
 		    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
 			name             = "%[3]s"
 		    serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
-            parameters       = "%s"
+            parameters       = "%[6]s"
 		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName, parametersJSON)
 }
 
