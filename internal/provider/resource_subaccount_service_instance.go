@@ -152,9 +152,12 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 
 	newState, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
 	newState.Timeouts = timeoutsLocal
-	if newState.Parameters.IsNull() {
+
+	// If parameters are set in the state we take them as they come from the caller
+	if !state.Parameters.IsNull() {
 		newState.Parameters = state.Parameters
 	}
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &newState)

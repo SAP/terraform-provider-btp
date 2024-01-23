@@ -58,14 +58,34 @@ func (f servicesInstanceFacade) GetByName(ctx context.Context, subaccountId stri
 }
 
 func (f servicesInstanceFacade) doGet(ctx context.Context, params map[string]string) (sir servicemanager.ServiceInstanceResponseObject, cr CommandResponse, err error) {
-	for _, showParameters := range []string{"true", "false"} {
-		params["parameters"] = showParameters
 
-		sir, cr, err = doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+	// Execute a call for the instance
+	sir, cr, err = doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
 
-		if err == nil {
-			break
-		}
+	if err != nil {
+		return
+	}
+
+	// Execute a call for the parameters. We need two calls because the parameters are not returned by the first call.
+	params["parameters"] = "true"
+
+	// In addition the response format might differ depending on the service instance.
+	resData, _, err := doExecute[servicemanager.ServiceInstanceParametersData](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+
+	// Case 1 - Parameters are returned as data object
+	if err == nil && len(resData.Parameters) != 0 {
+		jsonString, _ := json.Marshal(resData.Parameters)
+		sir.Parameters = string(jsonString)
+		return
+	}
+
+	resPlain, _, err := doExecute[servicemanager.ServiceInstanceParametersPlain](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+
+	// Case 2 - Parameters are returned as plain object
+	if err == nil && len(resPlain.Parameters) != 0 {
+		jsonString, _ := json.Marshal(resPlain.Parameters)
+		sir.Parameters = string(jsonString)
+		return
 	}
 
 	return
