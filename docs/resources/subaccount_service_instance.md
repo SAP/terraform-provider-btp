@@ -93,3 +93,18 @@ Import is supported using the following syntax:
 
 terraform import btp_subaccount_service_instance.alert_notification_free 6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f,6a55f158-41b5-4e63-aa77-84089fa0ab98
 ```
+
+
+### Restrictions
+
+The import of service instances that can be configured via parameters has the following restriction:
+The service offering that correpsonds to the service instance must support the retrieval of the parameters. The parameter `instances_retrievable`must be set to `true`.
+
+You can check this setting via the following data source:
+
+```terraform
+data "btp_subaccount_service_offering" "by_name" {
+  subaccount_id = <ID of your subaccount>
+  name          = <name of the service offering>
+}
+```

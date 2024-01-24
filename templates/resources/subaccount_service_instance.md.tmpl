@@ -1,0 +1,41 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{tffile .ExampleFile}}
+{{- end }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{tffile .ImportFile}}
+{{- end }}
+
+
+### Restrictions
+
+The import of service instances that can be configured via parameters has the following restriction:
+The service offering that correpsonds to the service instance must support the retrieval of the parameters. The parameter `instances_retrievable`must be set to `true`.
+
+You can check this setting via the following data source:
+
+```terraform
+data "btp_subaccount_service_offering" "by_name" {
+  subaccount_id = <ID of your subaccount>
+  name          = <name of the service offering>
+}
+```
