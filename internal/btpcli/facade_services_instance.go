@@ -70,24 +70,27 @@ func (f servicesInstanceFacade) doGet(ctx context.Context, params map[string]str
 	params["parameters"] = "true"
 
 	// In addition the response format might differ depending on the service instance.
-	resData, _, err := doExecute[servicemanager.ServiceInstanceParametersData](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+	resData, _, err_param := doExecute[servicemanager.ServiceInstanceParametersData](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
 
 	// Case 1 - Parameters are returned as data object
-	if err == nil && len(resData.Parameters) != 0 {
+	if err_param == nil && len(resData.Parameters) != 0 {
 		jsonString, _ := json.Marshal(resData.Parameters)
 		sir.Parameters = string(jsonString)
 		return
 	}
 
-	resPlain, _, err := doExecute[servicemanager.ServiceInstanceParametersPlain](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+	resPlain, _, err_param := doExecute[servicemanager.ServiceInstanceParametersPlain](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
 
 	// Case 2 - Parameters are returned as plain object
-	if err == nil && len(resPlain.Parameters) != 0 {
+	if err_param == nil && len(resPlain.Parameters) != 0 {
 		jsonString, _ := json.Marshal(resPlain.Parameters)
 		sir.Parameters = string(jsonString)
 		return
 	}
 
+	// Even if the service instance has parameters, the parameters are not returned by the API due to settings in the service offering
+	// The service offering must have the following setting:  'instances_retrievable: TRUE'
+	// In this case we return the base service instance response object without parameters
 	return
 }
 

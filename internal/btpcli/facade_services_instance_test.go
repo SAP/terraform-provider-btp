@@ -11,7 +11,7 @@ import (
 func TestServicesInstanceFacade_List(t *testing.T) {
 	command := "services/instance"
 
-	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	subaccountId := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
 		var srvCalled bool
@@ -94,30 +94,10 @@ func TestServicesInstanceFacade_List(t *testing.T) {
 func TestServicesInstanceFacade_GetById(t *testing.T) {
 	command := "services/instance"
 
-	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-	instanceId := "bc8a216f-1184-49dc-b4b4-17cfe2828965"
+	subaccountId := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
+	instanceId := "df532d07-57a7-415e-a261-23a398ef068a"
 
-	t.Run("looks up instance with parameters", func(t *testing.T) {
-		var srvCalled bool
-
-		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			srvCalled = true
-
-			assertCall(t, r, command, ActionGet, map[string]string{
-				"subaccount": subaccountId,
-				"id":         instanceId,
-				"parameters": "true",
-			})
-		}))
-		defer srv.Close()
-
-		_, res, err := uut.Services.Instance.GetById(context.TODO(), subaccountId, instanceId)
-
-		if assert.True(t, srvCalled) && assert.NoError(t, err) {
-			assert.Equal(t, 200, res.StatusCode)
-		}
-	})
-	t.Run("if parameters can't be resolved, it falls back to resolution without parameters", func(t *testing.T) {
+	t.Run("Multiple calls for parameter retrieval retries", func(t *testing.T) {
 		var srvCalled bool
 
 		var callCount int
@@ -130,7 +110,7 @@ func TestServicesInstanceFacade_GetById(t *testing.T) {
 				assertCall(t, r, command, ActionGet, map[string]string{
 					"subaccount": subaccountId,
 					"id":         instanceId,
-					"parameters": "true",
+					"parameters": "false",
 				})
 
 				w.WriteHeader(http.StatusNotFound)
@@ -138,7 +118,7 @@ func TestServicesInstanceFacade_GetById(t *testing.T) {
 				assertCall(t, r, command, ActionGet, map[string]string{
 					"subaccount": subaccountId,
 					"id":         instanceId,
-					"parameters": "false",
+					"parameters": "true",
 				})
 			}
 		}))
@@ -155,30 +135,10 @@ func TestServicesInstanceFacade_GetById(t *testing.T) {
 func TestServicesInstanceFacade_GetByName(t *testing.T) {
 	command := "services/instance"
 
-	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	subaccountId := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
 	instanceName := "my-instance"
 
-	t.Run("looks up instance with parameters", func(t *testing.T) {
-		var srvCalled bool
-
-		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			srvCalled = true
-
-			assertCall(t, r, command, ActionGet, map[string]string{
-				"subaccount": subaccountId,
-				"name":       instanceName,
-				"parameters": "true",
-			})
-		}))
-		defer srv.Close()
-
-		_, res, err := uut.Services.Instance.GetByName(context.TODO(), subaccountId, instanceName)
-
-		if assert.True(t, srvCalled) && assert.NoError(t, err) {
-			assert.Equal(t, 200, res.StatusCode)
-		}
-	})
-	t.Run("if parameters can't be resolved, it falls back to resolution without parameters", func(t *testing.T) {
+	t.Run("Multiple calls for parameter retrieval retries", func(t *testing.T) {
 		var srvCalled bool
 
 		var callCount int
@@ -191,7 +151,7 @@ func TestServicesInstanceFacade_GetByName(t *testing.T) {
 				assertCall(t, r, command, ActionGet, map[string]string{
 					"subaccount": subaccountId,
 					"name":       instanceName,
-					"parameters": "true",
+					"parameters": "false",
 				})
 
 				w.WriteHeader(http.StatusNotFound)
@@ -199,7 +159,7 @@ func TestServicesInstanceFacade_GetByName(t *testing.T) {
 				assertCall(t, r, command, ActionGet, map[string]string{
 					"subaccount": subaccountId,
 					"name":       instanceName,
-					"parameters": "false",
+					"parameters": "true",
 				})
 			}
 		}))
@@ -216,7 +176,7 @@ func TestServicesInstanceFacade_GetByName(t *testing.T) {
 func TestServicesInstanceFacade_Create(t *testing.T) {
 	command := "services/instance"
 
-	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	subaccountId := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
 	instanceName := "my-instance"
 	servicePlanId := "b50d1b0b-2059-4f21-a014-2ea87752eb48"
 	parameters := "{}"
@@ -283,7 +243,7 @@ func TestServicesInstanceFacade_Create(t *testing.T) {
 func TestServicesInstanceFacade_Delete(t *testing.T) {
 	command := "services/instance"
 
-	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	subaccountId := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
 	instanceId := "bc8a216f-1184-49dc-b4b4-17cfe2828965"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {

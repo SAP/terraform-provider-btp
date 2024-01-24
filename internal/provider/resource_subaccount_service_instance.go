@@ -154,7 +154,7 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 	newState.Timeouts = timeoutsLocal
 
 	// If parameters are set in the state we take them as they come from the caller
-	if !state.Parameters.IsNull() {
+	if state.Parameters.ValueString() != "" {
 		newState.Parameters = state.Parameters
 	}
 

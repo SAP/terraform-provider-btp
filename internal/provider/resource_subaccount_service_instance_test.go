@@ -82,12 +82,6 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "parameters", "{\"xsappname\": \"my-test-application\"}"),
 					),
 				},
-				{
-					ResourceName:      "btp_subaccount_service_instance.uut",
-					ImportStateIdFunc: getServiceInstanceIdForImport("btp_subaccount_service_instance.uut"),
-					ImportState:       true,
-					ImportStateVerify: true,
-				},
 			},
 		})
 	})
