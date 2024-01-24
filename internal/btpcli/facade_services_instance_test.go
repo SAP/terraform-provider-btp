@@ -94,26 +94,24 @@ func TestServicesInstanceFacade_List(t *testing.T) {
 func TestServicesInstanceFacade_GetById(t *testing.T) {
 	command := "services/instance"
 
-	subaccountId := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
-	instanceId := "df532d07-57a7-415e-a261-23a398ef068a"
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	instanceId := "bc8a216f-1184-49dc-b4b4-17cfe2828965"
 
-	t.Run("Multiple calls for parameter retrieval retries", func(t *testing.T) {
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
 		var srvCalled bool
-
 		var callCount int
 
 		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			srvCalled = true
 			callCount++
 
+			// Due to fetching the parameters in separate calls, we need to consider the call parameters for the second and third call
 			if callCount == 1 {
 				assertCall(t, r, command, ActionGet, map[string]string{
 					"subaccount": subaccountId,
 					"id":         instanceId,
 					"parameters": "false",
 				})
-
-				w.WriteHeader(http.StatusNotFound)
 			} else {
 				assertCall(t, r, command, ActionGet, map[string]string{
 					"subaccount": subaccountId,
@@ -130,12 +128,13 @@ func TestServicesInstanceFacade_GetById(t *testing.T) {
 			assert.Equal(t, 200, res.StatusCode)
 		}
 	})
+
 }
 
 func TestServicesInstanceFacade_GetByName(t *testing.T) {
 	command := "services/instance"
 
-	subaccountId := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	instanceName := "my-instance"
 
 	t.Run("Multiple calls for parameter retrieval retries", func(t *testing.T) {
@@ -154,7 +153,6 @@ func TestServicesInstanceFacade_GetByName(t *testing.T) {
 					"parameters": "false",
 				})
 
-				w.WriteHeader(http.StatusNotFound)
 			} else {
 				assertCall(t, r, command, ActionGet, map[string]string{
 					"subaccount": subaccountId,
