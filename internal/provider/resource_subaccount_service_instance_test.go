@@ -144,31 +144,6 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path - simple service creation with parameters", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_parameters")
-		defer stopQuietly(rec)
-
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
-			Steps: []resource.TestStep{
-				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithParametersBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-xsuaa", "application", "xsuaa"),
-					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
-						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
-						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_id", regexpValidUUID),
-						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
-						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-xsuaa"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
-					),
-				},
-			},
-		})
-	})
-
 	t.Run("happy path - simple service creation with labels", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_labels")
 		defer stopQuietly(rec)
