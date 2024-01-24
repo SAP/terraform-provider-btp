@@ -45,7 +45,6 @@ func subaccountServiceInstanceValueFrom(ctx context.Context, value servicemanage
 		State:                types.StringValue(value.LastOperation.State),
 		CreatedDate:          timeToValue(value.CreatedAt),
 		LastModified:         timeToValue(value.UpdatedAt),
-		Parameters:           types.StringValue(value.Parameters),
 	}
 
 	var diags, diagnostics diag.Diagnostics
