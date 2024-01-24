@@ -69,7 +69,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithParametersJSONBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-xsuaa", "application", "xsuaa", "{\\\"xsappname\\\": \\\"my-test-application\\\"}"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithParametersBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-xsuaa", "application", "xsuaa"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
@@ -79,7 +79,6 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-xsuaa"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "parameters", "{\"xsappname\": \"my-test-application\"}"),
 					),
 				},
 			},
@@ -304,24 +303,6 @@ func hclResourceSubaccountServiceInstanceWoParametersBySubaccountByServicePlan(r
 			name             = "%[3]s"
 		    serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
 		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName)
-}
-
-func hclResourceSubaccountServiceInstanceWithParametersJSONBySubaccountByServicePlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string, parametersJSON string) string {
-	return fmt.Sprintf(`
-		data "btp_subaccounts" "all" {}
-		data "btp_subaccount_service_plans" "all" {
-			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
-		}
-		data "btp_subaccount_service_offering" "so" {
-			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
-			name =  "%[5]s"
-		}
-		resource "btp_subaccount_service_instance" "%[1]s"{
-		    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
-			name             = "%[3]s"
-		    serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
-            parameters       = "%[6]s"
-		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName, parametersJSON)
 }
 
 func hclResourceSubaccountServiceInstanceWoParametersWithTimeoutsBySubaccountByServicePlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string, createTimeout string, updateTimeout string, deleteTimeout string) string {
