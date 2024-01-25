@@ -107,7 +107,7 @@ jobs:
     - name: State deviation - find existing issue for deviation
       id: find_deviation_issue
       uses: micalevisk/last-issue-action@v2
-      if: ${{ steps.execute_deviation_check.outputs.SCHEMA_DEVIATIONS_FOUND == 'true'}}
+      if: ${{ steps.execute_deviation_check.outputs.SCHEMA_DEVIATIONS_FOUND == 'true' || failure() }} 
       with: 
         state: open
         labels: |
@@ -116,7 +116,7 @@ jobs:
 
     - name: State deviation - create or update issue
       uses: peter-evans/create-issue-from-file@v4
-      if: ${{ steps.execute_deviation_check.outputs.SCHEMA_DEVIATIONS_FOUND == 'true'}}
+      if: ${{ steps.execute_deviation_check.outputs.SCHEMA_DEVIATIONS_FOUND == 'true' || failure() }}
       with:
         title: State deviation found
         # If issue number is empty a new issue gets created
@@ -132,7 +132,7 @@ jobs:
         rm -rf ${{ env.TEMP_PLAN_OUTPUT }}
 
     - name: State deviation - Set run to failed
-      if: ${{ steps.execute_deviation_check.outputs.SCHEMA_DEVIATIONS_FOUND == 'true'}}
+      if: ${{ steps.execute_deviation_check.outputs.SCHEMA_DEVIATIONS_FOUND == 'true' || failure() }}
       uses: actions/github-script@v7
       with:
         script: |
