@@ -1,0 +1,15 @@
+# Terraform Provider pre-release check workflow.
+# This workflow can be manually triggered and executes the check workflows
+# needed to publish a release
+name: Terraform Provider Pre-Release Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  call-workflow-test:
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+  call-workflow-regression-test:
+    uses: ./.github/workflows/schema-regression-test.yml  
+    secrets: inherit
