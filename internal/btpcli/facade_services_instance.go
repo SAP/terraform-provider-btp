@@ -45,7 +45,6 @@ func (f servicesInstanceFacade) GetById(ctx context.Context, subaccountId string
 	return f.doGet(ctx, map[string]string{
 		"subaccount": subaccountId,
 		"id":         instanceId,
-		"parameters": "false",
 	})
 }
 
@@ -53,13 +52,13 @@ func (f servicesInstanceFacade) GetByName(ctx context.Context, subaccountId stri
 	return f.doGet(ctx, map[string]string{
 		"subaccount": subaccountId,
 		"name":       instanceName,
-		"parameters": "false",
 	})
 }
 
 func (f servicesInstanceFacade) doGet(ctx context.Context, params map[string]string) (sir servicemanager.ServiceInstanceResponseObject, cr CommandResponse, err error) {
 
-	// Execute a call for the instance
+	// Execute a call for the instance without parameters
+	params["parameters"] = "false"
 	sir, cr, err = doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
 
 	if err != nil {

@@ -11,7 +11,7 @@ import (
 func TestServicesInstanceFacade_List(t *testing.T) {
 	command := "services/instance"
 
-	subaccountId := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
 		var srvCalled bool
