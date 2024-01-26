@@ -42,19 +42,55 @@ func (f servicesInstanceFacade) List(ctx context.Context, subaccountId string, f
 }
 
 func (f servicesInstanceFacade) GetById(ctx context.Context, subaccountId string, instanceId string) (servicemanager.ServiceInstanceResponseObject, CommandResponse, error) {
-	return doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+	return f.doGet(ctx, map[string]string{
 		"subaccount": subaccountId,
 		"id":         instanceId,
-		"parameters": "false",
-	}))
+	})
 }
 
 func (f servicesInstanceFacade) GetByName(ctx context.Context, subaccountId string, instanceName string) (servicemanager.ServiceInstanceResponseObject, CommandResponse, error) {
-	return doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+	return f.doGet(ctx, map[string]string{
 		"subaccount": subaccountId,
 		"name":       instanceName,
-		"parameters": "false",
-	}))
+	})
+}
+
+func (f servicesInstanceFacade) doGet(ctx context.Context, params map[string]string) (sir servicemanager.ServiceInstanceResponseObject, cr CommandResponse, err error) {
+
+	// Execute a call for the instance without parameters
+	params["parameters"] = "false"
+	sir, cr, err = doExecute[servicemanager.ServiceInstanceResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+
+	if err != nil {
+		return
+	}
+
+	// Execute a call for the parameters. We need two calls because the parameters are not returned by the first call.
+	params["parameters"] = "true"
+
+	// In addition the response format might differ depending on the service instance.
+	resData, _, err_param := doExecute[servicemanager.ServiceInstanceParametersData](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+
+	// Case 1 - Parameters are returned as data object
+	if err_param == nil && len(resData.Parameters) != 0 {
+		jsonString, _ := json.Marshal(resData.Parameters)
+		sir.Parameters = string(jsonString)
+		return
+	}
+
+	resPlain, _, err_param := doExecute[servicemanager.ServiceInstanceParametersPlain](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+
+	// Case 2 - Parameters are returned as plain object
+	if err_param == nil && len(resPlain.Parameters) != 0 {
+		jsonString, _ := json.Marshal(resPlain.Parameters)
+		sir.Parameters = string(jsonString)
+		return
+	}
+
+	// Even if the service instance has parameters, the parameters are not returned by the API due to settings in the service offering
+	// The service offering must have the following setting:  'instances_retrievable: TRUE'
+	// In this case we return the base service instance response object without parameters
+	return
 }
 
 type ServiceInstanceCreateInput struct {

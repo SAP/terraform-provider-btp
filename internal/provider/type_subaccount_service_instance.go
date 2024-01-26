@@ -87,6 +87,7 @@ func subaccountServiceInstanceDataSourceValueFrom(ctx context.Context, value ser
 		ReferencedInstanceId: types.StringValue(value.ReferencedInstanceId),
 		Shared:               types.BoolValue(value.Shared),
 		Usable:               types.BoolValue(value.Usable),
+		Parameters:           types.StringValue(value.Parameters),
 		State:                types.StringValue(value.LastOperation.State),
 		Context:              types.StringValue(string(value.Context)),
 		CreatedDate:          timeToValue(value.CreatedAt),

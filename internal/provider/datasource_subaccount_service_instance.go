@@ -148,8 +148,6 @@ func (ds *subaccountServiceInstanceDataSource) Read(ctx context.Context, req dat
 	data, diags = subaccountServiceInstanceDataSourceValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
-	data.Parameters = types.StringNull() // TODO can be set once --show-parameters is works
-
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 }

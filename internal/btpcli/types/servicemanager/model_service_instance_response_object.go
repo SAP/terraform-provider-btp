@@ -43,6 +43,8 @@ type ServiceInstanceResponseObject struct {
 	// The last time the resource was updated. <br/> In ISO 8601 format.
 	UpdatedAt time.Time            `json:"updated_at,omitempty"`
 	Labels    ServiceManagerLabels `json:"labels,omitempty"`
+	//MANUALLY ADDED PARAMETER FOR SERVICE INSTANCE CONFIGURATION
+	Parameters string
 }
 
 type ServiceInstanceListResponseObject struct {
