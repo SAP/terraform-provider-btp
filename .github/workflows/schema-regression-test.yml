@@ -115,7 +115,7 @@ jobs:
           automated issue
 
     - name: State deviation - create or update issue
-      uses: peter-evans/create-issue-from-file@v4
+      uses: peter-evans/create-issue-from-file@v5
       if: ${{ steps.execute_deviation_check.outputs.SCHEMA_DEVIATIONS_FOUND == 'true' || failure() }}
       with:
         title: State deviation found
