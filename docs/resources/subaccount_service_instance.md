@@ -96,6 +96,7 @@ terraform import btp_subaccount_service_instance.alert_notification_free 6aa64c2
 
 
 ### Restriction
+
 The import of service instances that can be configured via parameters only works if the corresponding service offering supports the retrieval of these parameters, which means that the `instances_retrievable` parameter of the service offering must be set to `true`.
 
 You can check this setting via the following data source:
