@@ -60,35 +60,54 @@ func (f *accountsEntitlementFacade) ListByDirectory(ctx context.Context, directo
 	}))
 }
 
-func (f *accountsEntitlementFacade) AssignToSubaccount(ctx context.Context, subaccountId string, serviceName string, servicePlanName string, amount int) (CommandResponse, error) {
-	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
+func (f *accountsEntitlementFacade) AssignToSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string, amount int) (CommandResponse, error) {
+	
+	params := map[string]string{
 		"subaccount":      subaccountId,
 		"serviceName":     serviceName,
 		"servicePlanName": servicePlanName,
 		"amount":          fmt.Sprintf("%d", amount),
-	}))
+	}
+
+	if len(directoryId) > 0 {
+		params["directoryID"] = directoryId
+	}
+	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), params))
 
 	return res, err
 }
 
-func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, subaccountId string, serviceName string, servicePlanName string) (CommandResponse, error) {
-	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
+func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string) (CommandResponse, error) {
+	
+	params := map[string]string{
 		"subaccount":      subaccountId,
 		"serviceName":     serviceName,
 		"servicePlanName": servicePlanName,
 		"enable":          "true",
-	}))
+	}
+
+	if len(directoryId) > 0 {
+		params["directoryID"] = directoryId
+	}
+	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), params))
 
 	return res, err
 }
 
-func (f *accountsEntitlementFacade) DisableInSubaccount(ctx context.Context, subaccountId string, serviceName string, servicePlanName string) (CommandResponse, error) {
-	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
+func (f *accountsEntitlementFacade) DisableInSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string) (CommandResponse, error) {
+
+	params := map[string]string{
 		"subaccount":      subaccountId,
 		"serviceName":     serviceName,
 		"servicePlanName": servicePlanName,
 		"enable":          "false",
-	}))
+	}
+
+	if len(directoryId) > 0 {
+		params["directoryID"] = directoryId
+	}
+
+	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), params))
 
 	return res, err
 }

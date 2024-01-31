@@ -195,6 +195,16 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		return
 	}
 
+	// Determine the parent of the subaccount
+	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, plan.SubaccountId.ValueString())
+	//Determine if the parent of the subaccount is a directory and if it has authoization enabled
+	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
+
+	var directoryId string
+	if !isParentGlobalAccount {
+		directoryId = parentId
+	}
+
 	// We call the API in a retry mode as the API may return a locking error
 	RetryApiCallConf := &tfutils.StateChangeConf{
 		Pending: []string{entitlementCallRetryPending},
@@ -205,9 +215,9 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 			var err error
 
 			if !hasPlanQuota(plan) {
-				callResult, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
+				callResult, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
 			} else {
-				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()))
+				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()))
 			}
 
 			if err == nil {
@@ -236,10 +246,8 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		return
 	}
 
-	// Determine the parent of the subaccount
 	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
-	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, plan.SubaccountId.ValueString())
-	parentId, isParentGlobalAccount := determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount = determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
 
 	// wait for the entitlement to become effective
 	createStateConf := &tfutils.StateChangeConf{
@@ -290,6 +298,17 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 		return
 	}
 
+	// Determine the parent of the subaccount
+	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
+	//Determine if the parent of the subaccount is a directory and if it has authoization enabled
+	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID) 
+
+	var directoryId string
+
+	if !isParentGlobalAccount {
+		directoryId = parentId
+	}
+
 	// We call the API in a retry mode as the API may return a locking error
 	RetryApiCallConf := &tfutils.StateChangeConf{
 		Pending: []string{entitlementCallRetryPending},
@@ -299,9 +318,9 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 			var err error
 
 			if !hasPlanQuota(state) {
-				callResult, err = rs.cli.Accounts.Entitlement.DisableInSubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+				callResult, err = rs.cli.Accounts.Entitlement.DisableInSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
 			} else {
-				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0)
+				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), 0)
 			}
 
 			if err == nil {
@@ -330,10 +349,8 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 		return
 	}
 
-	// Determine the parent of the subaccount
 	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
-	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
-	parentId, isParentGlobalAccount := determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount = determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
 
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
