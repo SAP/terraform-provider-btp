@@ -53,7 +53,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   service_name     = "cloudfoundry"
   plan_name        = "standard"
   # ATTENTION: some regions offer multiple environments of a kind and you must explicitly select the target environment in which
-  # the instance shall be created unsing the parameter landscape label. 
+  # the instance shall be created using the parameter landscape label. 
   # available environments can be looked up using the btp_subaccount_environments datasource
   parameters = jsonencode({
     instance_name = "my-cf-org-name"
