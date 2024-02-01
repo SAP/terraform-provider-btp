@@ -131,16 +131,6 @@ resource "btp_directory_entitlement" "de_dir_se_static_auditlog" {
 }
 
 ###
-# subaccount subscriptions
-###
-
-resource "btp_subaccount_subscription" "sas_sa_services_static_content_agent_ui" {
-  subaccount_id = btp_subaccount.sa_services_static.id
-  app_name      = "sapappstudio"
-  plan_name     = "free"
-}
-
-###
 # subaccount entitlements
 ###
 
@@ -161,6 +151,24 @@ resource "btp_subaccount_entitlement" "se_sa_services_static_malware_scanner" {
   service_name  = "malware-scanner"
   plan_name     = "clamav"
 }
+
+resource "btp_subaccount_entitlement" "se_sa_services_static_bas" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  service_name  = "sapappstudio"
+  plan_name     = "standard-edition"
+}
+
+###
+# subaccount subscriptions
+###
+
+resource "btp_subaccount_subscription" "sas_sa_services_static_bas" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  app_name      = "sapappstudio"
+  plan_name     = "standard-edition"
+  depends_on    = [btp_subaccount_entitlement.se_sa_services_static_bas]
+}
+
 
 ###
 # subaccount service instances
