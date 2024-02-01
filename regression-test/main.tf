@@ -30,7 +30,7 @@ resource "btp_subaccount" "sa_acc_static" {
   description = local.disclaimer_description
   subdomain   = local.integration_test_account_static_extended
   region      = var.region
-  labels      = {
+  labels = {
     label1 = [
       "label text 1"
     ]
@@ -46,10 +46,10 @@ resource "btp_subaccount" "sa_acc_entitlements_stacked" {
 }
 
 resource "btp_subaccount" "sa_services_static" {
-  name         = local.integration_test_services_static
-  subdomain    = local.integration_test_services_static_extended
-  region       = var.region
-  description  = "Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions"
+  name        = local.integration_test_services_static
+  subdomain   = local.integration_test_services_static_extended
+  region      = var.region
+  description = "Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions"
 }
 
 resource "btp_subaccount" "sa_security_settings" {
@@ -81,7 +81,7 @@ resource "btp_directory" "dir_se_static" {
   name        = local.integration_test_dir_se_static
   description = local.disclaimer_description
   features    = ["DEFAULT", "ENTITLEMENTS", "AUTHORIZATIONS"]
-  labels      = {
+  labels = {
     my-label-1 = [
       "Label text 1"
     ]
@@ -131,28 +131,12 @@ resource "btp_directory_entitlement" "de_dir_se_static_auditlog" {
 }
 
 ###
-# global account resource provider
-###
-resource "btp_globalaccount_resource_provider" "grp_aws" {
-  technical_name = "tf_test_resource_provider"
-  display_name   = "Test AWS Resource Provider"
-  description    = "Description of the resource provider"
-  provider_type  = "AWS"
-  configuration  = jsonencode({
-    access_key_id     = "AWSACCESSKEY"
-    secret_access_key = "AWSSECRETKEY"
-    vpc_id            = "vpc-test"
-    region            = "eu-central-1"
-  })
-}
-
-###
 # subaccount subscriptions
 ###
 
 resource "btp_subaccount_subscription" "sas_sa_services_static_content_agent_ui" {
   subaccount_id = btp_subaccount.sa_services_static.id
-  app_name      = "content-agent-ui"
+  app_name      = "sapappstudio"
   plan_name     = "free"
 }
 
@@ -186,7 +170,7 @@ data "btp_subaccount_service_plan" "ssp_sa_services_static_alert_notification_fr
   subaccount_id = btp_subaccount.sa_services_static.id
   name          = "free"
   offering_name = "alert-notification"
-  depends_on    = [
+  depends_on = [
     btp_subaccount_entitlement.se_sa_services_static_alert_notification
   ]
 }
@@ -201,7 +185,7 @@ data "btp_subaccount_service_plan" "ssp_sa_services_static_malware_scanner_defau
   subaccount_id = btp_subaccount.sa_services_static.id
   name          = "clamav"
   offering_name = "malware-scanner"
-  depends_on    = [
+  depends_on = [
     btp_subaccount_entitlement.se_sa_services_static_malware_scanner
   ]
 }
@@ -210,8 +194,8 @@ resource "btp_subaccount_service_instance" "ssi_sa_services_static_malware_scann
   subaccount_id  = btp_subaccount.sa_services_static.id
   serviceplan_id = data.btp_subaccount_service_plan.ssp_sa_services_static_malware_scanner_default.id
   name           = "tf-testacc-malware-scanner-sample"
-  labels         = {
-    org          = [
+  labels = {
+    org = [
       "testvalue"
     ]
   }
