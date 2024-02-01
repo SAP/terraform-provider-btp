@@ -42,6 +42,7 @@ func TestAccountsEntitlementFacade_ListBySubaccount(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionList, map[string]string{
+				"globalAccount":    "795b53bb-a3f0-4769-adf0-26173282a975",
 				"subaccountFilter": "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f",
 			})
 		}))
@@ -65,6 +66,7 @@ func TestAccountsEntitlementFacade_ListBySubaccountWithDirectoryParent(t *testin
 			srvCalled = true
 
 			assertCall(t, r, command, ActionList, map[string]string{
+				"globalAccount":    "795b53bb-a3f0-4769-adf0-26173282a975",
 				"subaccountFilter": "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f",
 				"directory":        "8ab64c2f-38c1-49a9-b2e8-cf9fea769b7f",
 			})
@@ -89,7 +91,8 @@ func TestAccountsEntitlementFacade_ListByDirectory(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionList, map[string]string{
-				"directory": "f6c7137d-c5a0-48c2-b2a4-fd64e6b35d3d",
+				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directory":     "f6c7137d-c5a0-48c2-b2a4-fd64e6b35d3d",
 			})
 		}))
 		defer srv.Close()
@@ -105,6 +108,7 @@ func TestAccountsEntitlementFacade_ListByDirectory(t *testing.T) {
 func TestAccountsEntitlementFacade_AssignToSubaccount(t *testing.T) {
 	command := "accounts/entitlement"
 
+	directoryId := "my-directory-id"
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	serviceName := "alert-notification"
 	planName := "free"
@@ -117,6 +121,8 @@ func TestAccountsEntitlementFacade_AssignToSubaccount(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":   "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directoryID":	   directoryId,	
 				"subaccount":      subaccountId,
 				"serviceName":     serviceName,
 				"servicePlanName": planName,
@@ -125,7 +131,7 @@ func TestAccountsEntitlementFacade_AssignToSubaccount(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.AssignToSubaccount(context.TODO(), subaccountId, serviceName, planName, amount)
+		res, err := uut.Accounts.Entitlement.AssignToSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName, amount)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -136,6 +142,7 @@ func TestAccountsEntitlementFacade_AssignToSubaccount(t *testing.T) {
 func TestAccountsEntitlementFacade_EnableInSubaccount(t *testing.T) {
 	command := "accounts/entitlement"
 
+	directoryId := "my-directory-id"
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	serviceName := "alert-notification"
 	planName := "free"
@@ -147,6 +154,8 @@ func TestAccountsEntitlementFacade_EnableInSubaccount(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":   "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directoryID":	   directoryId,
 				"subaccount":      subaccountId,
 				"serviceName":     serviceName,
 				"servicePlanName": planName,
@@ -155,7 +164,7 @@ func TestAccountsEntitlementFacade_EnableInSubaccount(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.EnableInSubaccount(context.TODO(), subaccountId, serviceName, planName)
+		res, err := uut.Accounts.Entitlement.EnableInSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -166,6 +175,7 @@ func TestAccountsEntitlementFacade_EnableInSubaccount(t *testing.T) {
 func TestAccountsEntitlementFacade_DisableInSubaccount(t *testing.T) {
 	command := "accounts/entitlement"
 
+	directoryId := "my-directory-id"
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	serviceName := "alert-notification"
 	planName := "free"
@@ -177,6 +187,8 @@ func TestAccountsEntitlementFacade_DisableInSubaccount(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":   "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directoryID":	   directoryId,
 				"subaccount":      subaccountId,
 				"serviceName":     serviceName,
 				"servicePlanName": planName,
@@ -185,7 +197,7 @@ func TestAccountsEntitlementFacade_DisableInSubaccount(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.DisableInSubaccount(context.TODO(), subaccountId, serviceName, planName)
+		res, err := uut.Accounts.Entitlement.DisableInSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -210,6 +222,7 @@ func TestAccountsEntitlementFacade_AssignToDirectory(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":        "795b53bb-a3f0-4769-adf0-26173282a975",
 				"directory":            dirAssignmentInput.DirectoryId,
 				"serviceName":          dirAssignmentInput.ServiceName,
 				"servicePlanName":      dirAssignmentInput.ServicePlanName,
@@ -243,6 +256,7 @@ func TestAccountsEntitlementFacade_EnableInDirectory(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":   "795b53bb-a3f0-4769-adf0-26173282a975",
 				"directory":       directoryId,
 				"serviceName":     serviceName,
 				"servicePlanName": planName,
@@ -275,6 +289,7 @@ func TestAccountsEntitlementFacade_DisableInDirectory(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":   "795b53bb-a3f0-4769-adf0-26173282a975",
 				"directory":       directoryId,
 				"serviceName":     serviceName,
 				"servicePlanName": planName,
