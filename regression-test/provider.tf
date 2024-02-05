@@ -1,8 +1,9 @@
+# Regression/compatibility must always be ensured versus the GA version 1.0.0
 terraform {
   required_providers {
     btp = {
       source  = "SAP/btp"
-      version = "1.0.0-rc2"
+      version = "1.0.0"
     }
   }
 }
