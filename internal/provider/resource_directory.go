@@ -320,8 +320,60 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	state.Features.ElementsAs(ctx, &stateFeatures, false)
 
 	if strings.Join(planFeatures, ",") != strings.Join(stateFeatures, ",") {
-		resp.Diagnostics.AddError(updateErrorHeader, "Update of Directory Features is not supported")
-		return
+		//resp.Diagnostics.AddError(updateErrorHeader, "Update of Directory Features is not supported")
+		//return
+
+		enableArgs := btpcli.DirectoryEnableInput{
+			DirectoryId: plan.ID.ValueString(),
+		}
+
+		if !plan.Subdomain.IsUnknown() {
+			subdomain := plan.Subdomain.ValueString()
+			enableArgs.Subdomain = &subdomain
+		}
+		if !plan.Features.IsUnknown() {
+			var features []string
+			plan.Features.ElementsAs(ctx, &features, false)
+			enableArgs.Features = sortDiretoryFeatures(features)
+		}
+
+		cliRes, _, err := rs.cli.Accounts.Directory.Enable(ctx, &enableArgs)
+
+		if err != nil {
+			resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+			return
+		}
+
+		plan, diags = directoryValueFrom(ctx, cliRes)
+		resp.Diagnostics.Append(diags...)
+
+		enableStateConf := &tfutils.StateChangeConf{
+			Pending: []string{cis.StateUpdating, cis.StateStarted, cis.StateDeleting, cis.StateCreating},
+			Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
+			Refresh: func() (interface{}, string, error) {
+				subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
+
+				if err != nil {
+					return subRes, "", err
+				}
+
+				return subRes, subRes.EntityState, nil
+			},
+			Timeout:    10 * time.Minute,
+			Delay:      5 * time.Second,
+			MinTimeout: 5 * time.Second,
+		}
+
+		enabledRes, err := enableStateConf.WaitForStateContext(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+		}
+
+		plan, diags = directoryValueFrom(ctx, enabledRes.(cis.DirectoryResponseObject))
+		resp.Diagnostics.Append(diags...)
+
+		diags = resp.State.Set(ctx, plan)
+		resp.Diagnostics.Append(diags...)
 	}
 
 	cliRes, _, err := rs.cli.Accounts.Directory.Update(ctx, &args)
