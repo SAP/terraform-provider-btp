@@ -6,7 +6,7 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 126
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -19,9 +19,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 391208d0-c105-dc22-ee42-a322a5061b96
+                - 3b5e0473-f016-92cf-1b3c-5199be89c5a0
             X-Cpcli-Format:
                 - json
         url: https://canary.cli.btp.int.sap/login/v2.49.0
@@ -32,18 +32,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
+        content_length: 169
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "153"
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:06 GMT
+                - Wed, 07 Feb 2024 09:34:33 GMT
             Expires:
                 - "0"
             Pragma:
@@ -59,18 +61,18 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 7ca9410c-81bd-417b-51eb-f9758ab39059
+                - d48e755f-5924-49f9-7f7c-a7d40921bbc7
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 761.1106ms
+        duration: 1.087921354s
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 126
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -83,9 +85,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - ff8e4573-0953-5295-542c-d799287cae44
+                - 6a188635-f261-dd3a-15b7-359d694e6d03
             X-Cpcli-Format:
                 - json
         url: https://canary.cli.btp.int.sap/login/v2.49.0
@@ -96,18 +98,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
+        content_length: 169
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "153"
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:09 GMT
+                - Wed, 07 Feb 2024 09:34:36 GMT
             Expires:
                 - "0"
             Pragma:
@@ -123,77 +127,13 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - e692d44e-045d-46ad-4b0b-39326c154ca1
+                - 9e7247a8-90dd-41c9-4153-bc4e497914df
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 3.1844273s
+        duration: 2.421905621s
     - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 119
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - ea83560c-2def-df4a-71ee-12a0ef1e7396
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:17:10 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - b9fa6630-e6d3-4397-7f54-47798ae6df24
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 456.0848ms
-    - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -211,9 +151,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - e2108932-f1d3-9874-7c85-25df4f1f1cba
+                - 042505ae-73f7-1586-e57e-0103cbb4aaa7
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -232,14 +172,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"N\/A","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"STARTED","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:11 AM","jobId":"3728039"}'
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"N\/A","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"STARTED","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:34:37 AM","jobId":"4167040"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:11 GMT
+                - Wed, 07 Feb 2024 09:34:37 GMT
             Expires:
                 - "0"
             Pragma:
@@ -257,33 +199,105 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - ae5835c7-aee2-452e-5c2a-06041447df2c
+                - 7261e142-b40e-4cbe-5e98-795a1eb33e75
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 480.4582ms
+        duration: 567.277325ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 107
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.6.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 32149820-8487-cc0f-134e-a830f112b950
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"N/A","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"CREATING","stateMessage":"Creating subaccount tenant.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:34:38 AM"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Feb 2024 09:34:42 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - bb1e5ca6-1a92-485d-6a43-4255e51f860c
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 320.870869ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 70
+        content_length: 107
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 062f8493-1bbd-ea17-7d89-e8ffba0e430c
+                - 4e5bee89-a987-613a-f4ed-854842dc151e
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -302,14 +316,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"N/A","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"CREATING","stateMessage":"Creating subaccount tenant.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:12 AM"}'
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"N/A","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"CREATING","stateMessage":"Creating subaccount tenant.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:34:38 AM"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:16 GMT
+                - Wed, 07 Feb 2024 09:34:47 GMT
             Expires:
                 - "0"
             Pragma:
@@ -327,33 +343,33 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - b59e7bab-dfec-46d8-45da-ca9cfd95d76c
+                - c0c16aff-a276-42d1-745a-e8e4fb7dcc4a
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 251.6852ms
+        duration: 405.938622ms
     - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 70
+        content_length: 107
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 5d60f390-b2fd-271b-5b40-9e5bf89cc8ca
+                - b10d51c8-bdbd-f403-53c5-59c504d61787
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -372,14 +388,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"N/A","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"CREATING","stateMessage":"Creating subaccount tenant.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:12 AM"}'
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:34:53 AM"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:21 GMT
+                - Wed, 07 Feb 2024 09:34:58 GMT
             Expires:
                 - "0"
             Pragma:
@@ -397,42 +415,36 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - afdfe503-2650-4bc7-40b4-2ae332709ca3
+                - 6bb63edb-6368-4f69-7dee-0fdb0a1670f8
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 163.9769ms
+        duration: 324.694234ms
     - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 70
+        content_length: 126
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 9f334aee-c4ff-b945-c158-6fbe0c633df3
-            X-Cpcli-Customidp:
-                - identityProvider
+                - 78f9d981-debd-b256-21dc-de7cb5cb9234
             X-Cpcli-Format:
                 - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
+        url: https://canary.cli.btp.int.sap/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -440,16 +452,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:27 AM"}'
+        content_length: 169
+        uncompressed: false
+        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:31 GMT
+                - Wed, 07 Feb 2024 09:34:59 GMT
             Expires:
                 - "0"
             Pragma:
@@ -460,25 +476,23 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json;charset=UTF-8
-            X-Cpcli-Backend-Status:
-                - "200"
+            X-Cpcli-Sessionid:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 8a5545a6-f407-44c9-524f-646d6855036d
+                - e90bbf72-5e03-4864-58a3-7bbb5392f104
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 265.1186ms
+        duration: 1.047487268s
     - id: 7
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 126
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -491,9 +505,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - bdfc8f47-a6ee-e853-5226-4b0e01b562aa
+                - fbe1c20f-e17c-a510-88af-4a64ada3e726
             X-Cpcli-Format:
                 - json
         url: https://canary.cli.btp.int.sap/login/v2.49.0
@@ -504,18 +518,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
+        content_length: 169
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "153"
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:32 GMT
+                - Wed, 07 Feb 2024 09:35:00 GMT
             Expires:
                 - "0"
             Pragma:
@@ -531,36 +547,42 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 386bdf17-392a-421d-48b5-43530cd4a7a7
+                - 03323bbe-046d-421b-732c-6e1d571f69a1
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 454.3764ms
+        duration: 641.660663ms
     - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 107
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 47193ff1-9177-aa30-fb1e-4519c007252d
+                - fbf03580-e97b-2586-060f-094190a97251
+            X-Cpcli-Customidp:
+                - identityProvider
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
         method: POST
       response:
         proto: HTTP/2.0
@@ -568,18 +590,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        content_length: -1
+        uncompressed: true
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:34:53 AM"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:32 GMT
+                - Wed, 07 Feb 2024 09:35:00 GMT
             Expires:
                 - "0"
             Pragma:
@@ -590,47 +612,43 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - ee1e58ce-17c5-4f4e-621b-204fd74230ff
+                - 6292481a-9d82-46d8-57a6-cbdf634be5f1
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 313.5489ms
+        duration: 411.559738ms
     - id: 9
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 70
+        content_length: 126
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 0fc27e40-d09f-2493-4f42-8e2bc4702017
-            X-Cpcli-Customidp:
-                - identityProvider
+                - d01648b5-9a05-9c0e-e972-c3ac101712db
             X-Cpcli-Format:
                 - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
+        url: https://canary.cli.btp.int.sap/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -638,16 +656,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:27 AM"}'
+        content_length: 169
+        uncompressed: false
+        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:33 GMT
+                - Wed, 07 Feb 2024 09:35:02 GMT
             Expires:
                 - "0"
             Pragma:
@@ -658,168 +680,38 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json;charset=UTF-8
-            X-Cpcli-Backend-Status:
-                - "200"
+            X-Cpcli-Sessionid:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 94b75ba9-3935-4110-77ae-0b6de2e9748e
+                - b9520efa-95f6-4dd7-54a4-cbdbe149cda3
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 156.945ms
+        duration: 1.954989544s
     - id: 10
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 107
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 25d33a77-34cf-eeb3-9fc4-ac809765cf38
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:17:36 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - e72d9e1d-97fa-4233-5237-255f14c48cd7
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 3.1854127s
-    - id: 11
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 119
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - a3c4d25b-463b-49eb-2802-e20480db53bd
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:17:36 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - f37770a9-617a-42dd-67f1-1eedd6897fee
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 295.0114ms
-    - id: 12
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 70
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - bae7979d-ffa1-a651-1cc8-6c10feb26b3e
+                - e8c94ba8-33aa-805f-b6ba-f5d5dc9564cd
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -838,14 +730,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:27 AM"}'
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"integration-test-acc-dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:34:53 AM"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:37 GMT
+                - Wed, 07 Feb 2024 09:35:03 GMT
             Expires:
                 - "0"
             Pragma:
@@ -863,18 +757,18 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - bb5b1155-1a06-4adb-62a8-a09941541dff
+                - 2078ee77-6d07-4230-547e-18339d7c254a
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 295.093ms
-    - id: 13
+        duration: 350.918699ms
+    - id: 11
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 126
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -887,9 +781,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - cab3b0cb-5c69-b5ee-8dbf-40c949970304
+                - 77f4031e-215e-0941-e361-5977310024f1
             X-Cpcli-Format:
                 - json
         url: https://canary.cli.btp.int.sap/login/v2.49.0
@@ -900,18 +794,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
+        content_length: 169
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "153"
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:40 GMT
+                - Wed, 07 Feb 2024 09:35:05 GMT
             Expires:
                 - "0"
             Pragma:
@@ -927,77 +823,13 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 2cdc9ff3-1df9-485a-7024-ca7a100d663e
+                - e4aa987c-43b4-4b14-4007-5bd1eb9b375a
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 3.1029857s
-    - id: 14
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 119
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - 34a0c064-2644-63da-450d-e8e055815fae
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:17:40 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - 5882de4d-3011-404f-6327-c79f22cb6b6d
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 346.2614ms
-    - id: 15
+        duration: 2.293861077s
+    - id: 12
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -1009,15 +841,15 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"betaEnabled":"false","directoryID":"03760ecf-9d89-4189-a92a-1c7efed09298","displayName":"Integration Test Acc Dyn","globalAccount":"terraformintcanary","labels":"{}","subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
+            {"paramValues":{"betaEnabled":"false","directoryID":"03760ecf-9d89-4189-a92a-1c7efed09298","displayName":"Integration Test Acc Dyn","globalAccount":"terraformintcanary","labels":"{}","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 1c68f811-3b49-8522-4c9a-9432f7be9bdd
+                - 9346a7cb-38cf-fb1a-9d52-b00949bca6a8
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -1036,14 +868,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:40 AM"}'
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:35:05 AM"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:41 GMT
+                - Wed, 07 Feb 2024 09:35:06 GMT
             Expires:
                 - "0"
             Pragma:
@@ -1061,33 +895,237 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 773e3ab7-35f5-42a5-6c98-ea7849a9cea1
+                - 8eb6cbfd-59ac-4645-64bc-f1974be6f757
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 264.6782ms
+        duration: 472.705747ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 107
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.6.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - b3b5860f-f7cd-560d-039d-5ccf36dd83ca
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:35:05 AM"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Feb 2024 09:35:11 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 5cedcc28-2ff5-4094-782e-3a7fc0125f7d
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 339.788116ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 126
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.6.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 56ff2fad-97e6-53d2-6227-ebf79fdc3a06
+            X-Cpcli-Format:
+                - json
+        url: https://canary.cli.btp.int.sap/login/v2.49.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 169
+        uncompressed: false
+        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Feb 2024 09:35:12 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 7cf96d5b-cc69-414b-46d6-a875735017a6
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 558.589485ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 126
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.6.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 9f615bdb-0e5a-e7fb-06b2-072284f14e7b
+            X-Cpcli-Format:
+                - json
+        url: https://canary.cli.btp.int.sap/login/v2.49.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 169
+        uncompressed: false
+        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Feb 2024 09:35:12 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 1592fae6-6ec1-47ff-6ad6-675cf5d0ff2e
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 507.267269ms
     - id: 16
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 70
+        content_length: 107
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 611b2ef7-4dd9-24ba-161b-3a9ac8f1a189
+                - f3b99d08-ae49-282c-b6f8-9e33bbabe719
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -1106,14 +1144,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:40 AM"}'
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:35:05 AM"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:46 GMT
+                - Wed, 07 Feb 2024 09:35:13 GMT
             Expires:
                 - "0"
             Pragma:
@@ -1131,18 +1171,18 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - a0ab67ac-96a2-4706-5c29-a1bee5f5ff28
+                - bb0303fc-4c5d-4ecb-6a7a-11a8ef832102
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 183.4831ms
+        duration: 320.657205ms
     - id: 17
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 126
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -1155,9 +1195,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 7b2dd341-a102-fe9a-a98f-4b625799b951
+                - 919b95d0-6799-76c9-e782-ce95eb538b79
             X-Cpcli-Format:
                 - json
         url: https://canary.cli.btp.int.sap/login/v2.49.0
@@ -1168,18 +1208,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
+        content_length: 169
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "153"
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:49 GMT
+                - Wed, 07 Feb 2024 09:35:15 GMT
             Expires:
                 - "0"
             Pragma:
@@ -1195,36 +1237,42 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 887a9b00-1c87-4a4f-7181-1d843dbf86a4
+                - b7d7ba00-96cf-4e0b-7332-80f7ff22c548
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 2.72073s
+        duration: 1.483615806s
     - id: 18
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 107
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 832380e0-6494-bb6d-ade3-db226651c4e5
+                - be234127-6dfb-257a-7a4e-347ffe9c7ee0
+            X-Cpcli-Customidp:
+                - identityProvider
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
         method: POST
       response:
         proto: HTTP/2.0
@@ -1232,18 +1280,18 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        content_length: -1
+        uncompressed: true
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:35:05 AM"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:49 GMT
+                - Wed, 07 Feb 2024 09:35:15 GMT
             Expires:
                 - "0"
             Pragma:
@@ -1254,47 +1302,43 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - b8ee638e-ea0a-462e-72d2-834839add79f
+                - e246d43a-c014-47f1-50a0-5c2c4a4ae7c4
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 372.929ms
+        duration: 440.033741ms
     - id: 19
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 70
+        content_length: 126
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - c49d353d-499e-39c1-0f9c-452f9f1b8b99
-            X-Cpcli-Customidp:
-                - identityProvider
+                - 74ed99ed-352d-c160-f24c-88bc61937370
             X-Cpcli-Format:
                 - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
+        url: https://canary.cli.btp.int.sap/login/v2.49.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -1302,16 +1346,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:40 AM"}'
+        content_length: 169
+        uncompressed: false
+        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:49 GMT
+                - Wed, 07 Feb 2024 09:35:18 GMT
             Expires:
                 - "0"
             Pragma:
@@ -1322,25 +1370,23 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json;charset=UTF-8
-            X-Cpcli-Backend-Status:
-                - "200"
+            X-Cpcli-Sessionid:
+                - redacted
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 550f8e7a-c5e8-4d2d-653c-aa790474f276
+                - 4c9b2ef9-5baa-4955-7463-cc6a707fd378
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 147.7049ms
+        duration: 2.403165648s
     - id: 20
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 126
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -1353,9 +1399,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - c5269ea9-b4cf-5229-2cb6-3a272db6dbf5
+                - a3c0ccfb-9a45-d2b7-dac8-11c386e468a8
             X-Cpcli-Format:
                 - json
         url: https://canary.cli.btp.int.sap/login/v2.49.0
@@ -1366,18 +1412,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
+        content_length: 169
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "153"
+                - "169"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:52 GMT
+                - Wed, 07 Feb 2024 09:35:18 GMT
             Expires:
                 - "0"
             Pragma:
@@ -1393,275 +1441,13 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - ba6b9f19-762c-4032-592e-162e5234cd0a
+                - 7b8f2c89-3e66-4c2a-702a-49e767e5656d
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 3.1542628s
+        duration: 435.820614ms
     - id: 21
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 119
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - 4bf92258-6e3c-be35-e83a-a46f2845d051
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:17:53 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - f0ce1f34-4bb4-4a0a-536c-60de8e726344
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 334.1299ms
-    - id: 22
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 70
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - 6c00e842-1291-b23a-782c-b0d4e8a626ea
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:40 AM"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:17:53 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json;charset=UTF-8
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - b9596a3a-ad9a-4447-7fb9-2f2b6f0afdd6
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 124.4098ms
-    - id: 23
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 119
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - b60c0486-36a6-c940-cb87-1d080735ed3d
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:17:56 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - 68a334d5-39d7-4e89-5686-f2ac8ec96c50
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 3.0235463s
-    - id: 24
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 119
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - cd10de60-3c42-d759-20e8-9697344bf39e
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:17:57 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - 8c8f0f8b-4826-4912-4558-62b968507506
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 376.3335ms
-    - id: 25
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -1679,9 +1465,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 96f4d331-1660-ae91-723e-37c23bccc04b
+                - eaf9c3df-72be-7c42-155c-04c213377e95
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -1704,10 +1490,12 @@ interactions:
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:59 GMT
+                - Wed, 07 Feb 2024 09:35:20 GMT
             Expires:
                 - "0"
             Pragma:
@@ -1725,33 +1513,33 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - eea72955-276d-4132-563c-9d3f45bfbe5f
+                - cbd8b229-c860-430f-55e2-43ae7a9fa13e
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 1.9346685s
-    - id: 26
+        duration: 1.681703867s
+    - id: 22
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 108
+        content_length: 145
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"confirm":"true","forceDelete":"true","subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
+            {"paramValues":{"confirm":"true","forceDelete":"true","globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 697a2133-c868-8b10-7d69-56af00cdf0e8
+                - 74143126-7639-f95b-9ca5-0f13628ee5be
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -1770,14 +1558,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"DELETING","stateMessage":"Delete subaccount entity","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:17:40 AM","jobId":"3728056"}'
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"DELETING","stateMessage":"Delete subaccount entity","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:35:05 AM","jobId":"4167045"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:17:59 GMT
+                - Wed, 07 Feb 2024 09:35:20 GMT
             Expires:
                 - "0"
             Pragma:
@@ -1795,243 +1585,321 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 61c9b8a9-3597-4ef6-5118-fe663439c73e
+                - 5bc84883-69ab-4a8a-7a0a-4a7412dd09ae
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 197.6666ms
+        duration: 380.821108ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 107
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.6.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 083edb9b-28ef-5809-c5f8-3ef29ea7392f
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"DELETING","stateMessage":"Deleting subaccount.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:35:21 AM"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Feb 2024 09:35:26 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 43ac63a6-07a3-4ecb-45dd-f55d5176d10b
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 339.541225ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 107
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.6.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 744c12fd-b8d6-03e4-44db-cc3ab6e6f2a3
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"DELETING","stateMessage":"Deleting subaccount.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:35:21 AM"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Feb 2024 09:35:31 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 8bfcb286-4aa9-4b8a-47db-56073f470d2c
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 337.445943ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 107
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.6.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - f10fba0e-3834-23c7-28c9-5ea1497c2d10
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"DELETING","stateMessage":"Deleting subaccount.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:35:21 AM"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Feb 2024 09:35:41 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 597880ef-b304-478b-5724-81f4e0a56c2a
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 304.373304ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 107
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.6.6 terraform-provider-btp/dev
+            X-Correlationid:
+                - 9b6bd156-5136-a55e-ba83-4fdf312385d2
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"guid":"282919a6-227a-4e9c-9235-a251d19109a4","technicalName":"282919a6-227a-4e9c-9235-a251d19109a4","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"DELETING","stateMessage":"Deleting subaccount.","createdDate":"Feb 7, 2024, 9:34:37 AM","createdBy":"john.doe@int.test","modifiedDate":"Feb 7, 2024, 9:35:21 AM"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 07 Feb 2024 09:35:52 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 8f2f940b-a717-4df0-4e30-486b88456a0d
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 324.594687ms
     - id: 27
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 70
+        content_length: 107
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
+            {"paramValues":{"globalAccount":"terraformintcanary","subaccount":"282919a6-227a-4e9c-9235-a251d19109a4"}}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.6.6 terraform-provider-btp/dev
             X-Correlationid:
-                - 1cad55db-9e2f-2905-e46b-c23bd3ceb56e
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"DELETING","stateMessage":"Deleting subaccount.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:18:00 AM"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:18:04 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json;charset=UTF-8
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - 205271b3-eba9-4d57-53ad-a43c295ead87
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 166.0412ms
-    - id: 28
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 70
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - 8ef02abb-ad39-b128-fc16-db072d546595
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"DELETING","stateMessage":"Deleting subaccount.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:18:00 AM"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:18:09 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json;charset=UTF-8
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - c3d449f9-4c7d-444f-7cd9-f6bec8ae7a8b
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 148.0482ms
-    - id: 29
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 70
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - a6b908a4-e9f4-857d-d5ba-a0662e2a4803
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/accounts/subaccount?get
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"guid":"cd749378-8111-4c95-a765-36aca080a71b","technicalName":"cd749378-8111-4c95-a765-36aca080a71b","displayName":"Integration Test Acc Dyn","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-dyn","betaEnabled":false,"usedForProduction":"UNSET","state":"DELETING","stateMessage":"Deleting subaccount.","createdDate":"Nov 22, 2023, 7:17:11 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 22, 2023, 7:18:00 AM"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Type:
-                - application/json
-            Date:
-                - Wed, 22 Nov 2023 07:18:19 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json;charset=UTF-8
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - 3d02336c-c690-4a66-7626-1041414b774b
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 165.5654ms
-    - id: 30
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 70
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"subaccount":"cd749378-8111-4c95-a765-36aca080a71b"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - 3cc42bf5-2564-a2c2-8db0-fcc33a5e67ba
+                - 2d5c2177-e7ba-fc80-786e-582ce17aba29
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -2054,10 +1922,12 @@ interactions:
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Wed, 22 Nov 2023 07:18:30 GMT
+                - Wed, 07 Feb 2024 09:36:02 GMT
             Expires:
                 - "0"
             Pragma:
@@ -2075,9 +1945,9 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 3599fa82-13b7-4f33-4754-77c29a3ace33
+                - bf3dd830-c2d3-4b31-68b3-06b6d6346f17
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 233.4221ms
+        duration: 463.246617ms
