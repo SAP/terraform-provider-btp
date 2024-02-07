@@ -53,6 +53,7 @@ func TestAccountsSubaccountFacade_List(t *testing.T) {
 func TestAccountsSubaccountFacade_Get(t *testing.T) {
 	command := "accounts/subaccount"
 
+	globalAccount := "795b53bb-a3f0-4769-adf0-26173282a975"
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
@@ -62,7 +63,8 @@ func TestAccountsSubaccountFacade_Get(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionGet, map[string]string{
-				"subaccount": subaccountId,
+				"globalAccount": globalAccount,
+				"subaccount":    subaccountId,
 			})
 
 		}))
@@ -164,9 +166,10 @@ func TestAccountsSubaccountFacade_Delete(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionDelete, map[string]string{
-				"subaccount":  subaccountId,
-				"confirm":     "true",
-				"forceDelete": "true",
+				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
+				"subaccount":    subaccountId,
+				"confirm":       "true",
+				"forceDelete":   "true",
 			})
 
 		}))
@@ -186,10 +189,11 @@ func TestAccountsSubaccountFacade_Delete(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionDelete, map[string]string{
-				"subaccount":  subaccountId,
-				"confirm":     "true",
-				"forceDelete": "true",
-				"directoryID": directoryId,
+				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
+				"subaccount":    subaccountId,
+				"confirm":       "true",
+				"forceDelete":   "true",
+				"directoryID":   directoryId,
 			})
 
 		}))

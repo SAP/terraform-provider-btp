@@ -35,7 +35,8 @@ func (f *accountsSubaccountFacade) List(ctx context.Context, labelsFilter string
 
 func (f *accountsSubaccountFacade) Get(ctx context.Context, subaccountId string) (cis.SubaccountResponseObject, CommandResponse, error) {
 	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
-		"subaccount": subaccountId,
+		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
+		"subaccount":    subaccountId,
 	}))
 }
 
@@ -93,9 +94,10 @@ func (f *accountsSubaccountFacade) Update(ctx context.Context, args *SubaccountU
 func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId string, directoryId string) (cis.SubaccountResponseObject, CommandResponse, error) {
 
 	requestArgs := map[string]string{
-		"subaccount":  subaccountId,
-		"confirm":     "true",
-		"forceDelete": "true",
+		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
+		"subaccount":    subaccountId,
+		"confirm":       "true",
+		"forceDelete":   "true",
 	}
 
 	if len(directoryId) > 0 {
