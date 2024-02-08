@@ -311,7 +311,6 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	args.Labels = map[string][]string{}
 	maps.Copy(args.Labels, labels)
 
-	//We do not support the update of features (distinct command in CLI). We raise an error if the user tries to update the features
 	var planFeatures []string
 	var stateFeatures []string
 
@@ -319,9 +318,6 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	state.Features.ElementsAs(ctx, &stateFeatures, false)
 
 	if strings.Join(planFeatures, ",") != strings.Join(stateFeatures, ",") {
-		//resp.Diagnostics.AddError(updateErrorHeader, "Update of Directory Features is not supported")
-		//return
-
 		enableArgs := btpcli.DirectoryEnableInput{
 			DirectoryId: plan.ID.ValueString(),
 		}
