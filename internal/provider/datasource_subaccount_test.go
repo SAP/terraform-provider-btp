@@ -35,7 +35,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 						resource.TestMatchResourceAttr("data.btp_subaccount.test", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "region", "eu12"),
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "state", "OK"),
-						resource.TestCheckResourceAttr("data.btp_subaccount.test", "usage", "UNSET"),
+						resource.TestCheckResourceAttr("data.btp_subaccount.test", "usage", "NOT_USED_FOR_PRODUCTION"),
 					),
 				},
 			},
