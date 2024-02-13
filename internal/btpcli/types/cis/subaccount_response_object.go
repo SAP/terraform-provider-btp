@@ -33,6 +33,8 @@ type SubaccountResponseObject struct {
 	ParentFeatures []string `json:"parentFeatures"`
 	// The GUID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the GUID of the global account.
 	ParentGUID string `json:"parentGUID"`
+	//The type of the parent entity.
+	ParentType string `json:"parentType"`
 	// The region in which the subaccount was created.
 	Region string `json:"region"`
 	// The current state of the subaccount.
