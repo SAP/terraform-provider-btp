@@ -135,7 +135,7 @@ func TestResourceDirectory(t *testing.T) {
 	})
 
 	t.Run("happy path - change directory features", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_directory.error_change_features")
+		rec, user := setupVCR(t, "fixtures/resource_directory.change_with_features")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
