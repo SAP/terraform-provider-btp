@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"maps"
 	"net/http"
+	"reflect"
 	"regexp"
 	"slices"
 	"strings"
@@ -292,25 +293,6 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	args := btpcli.DirectoryUpdateInput{
-		DirectoryId: plan.ID.ValueString(),
-	}
-
-	if !plan.Name.IsUnknown() {
-		displayName := plan.Name.ValueString()
-		args.DisplayName = &displayName
-	}
-
-	if !plan.Description.IsUnknown() {
-		description := plan.Description.ValueString()
-		args.Description = &description
-	}
-
-	var labels map[string][]string
-	plan.Labels.ElementsAs(ctx, &labels, false)
-	args.Labels = map[string][]string{}
-	maps.Copy(args.Labels, labels)
-
 	var planFeatures []string
 	var stateFeatures []string
 
@@ -371,42 +353,66 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.Append(diags...)
 	}
 
-	cliRes, _, err := rs.cli.Accounts.Directory.Update(ctx, &args)
-	if err != nil {
-		resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
-		return
+	args := btpcli.DirectoryUpdateInput{
+		DirectoryId: plan.ID.ValueString(),
 	}
 
-	plan, diags = directoryValueFrom(ctx, cliRes)
-	resp.Diagnostics.Append(diags...)
-
-	updateStateConf := &tfutils.StateChangeConf{
-		Pending: []string{cis.StateUpdating, cis.StateStarted},
-		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
-		Refresh: func() (interface{}, string, error) {
-			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
-
-			if err != nil {
-				return subRes, "", err
-			}
-
-			return subRes, subRes.EntityState, nil
-		},
-		Timeout:    10 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+	if !plan.Name.IsUnknown() {
+		displayName := plan.Name.ValueString()
+		args.DisplayName = &displayName
 	}
 
-	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
-	if err != nil {
-		resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+	if !plan.Description.IsUnknown() {
+		description := plan.Description.ValueString()
+		args.Description = &description
 	}
 
-	plan, diags = directoryValueFrom(ctx, updatedRes.(cis.DirectoryResponseObject))
-	resp.Diagnostics.Append(diags...)
+	var planLabels map[string][]string
+	plan.Labels.ElementsAs(ctx, &planLabels, false)
+	var stateLabels map[string][]string
+	state.Labels.ElementsAs(ctx, &stateLabels, false)
 
-	diags = resp.State.Set(ctx, plan)
-	resp.Diagnostics.Append(diags...)
+	if !(plan.Name.ValueString() == state.Name.ValueString()) || !(plan.Description.ValueString() == state.Description.ValueString()) || !(reflect.DeepEqual(planLabels, stateLabels)) {
+		args.Labels = map[string][]string{}
+		maps.Copy(args.Labels, planLabels)
+
+		cliRes, _, err := rs.cli.Accounts.Directory.Update(ctx, &args)
+		if err != nil {
+			resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+			return
+		}
+
+		plan, diags = directoryValueFrom(ctx, cliRes)
+		resp.Diagnostics.Append(diags...)
+
+		updateStateConf := &tfutils.StateChangeConf{
+			Pending: []string{cis.StateUpdating, cis.StateStarted},
+			Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
+			Refresh: func() (interface{}, string, error) {
+				subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
+
+				if err != nil {
+					return subRes, "", err
+				}
+
+				return subRes, subRes.EntityState, nil
+			},
+			Timeout:    10 * time.Minute,
+			Delay:      5 * time.Second,
+			MinTimeout: 5 * time.Second,
+		}
+
+		updatedRes, err := updateStateConf.WaitForStateContext(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+		}
+
+		plan, diags = directoryValueFrom(ctx, updatedRes.(cis.DirectoryResponseObject))
+		resp.Diagnostics.Append(diags...)
+
+		diags = resp.State.Set(ctx, plan)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
