@@ -6,6 +6,7 @@ type directoryHierarchyType struct {
 	ID           types.String `tfsdk:"id"`
 	CreatedBy    types.String `tfsdk:"created_by"`
 	CreatedDate  types.String `tfsdk:"created_date"`
+	Directories	 types.List	  `tfsdk:"directories"`
 	Features     types.Set    `tfsdk:"features"`
 	ModifiedDate types.String `tfsdk:"modified_date"`
 	Name         types.String `tfsdk:"name"`
