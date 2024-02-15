@@ -6,7 +6,7 @@ type subaccountHierarchyType struct {
 	ID             types.String `tfsdk:"id"`
 	CreatedBy      types.String `tfsdk:"created_by"`
 	CreatedDate    types.String `tfsdk:"created_date"`
-	ModifiedDate   types.String	`tfdsk:"modified_date"`
+	ModifiedDate   types.String	`tfdsk:"last_modified"`
 	Name           types.String `tfsdk:"name"`
 	ParentID       types.String `tfsdk:"parent_id"`
 	ParentName	   types.String `tfsdk:"parent_name"`
