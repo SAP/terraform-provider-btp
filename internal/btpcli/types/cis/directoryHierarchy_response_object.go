@@ -36,7 +36,7 @@ type DirectoryHierarchyResponseObject struct {
 	// Information about the state.
 	StateMessage string `json:"stateMessage,omitempty"`
 	// The subaccounts contained in the directory.
-	Subaccounts []SubaccountResponseObject `json:"subaccounts,omitempty"`
+	Subaccounts []SubaccountHierarchyResponseObject `json:"subaccounts,omitempty"`
 	// Applies only to directories that have the user authorization management feature enabled. The subdomain becomes part of the path used to access the authorization tenant of the directory. Unique within the defined region.
 	Subdomain string `json:"subdomain,omitempty"`
 }
