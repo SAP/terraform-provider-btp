@@ -276,7 +276,8 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 }
 
 func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	const updateErrorHeader = "API Error Updating Resource Directory"
+
+	//This method makes two distinct calls: one to support features update using the BTP CLI "enable" command, and another for name, description and labels update.
 
 	var plan directoryType
 	var state directoryType
@@ -300,71 +301,10 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	state.Features.ElementsAs(ctx, &stateFeatures, false)
 
 	if strings.Join(planFeatures, ",") != strings.Join(stateFeatures, ",") {
-		enableArgs := btpcli.DirectoryEnableInput{
-			DirectoryId: plan.ID.ValueString(),
-		}
-
-		if !plan.Subdomain.IsUnknown() {
-			subdomain := plan.Subdomain.ValueString()
-			enableArgs.Subdomain = &subdomain
-		}
-		if !plan.Features.IsUnknown() {
-			var features []string
-			plan.Features.ElementsAs(ctx, &features, false)
-			enableArgs.Features = sortDiretoryFeatures(features)
-		}
-
-		cliRes, _, err := rs.cli.Accounts.Directory.Enable(ctx, &enableArgs)
-
-		if err != nil {
-			resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+		rs.enableDirectory(ctx, plan, resp)
+		if resp.Diagnostics.HasError() {
 			return
 		}
-
-		plan, diags = directoryValueFrom(ctx, cliRes)
-		resp.Diagnostics.Append(diags...)
-
-		enableStateConf := &tfutils.StateChangeConf{
-			Pending: []string{cis.StateUpdating, cis.StateStarted, cis.StateDeleting, cis.StateCreating},
-			Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
-			Refresh: func() (interface{}, string, error) {
-				subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
-
-				if err != nil {
-					return subRes, "", err
-				}
-
-				return subRes, subRes.EntityState, nil
-			},
-			Timeout:    10 * time.Minute,
-			Delay:      5 * time.Second,
-			MinTimeout: 5 * time.Second,
-		}
-
-		enabledRes, err := enableStateConf.WaitForStateContext(ctx)
-		if err != nil {
-			resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
-		}
-
-		plan, diags = directoryValueFrom(ctx, enabledRes.(cis.DirectoryResponseObject))
-		resp.Diagnostics.Append(diags...)
-
-		diags = resp.State.Set(ctx, plan)
-		resp.Diagnostics.Append(diags...)
-	}
-
-	args := btpcli.DirectoryUpdateInput{
-		DirectoryId: plan.ID.ValueString(),
-	}
-
-	if !plan.Name.IsUnknown() {
-		displayName := plan.Name.ValueString()
-		args.DisplayName = &displayName
-	}
-
-	if !plan.Description.IsUnknown() {
-		description := plan.Description.ValueString()
-		args.Description = &description
 	}
 
 	var planLabels map[string][]string
@@ -373,45 +313,10 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	state.Labels.ElementsAs(ctx, &stateLabels, false)
 
 	if !(plan.Name.ValueString() == state.Name.ValueString()) || !(plan.Description.ValueString() == state.Description.ValueString()) || !(reflect.DeepEqual(planLabels, stateLabels)) {
-		args.Labels = map[string][]string{}
-		maps.Copy(args.Labels, planLabels)
-
-		cliRes, _, err := rs.cli.Accounts.Directory.Update(ctx, &args)
-		if err != nil {
-			resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+		rs.updateDirectory(ctx, plan, resp)
+		if resp.Diagnostics.HasError() {
 			return
 		}
-
-		plan, diags = directoryValueFrom(ctx, cliRes)
-		resp.Diagnostics.Append(diags...)
-
-		updateStateConf := &tfutils.StateChangeConf{
-			Pending: []string{cis.StateUpdating, cis.StateStarted},
-			Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
-			Refresh: func() (interface{}, string, error) {
-				subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
-
-				if err != nil {
-					return subRes, "", err
-				}
-
-				return subRes, subRes.EntityState, nil
-			},
-			Timeout:    10 * time.Minute,
-			Delay:      5 * time.Second,
-			MinTimeout: 5 * time.Second,
-		}
-
-		updatedRes, err := updateStateConf.WaitForStateContext(ctx)
-		if err != nil {
-			resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
-		}
-
-		plan, diags = directoryValueFrom(ctx, updatedRes.(cis.DirectoryResponseObject))
-		resp.Diagnostics.Append(diags...)
-
-		diags = resp.State.Set(ctx, plan)
-		resp.Diagnostics.Append(diags...)
 	}
 }
 
@@ -484,4 +389,122 @@ func sortDiretoryFeatures(directoryFeatures []string) []string {
 	}
 
 	return directoryFeaturesSorted
+}
+
+func (rs *directoryResource) enableDirectory(ctx context.Context, plan directoryType, resp *resource.UpdateResponse) {
+	// This fuction is responsible to update the features after creation of the directory resource
+
+	const updateErrorHeader = "API Error Updating Resource Directory"
+	enableArgs := btpcli.DirectoryEnableInput{
+		DirectoryId: plan.ID.ValueString(),
+	}
+
+	if !plan.Subdomain.IsUnknown() {
+		subdomain := plan.Subdomain.ValueString()
+		enableArgs.Subdomain = &subdomain
+	}
+	if !plan.Features.IsUnknown() {
+		var features []string
+		plan.Features.ElementsAs(ctx, &features, false)
+		enableArgs.Features = sortDiretoryFeatures(features)
+	}
+
+	cliRes, _, err := rs.cli.Accounts.Directory.Enable(ctx, &enableArgs)
+
+	if err != nil {
+		resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+		return
+	}
+
+	plan, diags := directoryValueFrom(ctx, cliRes)
+	resp.Diagnostics.Append(diags...)
+
+	enableStateConf := &tfutils.StateChangeConf{
+		Pending: []string{cis.StateUpdating, cis.StateStarted, cis.StateDeleting, cis.StateCreating},
+		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
+		Refresh: func() (interface{}, string, error) {
+			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
+
+			if err != nil {
+				return subRes, "", err
+			}
+
+			return subRes, subRes.EntityState, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	enabledRes, err := enableStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+	}
+
+	plan, diags = directoryValueFrom(ctx, enabledRes.(cis.DirectoryResponseObject))
+	resp.Diagnostics.Append(diags...)
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+}
+
+func (rs *directoryResource) updateDirectory(ctx context.Context, plan directoryType, resp *resource.UpdateResponse) {
+	// This function is responsible to update the display name, description, and labels of directory resource
+	const updateErrorHeader = "API Error Updating Resource Directory"
+
+	args := btpcli.DirectoryUpdateInput{
+		DirectoryId: plan.ID.ValueString(),
+	}
+
+	if !plan.Name.IsUnknown() {
+		displayName := plan.Name.ValueString()
+		args.DisplayName = &displayName
+	}
+
+	if !plan.Description.IsUnknown() {
+		description := plan.Description.ValueString()
+		args.Description = &description
+	}
+
+	var planLabels map[string][]string
+	plan.Labels.ElementsAs(ctx, &planLabels, false)
+	args.Labels = map[string][]string{}
+	maps.Copy(args.Labels, planLabels)
+
+	cliRes, _, err := rs.cli.Accounts.Directory.Update(ctx, &args)
+	if err != nil {
+		resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+		return
+	}
+
+	plan, diags := directoryValueFrom(ctx, cliRes)
+	resp.Diagnostics.Append(diags...)
+
+	updateStateConf := &tfutils.StateChangeConf{
+		Pending: []string{cis.StateUpdating, cis.StateStarted},
+		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
+		Refresh: func() (interface{}, string, error) {
+			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
+
+			if err != nil {
+				return subRes, "", err
+			}
+
+			return subRes, subRes.EntityState, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
+
+	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(updateErrorHeader, fmt.Sprintf("%s", err))
+	}
+
+	plan, diags = directoryValueFrom(ctx, updatedRes.(cis.DirectoryResponseObject))
+	resp.Diagnostics.Append(diags...)
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
 }
