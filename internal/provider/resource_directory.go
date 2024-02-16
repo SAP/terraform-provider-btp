@@ -276,8 +276,8 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 }
 
 func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-
 	//This method makes two distinct calls: one to support features update using the BTP CLI "enable" command, and another for name, description and labels update.
+	//The methods are only called if the corresponding change should be triggered
 
 	var plan directoryType
 	var state directoryType
@@ -301,6 +301,7 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	state.Features.ElementsAs(ctx, &stateFeatures, false)
 
 	if strings.Join(planFeatures, ",") != strings.Join(stateFeatures, ",") {
+		//There is a diff in the features, so the features need to be updated
 		rs.enableDirectory(ctx, plan, resp)
 		if resp.Diagnostics.HasError() {
 			return
@@ -313,6 +314,7 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	state.Labels.ElementsAs(ctx, &stateLabels, false)
 
 	if !(plan.Name.ValueString() == state.Name.ValueString()) || !(plan.Description.ValueString() == state.Description.ValueString()) || !(reflect.DeepEqual(planLabels, stateLabels)) {
+		//There is a diff in the directory attributes, so the directory attributes needs to be updated
 		rs.updateDirectory(ctx, plan, resp)
 		if resp.Diagnostics.HasError() {
 			return
@@ -392,7 +394,7 @@ func sortDiretoryFeatures(directoryFeatures []string) []string {
 }
 
 func (rs *directoryResource) enableDirectory(ctx context.Context, plan directoryType, resp *resource.UpdateResponse) {
-	// This fuction is responsible to update the features after creation of the directory resource
+	// This function is responsible to update the features in case of an update
 
 	const updateErrorHeader = "API Error Updating Resource Directory"
 	enableArgs := btpcli.DirectoryEnableInput{
