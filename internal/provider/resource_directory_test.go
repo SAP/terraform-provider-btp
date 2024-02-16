@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -135,8 +134,8 @@ func TestResourceDirectory(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - change directory features", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_directory.error_change_features")
+	t.Run("happy path - change directory features", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory.change_with_features")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -155,8 +154,16 @@ func TestResourceDirectory(t *testing.T) {
 					),
 				},
 				{
-					Config:      hclProviderFor(user) + hclResourceDirectoryWithFeatures("uut", "my-new-directory", "This is an updated directory"),
-					ExpectError: regexp.MustCompile(`Update of Directory Features is not supported`),
+					Config: hclProviderFor(user) + hclResourceDirectoryWithFeatures("uut", "my-new-directory", "This is an updated directory"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_directory.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_directory.uut", "parent_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-new-directory"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is an updated directory"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "features.#", "3"),
+					),
 				},
 			},
 		})

@@ -44,6 +44,14 @@ type DirectoryUpdateInput struct {
 	Labels        map[string][]string `btpcli:"labels"`
 }
 
+type DirectoryEnableInput struct {
+	DirectoryId   string   `btpcli:"directoryID"`
+	Globalaccount string   `btpcli:"globalAccount"`
+	Subdomain     *string  `btpcli:"subdomain"`
+	Features      []string `btpcli:"directoryFeatures"`
+	Confirm       bool     `btpcli:"confirm"`
+}
+
 func (f *accountsDirectoryFacade) Create(ctx context.Context, args *DirectoryCreateInput) (cis.DirectoryResponseObject, CommandResponse, error) {
 	args.Globalaccount = f.cliClient.GetGlobalAccountSubdomain()
 
@@ -66,6 +74,19 @@ func (f *accountsDirectoryFacade) Update(ctx context.Context, args *DirectoryUpd
 	}
 
 	return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
+}
+
+func (f *accountsDirectoryFacade) Enable(ctx context.Context, args *DirectoryEnableInput) (cis.DirectoryResponseObject, CommandResponse, error) {
+	args.Globalaccount = f.cliClient.GetGlobalAccountSubdomain()
+	args.Confirm = true
+
+	params, err := tfutils.ToBTPCLIParamsMap(args)
+
+	if err != nil {
+		return cis.DirectoryResponseObject{}, CommandResponse{}, err
+	}
+
+	return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewEnableRequest(f.getCommand(), params))
 }
 
 func (f *accountsDirectoryFacade) Delete(ctx context.Context, directoryId string) (cis.DirectoryResponseObject, CommandResponse, error) {
