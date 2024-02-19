@@ -60,4 +60,8 @@ The SAP BTP provider offers the authentication via `username` and `password`. Be
 
 ## Custom User-Agent Information
 
-By default, the underlying BTP client used by the Terraform BTP Provider creates requests with User-Agent headers that include information about Terraform and BTP Terraform provider versions. To add more details to the User-Agent headers, the BTP_APPEND_USER_AGENT environment variable can be set, and its value will be directly appended to HTTP requests.
+By default, the underlying BTP client used by the Terraform BTP Provider creates requests with User-Agent headers that include information about Terraform and BTP Terraform provider versions. To add more details to the User-Agent headers, the `BTP_APPEND_USER_AGENT` environment variable can be set, and its value will be and its value will be directly added to HTTP requests. E.g.,
+
+```bash
+% export BTP_APPEND_USER_AGENT="Optional_Extra_Information"
+```
