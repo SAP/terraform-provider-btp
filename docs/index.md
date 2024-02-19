@@ -57,3 +57,7 @@ For the best experience using the SAP BTP provider, we recommend applying the co
 ## Authentication
 
 The SAP BTP provider offers the authentication via `username` and `password`. Be aware that this authentication is not compatible with the SAP Universal ID. For details on how to resolve this please see SAP Note [3085908 - Getting an error (e.g. invalid credentials) in certain applications (e.g. SAP Download Manager) when using S-user ID or SAP Universal ID](https://me.sap.com/notes/3085908). 
+
+## Custom User-Agent Information
+
+By default, the underlying BTP client used by the Terraform BTP Provider creates requests with User-Agent headers that include information about Terraform and BTP Terraform provider versions. To add more details to the User-Agent headers, the BTP_APPEND_USER_AGENT environment variable can be set, and its value will be directly appended to HTTP requests.
