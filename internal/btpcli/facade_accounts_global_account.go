@@ -30,3 +30,10 @@ func (f *accountsGlobalAccountFacade) GetWithHierarchy(ctx context.Context) (cis
 		"showHierarchy": "true",
 	}))
 }
+
+func (f *accountsGlobalAccountFacade) GetWithHierarchyNew(ctx context.Context) (cis.GlobalAccountHierarchyResponseObject, CommandResponse, error) {
+	return doExecute[cis.GlobalAccountHierarchyResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
+		"showHierarchy": "true",
+	}))
+}
