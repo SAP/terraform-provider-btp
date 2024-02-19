@@ -103,7 +103,7 @@ func directoriesObjectType(level int) types.ObjectType {
 			"parent_type":   types.StringType,
 			"state":         types.StringType,
 			"subaccounts": types.ListType{
-				ElemType: types.ObjectType{ AttrTypes : subaccountObjectType.AttrTypes },
+				ElemType: subaccountObjectType,
 			},
 			"subdomain": types.StringType,
 			"type":      types.StringType,
