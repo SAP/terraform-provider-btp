@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -147,7 +148,13 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	client := btpcli.NewClientFacade(btpcli.NewV2ClientWithHttpClient(p.httpClient, u))
-	client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s", req.TerraformVersion, version.ProviderVersion)
+	btp_append_user_agent := os.Getenv("BTP_APPEND_USER_AGENT")
+
+	if len(strings.TrimSpace(btp_append_user_agent)) == 0 {
+		client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s", req.TerraformVersion, version.ProviderVersion)
+	} else {
+		client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s modified-user-agent/%s", req.TerraformVersion, version.ProviderVersion, btp_append_user_agent)
+	}
 
 	// User may provide an idp to the provider
 	var idp string
