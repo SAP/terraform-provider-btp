@@ -131,6 +131,42 @@ func TestAccountsDirectoryFacade_Update(t *testing.T) {
 	})
 }
 
+func TestAccountsDirectoryFacade_Enable(t *testing.T) {
+	command := "accounts/directory"
+	globalAccount := "795b53bb-a3f0-4769-adf0-26173282a975"
+	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	subdomain := "my-directory-subdomain"
+
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionEnable, map[string]string{
+				"globalAccount":     globalAccount,
+				"directoryID":       directoryId,
+				"subdomain":         subdomain,
+				"directoryFeatures": "E,A",
+				"confirm":           "true",
+			})
+
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Accounts.Directory.Enable(context.TODO(), &DirectoryEnableInput{
+			DirectoryId: directoryId,
+			Subdomain:   &subdomain,
+			Features:    []string{"E", "A"},
+			Confirm:     true,
+		})
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
 func TestAccountsDirectoryFacade_Delete(t *testing.T) {
 	command := "accounts/directory"
 
