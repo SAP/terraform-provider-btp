@@ -313,7 +313,7 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	var stateLabels map[string][]string
 	state.Labels.ElementsAs(ctx, &stateLabels, false)
 
-	if !(plan.Name.ValueString() == state.Name.ValueString()) || !(plan.Description.ValueString() == state.Description.ValueString()) || !(reflect.DeepEqual(planLabels, stateLabels)) {
+	if (plan.Name.ValueString() != state.Name.ValueString()) || (plan.Description.ValueString() != state.Description.ValueString()) || !(reflect.DeepEqual(planLabels, stateLabels)) {
 		//There is a diff in the directory attributes, so the directory attributes needs to be updated
 		rs.updateDirectory(ctx, plan, resp)
 		if resp.Diagnostics.HasError() {

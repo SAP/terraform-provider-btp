@@ -148,12 +148,12 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	client := btpcli.NewClientFacade(btpcli.NewV2ClientWithHttpClient(p.httpClient, u))
-	btp_user_agent := os.Getenv("BTP_APPEND_USER_AGENT")
+	btpUserAgent := os.Getenv("BTP_APPEND_USER_AGENT")
 
-	if len(strings.TrimSpace(btp_user_agent)) == 0 {
+	if len(strings.TrimSpace(btpUserAgent)) == 0 {
 		client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s", req.TerraformVersion, version.ProviderVersion)
 	} else {
-		client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s custom-user-agent/%s", req.TerraformVersion, version.ProviderVersion, btp_user_agent)
+		client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s custom-user-agent/%s", req.TerraformVersion, version.ProviderVersion, btpUserAgent)
 	}
 
 	// User may provide an idp to the provider
