@@ -39,10 +39,10 @@ func globalAccountHierarchyValueFrom(ctx context.Context, value cis.GlobalAccoun
 	var dirs []directoryHierarchyType
 
 	if len(value.Children) > 0 {
-		dirs, diags = directoriesHierarchyValueFrom(ctx, value.Children, globalAccount.Name, globalAccount.Type, 2)
+		dirs, diags = directoriesHierarchyValueFrom(ctx, value.Children, globalAccount.Name, globalAccount.Type, 5)
 		summary.Append(diags...)
 
-		globalAccount.Directories, diags = types.ListValueFrom(ctx, directoriesObjectType(2), dirs)
+		globalAccount.Directories, diags = types.ListValueFrom(ctx, directoriesObjectType(5), dirs)
 		summary.Append(diags...)
 	}
 

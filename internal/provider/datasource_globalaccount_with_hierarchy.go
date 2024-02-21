@@ -485,7 +485,7 @@ func (ds *globalaccountWithHierarchyDataSource) Read(ctx context.Context, req da
 		return
 	}
 
-	cliRes, _, err := ds.cli.Accounts.GlobalAccount.GetWithHierarchy(ctx)
+	cliRes, _, err := ds.cli.Accounts.GlobalAccount.GetWithHierarchyNew(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Global Account", fmt.Sprintf("%s", err))
 		return
