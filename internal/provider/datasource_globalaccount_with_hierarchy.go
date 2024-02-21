@@ -21,6 +21,14 @@ var subaccountHierarchySchemaAttributes = map[string]schema.Attribute{
 			uuidvalidator.ValidUUID(),
 		},
 	},
+	"name": schema.StringAttribute{
+		MarkdownDescription: "A descriptive name of the subaccount for customer-facing UIs.",
+		Computed:            true,
+	},
+	"type": schema.StringAttribute{
+		MarkdownDescription: "The type of resource",
+		Computed:			 true,
+	},
 	"created_by": schema.StringAttribute{
 		MarkdownDescription: "The details of the user that created the subaccount.",
 		Computed:            true,
@@ -31,10 +39,6 @@ var subaccountHierarchySchemaAttributes = map[string]schema.Attribute{
 	},
 	"last_modified": schema.StringAttribute{
 		MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
-		Computed:            true,
-	},
-	"name": schema.StringAttribute{
-		MarkdownDescription: "A descriptive name of the subaccount for customer-facing UIs.",
 		Computed:            true,
 	},
 	"parent_id": schema.StringAttribute{
@@ -77,10 +81,6 @@ var subaccountHierarchySchemaAttributes = map[string]schema.Attribute{
 	"subdomain": schema.StringAttribute{
 		MarkdownDescription: "The subdomain that becomes part of the path used to access the authorization tenant of the subaccount. Must be unique within the defined region. Use only letters (a-z), digits (0-9), and hyphens (not at the start or end). Maximum length is 63 characters. Cannot be changed after the subaccount has been created.",
 		Computed:            true,
-	},
-	"type": schema.StringAttribute{
-		MarkdownDescription: "The type of resource",
-		Computed:			 true,
 	},
 }
 
@@ -291,6 +291,14 @@ func directoriesSchema (level int) schema.NestedAttributeObject{
 							uuidvalidator.ValidUUID(),
 						},
 					},
+					"name": schema.StringAttribute{
+						MarkdownDescription: "The display name of the directory.",
+						Computed:            true,
+					},
+					"type": schema.StringAttribute{
+						MarkdownDescription: "The type of resource.",
+						Computed:            true,
+					},
 					"created_by": schema.StringAttribute{
 						MarkdownDescription: "The details of the user that created the directory.",
 						Computed:            true,
@@ -323,10 +331,6 @@ func directoriesSchema (level int) schema.NestedAttributeObject{
 					},
 					"last_modified": schema.StringAttribute{
 						MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
-						Computed:            true,
-					},
-					"name": schema.StringAttribute{
-						MarkdownDescription: "The display name of the directory.",
 						Computed:            true,
 					},
 					"parent_id": schema.StringAttribute{
@@ -374,10 +378,6 @@ func directoriesSchema (level int) schema.NestedAttributeObject{
 						MarkdownDescription: "This applies only to directories that have the user authorization management feature enabled. The subdomain is part of the path used to access the authorization tenant of the directory.",
 						Computed:            true,
 					},
-					"type": schema.StringAttribute{
-						MarkdownDescription: "The type of resource.",
-						Computed:            true,
-					},
 		},
 	}
 }
@@ -416,13 +416,17 @@ __Further documentation:__
 				MarkdownDescription: "The ID of the global account.",
 				Computed:            true,
 			},
-			"directories": schema.ListNestedAttribute{
-				NestedObject: directoriesSchema(2),
-				MarkdownDescription: "The directories contained in the global account",
-				Computed:            true,
-			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The display name of the global account.",
+				Computed:            true,
+			},
+			"type": schema.StringAttribute{
+				MarkdownDescription: "The type of the resource.",
+				Computed:            true,
+			},
+			"directories": schema.ListNestedAttribute{
+				NestedObject: directoriesSchema(5),
+				MarkdownDescription: "The directories contained in the global account",
 				Computed:            true,
 			},
 			"subaccounts": schema.ListNestedAttribute{
@@ -458,10 +462,6 @@ __Further documentation:__
 					getFormattedValueAsTableRow("`MIGRATING`", "Migrating entity from Neo to Cloud Foundry."),
 				Computed: true,
 			},
-			"type": schema.StringAttribute{
-				MarkdownDescription: "The type of the resource.",
-				Computed:            true,
-			},
 			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
@@ -485,7 +485,7 @@ func (ds *globalaccountWithHierarchyDataSource) Read(ctx context.Context, req da
 		return
 	}
 
-	cliRes, _, err := ds.cli.Accounts.GlobalAccount.GetWithHierarchyNew(ctx)
+	cliRes, _, err := ds.cli.Accounts.GlobalAccount.GetWithHierarchy(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Global Account", fmt.Sprintf("%s", err))
 		return
