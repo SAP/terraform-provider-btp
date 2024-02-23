@@ -10,11 +10,10 @@ import (
 )
 
 type directoryHierarchyType struct {
-	ID          types.String `tfsdk:"id"`
-	CreatedBy   types.String `tfsdk:"created_by"`
-	CreatedDate types.String `tfsdk:"created_date"`
-	Directories	   types.List	`tfsdk:"directories"`
-	DirectoryType types.String `tfsdk:"directory_type"`
+	ID            types.String `tfsdk:"id"`
+	CreatedBy     types.String `tfsdk:"created_by"`
+	CreatedDate   types.String `tfsdk:"created_date"`
+	Directories	  types.List   `tfsdk:"directories"`
 	Features      types.Set    `tfsdk:"features"`
 	ModifiedDate  types.String `tfsdk:"last_modified"`
 	Name          types.String `tfsdk:"name"`
@@ -27,7 +26,6 @@ type directoryHierarchyType struct {
 	Type          types.String `tfsdk:"type"`
 }
 
-
 func directoryObjectType( level int ) types.ObjectType{
 
 	if level > 1 {
@@ -36,7 +34,6 @@ func directoryObjectType( level int ) types.ObjectType{
 				"id":			types.StringType,
 				"created_by":   types.StringType,
 				"created_date": types.StringType,
-				"directory_type": types.StringType,
 				"directories":	types.ListType{
 					ElemType: directoryObjectType(level-1),
 				},
@@ -63,7 +60,6 @@ func directoryObjectType( level int ) types.ObjectType{
 			"id":			types.StringType,
 			"created_by":   types.StringType,
 			"created_date": types.StringType,
-			"directory_type": types.StringType,
 			"features": 	types.SetType{
 				ElemType: types.StringType,
 			},
@@ -80,47 +76,16 @@ func directoryObjectType( level int ) types.ObjectType{
 			"type":			 types.StringType,
 		},
 	}
-
-	// return types.ObjectNull()
 }
 
-func directoriesObjectType(level int) types.ObjectType {
-	return types.ObjectType{
-		AttrTypes: map[string]attr.Type{
-			"id":           types.StringType,
-			"created_by":   types.StringType,
-			"created_date": types.StringType,
-			"directories":	types.ListType{
-				ElemType: directoryObjectType(level),
-			},
-			"directory_type": types.StringType,
-			"features": types.SetType{
-				ElemType: types.StringType,
-			},
-			"last_modified": types.StringType,
-			"name":          types.StringType,
-			"parent_id":     types.StringType,
-			"parent_name":   types.StringType,
-			"parent_type":   types.StringType,
-			"state":         types.StringType,
-			"subaccounts": types.ListType{
-				ElemType: subaccountObjectType,
-			},
-			"subdomain": types.StringType,
-			"type":      types.StringType,
-		},
-	}
-}
-
-func directoryHierarchyValueFrom(ctx context.Context, dirRes cis.DirectoryHierarchyResponseObject, parentName types.String, parentType types.String) (directoryHierarchyType, diag.Diagnostics) {
+func directoryHierarchyValueFrom(ctx context.Context, dirRes cis.DirectoryResponseObject, parentName types.String, parentType types.String) (directoryHierarchyType, diag.Diagnostics) {
 
 	var summary, diags diag.Diagnostics
 
-	dir := directoryHierarchyType{
+	directory := directoryHierarchyType{
 		ID:            types.StringValue(dirRes.Guid),
 		CreatedBy:     types.StringValue(dirRes.CreatedBy),
 		CreatedDate:   timeToValue(dirRes.CreatedDate.Time()),
-		DirectoryType: types.StringValue(dirRes.DirectoryType),
 		ModifiedDate:  timeToValue(dirRes.ModifiedDate.Time()),
 		Name:          types.StringValue(dirRes.DisplayName),
 		ParentID:      types.StringValue(dirRes.ParentGUID),
@@ -131,66 +96,44 @@ func directoryHierarchyValueFrom(ctx context.Context, dirRes cis.DirectoryHierar
 		Type:          types.StringValue("Directory"),
 	}
 
-	dir.Features, diags = types.SetValueFrom(ctx, types.StringType, dirRes.DirectoryFeatures)
+	directory.Features, diags = types.SetValueFrom(ctx, types.StringType, dirRes.DirectoryFeatures)
 	summary.Append(diags...)
 
 	if len(dirRes.Subaccounts) > 0 {
-		subaccounts := subaccountsHierarchyValueFrom(ctx, dirRes.Subaccounts, dir.Name, dir.Type)
-		dir.Subaccounts, diags = types.ListValueFrom(ctx, subaccountObjectType, subaccounts)
+		subaccounts := subaccountsHierarchyValueFrom(ctx, dirRes.Subaccounts, directory.Name, directory.Type)
+		directory.Subaccounts, diags = types.ListValueFrom(ctx, subaccountObjectType, subaccounts)
 		summary.Append(diags...)
 	} else {
-		dir.Subaccounts = types.ListNull(subaccountObjectType)
+		directory.Subaccounts = types.ListNull(subaccountObjectType)
 	}
 
-	return dir, summary
+	return directory, summary
 }
 
-func directoriesHierarchyValueFrom(ctx context.Context, dirResponses []cis.DirectoryHierarchyResponseObject, parentName types.String, parentType types.String, level int) ([]directoryHierarchyType, diag.Diagnostics) {
+func directoriesHierarchyValueFrom(ctx context.Context, dirResponses []cis.DirectoryResponseObject, parentName types.String, parentType types.String, level int) ([]directoryHierarchyType, diag.Diagnostics) {
 
-	var dirs = []directoryHierarchyType{}
+	var directories = []directoryHierarchyType{}
 	var summary diag.Diagnostics
 
 	for _, dirRes := range dirResponses {
 		var diags diag.Diagnostics
 
-		dir, diags := directoryHierarchyValueFrom(ctx, dirRes, parentName, parentType)
+		directory, diags := directoryHierarchyValueFrom(ctx, dirRes, parentName, parentType)
 
-		if len(dirRes.Children) > 0 && level>0{
-			directories, diag := directoriesHierarchyValueFrom(ctx, dirRes.Children, dir.Name, dir.Type, level-1)
+		if len(dirRes.Children) > 0 && level>1{
+			//Fetch the values of the sub-directories for the particular level
+			subDirectories, diag := directoriesHierarchyValueFrom(ctx, dirRes.Children, directory.Name, directory.Type, level-1)
 			diags.Append(diag...)
-			dir.Directories, diag = types.ListValueFrom(ctx, directoryObjectType(level), directories)
+			directory.Directories, diag = types.ListValueFrom(ctx, directoryObjectType(level-1), subDirectories)
 			diags.Append(diag...)
-		} else if level>0{
-			// nullDirs := []directoryHierarchyNoChildrenType{}
-			// nullDirs = append(nullDirs, directoryHierarchyListNull(level-1))
-			// dir.Directories, diags = types.ListValueFrom(ctx, directoryObjectType(level-1), nullDirs)
-
-			//only 1 child
-			dir.Directories = types.ListNull(directoryObjectType(level))
+		} else if level>1{
+			//Set the directories as null for the rest of the levels
+			directory.Directories = types.ListNull(directoryObjectType(level-1))
 		}
 
-		dirs = append(dirs, dir)
+		directories = append(directories, directory)
 		summary.Append(diags...)
 	}
 
-	return dirs, summary
+	return directories, summary
 }
-
-// func directoryHierarchyListNull (level int) directoryHierarchyNoChildrenType {
-// 	return directoryHierarchyNoChildrenType{
-// 		ID: types.StringNull(),
-// 		CreatedBy:   types.StringNull(),
-// 		CreatedDate: types.StringNull(),
-// 		DirectoryType: types.StringNull(),
-// 		Features: types.SetNull(types.StringType),
-// 		ModifiedDate: types.StringNull(),
-// 		Name: types.StringNull(),
-// 		ParentID: types.StringNull(),
-// 		ParentName: types.StringNull(),
-// 		ParentType: types.StringNull(),
-// 		State: types.StringNull(),
-// 		Subaccounts : types.ListNull(subaccountObjectType),
-// 		Subdomain : types.StringNull(),
-// 		Type: types.StringNull(),
-// 	}
-// }

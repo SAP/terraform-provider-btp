@@ -21,18 +21,13 @@ type subaccountHierarchyType struct {
 	State          types.String `tfsdk:"state"`
 	Subdomain      types.String `tfsdk:"subdomain"`
 	Type		   types.String	`tfsdk:"type"`
-
-	// Description    types.String `tfsdk:"description"`
-	// Labels         types.Map    `tfsdk:"labels"`
-	// ParentFeatures types.Set    `tfsdk:"parent_features"`
-	// Usage          types.String `tfsdk:"usage"`
 }
 
 var subaccountObjectType = types.ObjectType{
 	AttrTypes: map[string]attr.Type{
-		"id":           types.StringType,
-		"created_by":   types.StringType,
-		"created_date": types.StringType,
+		"id":            types.StringType,
+		"created_by":    types.StringType,
+		"created_date":  types.StringType,
 		"last_modified": types.StringType,
 		"name":          types.StringType,
 		"parent_id":     types.StringType,
@@ -45,8 +40,8 @@ var subaccountObjectType = types.ObjectType{
 	},
 }
 
-func subaccountHierarchyValueFrom (ctx context.Context, subRes cis.SubaccountHierarchyResponseObject) (subaccountHierarchyType){
-	sub := subaccountHierarchyType{
+func subaccountHierarchyValueFrom (ctx context.Context, subRes cis.SubaccountResponseObject) (subaccountHierarchyType){
+	subaccount := subaccountHierarchyType{
 		ID:				types.StringValue(subRes.Guid),
 		CreatedBy: 		types.StringValue(subRes.CreatedBy),
 		CreatedDate: 	timeToValue(subRes.CreatedDate.Time()),
@@ -58,18 +53,18 @@ func subaccountHierarchyValueFrom (ctx context.Context, subRes cis.SubaccountHie
 		Subdomain:		types.StringValue(subRes.Subdomain),
 		Type:			types.StringValue("Subaccount"),	
 	}
-	return sub
+	return subaccount
 }
 
-func subaccountsHierarchyValueFrom (ctx context.Context, subResponses []cis.SubaccountHierarchyResponseObject, parentName types.String, parentType types.String) ([]subaccountHierarchyType){
+func subaccountsHierarchyValueFrom (ctx context.Context, subResponses []cis.SubaccountResponseObject, parentName types.String, parentType types.String) ([]subaccountHierarchyType){
 	
 	var subaccounts = []subaccountHierarchyType{}
 
 	for _, subRes := range subResponses {
-		sub := subaccountHierarchyValueFrom(ctx, subRes)
-		sub.ParentName = parentName
-		sub.ParentType = parentType
-		subaccounts = append(subaccounts, sub)
+		subaccount := subaccountHierarchyValueFrom(ctx, subRes)
+		subaccount.ParentName = parentName
+		subaccount.ParentType = parentType
+		subaccounts = append(subaccounts, subaccount)
 	}
 
  	return subaccounts

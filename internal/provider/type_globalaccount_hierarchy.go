@@ -20,11 +20,7 @@ type globalAccountHierarchyType struct {
 	Type         types.String `tfsdk:"type"`
 }
 
-//get global account value
-//for directories it has to call get directories value
-//same for subaccounts
-
-func globalAccountHierarchyValueFrom(ctx context.Context, value cis.GlobalAccountHierarchyResponseObject) (globalAccountHierarchyType, diag.Diagnostics) {
+func globalAccountHierarchyValueFrom(ctx context.Context, value cis.GlobalAccountResponseObject) (globalAccountHierarchyType, diag.Diagnostics) {
 	globalAccount := globalAccountHierarchyType{
 		ID:           types.StringValue(value.Guid),
 		CreatedDate:  timeToValue(value.CreatedDate.Time()),
@@ -36,14 +32,15 @@ func globalAccountHierarchyValueFrom(ctx context.Context, value cis.GlobalAccoun
 	}
 
 	var summary, diags diag.Diagnostics
-	var dirs []directoryHierarchyType
 
 	if len(value.Children) > 0 {
-		dirs, diags = directoriesHierarchyValueFrom(ctx, value.Children, globalAccount.Name, globalAccount.Type, 5)
+		//The dirctory level is mentioned as 6 inorder to align with the schema strcuture defined as per the provider.
+		directories, diags := directoriesHierarchyValueFrom(ctx, value.Children, globalAccount.Name, globalAccount.Type, 6)
 		summary.Append(diags...)
-
-		globalAccount.Directories, diags = types.ListValueFrom(ctx, directoriesObjectType(5), dirs)
+		globalAccount.Directories, diags = types.ListValueFrom(ctx, directoryObjectType(6), directories)
 		summary.Append(diags...)
+	} else {
+		globalAccount.Directories = types.ListNull(directoryObjectType(6))
 	}
 
 	if len(value.Subaccounts) > 0 {
