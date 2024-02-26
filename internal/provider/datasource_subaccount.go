@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -45,6 +47,7 @@ You must be assigned to the admin or viewer role of the global account, director
 				Optional:            true,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
+					stringvalidator.ConflictsWith(path.MatchRoot("region"), path.MatchRoot("subdomain")),
 				},
 			},
 			"beta_enabled": schema.BoolAttribute{
@@ -90,6 +93,9 @@ You must be assigned to the admin or viewer role of the global account, director
 			"region": schema.StringAttribute{
 				MarkdownDescription: "The region in which the subaccount was created.",
 				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("subdomain")),
+				},
 			},
 			"state": schema.StringAttribute{
 				MarkdownDescription: "The current state of the subaccount. Possible values are: \n" +
@@ -123,6 +129,9 @@ You must be assigned to the admin or viewer role of the global account, director
 			"subdomain": schema.StringAttribute{
 				MarkdownDescription: "The subdomain that becomes part of the path used to access the authorization tenant of the subaccount. Must be unique within the defined region. Use only letters (a-z), digits (0-9), and hyphens (not at the start or end). Maximum length is 63 characters. Cannot be changed after the subaccount has been created.",
 				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("region")),
+				},
 			},
 			"usage": schema.StringAttribute{
 				MarkdownDescription: "Shows whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: \n" +
