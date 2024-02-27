@@ -167,7 +167,7 @@ func (ds *subaccountDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 		diags = resp.State.Set(ctx, &data)
 		resp.Diagnostics.Append(diags...)
-	} else {
+	} else if !data.Subdomain.IsNull() && !data.Region.IsNull() {
 		var labelsFilter string
 
 		cliRes, _, err := ds.cli.Accounts.Subaccount.List(ctx, labelsFilter)
@@ -212,7 +212,7 @@ func (ds *subaccountDataSource) Read(ctx context.Context, req datasource.ReadReq
 			diags = resp.State.Set(ctx, &data)
 			resp.Diagnostics.Append(diags...)
 		} else {
-			resp.Diagnostics.AddError("API Error Reading Resource Subaccount : Please provide correct value for subdomain and region", fmt.Sprintf("%s", err))
+			resp.Diagnostics.AddError("API Error Reading Resource Subaccount : Please provide correct value for subdomain and region", fmt.Sprintf("No subaccount found with subdomain %s in region %s", data.Subdomain.ValueString(), data.Region.ValueString()))
 			return
 		}
 	}

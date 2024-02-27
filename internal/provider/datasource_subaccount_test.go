@@ -42,6 +42,35 @@ func TestDataSourceSubaccount(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - subaccount by subdomain", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_by_subdomain")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclDatasourceSubaccountBySubdomain("test", "eu12", "integration-test-acc-static-b8xxozer"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("data.btp_subaccount.test", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_subaccount.test", "beta_enabled", "false"),
+						resource.TestCheckResourceAttrSet("data.btp_subaccount.test", "created_by"),
+						resource.TestMatchResourceAttr("data.btp_subaccount.test", "created_date", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("data.btp_subaccount.test", "description", "Please don't modify. This is used for integration tests."),
+						resource.TestCheckResourceAttr("data.btp_subaccount.test", "labels.#", "0"),
+						resource.TestMatchResourceAttr("data.btp_subaccount.test", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("data.btp_subaccount.test", "name", "integration-test-acc-static"),
+						resource.TestMatchResourceAttr("data.btp_subaccount.test", "parent_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_subaccount.test", "region", "eu12"),
+						resource.TestCheckResourceAttr("data.btp_subaccount.test", "state", "OK"),
+						resource.TestCheckResourceAttr("data.btp_subaccount.test", "usage", "NOT_USED_FOR_PRODUCTION"),
+					),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - subaccount doesn't exist", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount.err_subaccount_doesnt_exist")
 		defer stopQuietly(rec)
@@ -105,6 +134,19 @@ func TestDataSourceSubaccount(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - region not provided with subdomain", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config:      `data "btp_subaccount" "test" {subdomain = "integration-test-acc-static-b8xxozer"}`,
+					ExpectError: regexp.MustCompile(`Attribute "region" must be specified when "subdomain" is specified`),
+				},
+			},
+		})
+	})
 }
 
 func hclDatasourceSubaccountById(resourceName string, id string) string {
@@ -118,4 +160,13 @@ data "btp_subaccount" "%s" {
 	id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 }`
 	return fmt.Sprintf(template, resourceName, Name)
+}
+
+func hclDatasourceSubaccountBySubdomain(resourceName string, region string, subDomain string) string {
+	template := `
+	data "btp_subaccount" "%s" {
+		region = "%s" 
+		subdomain = "%s"
+	}`
+	return fmt.Sprintf(template, resourceName, region, subDomain)
 }
