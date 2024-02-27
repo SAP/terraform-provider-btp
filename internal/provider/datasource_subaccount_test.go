@@ -87,14 +87,17 @@ func TestDataSourceSubaccount(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - id mandatory", func(t *testing.T) {
+	t.Run("error path - id or subdomain with region is mandatory", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount.err_empty_configuration")
+		defer stopQuietly(rec)
+
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      `data "btp_subaccount" "test" {}`,
-					ExpectError: regexp.MustCompile(`The argument "id" is required, but no definition was found`),
+					Config:      hclProviderFor(user) + `data "btp_subaccount" "test" {}`,
+					ExpectError: regexp.MustCompile(`Either id or subdomain with region should be provided in the configuration`),
 				},
 			},
 		})
@@ -135,6 +138,24 @@ func TestDataSourceSubaccount(t *testing.T) {
 		})
 	})
 
+	t.Run("error path - either id or subdomain with region should be provided, not both", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config: `
+					data "btp_subaccount" "test" {
+						id = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" 
+						subdomain = "integration-test-acc-static-b8xxozer" 
+						region = "eu12"
+					}`,
+					ExpectError: regexp.MustCompile(`Attribute "subdomain" cannot be specified when "id" is specified`),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - region not provided with subdomain", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -143,6 +164,22 @@ func TestDataSourceSubaccount(t *testing.T) {
 				{
 					Config:      `data "btp_subaccount" "test" {subdomain = "integration-test-acc-static-b8xxozer"}`,
 					ExpectError: regexp.MustCompile(`Attribute "region" must be specified when "subdomain" is specified`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - subdomain is invalid", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount.err_invalid_subdomain")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProviderFor(user) + hclDatasourceSubaccountBySubdomain("test", "eu12", "invalid-subdomain"),
+					ExpectError: regexp.MustCompile(`Subaccount not found with subdomain`),
 				},
 			},
 		})
