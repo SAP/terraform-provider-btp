@@ -396,9 +396,9 @@ __Further documentation:__
 
 func (ds *globalaccountWithHierarchyDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var globalAccount_data globalAccountHierarchyType
+	var globalAccountData globalAccountHierarchyType
 
-	diags := req.Config.Get(ctx, &globalAccount_data)
+	diags := req.Config.Get(ctx, &globalAccountData)
 
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -411,9 +411,9 @@ func (ds *globalaccountWithHierarchyDataSource) Read(ctx context.Context, req da
 		return
 	}
 
-	globalAccount_data, diags = globalAccountHierarchyValueFrom(ctx, cliRes)
+	globalAccountData, diags = globalAccountHierarchyValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
-	diags = resp.State.Set(ctx, &globalAccount_data)
+	diags = resp.State.Set(ctx, &globalAccountData)
 	resp.Diagnostics.Append(diags...)
 }
