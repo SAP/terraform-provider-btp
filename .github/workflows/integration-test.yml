@@ -1,0 +1,32 @@
+name: Integration Test - Terraform Provider
+
+# Idea: 
+# 1. Build the provider
+# 2. Run all the provider test cases with TEST_FORCE_REC=TRUE 
+# 3. All tests must pass
+
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  execute_regression_test:
+    name: Regression Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out Git repository
+      id: checkout_repo
+      uses: actions/checkout@v4
+      
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: 'go.mod'
+
+    - name: Download deps
+      id: build_provider
+      shell: bash
+      run: |
+        go mod tidy
