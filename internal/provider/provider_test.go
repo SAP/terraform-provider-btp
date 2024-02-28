@@ -509,6 +509,7 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_globalaccount_trust_configurations",
 		"btp_globalaccount_user",
 		"btp_globalaccount_users",
+		"btp_globalaccount_with_hierarchy",
 		"btp_regions",
 		"btp_subaccount",
 		"btp_subaccount_app",
