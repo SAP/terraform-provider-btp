@@ -48,6 +48,7 @@ You must be assigned to the admin or viewer role of the global account, director
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 					stringvalidator.ConflictsWith(path.MatchRoot("region"), path.MatchRoot("subdomain")),
+					stringvalidator.AtLeastOneOf(path.MatchRoot("id"), path.MatchRoot("subdomain")),
 				},
 			},
 			"beta_enabled": schema.BoolAttribute{
@@ -153,11 +154,6 @@ func (ds *subaccountDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	if data.ID.IsNull() && data.Region.IsNull() && data.Subdomain.IsNull() {
-		resp.Diagnostics.AddError("Invalid configuration", "Either id or subdomain with region should be provided in the configuration")
 		return
 	}
 

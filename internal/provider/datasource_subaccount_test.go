@@ -88,16 +88,13 @@ func TestDataSourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - id or subdomain with region is mandatory", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount.err_empty_configuration")
-		defer stopQuietly(rec)
-
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + `data "btp_subaccount" "test" {}`,
-					ExpectError: regexp.MustCompile(`Either id or subdomain with region should be provided in the configuration`),
+					Config:      `data "btp_subaccount" "test" {}`,
+					ExpectError: regexp.MustCompile(`At least one attribute out of \[id,subdomain\] must be specified`),
 				},
 			},
 		})
