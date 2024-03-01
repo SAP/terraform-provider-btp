@@ -10,6 +10,8 @@ import (
 
 func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 
+	var testIdp = getenv("BTP_TEST_IDP", "terraformtest.accounts400.ondemand.com")
+
 	t.Run("happy path - minimal configuration with update", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.minimal")
 		defer stopQuietly(rec)
@@ -19,10 +21,10 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationMinimal("uut", "terraformtest.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationMinimal("uut", testIdp),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", "terraformtest.accounts400.ondemand.com"),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", "terraformtest.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", testIdp),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", testIdp),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "name", "terraformtest-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Custom Platform Identity Provider"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "origin", "terraformtest-platform"),
@@ -34,12 +36,12 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationComplete("uut", "terraformtest.accounts400.ondemand.com", "terraformtest.accounts400.ondemand.com", "Custom platform IAS tenant", "terraformtest-platform", "Description for terraformtest.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationComplete("uut", testIdp, testIdp, "Custom platform IAS tenant", "terraformtest-platform", "Description for "+testIdp),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", "terraformtest.accounts400.ondemand.com"),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", "terraformtest.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", testIdp),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", testIdp),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "name", "Custom platform IAS tenant"),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Description for terraformtest.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Description for "+testIdp),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "origin", "terraformtest-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "id", "terraformtest-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "type", "Platform"),
@@ -66,12 +68,12 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationComplete("uut", "terraformtest.accounts400.ondemand.com", "terraformtest.accounts400.ondemand.com", "Custom platform IAS tenant", "terraformtest-platform", "Description for terraformtest.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationComplete("uut", testIdp, testIdp, "Custom platform IAS tenant", "terraformtest-platform", "Description for "+testIdp),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", "terraformtest.accounts400.ondemand.com"),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", "terraformtest.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", testIdp),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", testIdp),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "name", "Custom platform IAS tenant"),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Description for terraformtest.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Description for "+testIdp),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "origin", "terraformtest-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "id", "terraformtest-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "type", "Platform"),
@@ -81,12 +83,12 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationMinimal("uut", "terraformtest.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationMinimal("uut", testIdp),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", "terraformtest.accounts400.ondemand.com"),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", "terraformtest.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", testIdp),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", testIdp),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "name", "Custom platform IAS tenant"),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Description for terraformtest.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Description for "+testIdp),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "origin", "terraformtest-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "id", "terraformtest-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "type", "Platform"),
@@ -132,7 +134,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationComplete("uut", "terraformtest.accounts400.ondemand.com", "terraformtest.accounts400.ondemand.com", "Custom platform IAS tenant", "invalid-platform-origin", "Description for terraformtest.accounts400.ondemand.com"),
+					Config:      hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationComplete("uut", testIdp, testIdp, "Custom platform IAS tenant", "invalid-platform-origin", "Description for "+testIdp),
 					ExpectError: regexp.MustCompile(`Attribute origin must end with '-platform' and not exceed 36 characters`),
 				},
 			},
