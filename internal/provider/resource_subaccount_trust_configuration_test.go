@@ -10,7 +10,7 @@ import (
 )
 
 func TestResourceSubaccountTrustConfiguration(t *testing.T) {
-	var testIdp = getenv("BTP_TEST_IDP", "terraformint.accounts400.ondemand.com")
+	var testIdp = getenv("BTP_TEST_IDP", "terraformtest.accounts400.ondemand.com")
 
 	t.Parallel()
 
