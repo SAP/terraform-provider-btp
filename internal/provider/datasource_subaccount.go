@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -42,9 +44,11 @@ You must be assigned to the admin or viewer role of the global account, director
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
-				Required:            true,
+				Optional:            true,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
+					stringvalidator.ConflictsWith(path.MatchRoot("region"), path.MatchRoot("subdomain")),
+					stringvalidator.AtLeastOneOf(path.MatchRoot("id"), path.MatchRoot("subdomain")),
 				},
 			},
 			"beta_enabled": schema.BoolAttribute{
@@ -89,7 +93,10 @@ You must be assigned to the admin or viewer role of the global account, director
 			},
 			"region": schema.StringAttribute{
 				MarkdownDescription: "The region in which the subaccount was created.",
-				Computed:            true,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("subdomain")),
+				},
 			},
 			"state": schema.StringAttribute{
 				MarkdownDescription: "The current state of the subaccount. Possible values are: \n" +
@@ -122,7 +129,10 @@ You must be assigned to the admin or viewer role of the global account, director
 			},
 			"subdomain": schema.StringAttribute{
 				MarkdownDescription: "The subdomain that becomes part of the path used to access the authorization tenant of the subaccount. Must be unique within the defined region. Use only letters (a-z), digits (0-9), and hyphens (not at the start or end). Maximum length is 63 characters. Cannot be changed after the subaccount has been created.",
-				Computed:            true,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("region")),
+				},
 			},
 			"usage": schema.StringAttribute{
 				MarkdownDescription: "Shows whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: \n" +
@@ -147,15 +157,65 @@ func (ds *subaccountDataSource) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	cliRes, _, err := ds.cli.Accounts.Subaccount.Get(ctx, data.ID.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Subaccount", fmt.Sprintf("%s", err))
-		return
+	if len(data.ID.ValueString()) > 0 {
+		cliRes, _, err := ds.cli.Accounts.Subaccount.Get(ctx, data.ID.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Subaccount", fmt.Sprintf("%s", err))
+			return
+		}
+
+		data, diags = subaccountValueFrom(ctx, cliRes)
+		resp.Diagnostics.Append(diags...)
+
+		diags = resp.State.Set(ctx, &data)
+		resp.Diagnostics.Append(diags...)
+	} else if !data.Subdomain.IsNull() && !data.Region.IsNull() {
+		var labelsFilter string
+
+		cliRes, _, err := ds.cli.Accounts.Subaccount.List(ctx, labelsFilter)
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Subaccounts", fmt.Sprintf("%s", err))
+			return
+		}
+
+		//subaccountConfigs := []subaccountType{}
+		var c subaccountType
+		var accountFound bool
+		for _, subaccountRes := range cliRes.Value {
+			c = subaccountType{
+				ID:           types.StringValue(subaccountRes.Guid),
+				BetaEnabled:  types.BoolValue(subaccountRes.BetaEnabled),
+				CreatedBy:    types.StringValue(subaccountRes.CreatedBy),
+				CreatedDate:  timeToValue(subaccountRes.CreatedDate.Time()),
+				Description:  types.StringValue(subaccountRes.Description),
+				LastModified: timeToValue(subaccountRes.ModifiedDate.Time()),
+				Name:         types.StringValue(subaccountRes.DisplayName),
+				ParentID:     types.StringValue(subaccountRes.ParentGUID),
+				Region:       types.StringValue(subaccountRes.Region),
+				State:        types.StringValue(subaccountRes.State),
+				Subdomain:    types.StringValue(subaccountRes.Subdomain),
+				Usage:        types.StringValue(subaccountRes.UsedForProduction),
+			}
+			if c.Subdomain.ValueString() == data.Subdomain.ValueString() && c.Region.ValueString() == data.Region.ValueString() {
+				accountFound = true
+				break
+			}
+		}
+		if accountFound {
+			cliRes, _, err := ds.cli.Accounts.Subaccount.Get(ctx, c.ID.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddError("API Error Reading Resource Subaccount", fmt.Sprintf("%s", err))
+				return
+			}
+
+			data, diags = subaccountValueFrom(ctx, cliRes)
+			resp.Diagnostics.Append(diags...)
+
+			diags = resp.State.Set(ctx, &data)
+			resp.Diagnostics.Append(diags...)
+		} else {
+			resp.Diagnostics.AddError("API Error Reading Resource Subaccount : Please provide correct value for subdomain and region", fmt.Sprintf("Subaccount not found with subdomain %s in region %s", data.Subdomain.ValueString(), data.Region.ValueString()))
+			return
+		}
 	}
-
-	data, diags = subaccountValueFrom(ctx, cliRes)
-	resp.Diagnostics.Append(diags...)
-
-	diags = resp.State.Set(ctx, &data)
-	resp.Diagnostics.Append(diags...)
 }
