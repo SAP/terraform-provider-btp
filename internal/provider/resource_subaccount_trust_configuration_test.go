@@ -10,6 +10,8 @@ import (
 )
 
 func TestResourceSubaccountTrustConfiguration(t *testing.T) {
+	var testIdp = getenv("BTP_TEST_IDP", "terraformtest.accounts400.ondemand.com")
+
 	t.Parallel()
 
 	t.Run("happy path - complete configuration with update", func(t *testing.T) {
@@ -21,13 +23,13 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationCompleteBySubaccount("uut", "integration-test-acc-static", "terraformint.accounts400.ondemand.com", "terraformint.accounts400.ondemand.com", "Custom IAS tenant for apps", "Description for terraformint.accounts400.ondemand.com", "custom link text", false, false, "inactive"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationCompleteBySubaccount("uut", "integration-test-acc-static", testIdp, testIdp, "Custom IAS tenant for apps", "Description for "+testIdp, "custom link text", false, false, "inactive"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "domain", "terraformint.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", testIdp),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "domain", testIdp),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "name", "Custom IAS tenant for apps"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "description", "Description for terraformint.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "description", "Description for "+testIdp),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "link_text", "custom link text"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "available_for_user_logon", "false"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "auto_create_shadow_users", "false"),
@@ -40,13 +42,13 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", "terraformint.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", testIdp),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "domain", "terraformint.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", testIdp),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "domain", testIdp),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "name", "Custom IAS tenant for apps"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "description", "Description for terraformint.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "description", "Description for "+testIdp),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "link_text", "custom link text"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "available_for_user_logon", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "auto_create_shadow_users", "true"),
@@ -77,14 +79,14 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", "terraformint.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", testIdp),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", testIdp),
 						resource.TestCheckNoResourceAttr("btp_subaccount_trust_configuration.uut", "domain"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "name", "Custom IAS tenant"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "description", "IAS tenant terraformint.accounts400.ondemand.com (OpenID Connect)"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "link_text", "terraformint.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "description", "IAS tenant "+testIdp+" (OpenID Connect)"),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "link_text", testIdp),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "available_for_user_logon", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "auto_create_shadow_users", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "origin", "sap.custom"),
@@ -96,13 +98,13 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationCompleteBySubaccount("uut", "integration-test-acc-static", "terraformtest.accounts400.ondemand.com", "terraformtest.accounts400.ondemand.com", "Custom IAS tenant for apps", "Description for terraformint.accounts400.ondemand.com", "custom link text", false, false, "inactive"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationCompleteBySubaccount("uut", "integration-test-acc-static", testIdp, testIdp, "Custom IAS tenant for apps", "Description for "+testIdp, "custom link text", false, false, "inactive"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", "terraformtest.accounts400.ondemand.com"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "domain", "terraformtest.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", testIdp),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "domain", testIdp),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "name", "Custom IAS tenant for apps"),
-						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "description", "Description for terraformint.accounts400.ondemand.com"),
+						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "description", "Description for "+testIdp),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "link_text", "custom link text"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "available_for_user_logon", "false"),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "auto_create_shadow_users", "false"),
@@ -133,7 +135,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", "terraformint.accounts400.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", testIdp),
 				},
 				{
 					ResourceName:      "btp_subaccount_trust_configuration.uut",
