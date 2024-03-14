@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -158,64 +159,66 @@ func (ds *subaccountDataSource) Read(ctx context.Context, req datasource.ReadReq
 	}
 
 	if len(data.ID.ValueString()) > 0 {
-		cliRes, _, err := ds.cli.Accounts.Subaccount.Get(ctx, data.ID.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Resource Subaccount", fmt.Sprintf("%s", err))
-			return
-		}
-
-		data, diags = subaccountValueFrom(ctx, cliRes)
-		resp.Diagnostics.Append(diags...)
-
+		data, _ = ds.getSubaccountById(ctx, data.ID.ValueString(), resp)
 		diags = resp.State.Set(ctx, &data)
 		resp.Diagnostics.Append(diags...)
-	} else if !data.Subdomain.IsNull() && !data.Region.IsNull() {
-		var labelsFilter string
+		return
+	}
 
-		cliRes, _, err := ds.cli.Accounts.Subaccount.List(ctx, labelsFilter)
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Resource Subaccounts", fmt.Sprintf("%s", err))
-			return
-		}
+	if !data.Subdomain.IsNull() && !data.Region.IsNull() {
 
-		//subaccountConfigs := []subaccountType{}
-		var c subaccountType
-		var accountFound bool
-		for _, subaccountRes := range cliRes.Value {
-			c = subaccountType{
-				ID:           types.StringValue(subaccountRes.Guid),
-				BetaEnabled:  types.BoolValue(subaccountRes.BetaEnabled),
-				CreatedBy:    types.StringValue(subaccountRes.CreatedBy),
-				CreatedDate:  timeToValue(subaccountRes.CreatedDate.Time()),
-				Description:  types.StringValue(subaccountRes.Description),
-				LastModified: timeToValue(subaccountRes.ModifiedDate.Time()),
-				Name:         types.StringValue(subaccountRes.DisplayName),
-				ParentID:     types.StringValue(subaccountRes.ParentGUID),
-				Region:       types.StringValue(subaccountRes.Region),
-				State:        types.StringValue(subaccountRes.State),
-				Subdomain:    types.StringValue(subaccountRes.Subdomain),
-				Usage:        types.StringValue(subaccountRes.UsedForProduction),
-			}
-			if c.Subdomain.ValueString() == data.Subdomain.ValueString() && c.Region.ValueString() == data.Region.ValueString() {
-				accountFound = true
-				break
-			}
-		}
-		if accountFound {
-			cliRes, _, err := ds.cli.Accounts.Subaccount.Get(ctx, c.ID.ValueString())
-			if err != nil {
-				resp.Diagnostics.AddError("API Error Reading Resource Subaccount", fmt.Sprintf("%s", err))
-				return
-			}
+		data, accountFound, _ := ds.getSubbacountByRegionSubdomain(ctx, data.Region.ValueString(), data.Subdomain.ValueString(), resp)
 
-			data, diags = subaccountValueFrom(ctx, cliRes)
-			resp.Diagnostics.Append(diags...)
-
-			diags = resp.State.Set(ctx, &data)
-			resp.Diagnostics.Append(diags...)
-		} else {
+		if !accountFound {
 			resp.Diagnostics.AddError("API Error Reading Resource Subaccount : Please provide correct value for subdomain and region", fmt.Sprintf("Subaccount not found with subdomain %s in region %s", data.Subdomain.ValueString(), data.Region.ValueString()))
 			return
 		}
+
+		diags = resp.State.Set(ctx, &data)
+		resp.Diagnostics.Append(diags...)
 	}
+}
+
+func (ds *subaccountDataSource) getSubaccountById(ctx context.Context, subaccountId string, resp *datasource.ReadResponse) (subaccountType, diag.Diagnostics) {
+	var data subaccountType
+	var diags diag.Diagnostics
+
+	cliRes, _, err := ds.cli.Accounts.Subaccount.Get(ctx, subaccountId)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Reading Resource Subaccount", fmt.Sprintf("%s", err))
+		return data, diags
+	}
+
+	data, diags = subaccountValueFrom(ctx, cliRes)
+	resp.Diagnostics.Append(diags...)
+
+	return data, diags
+}
+
+func (ds *subaccountDataSource) getSubbacountByRegionSubdomain(ctx context.Context, region string, subdomain string, resp *datasource.ReadResponse) (subaccountType, bool, diag.Diagnostics) {
+	var data subaccountType
+	var diags diag.Diagnostics
+	var accountFound bool
+
+	var labelsFilter string
+
+	cliRes, _, err := ds.cli.Accounts.Subaccount.List(ctx, labelsFilter)
+
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Reading Resource Subaccounts", fmt.Sprintf("%s", err))
+		return data, accountFound, diags
+	}
+
+	for _, subaccountRes := range cliRes.Value {
+
+		if region == subaccountRes.Region && subdomain == subaccountRes.Subdomain {
+			accountFound = true
+
+			data, diags = ds.getSubaccountById(ctx, subaccountRes.Guid, resp)
+
+			return data, accountFound, diags
+		}
+	}
+
+	return data, accountFound, diags
 }
