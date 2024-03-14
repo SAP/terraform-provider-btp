@@ -61,11 +61,11 @@ resource "btp_subaccount_environment_instance" "kyma" {
   plan_name        = "aws"
 
   parameters = jsonencode({
-    name            = "my-kyma-environment"
-    region          = "us-east-1"
-    machine_type    = "mx5.xlarge" #smallest option
-    auto_scaler_min = 3
-    auto_scaler_max = 20
+    name          = "my-kyma-environment"
+    region        = "us-east-1"
+    machineType   = "mx5.xlarge" #smallest option
+    autoScalerMin = 3
+    autoScalerMax = 20
   })
   timeouts = {
     create = "1h"
