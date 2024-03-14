@@ -158,7 +158,30 @@ func (ds *subaccountDataSource) Read(ctx context.Context, req datasource.ReadReq
 	}
 
 	if len(data.ID.ValueString()) > 0 {
-		cliRes, _, err := ds.cli.Accounts.Subaccount.Get(ctx, data.ID.ValueString())
+		data = getSubaccountById(ctx, data.ID.ValueString())
+		diags = resp.State.Set(ctx, &data)
+		resp.Diagnostics.Append(diags...)
+		return
+	} 
+	
+	if !data.Subdomain.IsNull() && !data.Region.IsNull() {
+		
+		data, accountFound := getSubbacountByRegionSubdomain(ctx, data.Region.ValueString(), data.Subdomain.ValueString())
+
+		if !accountFound {
+			resp.Diagnostics.AddError("API Error Reading Resource Subaccount : Please provide correct value for subdomain and region", fmt.Sprintf("Subaccount not found with subdomain %s in region %s", data.Subdomain.ValueString(), data.Region.ValueString()))
+			return
+		}
+
+		diags = resp.State.Set(ctx, &data)
+		resp.Diagnostics.Append(diags...)
+	}
+}
+
+func getSubaccountById(ctx context.Context, subaccountId string){
+	var data subaccountType
+
+	cliRes, _, err := ds.cli.Accounts.Subaccount.Get(ctx, data.ID.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Reading Resource Subaccount", fmt.Sprintf("%s", err))
 			return
@@ -167,55 +190,32 @@ func (ds *subaccountDataSource) Read(ctx context.Context, req datasource.ReadReq
 		data, diags = subaccountValueFrom(ctx, cliRes)
 		resp.Diagnostics.Append(diags...)
 
-		diags = resp.State.Set(ctx, &data)
-		resp.Diagnostics.Append(diags...)
-	} else if !data.Subdomain.IsNull() && !data.Region.IsNull() {
-		var labelsFilter string
+		return data
+}
 
-		cliRes, _, err := ds.cli.Accounts.Subaccount.List(ctx, labelsFilter)
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Resource Subaccounts", fmt.Sprintf("%s", err))
-			return
-		}
+func getSubbacountByRegionSubdomain(ctx context.Context, region string, subdomain string){
+	var data subaccountType
+	var labelsFilter string
+	var idFromList string
+	var accountFound bool
 
-		//subaccountConfigs := []subaccountType{}
-		var c subaccountType
-		var accountFound bool
-		for _, subaccountRes := range cliRes.Value {
-			c = subaccountType{
-				ID:           types.StringValue(subaccountRes.Guid),
-				BetaEnabled:  types.BoolValue(subaccountRes.BetaEnabled),
-				CreatedBy:    types.StringValue(subaccountRes.CreatedBy),
-				CreatedDate:  timeToValue(subaccountRes.CreatedDate.Time()),
-				Description:  types.StringValue(subaccountRes.Description),
-				LastModified: timeToValue(subaccountRes.ModifiedDate.Time()),
-				Name:         types.StringValue(subaccountRes.DisplayName),
-				ParentID:     types.StringValue(subaccountRes.ParentGUID),
-				Region:       types.StringValue(subaccountRes.Region),
-				State:        types.StringValue(subaccountRes.State),
-				Subdomain:    types.StringValue(subaccountRes.Subdomain),
-				Usage:        types.StringValue(subaccountRes.UsedForProduction),
-			}
-			if c.Subdomain.ValueString() == data.Subdomain.ValueString() && c.Region.ValueString() == data.Region.ValueString() {
-				accountFound = true
-				break
-			}
-		}
-		if accountFound {
-			cliRes, _, err := ds.cli.Accounts.Subaccount.Get(ctx, c.ID.ValueString())
-			if err != nil {
-				resp.Diagnostics.AddError("API Error Reading Resource Subaccount", fmt.Sprintf("%s", err))
-				return
-			}
 
-			data, diags = subaccountValueFrom(ctx, cliRes)
-			resp.Diagnostics.Append(diags...)
+	cliRes, _, err := ds.cli.Accounts.Subaccount.List(ctx, labelsFilter)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Reading Resource Subaccounts", fmt.Sprintf("%s", err))
+		return data accountFound
+	}
 
-			diags = resp.State.Set(ctx, &data)
-			resp.Diagnostics.Append(diags...)
-		} else {
-			resp.Diagnostics.AddError("API Error Reading Resource Subaccount : Please provide correct value for subdomain and region", fmt.Sprintf("Subaccount not found with subdomain %s in region %s", data.Subdomain.ValueString(), data.Region.ValueString()))
-			return
+	for _, subaccountRes := range cliRes.Value {
+
+		if types.StringValue(subaccountRes.Subdomain) == data.Subdomain.ValueString() && types.StringValue(subaccountRes.Region) == data.Region.ValueString() {
+			accountFound = true
+			idFromList = types.StringValue(subaccountRes.Guid)
+			
+			data = getSubaccountById(ctx, idFromList)
+			
+			return data accountFound
 		}
 	}
+
 }
