@@ -16,6 +16,7 @@ type subaccountServiceInstanceType struct {
 	Id                   types.String   `tfsdk:"id"`
 	Name                 types.String   `tfsdk:"name"`
 	Parameters           types.String   `tfsdk:"parameters"`
+	EnableSharing        types.Bool 	`tfsdk:"enable_sharing"`
 	Ready                types.Bool     `tfsdk:"ready"`
 	ServicePlanId        types.String   `tfsdk:"serviceplan_id"`
 	PlatformId           types.String   `tfsdk:"platform_id"`
