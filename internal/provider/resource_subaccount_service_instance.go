@@ -63,11 +63,6 @@ func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resou
 				MarkdownDescription: "The ID of the service plan.",
 				Required:            true,
 			},
-			"enable_sharing": schema.BoolAttribute{
-				MarkdownDescription: "Enables the instance to be shared between different environments. Ensure that the instance is created with a plan that supports instance sharing.",
-				Optional:  			 true,	
-				// Default: 			 booldefault.StaticBool(false),
-			},
 			"labels": schema.MapAttribute{
 				ElementType: types.SetType{
 					ElemType: types.StringType,
@@ -83,6 +78,11 @@ func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resou
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
 				},
+			},
+			"shared": schema.BoolAttribute{
+				MarkdownDescription: "Shows whether the service instance is shared. This parameter can also be used to allow the instance to be shared between different environments. Ensure that the instance is created with a plan that supports instance sharing.",
+				Optional:  			 true,
+				Computed:            true,
 			},
 			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
 				Create:            true,
@@ -109,10 +109,6 @@ func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resou
 			},
 			"referenced_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the instance to which the service instance refers.",
-				Computed:            true,
-			},
-			"shared": schema.BoolAttribute{
-				MarkdownDescription: "Shows whether the service instance is shared.",
 				Computed:            true,
 			},
 			"context": schema.StringAttribute{
@@ -157,7 +153,6 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 
 	newState, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
 	newState.Timeouts = timeoutsLocal
-	newState.EnableSharing = state.EnableSharing
 
 	// Handle resource import
 	if cliRes.Parameters != "" && state.Parameters.ValueString() == "" {
@@ -214,15 +209,12 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
 	state.Timeouts = plan.Timeouts
-	if !plan.EnableSharing.ValueBool(){
-		state.EnableSharing = plan.EnableSharing
-	}
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 
-	if plan.EnableSharing.ValueBool() {
+	if plan.Shared.ValueBool() {
 		cliReq := btpcli.ServiceInstanceShareInput{
 			Id:         updatedRes.(servicemanager.ServiceInstanceResponseObject).Id,
 			Subaccount: updatedRes.(servicemanager.ServiceInstanceResponseObject).SubaccountId,
@@ -245,7 +237,6 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 		state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 		state.Parameters = plan.Parameters
 		state.Timeouts = plan.Timeouts
-		state.EnableSharing = plan.EnableSharing
 		resp.Diagnostics.Append(diags...)
 
 		diags = resp.State.Set(ctx, &state)
@@ -310,20 +301,12 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
 	state.Timeouts = plan.Timeouts
-	state.EnableSharing = stateCurrent.EnableSharing
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, state)
 	resp.Diagnostics.Append(diags...)
 
-	if (plan.EnableSharing!=stateCurrent.Shared) || (!plan.EnableSharing.ValueBool() && stateCurrent.EnableSharing.IsNull()) { 
-			
-			if (plan.EnableSharing.IsNull() && !stateCurrent.EnableSharing.ValueBool()) || (!plan.EnableSharing.ValueBool() && stateCurrent.EnableSharing.IsNull()) {
-				state.EnableSharing = plan.EnableSharing
-				diags = resp.State.Set(ctx, state)
-				resp.Diagnostics.Append(diags...)
-				return
-			}
+	if (plan.Shared != stateCurrent.Shared) {
 
 			cliReq := btpcli.ServiceInstanceShareInput{
 				Id:         cliRes.Id,
@@ -331,7 +314,7 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 				Name:       cliRes.Name,
 			}
 
-			if plan.EnableSharing.ValueBool() && !stateCurrent.Shared.ValueBool() {
+			if plan.Shared.ValueBool() && !stateCurrent.Shared.ValueBool() {
 				cliRes, _, err = rs.cli.Services.Instance.Share(ctx, &cliReq)
 				if err != nil {
 					resp.Diagnostics.AddError("API Error Sharing Resource Service Instance (Subaccount) while Updating", fmt.Sprintf("%s", err))
@@ -339,7 +322,7 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 				}
 			}
 
-			if !plan.EnableSharing.ValueBool() && stateCurrent.Shared.ValueBool(){
+			if !plan.Shared.ValueBool() && stateCurrent.Shared.ValueBool() {
 				cliRes, _, err = rs.cli.Services.Instance.Unshare(ctx, &cliReq)
 				if err != nil {
 					resp.Diagnostics.AddError("API Error Unsharing Resource Service Instance (Subaccount) while Updating", fmt.Sprintf("%s", err))
@@ -357,7 +340,6 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 			state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 			state.Parameters = plan.Parameters
 			state.Timeouts = plan.Timeouts
-			state.EnableSharing = plan.EnableSharing
 			resp.Diagnostics.Append(diags...)
 
 			diags = resp.State.Set(ctx, state)
@@ -415,7 +397,6 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 		resp.Diagnostics.AddError("API Error Deleting Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
-
 }
 
 func (rs *subaccountServiceInstanceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
@@ -458,7 +439,8 @@ func (rs *subaccountServiceInstanceResource) CreateStateChange (ctx context.Cont
 
 					// No error returned even if operation failed
 					if subRes.LastOperation.State == servicemanager.StateFailed {
-						return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance " + operation)
+						// return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance " + operation)
+						return subRes, subRes.LastOperation.State, errors.New(string(subRes.LastOperation.Errors))
 					}
 
 					return subRes, subRes.LastOperation.State, nil
@@ -495,7 +477,8 @@ func (rs *subaccountServiceInstanceResource) UpdateStateChange (ctx context.Cont
 
 					// No error returned even if operation failed
 					if subRes.LastOperation.State == servicemanager.StateFailed {
-						return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance " + operation)
+						// return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance " + operation)
+						return subRes, subRes.LastOperation.State, errors.New(string(subRes.LastOperation.Errors))
 					}
 
 					return subRes, subRes.LastOperation.State, nil
