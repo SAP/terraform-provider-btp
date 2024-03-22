@@ -439,8 +439,7 @@ func (rs *subaccountServiceInstanceResource) CreateStateChange (ctx context.Cont
 
 					// No error returned even if operation failed
 					if subRes.LastOperation.State == servicemanager.StateFailed {
-						// return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance " + operation)
-						return subRes, subRes.LastOperation.State, errors.New(string(subRes.LastOperation.Errors))
+						return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance " + operation)
 					}
 
 					return subRes, subRes.LastOperation.State, nil
@@ -477,8 +476,7 @@ func (rs *subaccountServiceInstanceResource) UpdateStateChange (ctx context.Cont
 
 					// No error returned even if operation failed
 					if subRes.LastOperation.State == servicemanager.StateFailed {
-						// return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance " + operation)
-						return subRes, subRes.LastOperation.State, errors.New(string(subRes.LastOperation.Errors))
+						return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance " + operation)
 					}
 
 					return subRes, subRes.LastOperation.State, nil

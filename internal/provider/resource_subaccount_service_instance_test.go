@@ -273,7 +273,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithSharingChangedBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-destination", "lite", "destination"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithSharingModifiedBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-destination", "lite", "destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
@@ -512,7 +512,7 @@ func hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan(re
 		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName)
 }
 
-func hclResourceSubaccountServiceInstanceWithSharingChangedBySubaccountByServicePlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string) string {
+func hclResourceSubaccountServiceInstanceWithSharingModifiedBySubaccountByServicePlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string) string {
 	return fmt.Sprintf(`
 		data "btp_subaccounts" "all" {}
 		data "btp_subaccount_service_plans" "all" {
