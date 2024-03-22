@@ -244,7 +244,6 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destination"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "enable_sharing", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "shared", "true"),
 					),
 				},
@@ -252,7 +251,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path - simple service creation with sharing configuration changed", func(t *testing.T) {
+	t.Run("happy path - simple service creation with sharing configuration modified", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_sharing_conf_changed")
 		defer stopQuietly(rec)
 
@@ -270,7 +269,6 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destination"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "enable_sharing", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "shared", "true"),
 					),
 				},
@@ -284,7 +282,6 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destination"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "enable_sharing", "false"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "shared", "false"),
 					),
 				},
@@ -348,6 +345,22 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 					ImportState:       true,
 					ImportStateVerify: true,
 					ExpectError:       regexp.MustCompile(`Unexpected Import Identifier`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - sharing an instance with a service plan that doesn't support sharing ", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.sharing_error")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config:  hclProviderFor(user) +  hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-audit-log", "default", "auditlog-management"),
+					ExpectError: regexp.MustCompile(`error: BadRequest\ndescription: Failed to share the instance. The plan\n02fed361-89c1-4560-82c3-0deaf93ac75b does not support instance sharing.`),
 				},
 			},
 		})
@@ -495,7 +508,7 @@ func hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan(re
 		    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
 			name             = "%[3]s"
 			serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
-			enable_sharing	 = true
+			shared	 = true
 		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName)
 }
 
@@ -513,7 +526,7 @@ func hclResourceSubaccountServiceInstanceWithSharingChangedBySubaccountByService
 		    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
 			name             = "%[3]s"
 			serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
-			enable_sharing	 = false
+			shared	 = false
 		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName)
 }
 
@@ -536,3 +549,5 @@ func getServiceInstanceIdForImportNoServiceInstanceId(resourceName string) resou
 		return rs.Primary.Attributes["subaccount_id"], nil
 	}
 }
+
+
