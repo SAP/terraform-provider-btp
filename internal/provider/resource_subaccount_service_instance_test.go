@@ -360,7 +360,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:  hclProviderFor(user) +  hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-audit-log", "default", "auditlog-management"),
-					ExpectError: regexp.MustCompile(`error: BadRequest`),
+					ExpectError: regexp.MustCompile(`BadRequest`),
 				},
 			},
 		})
