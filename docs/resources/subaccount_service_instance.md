@@ -45,9 +45,7 @@ resource "btp_subaccount_service_instance" "alert_notification_free" {
     delete = "15m"
   }
 }
-```
 
-```
 # create an instance of the destination service and also share the instance
 resource "btp_subaccount_service_instance" "destination_lite" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
