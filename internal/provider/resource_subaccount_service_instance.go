@@ -80,7 +80,7 @@ func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resou
 				},
 			},
 			"shared": schema.BoolAttribute{
-				MarkdownDescription: "Shows whether the service instance is shared. This parameter can also be used to allow the instance to be shared between different environments. Ensure that the instance is created with a plan that supports instance sharing.",
+				MarkdownDescription: "The configuration parameter for service instance sharing. Ensure that the instance is created with a plan that supports instance sharing.",
 				Optional:  			 true,
 				Computed:            true,
 			},

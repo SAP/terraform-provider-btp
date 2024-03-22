@@ -316,7 +316,7 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 		}
 
 		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {
-			err = fmt.Errorf("error: %s", backendError.Message)
+			err = fmt.Errorf(backendError.Message)
 		} else if res.Header.Get(HeaderCLIServerMessage) != "" {
 			err = fmt.Errorf("the backend responded with an error: %s", res.Header.Get(HeaderCLIServerMessage))
 		} else {
