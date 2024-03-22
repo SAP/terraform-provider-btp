@@ -311,15 +311,12 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 
 	if cmdRes.StatusCode >= 400 {
 
-		//The description parameter gives additional context to the error
-
 		var backendError struct {
 			Message     string `json:"error"`
-			Description string `json:"description"`
 		}
 
 		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {
-			err = fmt.Errorf("error: %s\ndescription: %s", backendError.Message, backendError.Description)
+			err = fmt.Errorf("error: %s", backendError.Message)
 		} else if res.Header.Get(HeaderCLIServerMessage) != "" {
 			err = fmt.Errorf("the backend responded with an error: %s", res.Header.Get(HeaderCLIServerMessage))
 		} else {

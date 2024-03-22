@@ -360,7 +360,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:  hclProviderFor(user) +  hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-audit-log", "default", "auditlog-management"),
-					ExpectError: regexp.MustCompile(`error: BadRequest\ndescription: Failed to share the instance. The plan\n02fed361-89c1-4560-82c3-0deaf93ac75b does not support instance sharing.`),
+					ExpectError: regexp.MustCompile(`error: BadRequest`),
 				},
 			},
 		})
