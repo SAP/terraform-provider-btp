@@ -306,7 +306,7 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	diags = resp.State.Set(ctx, state)
 	resp.Diagnostics.Append(diags...)
 
-	if (plan.Shared != stateCurrent.Shared) {
+	if (!plan.Shared.IsUnknown() && plan.Shared != stateCurrent.Shared) {
 
 			cliReq := btpcli.ServiceInstanceShareInput{
 				Id:         cliRes.Id,
