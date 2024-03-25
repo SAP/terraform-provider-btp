@@ -226,6 +226,69 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - simple service creation with sharing enabled", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_sharing_enabled")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-destination", "lite", "destination"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destination"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "shared", "true"),
+					),
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - simple service creation with sharing configuration modified", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_sharing_conf_changed")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-destination", "lite", "destination"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destination"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "shared", "true"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithSharingModifiedBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-destination", "lite", "destination"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destination"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "shared", "false"),
+					),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -282,6 +345,22 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 					ImportState:       true,
 					ImportStateVerify: true,
 					ExpectError:       regexp.MustCompile(`Unexpected Import Identifier`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - sharing an instance with a service plan that doesn't support sharing ", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.sharing_error")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config:  hclProviderFor(user) +  hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-audit-log", "default", "auditlog-management"),
+					ExpectError: regexp.MustCompile(`BadRequest`),
 				},
 			},
 		})
@@ -415,6 +494,42 @@ func hclResourceSubaccountServiceInstanceWithLabelsChangedBySubaccountByPlan(res
 		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName)
 }
 
+func hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string) string {
+	return fmt.Sprintf(`
+		data "btp_subaccounts" "all" {}
+		data "btp_subaccount_service_plans" "all" {
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+		}
+		data "btp_subaccount_service_offering" "so" {
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			name =  "%[5]s"
+		}
+		resource "btp_subaccount_service_instance" "%[1]s" {
+		    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			name             = "%[3]s"
+			serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
+			shared	 = true
+		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName)
+}
+
+func hclResourceSubaccountServiceInstanceWithSharingModifiedBySubaccountByServicePlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string) string {
+	return fmt.Sprintf(`
+		data "btp_subaccounts" "all" {}
+		data "btp_subaccount_service_plans" "all" {
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+		}
+		data "btp_subaccount_service_offering" "so" {
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			name =  "%[5]s"
+		}
+		resource "btp_subaccount_service_instance" "%[1]s" {
+		    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			name             = "%[3]s"
+			serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
+			shared	 = false
+		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName)
+}
+
 func getServiceInstanceIdForImport(resourceName string) resource.ImportStateIdFunc {
 	return func(state *terraform.State) (string, error) {
 		rs, ok := state.RootModule().Resources[resourceName]
@@ -434,3 +549,5 @@ func getServiceInstanceIdForImportNoServiceInstanceId(resourceName string) resou
 		return rs.Primary.Attributes["subaccount_id"], nil
 	}
 }
+
+

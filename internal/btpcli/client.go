@@ -310,8 +310,9 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 	}
 
 	if cmdRes.StatusCode >= 400 {
+
 		var backendError struct {
-			Message string `json:"error"`
+			Message     string `json:"error"`
 		}
 
 		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {

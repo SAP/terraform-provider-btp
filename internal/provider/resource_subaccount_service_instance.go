@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -78,6 +79,11 @@ func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resou
 					jsonvalidator.ValidJSON(),
 				},
 			},
+			"shared": schema.BoolAttribute{
+				MarkdownDescription: "The configuration parameter for service instance sharing. Ensure that the instance is created with a plan that supports instance sharing.",
+				Optional:  			 true,
+				Computed:            true,
+			},
 			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
 				Create:            true,
 				CreateDescription: "Timeout for creating the service instance.",
@@ -103,10 +109,6 @@ func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resou
 			},
 			"referenced_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the instance to which the service instance refers.",
-				Computed:            true,
-			},
-			"shared": schema.BoolAttribute{
-				MarkdownDescription: "Shows whether the service instance is shared.",
 				Computed:            true,
 			},
 			"context": schema.StringAttribute{
@@ -135,7 +137,6 @@ func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resou
 
 func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state subaccountServiceInstanceType
-
 	diags := req.State.Get(ctx, &state)
 
 	resp.Diagnostics.Append(diags...)
@@ -198,49 +199,49 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 		return
 	}
 
-	state, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
-	state.Parameters = plan.Parameters
+	createStateConf, diags := rs.CreateStateChange(ctx,cliRes,plan,"creation")
 	resp.Diagnostics.Append(diags...)
-
-	timeoutsLocal := plan.Timeouts
-	createTimeout, diags := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
-	resp.Diagnostics.Append(diags...)
-	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
-
-	createStateConf := &tfutils.StateChangeConf{
-		Pending: []string{servicemanager.StateInProgress},
-		Target:  []string{servicemanager.StateSucceeded},
-		Refresh: func() (interface{}, string, error) {
-			subRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
-
-			if err != nil {
-				return subRes, "", err
-			}
-
-			// No error returned even if operation failed
-			if subRes.LastOperation.State == servicemanager.StateFailed {
-				return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance creation")
-			}
-
-			return subRes, subRes.LastOperation.State, nil
-		},
-		Timeout:    createTimeout,
-		Delay:      delay,
-		MinTimeout: minTimeout,
-	}
-
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
 	}
 
-	state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
+	state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
-	state.Timeouts = timeoutsLocal
+	state.Timeouts = plan.Timeouts
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
+
+	if plan.Shared.ValueBool() {
+		cliReq := btpcli.ServiceInstanceShareInput{
+			Id:         updatedRes.(servicemanager.ServiceInstanceResponseObject).Id,
+			Subaccount: updatedRes.(servicemanager.ServiceInstanceResponseObject).SubaccountId,
+			Name:       updatedRes.(servicemanager.ServiceInstanceResponseObject).Name,
+		}
+
+		cliRes, _, err = rs.cli.Services.Instance.Share(ctx, &cliReq)
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Sharing Resource Service Instance (Subaccount) while Creating", fmt.Sprintf("%s", err))
+			return
+		}
+
+		createStateConf, diags := rs.CreateStateChange(ctx,cliRes,plan,"sharing")
+		resp.Diagnostics.Append(diags...)
+		updatedRes, err := createStateConf.WaitForStateContext(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Sharing Resource Service Instance (Subaccount) while Creating", fmt.Sprintf("%s", err))
+		}
+
+		state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
+		state.Parameters = plan.Parameters
+		state.Timeouts = plan.Timeouts
+		resp.Diagnostics.Append(diags...)
+
+		diags = resp.State.Set(ctx, &state)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -290,49 +291,60 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 		return
 	}
 
-	timeoutsLocal := plan.Timeouts
-	state, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
-	state.Parameters = plan.Parameters
+	updateStateConf, diags := rs.UpdateStateChange(ctx,cliRes,plan,"update")
 	resp.Diagnostics.Append(diags...)
-
-	updateTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
-	resp.Diagnostics.Append(diags...)
-	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
-
-	updateStateConf := &tfutils.StateChangeConf{
-		Pending: []string{servicemanager.StateInProgress},
-		Target:  []string{servicemanager.StateSucceeded},
-		Refresh: func() (interface{}, string, error) {
-			subRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
-
-			if err != nil {
-				return subRes, "", err
-			}
-
-			// No error returned even if operation failed
-			if subRes.LastOperation.State == servicemanager.StateFailed {
-				return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance update")
-			}
-
-			return subRes, subRes.LastOperation.State, nil
-		},
-		Timeout:    updateTimeout,
-		Delay:      delay,
-		MinTimeout: minTimeout,
-	}
-
 	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
 	}
 
-	state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
+	state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
-	state.Timeouts = timeoutsLocal
+	state.Timeouts = plan.Timeouts
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, state)
 	resp.Diagnostics.Append(diags...)
+
+	if (!plan.Shared.IsUnknown() && plan.Shared != stateCurrent.Shared) {
+
+			cliReq := btpcli.ServiceInstanceShareInput{
+				Id:         cliRes.Id,
+				Subaccount: cliRes.SubaccountId,
+				Name:       cliRes.Name,
+			}
+
+			if plan.Shared.ValueBool() && !stateCurrent.Shared.ValueBool() {
+				cliRes, _, err = rs.cli.Services.Instance.Share(ctx, &cliReq)
+				if err != nil {
+					resp.Diagnostics.AddError("API Error Sharing Resource Service Instance (Subaccount) while Updating", fmt.Sprintf("%s", err))
+					return
+				}
+			}
+
+			if !plan.Shared.ValueBool() && stateCurrent.Shared.ValueBool() {
+				cliRes, _, err = rs.cli.Services.Instance.Unshare(ctx, &cliReq)
+				if err != nil {
+					resp.Diagnostics.AddError("API Error Unsharing Resource Service Instance (Subaccount) while Updating", fmt.Sprintf("%s", err))
+					return
+				}
+			}
+
+			updateStateConf, diags := rs.UpdateStateChange(ctx,cliRes,plan,"sharing/unsharing")
+			resp.Diagnostics.Append(diags...)
+			updatedRes, err := updateStateConf.WaitForStateContext(ctx)
+			if err != nil {
+				resp.Diagnostics.AddError("API Error Sharing Resource Service Instance (Subaccount) while Updating", fmt.Sprintf("%s", err))
+			}
+
+			state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
+			state.Parameters = plan.Parameters
+			state.Timeouts = plan.Timeouts
+			resp.Diagnostics.Append(diags...)
+
+			diags = resp.State.Set(ctx, state)
+			resp.Diagnostics.Append(diags...)
+	} 
 }
 
 func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -385,7 +397,6 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 		resp.Diagnostics.AddError("API Error Deleting Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
-
 }
 
 func (rs *subaccountServiceInstanceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
@@ -401,4 +412,77 @@ func (rs *subaccountServiceInstanceResource) ImportState(ctx context.Context, re
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
+}
+
+func (rs *subaccountServiceInstanceResource) CreateStateChange (ctx context.Context, cliRes servicemanager.ServiceInstanceResponseObject, plan subaccountServiceInstanceType, operation string) (tfutils.StateChangeConf, diag.Diagnostics){
+	
+	var summary diag.Diagnostics
+	
+	state, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
+	state.Parameters = plan.Parameters
+	summary.Append(diags...)
+
+	timeoutsLocal := plan.Timeouts
+	createTimeout, diags := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
+	summary.Append(diags...)
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
+
+	return tfutils.StateChangeConf{
+				Pending: []string{servicemanager.StateInProgress},
+				Target:  []string{servicemanager.StateSucceeded},
+				Refresh: func() (interface{}, string, error) {
+					subRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
+
+					if err != nil {
+						return subRes, "", err
+					}
+
+					// No error returned even if operation failed
+					if subRes.LastOperation.State == servicemanager.StateFailed {
+						return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance " + operation)
+					}
+
+					return subRes, subRes.LastOperation.State, nil
+				},
+				Timeout:    createTimeout,
+				Delay:      delay,
+				MinTimeout: minTimeout,
+			},
+			summary
+}
+
+func (rs *subaccountServiceInstanceResource) UpdateStateChange (ctx context.Context, cliRes servicemanager.ServiceInstanceResponseObject, plan subaccountServiceInstanceType, operation string) (tfutils.StateChangeConf, diag.Diagnostics){
+	
+	var summary diag.Diagnostics
+
+	timeoutsLocal := plan.Timeouts
+	state, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
+	state.Parameters = plan.Parameters
+	summary.Append(diags...)
+
+	updateTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	summary.Append(diags...)
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
+
+	return tfutils.StateChangeConf{
+				Pending: []string{servicemanager.StateInProgress},
+				Target:  []string{servicemanager.StateSucceeded},
+				Refresh: func() (interface{}, string, error) {
+					subRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
+
+					if err != nil {
+						return subRes, "", err
+					}
+
+					// No error returned even if operation failed
+					if subRes.LastOperation.State == servicemanager.StateFailed {
+						return subRes, subRes.LastOperation.State, errors.New("undefined API error during service instance " + operation)
+					}
+
+					return subRes, subRes.LastOperation.State, nil
+				},
+				Timeout:    updateTimeout,
+				Delay:      delay,
+				MinTimeout: minTimeout,
+		  }, summary
 }
