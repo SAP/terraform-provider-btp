@@ -32,6 +32,7 @@ type subaccountServicePlanValueConfig struct {
 	ServiceOfferingId types.String `tfsdk:"serviceoffering_id"`
 	CreatedDate       types.String `tfsdk:"created_date"`
 	LastModified      types.String `tfsdk:"last_modified"`
+	Shareable         types.Bool   `tfsdk:"shareable"`
 }
 
 type subaccountServicePlansDataSourceConfig struct {
@@ -145,6 +146,10 @@ func (ds *subaccountServicePlansDataSource) Schema(_ context.Context, _ datasour
 							MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 							Computed:            true,
 						},
+						"shareable": schema.BoolAttribute{
+							MarkdownDescription: "Shows whether the service plan supports instance sharing.",
+							Computed:            true,
+						},
 					},
 				},
 				Computed: true,
@@ -184,6 +189,13 @@ func (ds *subaccountServicePlansDataSource) Read(ctx context.Context, req dataso
 	data.Values = []subaccountServicePlanValueConfig{}
 
 	for _, item := range cliRes {
+
+		shareable := false
+
+		if item.Metadata != nil {
+			shareable = item.Metadata.SupportsInstanceSharing
+		}
+
 		value := subaccountServicePlanValueConfig{
 			Id:                types.StringValue(item.Id),
 			Name:              types.StringValue(item.Name),
@@ -196,6 +208,7 @@ func (ds *subaccountServicePlansDataSource) Read(ctx context.Context, req dataso
 			ServiceOfferingId: types.StringValue(item.ServiceOfferingId),
 			CreatedDate:       timeToValue(item.CreatedAt),
 			LastModified:      timeToValue(item.UpdatedAt),
+			Shareable:         types.BoolValue(shareable),
 		}
 
 		data.Values = append(data.Values, value)

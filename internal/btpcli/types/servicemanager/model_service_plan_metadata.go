@@ -17,4 +17,6 @@ type ServicePlanMetadata struct {
 	SupportedMinOSBVersion json.Number `json:"supportedMinOSBVersion,omitempty"`
 	// The latest supported OSB version.
 	SupportedMaxOSBVersion json.Number `json:"supportedMaxOSBVersion,omitempty"`
+	// MANUALLY ADDED - DUE TO MISMATCH OF CIS API AND CIS CLI INTERFACE
+	SupportsInstanceSharing bool `json:"supportsInstanceSharing,omitempty"`
 }

@@ -50,3 +50,4 @@ data "btp_subaccount_service_plan" "by_name" {
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `ready` (Boolean) Shows whether the service plan is ready.
 - `serviceoffering_id` (String) The ID of the service offering.
+- `shareable` (Boolean) Shows whether the service plan supports instance sharing.
