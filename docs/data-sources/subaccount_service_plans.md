@@ -70,3 +70,4 @@ Read-Only:
 - `name` (String) The name of the service plan.
 - `ready` (Boolean) Shows whether the service plan is ready.
 - `serviceoffering_id` (String) The ID of the service offering.
+- `shareable` (Boolean) Shows whether the service plan supports instance sharing.
