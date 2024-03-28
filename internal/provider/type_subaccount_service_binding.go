@@ -35,9 +35,13 @@ func subaccountServiceBindingValueFrom(ctx context.Context, value servicemanager
 		ServiceInstanceId: types.StringValue(value.ServiceInstanceId),
 		Context:           types.StringValue(string(value.Context)),
 		Credentials:       types.StringValue(string(value.Credentials)),
-		State:             types.StringValue(value.LastOperation.State),
 		CreatedDate:       timeToValue(value.CreatedAt),
 		LastModified:      timeToValue(value.UpdatedAt),
+	}
+
+	// CREATE and GET repsonses might differ - safeguarding nil reference of LastOperation
+	if value.LastOperation != nil {
+		serviceBinding.State = types.StringValue(value.LastOperation.State)
 	}
 
 	var diags, diagnostics diag.Diagnostics
