@@ -55,6 +55,11 @@ type LoginResponse struct {
 	Issuer   string `json:"issuer"`
 }
 
+type BrowserResponse struct {
+	LoginID           string `json:"loginId"`
+	SubdomainRequired bool   `json:"subdomainRequired"`
+}
+
 /* Command */
 func NewCommandRequest(action Action, command string, args any) *CommandRequest {
 	return &CommandRequest{

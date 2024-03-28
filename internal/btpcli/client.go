@@ -9,8 +9,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os/exec"
 	"path"
+	"runtime"
 	"strconv"
+	"time"
 
 	uuid "github.com/hashicorp/go-uuid"
 )
@@ -224,6 +227,69 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 	}
 
 	return &loginResponse, nil
+}
+
+// sso Login
+func (v2 *v2Client) SsoLogin(ctx context.Context) (*BrowserResponse, error) {
+	ctx = v2.initTrace(ctx)
+
+	// TODO: After the switch to client protocol v2.49.0 the terraform provider is still providing
+	//       the globalaccount subdomain during login. However, this relies on a special handling
+	//       for older clients that might be removed from the server in the future.
+	res, err := v2.doRequest(ctx, http.MethodGet, path.Join("login", cliTargetProtocolVersion, "browser"), nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	//fmt.Println(res.Body)
+	var browserResponse BrowserResponse
+	err = v2.parseResponse(ctx, res, &browserResponse, http.StatusOK, map[int]string{
+		http.StatusUnauthorized: "Login failed. Check your credentials.",
+		//http.StatusForbidden:          fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
+		//http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
+		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
+		http.StatusGatewayTimeout:     "Login timed out. Please try again later.",
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(browserResponse.LoginID)
+
+	//v2.doRequest(ctx, http.MethodGet, path.Join("login", cliTargetProtocolVersion, "browser"), nil)
+
+	url := "https://canary.cli.btp.int.sap/login/v2.49.0/browser/" + // NO EXTERNALIZE
+		browserResponse.LoginID
+	err1 := openUserAgent(url)
+	if err1 != nil {
+		//logger.Log(err.Error()) // NO EXTERNALIZE
+		//localize.Printf("browser_login_open_browser_failed", url)
+	} else {
+		// lest the user gets distracted by console output just before hidden by the browser
+		GiveBrowserTimeToOpen()
+		//localize.Printf("browser_login_open_browser_success", url)
+	}
+
+	return &browserResponse, nil
+}
+
+func openUserAgent(url string) error {
+	switch runtime.GOOS {
+	//case "linux": // NO EXTERNALIZE
+	//	return exec.Command("xdg-open", url).Start() // NO EXTERNALIZE
+	case "windows": // NO EXTERNALIZE
+		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start() // NO EXTERNALIZE
+	//case "darwin": // NO EXTERNALIZE
+	//	return exec.Command("open", url).Start() // NO EXTERNALIZE
+	default:
+		return fmt.Errorf("unsupported_platform")
+	}
+}
+
+func GiveBrowserTimeToOpen() {
+	time.Sleep(1 * time.Second)
 }
 
 // PasscodeLogin authenticates with a pem encoded x509 key-pair

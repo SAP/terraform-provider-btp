@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -25,6 +26,7 @@ import (
 const userPasswordFlow = "userPasswordFlow"
 const x509Flow = "x509Flow"
 const idTokenFlow = "idTokenFlow"
+const ssoFlow = "ssoFlow"
 const errorMessagePostfixWithEnv = "If either is already set, ensure the value is not empty."
 const errorMessagePostfixWithoutEnv = "If it is already set, ensure the value is not empty."
 
@@ -156,6 +158,14 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s custom-user-agent/%s", req.TerraformVersion, version.ProviderVersion, btpUserAgent)
 	}
 
+	ssotest := os.Getenv("BTP_ENABLE_SSO")
+	fmt.Println(ssotest)
+	ssoLogin, err := strconv.ParseBool(os.Getenv("BTP_ENABLE_SSO"))
+	if err != nil {
+		resp.Diagnostics.AddError("unable to convert sso value", fmt.Sprintf("%s", err))
+	}
+
+
 	// User may provide an idp to the provider
 	var idp string
 	if config.IdentityProvider.IsUnknown() {
@@ -209,7 +219,9 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	//Determine and execute the login flow depending on the provided parameters
-	switch authFlow := determineAuthFlow(config, idToken); authFlow {
+	switch authFlow := determineAuthFlow(config, idToken, ssoLogin); authFlow {
+	case ssoFlow:
+		client.SsoLogin(ctx)
 	case userPasswordFlow:
 		validateUserPasswordFlow(username, password, resp)
 
@@ -374,8 +386,10 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 	}, betaDataSources...)
 }
 
-func determineAuthFlow(config providerData, idToken string) string {
-	if len(idToken) > 0 {
+func determineAuthFlow(config providerData, idToken string, ssoLogin bool) string {
+	if ssoLogin {
+		return ssoFlow
+	} else if len(idToken) > 0 {
 		return idTokenFlow
 	} else if !config.TLSClientKey.IsNull() {
 		return x509Flow
