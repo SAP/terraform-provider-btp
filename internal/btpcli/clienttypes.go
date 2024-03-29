@@ -27,6 +27,13 @@ func NewIdTokenLoginRequest(globalaccountSubdomain string, idToken string) *IdTo
 	}
 }
 
+func NewSsoLoginRequest(idp string, globalaccountSubdomain string) *BrowserLoginRequestBody {
+	return &BrowserLoginRequestBody{
+		CustomIdp:              idp,
+		GlobalAccountSubdomain: globalaccountSubdomain,
+	}
+}
+
 type LoginRequest struct {
 	IdentityProvider       string `json:"customIdp"`
 	GlobalAccountSubdomain string `json:"subdomain"`
@@ -55,10 +62,23 @@ type LoginResponse struct {
 	Issuer   string `json:"issuer"`
 }
 
+type BrowserLoginRequestBody struct {
+	CustomIdp              string `json:"customIdp"`
+	GlobalAccountSubdomain string `json:"subdomain"`
+}
+
+type BrowserLoginPostResponse struct {
+	Issuer       string `json:"issuer"`
+	RefreshToken string `json:"refreshToken"`
+	User         string `json:"user"`
+	Mail         string `json:"mail"`
+}
+
 type BrowserResponse struct {
 	LoginID           string `json:"loginId"`
 	SubdomainRequired bool   `json:"subdomainRequired"`
 }
+
 
 /* Command */
 func NewCommandRequest(action Action, command string, args any) *CommandRequest {

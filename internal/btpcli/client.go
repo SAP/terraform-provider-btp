@@ -230,7 +230,7 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 }
 
 // sso Login
-func (v2 *v2Client) SsoLogin(ctx context.Context) (*BrowserResponse, error) {
+func (v2 *v2Client) SsoLogin(ctx context.Context, loginReq *BrowserLoginRequestBody) (*BrowserResponse, error) {
 	ctx = v2.initTrace(ctx)
 
 	// TODO: After the switch to client protocol v2.49.0 the terraform provider is still providing
@@ -265,11 +265,43 @@ func (v2 *v2Client) SsoLogin(ctx context.Context) (*BrowserResponse, error) {
 	err1 := openUserAgent(url)
 	if err1 != nil {
 		//logger.Log(err.Error()) // NO EXTERNALIZE
-		//localize.Printf("browser_login_open_browser_failed", url)
+		fmt.Printf("browser_login_open_browser_failed", url)
 	} else {
 		// lest the user gets distracted by console output just before hidden by the browser
 		GiveBrowserTimeToOpen()
 		//localize.Printf("browser_login_open_browser_success", url)
+	}
+
+	//postUrl := "https://canary.cli.btp.int.sap/login/v2.49.0/browser/" + // NO EXTERNALIZE
+	//	browserResponse.LoginID
+
+	//var reqData BrowserLoginRequestBody
+
+	res2, err2 := v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion, "browser", browserResponse.LoginID), loginReq)
+
+	var browserLoginPostResponse BrowserLoginPostResponse
+	err = v2.parseResponse(ctx, res2, &browserLoginPostResponse, http.StatusOK, map[int]string{
+		http.StatusUnauthorized: "Login failed. Check your credentials.",
+		//http.StatusForbidden:          fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
+		//http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
+		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
+		http.StatusGatewayTimeout:     "Login timed out. Please try again later.",
+	})
+	if err2 != nil {
+		return nil, err2
+	}
+	fmt.Println(browserLoginPostResponse.User)
+	fmt.Println(browserLoginPostResponse.RefreshToken)
+
+	v2.session = &Session{
+		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
+		IdentityProvider:       browserLoginPostResponse.Issuer,
+		LoggedInUser: &v2LoggedInUser{
+			Username: browserLoginPostResponse.User,
+			Email:    browserLoginPostResponse.Mail,
+			Issuer:   browserLoginPostResponse.Issuer,
+		},
+		SessionId: browserLoginPostResponse.RefreshToken,
 	}
 
 	return &browserResponse, nil
@@ -277,12 +309,12 @@ func (v2 *v2Client) SsoLogin(ctx context.Context) (*BrowserResponse, error) {
 
 func openUserAgent(url string) error {
 	switch runtime.GOOS {
-	//case "linux": // NO EXTERNALIZE
-	//	return exec.Command("xdg-open", url).Start() // NO EXTERNALIZE
+	case "linux": // NO EXTERNALIZE
+		return exec.Command("xdg-open", url).Start() // NO EXTERNALIZE
 	case "windows": // NO EXTERNALIZE
 		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start() // NO EXTERNALIZE
-	//case "darwin": // NO EXTERNALIZE
-	//	return exec.Command("open", url).Start() // NO EXTERNALIZE
+	case "darwin": // NO EXTERNALIZE
+		return exec.Command("open", url).Start() // NO EXTERNALIZE
 	default:
 		return fmt.Errorf("unsupported_platform")
 	}
