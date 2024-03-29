@@ -258,24 +258,14 @@ func (v2 *v2Client) SsoLogin(ctx context.Context, loginReq *BrowserLoginRequestB
 
 	fmt.Println(browserResponse.LoginID)
 
-	//v2.doRequest(ctx, http.MethodGet, path.Join("login", cliTargetProtocolVersion, "browser"), nil)
-
-	url := "https://canary.cli.btp.int.sap/login/v2.49.0/browser/" + // NO EXTERNALIZE
+	url := "https://canary.cli.btp.int.sap/login/v2.49.0/browser/" +
 		browserResponse.LoginID
 	err1 := openUserAgent(url)
 	if err1 != nil {
-		//logger.Log(err.Error()) // NO EXTERNALIZE
 		fmt.Printf("browser_login_open_browser_failed", url)
 	} else {
-		// lest the user gets distracted by console output just before hidden by the browser
 		GiveBrowserTimeToOpen()
-		//localize.Printf("browser_login_open_browser_success", url)
 	}
-
-	//postUrl := "https://canary.cli.btp.int.sap/login/v2.49.0/browser/" + // NO EXTERNALIZE
-	//	browserResponse.LoginID
-
-	//var reqData BrowserLoginRequestBody
 
 	res2, err2 := v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion, "browser", browserResponse.LoginID), loginReq)
 
@@ -309,12 +299,12 @@ func (v2 *v2Client) SsoLogin(ctx context.Context, loginReq *BrowserLoginRequestB
 
 func openUserAgent(url string) error {
 	switch runtime.GOOS {
-	case "linux": // NO EXTERNALIZE
-		return exec.Command("xdg-open", url).Start() // NO EXTERNALIZE
-	case "windows": // NO EXTERNALIZE
-		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start() // NO EXTERNALIZE
-	case "darwin": // NO EXTERNALIZE
-		return exec.Command("open", url).Start() // NO EXTERNALIZE
+	case "linux": 
+		return exec.Command("xdg-open", url).Start() 
+	case "windows": 
+		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start() 
+	case "darwin":
+		return exec.Command("open", url).Start() 
 	default:
 		return fmt.Errorf("unsupported_platform")
 	}
