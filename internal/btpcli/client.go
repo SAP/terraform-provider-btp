@@ -236,7 +236,9 @@ func (v2 *v2Client) SsoLogin(ctx context.Context, loginReq *BrowserLoginRequestB
 	// TODO: After the switch to client protocol v2.49.0 the terraform provider is still providing
 	//       the globalaccount subdomain during login. However, this relies on a special handling
 	//       for older clients that might be removed from the server in the future.
-	res, err := v2.doRequest(ctx, http.MethodGet, path.Join("login", cliTargetProtocolVersion, "browser"), nil)
+
+	optionalIdpPath := OptionalCustomIdpPath(loginReq)
+	res, err := v2.doRequest(ctx, http.MethodGet, path.Join("login", cliTargetProtocolVersion, "browser", optionalIdpPath), nil)
 
 	if err != nil {
 		return nil, err
@@ -258,11 +260,15 @@ func (v2 *v2Client) SsoLogin(ctx context.Context, loginReq *BrowserLoginRequestB
 
 	fmt.Println(browserResponse.LoginID)
 
-	url := "https://canary.cli.btp.int.sap/login/v2.49.0/browser/" +
-		browserResponse.LoginID
-	err1 := openUserAgent(url)
+	endpointURL, err := url.Parse(path.Join("login", cliTargetProtocolVersion, "browser", browserResponse.LoginID, optionalIdpPath))
+	if err != nil {
+		return nil, err
+	}
+
+	fullQualifiedEndpointURL := v2.serverURL.ResolveReference(endpointURL)
+	err1 := openUserAgent(fullQualifiedEndpointURL.String())
 	if err1 != nil {
-		fmt.Printf("browser_login_open_browser_failed", url)
+		fmt.Printf("browser_login_open_browser_failed", fullQualifiedEndpointURL.String())
 	} else {
 		GiveBrowserTimeToOpen()
 	}
@@ -299,12 +305,12 @@ func (v2 *v2Client) SsoLogin(ctx context.Context, loginReq *BrowserLoginRequestB
 
 func openUserAgent(url string) error {
 	switch runtime.GOOS {
-	case "linux": 
-		return exec.Command("xdg-open", url).Start() 
-	case "windows": 
-		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start() 
+	case "linux":
+		return exec.Command("xdg-open", url).Start()
+	case "windows":
+		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
 	case "darwin":
-		return exec.Command("open", url).Start() 
+		return exec.Command("open", url).Start()
 	default:
 		return fmt.Errorf("unsupported_platform")
 	}
@@ -312,6 +318,13 @@ func openUserAgent(url string) error {
 
 func GiveBrowserTimeToOpen() {
 	time.Sleep(1 * time.Second)
+}
+
+func OptionalCustomIdpPath(loginReq *BrowserLoginRequestBody) string {
+	if loginReq.CustomIdp == "" {
+		return ""
+	}
+	return "/idp/" + loginReq.CustomIdp
 }
 
 // PasscodeLogin authenticates with a pem encoded x509 key-pair
@@ -400,7 +413,7 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 	if cmdRes.StatusCode >= 400 {
 
 		var backendError struct {
-			Message     string `json:"error"`
+			Message string `json:"error"`
 		}
 
 		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {
