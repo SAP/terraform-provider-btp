@@ -27,8 +27,8 @@ func NewIdTokenLoginRequest(globalaccountSubdomain string, idToken string) *IdTo
 	}
 }
 
-func NewSsoLoginRequest(idp string, globalaccountSubdomain string) *BrowserLoginRequestBody {
-	return &BrowserLoginRequestBody{
+func NewBrowserLoginRequest(idp string, globalaccountSubdomain string) *BrowserLoginRequest {
+	return &BrowserLoginRequest{
 		CustomIdp:              idp,
 		GlobalAccountSubdomain: globalaccountSubdomain,
 	}
@@ -56,22 +56,22 @@ type PasscodeLoginRequest struct {
 	PEMEncodedCertificate  string
 }
 
+type BrowserLoginRequest struct {
+	CustomIdp              string `json:"customIdp"`
+	GlobalAccountSubdomain string `json:"subdomain"`
+}
+
 type LoginResponse struct {
 	Username string `json:"user"`
 	Email    string `json:"mail"`
 	Issuer   string `json:"issuer"`
 }
 
-type BrowserLoginRequestBody struct {
-	CustomIdp              string `json:"customIdp"`
-	GlobalAccountSubdomain string `json:"subdomain"`
-}
-
 type BrowserLoginPostResponse struct {
 	Issuer       string `json:"issuer"`
 	RefreshToken string `json:"refreshToken"`
-	User         string `json:"user"`
-	Mail         string `json:"mail"`
+	Username         string `json:"user"`
+	Email         string `json:"mail"`
 }
 
 type BrowserResponse struct {

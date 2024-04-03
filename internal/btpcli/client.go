@@ -120,6 +120,10 @@ func (v2 *v2Client) doPostRequest(ctx context.Context, endpoint string, body any
 	return v2.doRequest(ctx, http.MethodPost, endpoint, body)
 }
 
+func (v2 *v2Client) doGetRequest(ctx context.Context, endpoint string) (*http.Response, error) {
+	return v2.doRequest(ctx, http.MethodGet, endpoint, nil)
+}
+
 func (v2 *v2Client) parseResponse(ctx context.Context, res *http.Response, targetObj any, goodState int, knownErrorStates map[int]string) error {
 	if err := v2.checkResponseForErrors(ctx, res, goodState, knownErrorStates); err != nil {
 		return err
@@ -229,8 +233,8 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 	return &loginResponse, nil
 }
 
-// sso Login
-func (v2 *v2Client) SsoLogin(ctx context.Context, loginReq *BrowserLoginRequestBody) (*BrowserResponse, error) {
+// BrowserLogin authenticates user using SSO
+func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequest) (*BrowserLoginPostResponse, error) {
 	ctx = v2.initTrace(ctx)
 
 	// TODO: After the switch to client protocol v2.49.0 the terraform provider is still providing
@@ -238,18 +242,15 @@ func (v2 *v2Client) SsoLogin(ctx context.Context, loginReq *BrowserLoginRequestB
 	//       for older clients that might be removed from the server in the future.
 
 	optionalIdpPath := OptionalCustomIdpPath(loginReq)
-	res, err := v2.doRequest(ctx, http.MethodGet, path.Join("login", cliTargetProtocolVersion, "browser", optionalIdpPath), nil)
+	res, err := v2.doGetRequest(ctx, path.Join("login", cliTargetProtocolVersion, "browser", optionalIdpPath))
 
 	if err != nil {
 		return nil, err
 	}
 
-	//fmt.Println(res.Body)
 	var browserResponse BrowserResponse
 	err = v2.parseResponse(ctx, res, &browserResponse, http.StatusOK, map[int]string{
 		http.StatusUnauthorized: "Login failed. Check your credentials.",
-		//http.StatusForbidden:          fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
-		//http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
 		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
 		http.StatusGatewayTimeout:     "Login timed out. Please try again later.",
 	})
@@ -257,8 +258,6 @@ func (v2 *v2Client) SsoLogin(ctx context.Context, loginReq *BrowserLoginRequestB
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println(browserResponse.LoginID)
 
 	endpointURL, err := url.Parse(path.Join("login", cliTargetProtocolVersion, "browser", browserResponse.LoginID, optionalIdpPath))
 	if err != nil {
@@ -266,41 +265,43 @@ func (v2 *v2Client) SsoLogin(ctx context.Context, loginReq *BrowserLoginRequestB
 	}
 
 	fullQualifiedEndpointURL := v2.serverURL.ResolveReference(endpointURL)
-	err1 := openUserAgent(fullQualifiedEndpointURL.String())
-	if err1 != nil {
-		fmt.Printf("browser_login_open_browser_failed", fullQualifiedEndpointURL.String())
+	err = openUserAgent(fullQualifiedEndpointURL.String())
+	if err != nil {
+		fmt.Printf("browser_login_open_browser_failed : %s", fullQualifiedEndpointURL.String())
+		return nil, err
 	} else {
 		GiveBrowserTimeToOpen()
 	}
 
-	res2, err2 := v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion, "browser", browserResponse.LoginID), loginReq)
+	res, err = v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion, "browser", browserResponse.LoginID), loginReq)
+	if err != nil {
+		return nil, err
+	}
 
 	var browserLoginPostResponse BrowserLoginPostResponse
-	err = v2.parseResponse(ctx, res2, &browserLoginPostResponse, http.StatusOK, map[int]string{
+	err = v2.parseResponse(ctx, res, &browserLoginPostResponse, http.StatusOK, map[int]string{
 		http.StatusUnauthorized: "Login failed. Check your credentials.",
-		//http.StatusForbidden:          fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
-		//http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
+		http.StatusForbidden:          fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
+		http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
 		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
 		http.StatusGatewayTimeout:     "Login timed out. Please try again later.",
 	})
-	if err2 != nil {
-		return nil, err2
+	if err != nil {
+		return nil, err
 	}
-	fmt.Println(browserLoginPostResponse.User)
-	fmt.Println(browserLoginPostResponse.RefreshToken)
 
 	v2.session = &Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       browserLoginPostResponse.Issuer,
 		LoggedInUser: &v2LoggedInUser{
-			Username: browserLoginPostResponse.User,
-			Email:    browserLoginPostResponse.Mail,
+			Username: browserLoginPostResponse.Username,
+			Email:    browserLoginPostResponse.Email,
 			Issuer:   browserLoginPostResponse.Issuer,
 		},
 		SessionId: browserLoginPostResponse.RefreshToken,
 	}
 
-	return &browserResponse, nil
+	return &browserLoginPostResponse, nil
 }
 
 func openUserAgent(url string) error {
@@ -320,7 +321,7 @@ func GiveBrowserTimeToOpen() {
 	time.Sleep(1 * time.Second)
 }
 
-func OptionalCustomIdpPath(loginReq *BrowserLoginRequestBody) string {
+func OptionalCustomIdpPath(loginReq *BrowserLoginRequest) string {
 	if loginReq.CustomIdp == "" {
 		return ""
 	}
