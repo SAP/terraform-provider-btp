@@ -44,8 +44,6 @@ provider "btp" {
 - `tls_idp_url` (String) The URL of the identity provider to be used for authentication (only required for x509 auth).
 - `username` (String) Your user name, usually an e-mail address. This can also be sourced from the `BTP_USERNAME` environment variable.
 
-> **Note**: The provider supports login via Single Sign-On (SSO) as well. To enable this you need to set the environment variable `BTP_ENABLE_SSO` to `true`. Additionally, ensure that you run your scripts in a desktop environment. It's important to note that the SSO login feature is not intended for use in containerized environments or CI/CD pipelines.
-
 ## Get Started
 
 If you're not familiar with Terraform yet, see the [Fundamentals](https://developer.hashicorp.com/terraform/tutorials/cli) section with a lot of helpful tutorials. 
@@ -67,3 +65,6 @@ By default, the underlying BTP client used by the Terraform BTP Provider creates
 ```bash
 % export BTP_APPEND_USER_AGENT="Optional_Extra_Information"
 ```
+
+## Single Sign On
+The provider supports login via Single Sign-On (SSO) as well. To enable this you need to set the environment variable `BTP_ENABLE_SSO` to `true`. Additionally, ensure that you run your scripts in a desktop environment. It's important to note that the SSO login feature is not intended for use in containerized environments or CI/CD pipelines.
