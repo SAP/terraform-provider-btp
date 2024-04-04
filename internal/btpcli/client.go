@@ -9,8 +9,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os/exec"
 	"path"
+	"runtime"
 	"strconv"
+	"time"
 
 	uuid "github.com/hashicorp/go-uuid"
 )
@@ -115,6 +118,10 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 
 func (v2 *v2Client) doPostRequest(ctx context.Context, endpoint string, body any) (*http.Response, error) {
 	return v2.doRequest(ctx, http.MethodPost, endpoint, body)
+}
+
+func (v2 *v2Client) doGetRequest(ctx context.Context, endpoint string) (*http.Response, error) {
+	return v2.doRequest(ctx, http.MethodGet, endpoint, nil)
 }
 
 func (v2 *v2Client) parseResponse(ctx context.Context, res *http.Response, targetObj any, goodState int, knownErrorStates map[int]string) error {
@@ -226,6 +233,112 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 	return &loginResponse, nil
 }
 
+// BrowserLogin authenticates user using SSO
+func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequest) (*BrowserLoginPostResponse, error) {
+	ctx = v2.initTrace(ctx)
+
+	// TODO: After the switch to client protocol v2.49.0 the terraform provider is still providing
+	//       the globalaccount subdomain during login. However, this relies on a special handling
+	//       for older clients that might be removed from the server in the future.
+
+	optionalIdpPath := OptionalCustomIdpPath(loginReq)
+	res, err := v2.doGetRequest(ctx, path.Join("login", cliTargetProtocolVersion, "browser", optionalIdpPath))
+
+	if err != nil {
+		return nil, err
+	}
+
+	var browserResponse BrowserResponse
+	err = v2.parseResponse(ctx, res, &browserResponse, http.StatusOK, map[int]string{
+		http.StatusUnauthorized: "Login failed. Check your credentials.",
+		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
+		http.StatusGatewayTimeout:     "Login timed out. Please try again later.",
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	endpointURL, err := url.Parse(path.Join("login", cliTargetProtocolVersion, "browser", browserResponse.LoginID, optionalIdpPath))
+	if err != nil {
+		return nil, err
+	}
+
+	fullQualifiedEndpointURL := v2.serverURL.ResolveReference(endpointURL)
+	err = openUserAgent(fullQualifiedEndpointURL.String(), isRealBrowser)
+	
+	if err != nil {
+		fmt.Printf("browser_login_open_browser_failed : %s", fullQualifiedEndpointURL.String())
+		return nil, err
+	} else {
+		GiveBrowserTimeToOpen()
+	}
+
+	res, err = v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion, "browser", browserResponse.LoginID), loginReq)
+	if err != nil {
+		return nil, err
+	}
+
+	var browserLoginPostResponse BrowserLoginPostResponse
+	err = v2.parseResponse(ctx, res, &browserLoginPostResponse, http.StatusOK, map[int]string{
+		http.StatusUnauthorized: "Login failed. Check your credentials.",
+		http.StatusForbidden:          fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
+		http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
+		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
+		http.StatusGatewayTimeout:     "Login timed out. Please try again later.",
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	v2.session = &Session{
+		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
+		IdentityProvider:       loginReq.CustomIdp,
+		LoggedInUser: &v2LoggedInUser{
+			Username: browserLoginPostResponse.Username,
+			Email:    browserLoginPostResponse.Email,
+			Issuer:   browserLoginPostResponse.Issuer,
+		},
+		SessionId: browserLoginPostResponse.RefreshToken,
+	}
+
+	return &browserLoginPostResponse, nil
+}
+
+/*
+The variable isRealBrowser primarily serves testing purposes. During the testing of the browser login flow, the  variable is intentionally set to 
+false. This configuration is allows the stubbing of the call that opens the browser, as no validation is necessary in this scenario.
+*/
+var isRealBrowser = true
+
+func openUserAgent(url string, isRealBrowser bool) error {
+	if isRealBrowser {
+		switch runtime.GOOS {
+		case "linux": 
+			return exec.Command("xdg-open", url).Start()
+		case "windows":
+			return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+		case "darwin":
+			return exec.Command("open", url).Start()
+		default:
+			return fmt.Errorf("unsupported_platform")
+		}
+	} else {
+		return nil
+	}
+}
+
+func GiveBrowserTimeToOpen() {
+	time.Sleep(1 * time.Second)
+}
+
+func OptionalCustomIdpPath(loginReq *BrowserLoginRequest) string {
+	if loginReq.CustomIdp == "" {
+		return ""
+	}
+	return "/idp/" + loginReq.CustomIdp
+}
+
 // PasscodeLogin authenticates with a pem encoded x509 key-pair
 func (v2 *v2Client) PasscodeLogin(ctx context.Context, loginReq *PasscodeLoginRequest) (*LoginResponse, error) {
 	ctx = v2.initTrace(ctx)
@@ -312,7 +425,7 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 	if cmdRes.StatusCode >= 400 {
 
 		var backendError struct {
-			Message     string `json:"error"`
+			Message string `json:"error"`
 		}
 
 		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {

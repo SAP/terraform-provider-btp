@@ -278,6 +278,88 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 	}
 }
 
+func TestV2Client_BrowserLogin(t *testing.T) {
+
+	isRealBrowser = false
+	t.Parallel()
+
+	// Setup HTTPS server
+	srv := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			_, _ = w.Write([]byte("{\"loginId\":\"login.id\",\"subdomainRequired\":false}"))
+		} else if strings.Contains(r.URL.Path, "/login.id"){
+
+			res, _ := io.ReadAll(r.Body)
+			
+			idp := strings.Split(strings.Split(string(res), ",")[0], ":")[1]
+			if idp == "\"\"" {
+				idp = "accounts.sap.com"
+			} else {
+				idp = "customidp.accounts.ondemand.com"
+			}
+	
+			w.Header().Add("HeaderCLISessionId", "sessionid")
+			w.WriteHeader(http.StatusOK)
+
+			_, _ = w.Write([]byte("{\"issuer\":\""+idp+"\",\"refreshToken\":\"sessionid\",\"user\":\"john.doe\",\"mail\":\"john.doe@test.com\"}"))
+		} else {
+			w.WriteHeader(http.StatusForbidden)
+		}
+	}))
+
+	srv.StartTLS()
+	defer srv.Close()
+
+	srvUrl, _ := url.Parse(srv.URL)
+
+	t.Run("happy path", func(t *testing.T) {
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut.session = &Session{}
+		uut.newCorrelationID = func() string {
+			return "fake-correlation-id"
+		}
+		_, err := uut.BrowserLogin(context.TODO(), &BrowserLoginRequest{
+			GlobalAccountSubdomain: "my-subdomain",
+		})
+
+		assert.NoError(t, err)
+		assert.Equal(t, &Session{
+			SessionId:              "sessionid",
+			IdentityProvider:       "",
+			GlobalAccountSubdomain: "my-subdomain",
+			LoggedInUser: &v2LoggedInUser{
+				Issuer:   "accounts.sap.com",
+				Username: "john.doe",
+				Email:    "john.doe@test.com",
+			},
+		}, uut.session)
+	})
+	
+	t.Run("happy path - with custom idp", func(t *testing.T) {
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut.session = &Session{}
+		uut.newCorrelationID = func() string {
+			return "fake-correlation-id"
+		}
+		_, err := uut.BrowserLogin(context.TODO(), &BrowserLoginRequest{
+			CustomIdp: 				"my.custom.idp",
+			GlobalAccountSubdomain: "my-subdomain",
+		})
+
+		assert.NoError(t, err)
+		assert.Equal(t, &Session{
+			SessionId:              "sessionid",
+			IdentityProvider:       "my.custom.idp",
+			GlobalAccountSubdomain: "my-subdomain",
+			LoggedInUser: &v2LoggedInUser{
+				Issuer:   "customidp.accounts.ondemand.com",
+				Username: "john.doe",
+				Email:    "john.doe@test.com",
+			},
+		}, uut.session)
+	})
+}
+
 func TestV2Client_PasscodeLogin(t *testing.T) {
 	t.Parallel()
 
@@ -505,6 +587,7 @@ type v2SimulationConfig struct {
 }
 
 func simulateV2Call(t *testing.T, config v2SimulationConfig) {
+
 	t.Helper()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !assert.Equal(t, config.srvExpectPath, r.URL.Path) {
