@@ -265,7 +265,8 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 	}
 
 	fullQualifiedEndpointURL := v2.serverURL.ResolveReference(endpointURL)
-	err = openUserAgent(fullQualifiedEndpointURL.String())
+	err = openUserAgent(fullQualifiedEndpointURL.String(), isRealBrowser)
+	
 	if err != nil {
 		fmt.Printf("browser_login_open_browser_failed : %s", fullQualifiedEndpointURL.String())
 		return nil, err
@@ -292,7 +293,7 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 
 	v2.session = &Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
-		IdentityProvider:       browserLoginPostResponse.Issuer,
+		IdentityProvider:       loginReq.CustomIdp,
 		LoggedInUser: &v2LoggedInUser{
 			Username: browserLoginPostResponse.Username,
 			Email:    browserLoginPostResponse.Email,
@@ -304,16 +305,26 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 	return &browserLoginPostResponse, nil
 }
 
-func openUserAgent(url string) error {
-	switch runtime.GOOS {
-	case "linux":
-		return exec.Command("xdg-open", url).Start()
-	case "windows":
-		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
-	case "darwin":
-		return exec.Command("open", url).Start()
-	default:
-		return fmt.Errorf("unsupported_platform")
+/*
+The variable isRealBrowser primarily serves testing purposes. During the testing of the browser login flow, the  variable is intentionally set to 
+false. This configuration is allows the stubbing of the call that opens the browser, as no validation is necessary in this scenario.
+*/
+var isRealBrowser = true
+
+func openUserAgent(url string, isRealBrowser bool) error {
+	if isRealBrowser {
+		switch runtime.GOOS {
+		case "linux": 
+			return exec.Command("xdg-open", url).Start()
+		case "windows":
+			return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+		case "darwin":
+			return exec.Command("open", url).Start()
+		default:
+			return fmt.Errorf("unsupported_platform")
+		}
+	} else {
+		return nil
 	}
 }
 

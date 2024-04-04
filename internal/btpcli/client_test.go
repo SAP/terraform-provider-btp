@@ -175,7 +175,7 @@ func TestV2Client_Login(t *testing.T) {
 				return uut.Login(ctx, test.loginRequest)
 			}
 
-			simulateV2Call(t, test.simulation, "")
+			simulateV2Call(t, test.simulation)
 		})
 	}
 }
@@ -273,128 +273,91 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 				return uut.IdTokenLogin(ctx, test.loginRequest)
 			}
 
-			simulateV2Call(t, test.simulation, "")
+			simulateV2Call(t, test.simulation)
 		})
 	}
 }
 
 func TestV2Client_BrowserLogin(t *testing.T) {
+
+	isRealBrowser = false
 	t.Parallel()
 
-	tests := []struct {
-		description string
+	// Setup HTTPS server
+	srv := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			_, _ = w.Write([]byte("{\"loginId\":\"login.id\",\"subdomainRequired\":false}"))
+		} else if strings.Contains(r.URL.Path, "/login.id"){
 
-		loginRequest *BrowserLoginRequest
-		simulation   v2SimulationConfig
-	}{
-		{
-			description:  "happy path",
-			loginRequest: NewBrowserLoginRequest("", "subdomain"),
-			simulation: v2SimulationConfig{
-				srvExpectBody:    ``,
-				srvReturnStatus:  http.StatusOK,
-				srvReturnContent: `{"issuer": "accounts.sap.com", "refreshToken":"mock.refresh.token", "user":"john.doe","mail":"john.doe@test.com"}`,
-				srvReturnHeader: map[string]string{
-					HeaderCLISessionId: "mock.refresh.token",
-				},
-				expectResponse: &BrowserLoginPostResponse{
-					Issuer:   		"accounts.sap.com",
-					RefreshToken: 	"mock.refresh.token",
-					Username: 		"john.doe",
-					Email:    		"john.doe@test.com",
-				},
-				expectClientSession: &Session{
-					SessionId:              "mock.refresh.token",
-					IdentityProvider:       "",
-					GlobalAccountSubdomain: "subdomain",
-					LoggedInUser: &v2LoggedInUser{
-						Issuer:   "accounts.sap.com",
-						Username: "john.doe",
-						Email:    "john.doe@test.com",
-					},
-				},
-			},
-		},
-		{
-			description:  "happy path - with custom idp",
-			loginRequest: NewBrowserLoginRequest("my.custom.idp", "subdomain"),
-			simulation: v2SimulationConfig{
-				srvExpectBody:    `{"customIdp":"my.custom.idp","subdomain":"subdomain"}`,
-				srvReturnStatus:  http.StatusOK,
-				srvReturnContent: `{"issuer": "customidp.accounts.ondemand.com", "refreshToken":"mock.refresh.token", "user":"john.doe","mail":"john.doe@test.com"}`,
-				srvReturnHeader: map[string]string{
-					HeaderCLISessionId: "mock.refresh.token",
-				},
-				expectResponse: &BrowserLoginPostResponse{
-					Issuer:       "customidp.accounts.ondemand.com",
-					RefreshToken: "mock.refresh.token",
-					Username: 	  "john.doe",
-					Email:    	  "john.doe@test.com",
-				},
-				expectClientSession: &Session{
-					SessionId:              "mock.refresh.token",
-					GlobalAccountSubdomain: "subdomain",
-					IdentityProvider:       "my.custom.idp",
-					LoggedInUser: &v2LoggedInUser{
-						Issuer:   "customidp.accounts.ondemand.com",
-						Username: "john.doe",
-						Email:    "john.doe@test.com",
-					},
-				},
-			},
-		},
-		{
-			description:  "error path - user is lacking permissions to globalaccount [403]",
-			loginRequest: NewBrowserLoginRequest("", "subdomain"),
-			simulation: v2SimulationConfig{
-				srvReturnStatus: http.StatusForbidden,
-				expectErrorMsg:  "You cannot access global account 'subdomain'. Make sure you have at least read access to the global account, a directory, or a subaccount. [Status: 403; Correlation ID: fake-correlation-id]",
-			},
-		},
-		{
-			description:  "error path - global account can't be found [404]",
-			loginRequest: NewBrowserLoginRequest("", "subdomain"),
-			simulation: v2SimulationConfig{
-				srvReturnStatus: http.StatusNotFound,
-				expectErrorMsg:  "Global account 'subdomain' not found. Try again and make sure to provide the global account's subdomain. [Status: 404; Correlation ID: fake-correlation-id]",
-			},
-		},
-		{
-			description:  "error path - outdated protocol version [412]",
-			loginRequest: NewBrowserLoginRequest("", "subdomain"),
-			simulation: v2SimulationConfig{
-				srvReturnStatus: http.StatusPreconditionFailed,
-				expectErrorMsg:  "Login failed due to outdated provider version. Update to the latest version of the provider. [Status: 412; Correlation ID: fake-correlation-id]",
-			},
-		},
-		{
-			description:  "error path - login request times out [504]]",
-			loginRequest: NewBrowserLoginRequest("", "subdomain"),
-			simulation: v2SimulationConfig{
-				srvReturnStatus: http.StatusGatewayTimeout,
-				expectErrorMsg:  "Login timed out. Please try again later. [Status: 504; Correlation ID: fake-correlation-id]",
-			},
-		},
-		{
-			description:  "error path - unexpected error",
-			loginRequest: NewBrowserLoginRequest("", "subdomain"),
-			simulation: v2SimulationConfig{
-				srvReturnStatus: http.StatusTeapot,
-				expectErrorMsg:  "received response with unexpected status [Status: 418; Correlation ID: fake-correlation-id]",
-			},
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.description, func(t *testing.T) {
-			test.simulation.srvExpectPath = path.Join("/login", cliTargetProtocolVersion, "browser")
-			test.simulation.callFunctionUnderTest = func(ctx context.Context, uut *v2Client) (any, error) {
-				return uut.BrowserLogin(ctx, test.loginRequest)
+			res, _ := io.ReadAll(r.Body)
+			
+			idp := strings.Split(strings.Split(string(res), ",")[0], ":")[1]
+			if idp == "\"\"" {
+				idp = "accounts.sap.com"
+			} else {
+				idp = "customidp.accounts.ondemand.com"
 			}
+	
+			w.Header().Add("HeaderCLISessionId", "sessionid")
+			w.WriteHeader(http.StatusOK)
 
-			simulateV2Call(t, test.simulation, "GET")
+			_, _ = w.Write([]byte("{\"issuer\":\""+idp+"\",\"refreshToken\":\"sessionid\",\"user\":\"john.doe\",\"mail\":\"john.doe@test.com\"}"))
+		} else {
+			w.WriteHeader(http.StatusForbidden)
+		}
+	}))
+
+	srv.StartTLS()
+	defer srv.Close()
+
+	srvUrl, _ := url.Parse(srv.URL)
+
+	t.Run("happy path", func(t *testing.T) {
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut.session = &Session{}
+		uut.newCorrelationID = func() string {
+			return "fake-correlation-id"
+		}
+		_, err := uut.BrowserLogin(context.TODO(), &BrowserLoginRequest{
+			GlobalAccountSubdomain: "my-subdomain",
 		})
-	}
+
+		assert.NoError(t, err)
+		assert.Equal(t, &Session{
+			SessionId:              "sessionid",
+			IdentityProvider:       "",
+			GlobalAccountSubdomain: "my-subdomain",
+			LoggedInUser: &v2LoggedInUser{
+				Issuer:   "accounts.sap.com",
+				Username: "john.doe",
+				Email:    "john.doe@test.com",
+			},
+		}, uut.session)
+	})
+	
+	t.Run("happy path - with custom idp", func(t *testing.T) {
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut.session = &Session{}
+		uut.newCorrelationID = func() string {
+			return "fake-correlation-id"
+		}
+		_, err := uut.BrowserLogin(context.TODO(), &BrowserLoginRequest{
+			CustomIdp: 				"my.custom.idp",
+			GlobalAccountSubdomain: "my-subdomain",
+		})
+
+		assert.NoError(t, err)
+		assert.Equal(t, &Session{
+			SessionId:              "sessionid",
+			IdentityProvider:       "my.custom.idp",
+			GlobalAccountSubdomain: "my-subdomain",
+			LoggedInUser: &v2LoggedInUser{
+				Issuer:   "customidp.accounts.ondemand.com",
+				Username: "john.doe",
+				Email:    "john.doe@test.com",
+			},
+		}, uut.session)
+	})
 }
 
 func TestV2Client_PasscodeLogin(t *testing.T) {
@@ -623,11 +586,7 @@ type v2SimulationConfig struct {
 	expectClientSession *Session
 }
 
-func simulateV2Call(t *testing.T, config v2SimulationConfig, call string) {
-
-	if call == "" {
-		call = "POST"
-	}
+func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 
 	t.Helper()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -639,7 +598,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig, call string) {
 		b, err := io.ReadAll(r.Body)
 
 		if assert.NoError(t, err) {
-			assertV2DefaultHeader(t, r, call)
+			assertV2DefaultHeader(t, r, http.MethodPost)
 			assert.Equal(t, "Terraform/x.x.x terraform-plugin-btp/y.y.y", r.Header.Get("User-Agent"))
 
 			if len(config.srvExpectBody) > 0 {

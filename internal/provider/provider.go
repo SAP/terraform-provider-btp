@@ -162,7 +162,6 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	enableSSO := os.Getenv("BTP_ENABLE_SSO")
 	if len(strings.TrimSpace(enableSSO)) != 0 {
 		ssoLogin, err = strconv.ParseBool(enableSSO)
-		//ssoLogin := true
 		if err != nil {
 			resp.Diagnostics.AddError("unable to convert sso value", fmt.Sprintf("%s", err))
 			return
