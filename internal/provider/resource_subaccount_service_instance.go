@@ -46,7 +46,10 @@ func (rs *subaccountServiceInstanceResource) Configure(_ context.Context, req re
 
 func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Creates a service instance in a subaccount.`,
+		MarkdownDescription: `Creates a service instance in a subaccount.
+
+__Tip:__
+You must be assigned to the admin or the service administrator role of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

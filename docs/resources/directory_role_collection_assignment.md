@@ -3,11 +3,16 @@ page_title: "btp_directory_role_collection_assignment Resource - terraform-provi
 subcategory: ""
 description: |-
   Assigns a user to a role collection on a directory level.
+  Tip:
+  You must be assigned to the admin role of the global account or the directory.
 ---
 
 # btp_directory_role_collection_assignment (Resource)
 
 Assigns a user to a role collection on a directory level.
+
+__Tip:__
+You must be assigned to the admin role of the global account or the directory.
 
 ## Example Usage
 

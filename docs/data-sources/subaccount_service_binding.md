@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Gets details about a specific service binding, such as its access details. They are included in its 'credentials' property, and typically include access URLs and credentials.
   Tip:
-  You must be assigned to the admin or viewer role or service auditor of the subaccount.
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_service_binding (Data Source)
@@ -12,7 +12,7 @@ description: |-
 Gets details about a specific service binding, such as its access details. They are included in its 'credentials' property, and typically include access URLs and credentials.
 
 __Tip:__
-You must be assigned to the admin or viewer role or service auditor of the subaccount.
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

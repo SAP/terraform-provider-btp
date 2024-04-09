@@ -56,7 +56,7 @@ func (ds *subaccountServicePlatformDataSource) Schema(_ context.Context, _ datas
 		MarkdownDescription: `Gets details about a specific platform that is registered for service consumption in a subaccount by platform id or by platform name. Details include the platform's name, type, and labels.
 
 __Tip:__
-You must be assigned to the admin or viewer role or service auditor of the subaccount.`,		
+You must be assigned to the admin or viewer role of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

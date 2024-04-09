@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Lists all service instances in a subaccount.
   Tip:
-  You must be assigned to the admin or viewer role or service auditor of the subaccount.
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_service_instances (Data Source)
@@ -12,7 +12,7 @@ description: |-
 Lists all service instances in a subaccount.
 
 __Tip:__
-You must be assigned to the admin or viewer role or service auditor of the subaccount.
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

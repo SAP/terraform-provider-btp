@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Lists the plans of services that your subaccount is entitled to use in your environment.
   Tip:
-  You must be assigned to the admin or viewer role or service auditor of the subaccount.
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_service_plans (Data Source)
@@ -12,7 +12,7 @@ description: |-
 Lists the plans of services that your subaccount is entitled to use in your environment.
 
 __Tip:__
-You must be assigned to the admin or viewer role or service auditor of the subaccount.
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

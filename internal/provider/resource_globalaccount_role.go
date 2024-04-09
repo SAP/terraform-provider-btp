@@ -36,6 +36,9 @@ func (rs *globalaccountRoleResource) Schema(_ context.Context, _ resource.Schema
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Creates a role in a global account.
 
+__Tip:__
+You must be assigned to the admin role of the global account.
+
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
 		Attributes: map[string]schema.Attribute{

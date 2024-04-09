@@ -41,7 +41,7 @@ func (ds *subaccountServiceBindingDataSource) Schema(_ context.Context, _ dataso
 		MarkdownDescription: `Gets details about a specific service binding, such as its access details. They are included in its 'credentials' property, and typically include access URLs and credentials.
 
 __Tip:__
-You must be assigned to the admin or viewer role or service auditor of the subaccount.`,
+You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

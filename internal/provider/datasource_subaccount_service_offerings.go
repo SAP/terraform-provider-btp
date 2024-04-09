@@ -67,7 +67,7 @@ func (ds *subaccountServiceOfferingsDataSource) Schema(_ context.Context, _ data
 		MarkdownDescription: `Lists the services your subaccount is entitled to use in your runtime environment.
 
 __Tip:__
-You must be assigned to the admin or viewer role or service auditor of the subaccount.`,		
+You must be assigned to the admin or viewer role of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

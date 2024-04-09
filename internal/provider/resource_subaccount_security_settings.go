@@ -43,7 +43,7 @@ func (rs *subaccountSecuritySettingsResource) Schema(_ context.Context, _ resour
 		MarkdownDescription: `Sets the security settings of a subaccount.
 
 __Tip:__
-You must be administrator of the subaccount.
+You must be assigned to the admin role of the subaccount.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/configure-trusted-domains-for-sap-authorization-and-trust-management-service>

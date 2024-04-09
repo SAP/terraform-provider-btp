@@ -55,7 +55,7 @@ func (ds *subaccountServiceBrokerDataSource) Schema(_ context.Context, _ datasou
 		MarkdownDescription: `Gets details about a specific service broker registered in a subaccount, such as its name, description, labels, and URL.
 
 __Tip:__
-You must be assigned to the admin or viewer role or service auditor of the subaccount.`,		
+You must be assigned to the admin or viewer role of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

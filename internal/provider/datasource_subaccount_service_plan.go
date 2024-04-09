@@ -60,7 +60,7 @@ func (ds *subaccountServicePlanDataSource) Schema(_ context.Context, _ datasourc
 		MarkdownDescription: `Gets details about a specific service plan such as its name, description, and metadata.
 
 __Tip:__
-You must be assigned to the admin or viewer role or service auditor of the subaccount.`,		
+You must be assigned to the admin or viewer role of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

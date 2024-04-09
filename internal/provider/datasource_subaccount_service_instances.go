@@ -62,7 +62,7 @@ func (ds *subaccountServiceInstancesDataSource) Schema(_ context.Context, _ data
 		MarkdownDescription: `Lists all service instances in a subaccount.
 
 __Tip:__
-You must be assigned to the admin or viewer role or service auditor of the subaccount.`,		
+You must be assigned to the admin or viewer role of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

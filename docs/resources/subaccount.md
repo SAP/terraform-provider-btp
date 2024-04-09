@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Creates a subaccount in a global account or directory.
   Tip:
-  You must be assigned to the global account or directory admin role.
+  You must be assigned admin role of the global account or directory.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
@@ -14,7 +14,7 @@ description: |-
 Creates a subaccount in a global account or directory.
 
 __Tip:__
-You must be assigned to the global account or directory admin role.
+You must be assigned admin role of the global account or directory.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>

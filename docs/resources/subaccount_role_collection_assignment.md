@@ -3,11 +3,16 @@ page_title: "btp_subaccount_role_collection_assignment Resource - terraform-prov
 subcategory: ""
 description: |-
   Assigns a user to a role collection on a subaccount level.
+  Tip:
+  You must be assigned to the admin role of the subaccount.
 ---
 
 # btp_subaccount_role_collection_assignment (Resource)
 
 Assigns a user to a role collection on a subaccount level.
+
+__Tip:__
+You must be assigned to the admin role of the subaccount.
 
 ## Example Usage
 

@@ -3,11 +3,16 @@ page_title: "btp_globalaccount_role_collection_assignment Resource - terraform-p
 subcategory: ""
 description: |-
   Assigns a user or a group to a role collection on global account level.
+  Tip:
+  You must be assigned to the admin role of the global account.
 ---
 
 # btp_globalaccount_role_collection_assignment (Resource)
 
 Assigns a user or a group to a role collection on global account level.
+
+__Tip:__
+You must be assigned to the admin role of the global account.
 
 ## Example Usage
 
