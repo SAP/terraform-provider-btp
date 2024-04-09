@@ -10,6 +10,7 @@ description: |-
 # btp_directory_user (Data Source)
 
 Shows registered users in a directory. Users belong to one of the identity providers (IdPs) of the global account.
+
 __Tip:__
 You must be assigned to the admin or viewer role of the global account, directory.
 
