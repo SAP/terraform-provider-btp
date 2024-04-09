@@ -80,7 +80,7 @@ func (ds *subaccountSubscriptionsDataSource) Schema(_ context.Context, _ datasou
 		MarkdownDescription: `Lists all multitenant applications to which the subaccount is entitled to subscribe, including their subscription details.
 
 __Tip:__
-You must be assigned to the subaccount admin or viewer role.`,
+You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				Required: true,

@@ -39,7 +39,7 @@ func (ds *subaccountSubscriptionDataSource) Schema(_ context.Context, _ datasour
 		MarkdownDescription: `Gets details of a specific multitenant application to which a subaccount is entitled to subscribe. If this application is in a different global account than the current one, you need to specify its plan with '--plan'.
 
 __Tip:__
-You must be assigned to the subaccount admin or viewer role.`,
+You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

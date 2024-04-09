@@ -52,7 +52,10 @@ func (ds *subaccountServiceBrokerDataSource) Configure(_ context.Context, req da
 
 func (ds *subaccountServiceBrokerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets details about a specific service broker registered in a subaccount, such as its name, description, labels, and URL.`,
+		MarkdownDescription: `Gets details about a specific service broker registered in a subaccount, such as its name, description, labels, and URL.
+
+__Tip:__
+You must be assigned to the admin or viewer role or service auditor of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

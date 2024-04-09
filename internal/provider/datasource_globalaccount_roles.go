@@ -52,6 +52,9 @@ func (ds *globalaccountRolesDataSource) Schema(_ context.Context, _ datasource.S
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Lists all roles.
 
+__Tip:__
+You must be assigned to the admin or viewer role of the global account.
+
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
 		Attributes: map[string]schema.Attribute{

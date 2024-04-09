@@ -3,11 +3,16 @@ page_title: "btp_subaccount_service_plans Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Lists the plans of services that your subaccount is entitled to use in your environment.
+  Tip:
+  You must be assigned to the admin or viewer role or service auditor of the subaccount.
 ---
 
 # btp_subaccount_service_plans (Data Source)
 
 Lists the plans of services that your subaccount is entitled to use in your environment.
+
+__Tip:__
+You must be assigned to the admin or viewer role or service auditor of the subaccount.
 
 ## Example Usage
 

@@ -3,11 +3,16 @@ page_title: "btp_subaccount_role_collections Data Source - terraform-provider-bt
 subcategory: ""
 description: |-
   Gets all role collections.
+  Tip:
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_role_collections (Data Source)
 
 Gets all role collections.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

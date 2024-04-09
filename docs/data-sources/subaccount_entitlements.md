@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Gets all the entitlements and quota assignments for a subaccount.
   To get all entitlements and quota assigned to a specific subaccount:
-  * You must be assigned to either the subaccount admin or subaccount viewer role.
+  * You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_entitlements (Data Source)
@@ -12,7 +12,7 @@ description: |-
 Gets all the entitlements and quota assignments for a subaccount.
 
 To get all entitlements and quota assigned to a specific subaccount:
-* You must be assigned to either the subaccount admin or subaccount viewer role.
+* You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

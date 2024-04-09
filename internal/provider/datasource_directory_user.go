@@ -51,7 +51,9 @@ func (ds *directoryUserDataSource) Configure(_ context.Context, req datasource.C
 
 func (ds *directoryUserDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Shows registered users in a directory. Users belong to one of the identity providers (IdPs) of the global account.`,
+		MarkdownDescription: `Shows registered users in a directory. Users belong to one of the identity providers (IdPs) of the global account.
+__Tip:__
+You must be assigned to the admin or viewer role of the global account, directory.`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",

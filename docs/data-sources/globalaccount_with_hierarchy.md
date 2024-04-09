@@ -3,7 +3,7 @@ page_title: "btp_globalaccount_with_hierarchy Data Source - terraform-provider-b
 subcategory: ""
 description:   Gets details about a global account's hierarchy structure
   Tip:
-  You must be assigned to the global account admin or viewer role.
+  You must be assigned to the admin or viewer role of the global account.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
@@ -13,7 +13,7 @@ description:   Gets details about a global account's hierarchy structure
 Gets details about a global account's hierarchy structure
 
 __Tip:__
-You must be assigned to the global account admin or viewer role.
+You must be assigned to the admin or viewer role of the global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>

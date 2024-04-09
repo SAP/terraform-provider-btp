@@ -3,11 +3,16 @@ page_title: "btp_subaccount_service_plan Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Gets details about a specific service plan such as its name, description, and metadata.
+  Tip:
+  You must be assigned to the admin or viewer role or service auditor of the subaccount.
 ---
 
 # btp_subaccount_service_plan (Data Source)
 
 Gets details about a specific service plan such as its name, description, and metadata.
+
+__Tip:__
+You must be assigned to the admin or viewer role or service auditor of the subaccount.
 
 ## Example Usage
 

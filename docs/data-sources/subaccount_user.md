@@ -3,11 +3,16 @@ page_title: "btp_subaccount_user Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Shows registered users in a subaccount. Users belong to one of the identity providers (IdPs) of the subaccount.
+  Tip:
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_user (Data Source)
 
 Shows registered users in a subaccount. Users belong to one of the identity providers (IdPs) of the subaccount.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

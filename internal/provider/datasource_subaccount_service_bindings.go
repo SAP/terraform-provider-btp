@@ -59,7 +59,10 @@ func (ds *subaccountServiceBindingsDataSource) Configure(_ context.Context, req 
 
 func (ds *subaccountServiceBindingsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Lists all service bindings in a subaccount, i.e. the access details to consume a service.`,
+		MarkdownDescription: `Lists all service bindings in a subaccount, i.e. the access details to consume a service.
+
+__Tip:__
+You must be assigned to the admin or viewer role or service auditor of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

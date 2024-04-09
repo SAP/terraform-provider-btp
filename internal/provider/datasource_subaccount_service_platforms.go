@@ -56,7 +56,10 @@ func (ds *subaccountServicePlatformsDataSource) Configure(_ context.Context, req
 
 func (ds *subaccountServicePlatformsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Lists all platforms in a subaccount that are registered for service consumption.`,
+		MarkdownDescription: `Lists all platforms in a subaccount that are registered for service consumption.
+
+__Tip:__
+You must be assigned to the admin or viewer role or service auditor of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

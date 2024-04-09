@@ -45,6 +45,9 @@ func (ds *globalaccountUsersDataSource) Schema(_ context.Context, _ datasource.S
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Lists all users.
 
+__Tip:__
+You must be assigned to the admin or viewer role of the global account.
+
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management>`,
 		Attributes: map[string]schema.Attribute{

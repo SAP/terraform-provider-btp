@@ -37,7 +37,7 @@ func (ds *globalaccountTrustConfigurationDataSource) Schema(_ context.Context, _
 		MarkdownDescription: `Gets details about a trust configuration.
 
 __Tip:__
-You must be viewer or administrator of the global account.
+You must be assigned to the admin or viewer role of the global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-btp-neo-environment/platform-identity-provider>`,

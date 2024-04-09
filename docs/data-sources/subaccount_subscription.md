@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Gets details of a specific multitenant application to which a subaccount is entitled to subscribe. If this application is in a different global account than the current one, you need to specify its plan with '--plan'.
   Tip:
-  You must be assigned to the subaccount admin or viewer role.
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_subscription (Data Source)
@@ -12,7 +12,7 @@ description: |-
 Gets details of a specific multitenant application to which a subaccount is entitled to subscribe. If this application is in a different global account than the current one, you need to specify its plan with '--plan'.
 
 __Tip:__
-You must be assigned to the subaccount admin or viewer role.
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

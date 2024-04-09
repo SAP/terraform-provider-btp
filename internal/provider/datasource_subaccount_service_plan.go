@@ -57,7 +57,10 @@ func (ds *subaccountServicePlanDataSource) Configure(_ context.Context, req data
 
 func (ds *subaccountServicePlanDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets details about a specific service plan such as its name, description, and metadata.`,
+		MarkdownDescription: `Gets details about a specific service plan such as its name, description, and metadata.
+
+__Tip:__
+You must be assigned to the admin or viewer role or service auditor of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

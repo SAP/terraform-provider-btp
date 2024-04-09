@@ -3,11 +3,15 @@ page_title: "btp_directory_user Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Shows registered users in a directory. Users belong to one of the identity providers (IdPs) of the global account.
+  Tip:
+  You must be assigned to the admin or viewer role of the global account, directory.
 ---
 
 # btp_directory_user (Data Source)
 
 Shows registered users in a directory. Users belong to one of the identity providers (IdPs) of the global account.
+__Tip:__
+You must be assigned to the admin or viewer role of the global account, directory.
 
 ## Example Usage
 
