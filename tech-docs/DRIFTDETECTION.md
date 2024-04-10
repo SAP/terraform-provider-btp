@@ -3,9 +3,10 @@
 ## Overview
 
 In general, Terraform enables you to provision and manage your Infrastructure as Code. The management part also comprises the ability to detect and reconcile configuration drifts in your infrastructure.
-Basically this is achieved by executing the `terraform plan` with the option `-detailed-exitcode`. This will return an exit code of `2` if there are changes to be applied, `1` if there is an error, and `0` if the infrastructure matches the Terraform state.
 
-In this document we discuss the drift detection in detail for the Terraform provider for SAP BTP and what needs to be considered.
+The mechanism to detect drifts in your infrastructure is provided by the `terraform plan` command that compares the current state of the infrastructure with the Terraform state. You find the details of the `terraform plan` command in the [official Terraform documentation](https://developer.hashicorp.com/terraform/cli/commands/plan). Technically you check for a configuration drift by executing the `terraform plan` with the option `-detailed-exitcode`. This will return an exit code of `2` if there are changes to be applied, `1` if there is an error, and `0` if the infrastructure matches the Terraform state.
+
+In this document we discuss the drift detection for the Terraform provider for SAP BTP and what needs to be considered.
 
 ## Prerequisites
 
@@ -44,3 +45,10 @@ The following overview list des resources and their support for drift detection 
 ## Further options
 
 Besides the `terraform plan` command there are further options to detect drifts in your infrastructure. You can also create custom checks by leveraging the data sources of the Terraform provider and combine the results with custom logic e.g., in a CI/CD pipeline. The concrete setup depends on your requirements and no generic solution can be provided.
+
+## Next Steps
+
+After a configuration drift has been detected you must analyze the changes and decide how to proceed. In general you have two options:
+
+- You can either reconcile the *infrastructure setup* by applying the changes via the `terraform apply` command. This will apply the change to the platform so that the infrastructure matches your Terraform state again.
+- You can adjust the *Terraform state* without applying changes to the infrastructure. The process to sync the state with the infrastructure on the platform is described in the [official Terraform documentation](https://developer.hashicorp.com/terraform/tutorials/state/refresh) leveraging the `-refresh-only` mode for `terraform plan` and `terraform apply`.
