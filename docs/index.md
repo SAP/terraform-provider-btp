@@ -72,8 +72,8 @@ The provider supports login via Single Sign-On (SSO) as well. To enable this you
 
 ## Drift Detection
 
-You find further information on drift detection in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/blob/main/tech-docs/DRIFTDETECTION.md).
+You find further information on drift detection in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/blob/main/guides/DRIFTDETECTION.md).
 
 ## Import
 
-The documentation of each resource shows if the resource can be imported and which keys are needed. To provide a quick overview we listed the resources in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/blob/main/tech-docs/IMPORT.md).
+The documentation of each resource shows if the resource can be imported and which keys are needed. To provide a quick overview we listed the resources in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/blob/main/guides/IMPORT.md).
