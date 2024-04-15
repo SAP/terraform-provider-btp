@@ -3,11 +3,16 @@ page_title: "btp_subaccount_service_instance Data Source - terraform-provider-bt
 subcategory: ""
 description: |-
   Gets details about a specific provisioned service instance, such as its name, id,  platform to which it belongs, and the last operation performed.
+  Tip:
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_service_instance (Data Source)
 
 Gets details about a specific provisioned service instance, such as its name, id,  platform to which it belongs, and the last operation performed.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

@@ -3,11 +3,16 @@ page_title: "btp_subaccount_service_offering Data Source - terraform-provider-bt
 subcategory: ""
 description: |-
   Gets details about a specific service offering such as its ID, name, description, metadata, and the associated service brokers.
+  Tip:
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_service_offering (Data Source)
 
 Gets details about a specific service offering such as its ID, name, description, metadata, and the associated service brokers.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

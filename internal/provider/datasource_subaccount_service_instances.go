@@ -59,7 +59,10 @@ func (ds *subaccountServiceInstancesDataSource) Configure(_ context.Context, req
 
 func (ds *subaccountServiceInstancesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Lists all service instances in a subaccount.`,
+		MarkdownDescription: `Lists all service instances in a subaccount.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

@@ -55,7 +55,10 @@ func (ds *globalaccountRoleCollectionsDataSource) Configure(_ context.Context, r
 
 func (ds *globalaccountRoleCollectionsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets all role collections.`,
+		MarkdownDescription: `Gets all role collections.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the global account.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",

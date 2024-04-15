@@ -3,11 +3,16 @@ page_title: "btp_subaccount_app Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Gets details about a specific app.
+  Tip:
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_app (Data Source)
 
 Gets details about a specific app.
+		
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

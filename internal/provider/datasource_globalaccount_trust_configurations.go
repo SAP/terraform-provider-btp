@@ -40,7 +40,7 @@ func (ds *globalaccountTrustConfigurationsDataSource) Schema(_ context.Context, 
 		MarkdownDescription: `List all trust configurations that are configured for your global account.
 
 __Tip:__
-You must be viewer or administrator of the global account.
+You must be assigned to the admin or viewer role of the global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>`,

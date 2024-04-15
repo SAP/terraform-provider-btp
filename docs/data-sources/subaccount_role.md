@@ -3,11 +3,16 @@ page_title: "btp_subaccount_role Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Gets details about a specific subaccount role.
+  Tip:
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_role (Data Source)
 
 Gets details about a specific subaccount role.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

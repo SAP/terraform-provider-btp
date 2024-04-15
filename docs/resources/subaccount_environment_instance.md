@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Creates an environment instance, such as a Cloud Foundry org, in a subaccount.
   Tips:
-  * You must be assigned to the subaccount admin role.
+  * You must be assigned to the admin role of the subaccount.
   * Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
   Further documentation:
   * Cloud Foundry: https://help.sap.com/docs/btp/sap-business-technology-platform/org-management-using-sap-btp-command-line-interface-btp-cli
@@ -17,7 +17,7 @@ description: |-
 Creates an environment instance, such as a Cloud Foundry org, in a subaccount.
 
 __Tips:__
-* You must be assigned to the subaccount admin role.
+* You must be assigned to the admin role of the subaccount.
 * Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
 
 __Further documentation:__

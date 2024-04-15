@@ -3,11 +3,16 @@ page_title: "btp_globalaccount_user Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Shows registered users in a global account. Users belong to one of the identity providers (IdPs) of the global account.
+  Tip:
+  You must be assigned to the admin or viewer role of the global account.
 ---
 
 # btp_globalaccount_user (Data Source)
 
 Shows registered users in a global account. Users belong to one of the identity providers (IdPs) of the global account.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the global account.
 
 ## Example Usage
 

@@ -3,6 +3,8 @@ page_title: "btp_directory_roles Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Gets all roles.
+  Tip:
+  You must be assigned to the admin or viewer role of the global account, directory.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
@@ -10,6 +12,9 @@ description: |-
 # btp_directory_roles (Data Source)
 
 Gets all roles.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the global account, directory.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>

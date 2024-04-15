@@ -45,6 +45,9 @@ func (rs *subaccountTrustConfigurationResource) Schema(_ context.Context, _ reso
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Establishes trust from a subaccount to an Identity Authentication tenant.
 
+__Tip:__
+You must be assigned to the admin role of the subaccount.
+
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>`,
 		Attributes: map[string]schema.Attribute{

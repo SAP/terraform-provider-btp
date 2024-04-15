@@ -70,7 +70,7 @@ func (ds *subaccountEnvironmentInstancesDataSource) Schema(_ context.Context, _ 
 		MarkdownDescription: `Gets all the environment instances in a subaccount.
 
 __Tip:__
-You must be assigned to the subaccount admin or viewer role.`,
+You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

@@ -3,11 +3,16 @@ page_title: "btp_subaccount_service_binding Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
   Creates a service binding, i.e. generates access details to consume a service.
+  Tip:
+  You must be assigned to the admin or the service administrator role of the subaccount.
 ---
 
 # btp_subaccount_service_binding (Resource)
 
 Creates a service binding, i.e. generates access details to consume a service.
+
+__Tip:__
+You must be assigned to the admin or the service administrator role of the subaccount.
 
 ## Example Usage
 

@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Gets the details of a specific environment instance in a subaccount.
   Tip:
-  You must be assigned to the subaccount admin or viewer role.
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_environment_instance (Data Source)
@@ -12,7 +12,7 @@ description: |-
 Gets the details of a specific environment instance in a subaccount.
 
 __Tip:__
-You must be assigned to the subaccount admin or viewer role.
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

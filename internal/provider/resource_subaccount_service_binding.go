@@ -46,7 +46,10 @@ func (rs *subaccountServiceBindingResource) Configure(_ context.Context, req res
 
 func (rs *subaccountServiceBindingResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Creates a service binding, i.e. generates access details to consume a service.`,
+		MarkdownDescription: `Creates a service binding, i.e. generates access details to consume a service.
+
+__Tip:__
+You must be assigned to the admin or the service administrator role of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

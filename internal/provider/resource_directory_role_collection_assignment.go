@@ -51,7 +51,10 @@ func (rs *directoryRoleCollectionAssignmentResource) Configure(_ context.Context
 
 func (rs *directoryRoleCollectionAssignmentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Assigns a user to a role collection on a directory level.`,
+		MarkdownDescription: `Assigns a user to a role collection on a directory level.
+
+__Tip:__
+You must be assigned to the admin role of the global account or the directory.`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",

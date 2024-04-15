@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Lists all multitenant applications to which the subaccount is entitled to subscribe, including their subscription details.
   Tip:
-  You must be assigned to the subaccount admin or viewer role.
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_subscriptions (Data Source)
@@ -12,7 +12,7 @@ description: |-
 Lists all multitenant applications to which the subaccount is entitled to subscribe, including their subscription details.
 
 __Tip:__
-You must be assigned to the subaccount admin or viewer role.
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

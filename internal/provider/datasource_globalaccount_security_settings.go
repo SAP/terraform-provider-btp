@@ -36,7 +36,7 @@ func (ds *globalaccountSecuritySettingsDataSource) Schema(_ context.Context, _ d
 		MarkdownDescription: `Gets the security settings of a global account.
 
 __Tip:__
-You must be viewer or administrator of the global account.
+You must be assigned to the admin or viewer role of the global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/configure-trusted-domains-for-sap-authorization-and-trust-management-service>

@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Gets details about a trust configuration.
   Tip:
-  You must be viewer or administrator of the subaccount.
+  You must be assigned to the admin or viewer role of the subaccount.
   Further documentation:
   https://help.sap.com/docs/btp/sap-btp-neo-environment/platform-identity-provider
 ---
@@ -14,7 +14,7 @@ description: |-
 Gets details about a trust configuration.
 
 __Tip:__
-You must be viewer or administrator of the subaccount.
+You must be assigned to the admin or viewer role of the subaccount.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-btp-neo-environment/platform-identity-provider>
