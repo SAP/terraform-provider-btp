@@ -67,4 +67,13 @@ By default, the underlying BTP client used by the Terraform BTP Provider creates
 ```
 
 ## Single Sign On
+
 The provider supports login via Single Sign-On (SSO) as well. To enable this you need to set the environment variable `BTP_ENABLE_SSO` to `true`. Additionally, ensure that you run your scripts in a desktop environment. It's important to note that the SSO login feature is not intended for use in containerized environments or CI/CD pipelines.
+
+## Drift Detection
+
+You find further information on drift detection in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/blob/main/guides/DRIFTDETECTION.md).
+
+## Import
+
+The documentation of each resource shows if the resource can be imported and which keys are needed. To provide a quick overview we listed the resources in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/blob/main/guides/IMPORT.md).
