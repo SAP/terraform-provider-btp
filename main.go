@@ -1,4 +1,4 @@
-//go:generate go install github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@v0.18.0
+//go:generate go install github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@latest
 //go:generate tfplugindocs generate --rendered-provider-name "SAP BTP"
 
 package main

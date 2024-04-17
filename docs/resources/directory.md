@@ -5,10 +5,8 @@ description: |-
   Directories allow you to organize and manage your subaccounts according to your technical and business needs. The use of directories is optional.
   You can create up to five levels of directories in your account hierarchy. If you have directories, you can still create subaccounts directly under your global account.
   Tips:
-  * You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
-  * A directory path in the account hierarchy can have only one directory that is enabled with the ENTITLEMENTS or AUTHORIZATIONS features. If such a directory exists, other directories in that path can only be enabled with the DEFAULT features.
+  You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.A directory path in the account hierarchy can have only one directory that is enabled with the ENTITLEMENTS or AUTHORIZATIONS features. If such a directory exists, other directories in that path can only be enabled with the DEFAULT features.
   Further documentation:
-  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_directory (Resource)

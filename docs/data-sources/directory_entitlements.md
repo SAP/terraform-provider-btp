@@ -4,8 +4,7 @@ subcategory: ""
 description: |-
   Gets all the entitlements and quota assignments for a directory.
   To view all the resources that a directory and its subdirectories and subaccounts are entitled to use, the following condition must be met:
-  * The directory must be a directory that is configured to manage its own entitlements.
-  * You must be assigned to either the global account admin or global account viewers role.
+  The directory must be a directory that is configured to manage its own entitlements.You must be assigned to either the global account admin or global account viewers role.
 ---
 
 # btp_directory_entitlements (Data Source)

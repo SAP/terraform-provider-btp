@@ -6,7 +6,6 @@ description: |-
   Tip:
   You must be assigned to the admin or viewer role of the global account.
   Further documentation:
-  https://help.sap.com/docs/btp/sap-btp-neo-environment/platform-identity-provider
 ---
 
 # btp_globalaccount_trust_configuration (Data Source)

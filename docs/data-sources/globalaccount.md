@@ -6,7 +6,6 @@ description: |-
   Tip:
   You must be assigned to the admin or viewer role of the global account.
   Further documentation:
-  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_globalaccount (Data Source)

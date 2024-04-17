@@ -6,8 +6,6 @@ description: |-
   Tip:
   You must be assigned to the admin or viewer role of the global account.
   Further documentation:
-  https://help.sap.com/docs/btp/sap-business-technology-platform/configure-trusted-domains-for-sap-authorization-and-trust-management-service
-  https://help.sap.com/docs/btp/sap-business-technology-platform/configure-token-policy-for-sap-authorization-and-trust-management-service
 ---
 
 # btp_globalaccount_security_settings (Data Source)
