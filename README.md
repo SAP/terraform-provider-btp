@@ -42,3 +42,11 @@ Members, contributors, and leaders pledge to make participation in our community
 ## Licensing
 
 Copyright 2024 SAP SE or an SAP affiliate company and `terraform-provider-btp` contributors. See our [LICENSE](LICENSE) for copyright and license information. Detailed information, including third-party components and their licensing/copyright information, is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp).
+
+## Additional information and Guides
+
+Through the course of the development of the Terraform provider for SAP BTP and during the constant exchange with customers, several points and questions crossed our path have gathered additional information and guides that might be useful for you. You can find them in the [guides folder](./guides/) covering the following topics:
+
+- [Overview on importable resources](./guides/IMPORT.md)
+- [Overview on drift detection](./guides/IMPORT.md)
+- How to access parameters of service instances marked as [sensitive data](./guides/SENSITIVEDATA.md)
