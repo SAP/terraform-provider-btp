@@ -65,7 +65,7 @@ func (rs *subaccountServiceInstanceResource) Schema(ctx context.Context, _ resou
 		MarkdownDescription: `Creates a service instance in a subaccount.
 
 __Tip:__
-You must be assigned to the admin or the service administrator role of the subaccount.`,		
+You must be assigned to the admin or the service administrator role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -223,8 +223,8 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
 	}
-
 	state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
 	state.Timeouts = plan.Timeouts
@@ -251,6 +251,7 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 		updatedRes, err := createStateConf.WaitForStateContext(ctx)
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Sharing Resource Service Instance (Subaccount) while Creating", fmt.Sprintf("%s", err))
+			return
 		}
 
 		state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
@@ -315,6 +316,7 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
 	}
 
 	state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
@@ -354,6 +356,7 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 		updatedRes, err := updateStateConf.WaitForStateContext(ctx)
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Sharing Resource Service Instance (Subaccount) while Updating", fmt.Sprintf("%s", err))
+			return
 		}
 
 		state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
