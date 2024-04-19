@@ -6,7 +6,6 @@ description: |-
   Tip:
   You must be assigned to the admin or viewer role of the subaccount.
   Further documentation:
-  https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_subaccount_roles (Data Source)

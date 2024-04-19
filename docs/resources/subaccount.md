@@ -6,7 +6,6 @@ description: |-
   Tip:
   You must be assigned admin role of the global account or directory.
   Further documentation:
-  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_subaccount (Resource)
