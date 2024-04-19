@@ -18,11 +18,11 @@ How to best deal with this situation as you it might be useful to see the actual
 
 Usually the *output* of a Terraform planning is the best spot to check the data used by Terraform especially as you get direct insights what will be changed. As an example, we take a service instance of HANA Cloud. As the `parameters` field is sensitive you do not see its content during the planning when creating the service instance:
 
-![Terraform plan output with sensitive data in service instance creation](../assets/plan_create_sensitive.png)
+<img width="800px" src="../assets/plan_create_sensitive.png" alt="Terraform plan output with sensitive data in service instance creation">
 
 or when updating the service instance:
 
-![Terraform plan output with sensitive data in service instance creation](../assets/plan_change_sensitive.png)
+<img width="800px" src="../assets/plan_change_sensitive.png" alt="Terraform plan output with sensitive data in service instance update">
 
 To get access to the parameters in clear text and being able to check the values used by Terraform we must make a small detour via storing the output of the `terraform plan` command in a JSON file. The following commands show how to do this:
 
@@ -37,6 +37,6 @@ The first command creates a plan file `tfplan` which is in a Terraform specific 
 
 This JSON contains the full information of the plan including the sensitive data in plain text in a format that allows you to distinguish the values of the current state and the values that will be applied.:
 
-![Terraform plan JSON](../assets/tfplan_json_sensitive.png)
+<img width="800px" src="../assets/tfplan_json_sensitive.png" alt="Terraform plan JSON">
 
 Following this approach gives you access to the sensitive data for your analysis. You can e.g., use [jq](https://jqlang.github.io/jq/) to extract the data on the command line.
