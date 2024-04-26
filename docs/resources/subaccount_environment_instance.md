@@ -6,7 +6,7 @@ description: |-
   Tips:
   You must be assigned to the admin role of the subaccount.Quota-based environments, such as Kyma, must first be assigned as entitlements to the subaccount.
   Further documentation:
-  Cloud Foundry: Kyma: Concept:
+  Cloud Foundry: https://help.sap.com/docs/btp/sap-business-technology-platform/org-management-using-sap-btp-command-line-interface-btp-cliKyma: https://help.sap.com/docs/btp/sap-business-technology-platform/available-plans-in-kyma-environmentConcept: https://help.sap.com/docs/btp/sap-business-technology-platform/environments
 ---
 
 # btp_subaccount_environment_instance (Resource)

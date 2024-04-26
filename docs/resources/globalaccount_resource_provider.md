@@ -8,6 +8,7 @@ description: |-
   Tips:
   You must be assigned to the global account admin role.You can create more than one instance of a given resource provider, each with its unique configuration properties. In such cases, the display name and technical name should be descriptive enough so that you and developers can easily differentiate between each instance.After you configure a new resource provider instance, its supported services are added as entitlements in your global account.
   Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/managing-resource-providers
 ---
 
 # btp_globalaccount_resource_provider (Resource)

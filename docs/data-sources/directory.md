@@ -6,6 +6,7 @@ description: |-
   Tip:
   You must be assigned to the global account admin role, or the directory admin if the directory is configured to manage its authorizations.
   Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_directory (Data Source)
