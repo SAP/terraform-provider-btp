@@ -83,6 +83,7 @@ __Tip:__
 You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
+				MarkdownDescription: "The ID of the subaccount."
 				Required: true,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
