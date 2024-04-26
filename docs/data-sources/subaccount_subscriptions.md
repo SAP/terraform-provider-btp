@@ -27,7 +27,7 @@ data "btp_subaccount_subscriptions" "all" {
 
 ### Required
 
-- `subaccount_id` (String)
+- `subaccount_id` (String) The ID of the subaccount.
 
 ### Read-Only
 
