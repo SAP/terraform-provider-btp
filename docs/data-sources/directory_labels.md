@@ -6,6 +6,7 @@ description: |-
   Tip:
   You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories of which you are the directory admin.
   Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_directory_labels (Data Source)

@@ -6,6 +6,8 @@ description: |-
   Tip:
   You must be assigned to the admin role of the subaccount.
   Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/configure-trusted-domains-for-sap-authorization-and-trust-management-service
+  https://help.sap.com/docs/btp/sap-business-technology-platform/configure-token-policy-for-sap-authorization-and-trust-management-service
 ---
 
 # btp_subaccount_security_settings (Resource)

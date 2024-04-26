@@ -6,6 +6,7 @@ description: |-
   Tip:
   You must be assigned to the admin role of the global account.
   Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
 
 # btp_globalaccount_role_collection (Resource)

@@ -6,6 +6,7 @@ description: |-
   Tip:
   You must be assigned to the admin role of the global account.
   Further documentation:
+  https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas
 ---
 
 # btp_subaccount_entitlement (Resource)

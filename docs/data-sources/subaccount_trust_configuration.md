@@ -6,6 +6,7 @@ description: |-
   Tip:
   You must be assigned to the admin or viewer role of the subaccount.
   Further documentation:
+  https://help.sap.com/docs/btp/sap-btp-neo-environment/platform-identity-provider
 ---
 
 # btp_subaccount_trust_configuration (Data Source)
