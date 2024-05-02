@@ -7,6 +7,7 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os/exec"
@@ -438,6 +439,10 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 
 		return
 	}
+
+	bytes, _ := io.ReadAll(res.Body)
+	bs := string(bytes)
+	fmt.Println(bs)	
 
 	cmdRes.Body = res.Body
 	cmdRes.ContentType = res.Header.Get(HeaderCLIBackendMediaType)
