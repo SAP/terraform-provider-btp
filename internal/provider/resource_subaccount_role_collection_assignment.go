@@ -51,7 +51,10 @@ func (rs *subaccountRoleCollectionAssignmentResource) Configure(_ context.Contex
 
 func (rs *subaccountRoleCollectionAssignmentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Assigns a user to a role collection on a subaccount level.`,
+		MarkdownDescription: `Assigns a user to a role collection on a subaccount level.
+
+__Tip:__
+You must be assigned to the admin role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

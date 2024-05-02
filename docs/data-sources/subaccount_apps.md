@@ -3,11 +3,16 @@ page_title: "btp_subaccount_apps Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Lists all apps in a subaccount.
+  Tip:
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_apps (Data Source)
 
 Lists all apps in a subaccount.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

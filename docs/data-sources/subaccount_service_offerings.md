@@ -3,11 +3,16 @@ page_title: "btp_subaccount_service_offerings Data Source - terraform-provider-b
 subcategory: ""
 description: |-
   Lists the services your subaccount is entitled to use in your runtime environment.
+  Tip:
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_service_offerings (Data Source)
 
 Lists the services your subaccount is entitled to use in your runtime environment.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

@@ -3,6 +3,8 @@ page_title: "btp_globalaccount_trust_configuration Resource - terraform-provider
 subcategory: ""
 description: |-
   Establishes trust from a global account to an Identity Authentication tenant.
+  Tip:
+  You must be assigned to the admin role of the global account.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers
 ---
@@ -10,6 +12,9 @@ description: |-
 # btp_globalaccount_trust_configuration (Resource)
 
 Establishes trust from a global account to an Identity Authentication tenant.
+
+__Tip:__
+You must be assigned to the admin role of the global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>

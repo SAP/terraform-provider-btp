@@ -55,7 +55,10 @@ func (ds *directoryRoleCollectionDataSource) Configure(_ context.Context, req da
 
 func (ds *directoryRoleCollectionDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets details about a specific directory role collection.`,
+		MarkdownDescription: `Gets details about a specific directory role collection.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the global account, directory.`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",

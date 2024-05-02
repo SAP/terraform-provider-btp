@@ -3,11 +3,16 @@ page_title: "btp_globalaccount_role_collections Data Source - terraform-provider
 subcategory: ""
 description: |-
   Gets all role collections.
+  Tip:
+  You must be assigned to the admin or viewer role of the global account.
 ---
 
 # btp_globalaccount_role_collections (Data Source)
 
 Gets all role collections.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the global account.
 
 ## Example Usage
 

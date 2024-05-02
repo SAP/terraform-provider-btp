@@ -5,7 +5,7 @@ description: |-
   Gets all the available environments for a subaccount.
   This includes the environments, such as Cloud Foundry, which are available by default to all subaccounts, and those restricted environments, such as Kyma, which are offered in the product catalog as service entitlements and whose plans have already been assigned by a global account admin to the subaccount.
   Tip:
-  You must be assigned to the subaccount admin or viewer role.
+  You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_environments (Data Source)
@@ -15,7 +15,7 @@ Gets all the available environments for a subaccount.
 This includes the environments, such as Cloud Foundry, which are available by default to all subaccounts, and those restricted environments, such as Kyma, which are offered in the product catalog as service entitlements and whose plans have already been assigned by a global account admin to the subaccount.
 
 __Tip:__
-You must be assigned to the subaccount admin or viewer role.
+You must be assigned to the admin or viewer role of the subaccount.
 
 ## Example Usage
 

@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Gets all trust configurations that are configured for your subaccount.
   Tip:
-  You must be viewer or administrator of the subaccount.
+  You must be assigned to the admin or viewer role of the subaccount.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers
 ---
@@ -14,7 +14,7 @@ description: |-
 Gets all trust configurations that are configured for your subaccount.
 
 __Tip:__
-You must be viewer or administrator of the subaccount.
+You must be assigned to the admin or viewer role of the subaccount.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/trust-and-federation-with-identity-providers>

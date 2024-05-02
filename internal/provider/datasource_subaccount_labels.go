@@ -46,7 +46,7 @@ func (ds *subaccountLabelsDataSource) Schema(_ context.Context, _ datasource.Sch
 		MarkdownDescription: `Gets all the user-defined labels that are currently assigned to a specific subaccount.
 
 __Tip:__
-You must be assigned to the global account admin or viewer role. These roles assignments are not needed for directories you are the directory admin.
+You must be assigned to the admin or viewer role of the subaccount.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>`,

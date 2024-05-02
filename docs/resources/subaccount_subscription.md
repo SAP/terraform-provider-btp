@@ -5,7 +5,7 @@ description: |-
   Subscribes a subaccount to a multitenant application.
   Custom or partner-developed applications are currently not supported.
   Tip:
-  You must be assigned to the subaccount admin role.
+  You must be assigned to the admin role of the subaccount.
 ---
 
 # btp_subaccount_subscription (Resource)
@@ -14,7 +14,7 @@ Subscribes a subaccount to a multitenant application.
 Custom or partner-developed applications are currently not supported.
 
 __Tip:__
-You must be assigned to the subaccount admin role.
+You must be assigned to the admin role of the subaccount.
 
 ## Example Usage
 

@@ -38,7 +38,10 @@ func (ds *subaccountServiceInstanceDataSource) Configure(_ context.Context, req 
 
 func (ds *subaccountServiceInstanceDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets details about a specific provisioned service instance, such as its name, id,  platform to which it belongs, and the last operation performed.`,
+		MarkdownDescription: `Gets details about a specific provisioned service instance, such as its name, id,  platform to which it belongs, and the last operation performed.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.`,		
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

@@ -38,7 +38,7 @@ func (ds *subaccountSecuritySettingsDataSource) Schema(_ context.Context, _ data
 		MarkdownDescription: `Gets the security settings of a subaccount.
 
 __Tip:__
-You must be viewer or administrator of the subaccount.
+You must be assigned to the admin or viewer role of the subaccount.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/configure-trusted-domains-for-sap-authorization-and-trust-management-service>

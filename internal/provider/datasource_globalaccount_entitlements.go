@@ -67,9 +67,8 @@ func (ds *globalaccountEntitlementsDataSource) Schema(_ context.Context, _ datas
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Gets all the entitlements and quota assignments for a global account.
 
-To view all the resources a global account:
-* Target only the global account in the command line.
-* You must be assigned to either the global account admin or global account viewers role.`,
+__Tip:__
+You must be assigned to either the global account admin or global account viewers role.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework
 				DeprecationMessage:  "Use the `btp_globalaccount` datasource instead",

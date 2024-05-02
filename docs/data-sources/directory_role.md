@@ -3,11 +3,16 @@ page_title: "btp_directory_role Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Gets details about a specific directory role.
+  Tip:
+  You must be assigned to the admin or viewer role of the global account, directory.
 ---
 
 # btp_directory_role (Data Source)
 
 Gets details about a specific directory role.
+		
+__Tip:__
+You must be assigned to the admin or viewer role of the global account, directory.
 
 ## Example Usage
 

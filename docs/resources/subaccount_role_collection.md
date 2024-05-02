@@ -3,6 +3,8 @@ page_title: "btp_subaccount_role_collection Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
   Creates a role collection in a subaccount.
+  Tip
+  You must be assigned to the admin role of the subaccount.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts
 ---
@@ -10,6 +12,9 @@ description: |-
 # btp_subaccount_role_collection (Resource)
 
 Creates a role collection in a subaccount.
+
+__Tip__
+You must be assigned to the admin role of the subaccount.		
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>

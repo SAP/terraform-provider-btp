@@ -4,7 +4,7 @@ subcategory: ""
 description: |-
   Assigns the entitlement plan of a service, multitenant application, or environment, to a directory. Note that some environments, such as Cloud Foundry, are available by default to all global accounts and their directorys, and therefore are not made available as entitlements.
   Tip:
-  You must be assigned to the global account admin or viewer role.
+  You must be assigned to the admin role of the global account or the directory.
   Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas
 ---
@@ -14,7 +14,7 @@ description: |-
 Assigns the entitlement plan of a service, multitenant application, or environment, to a directory. Note that some environments, such as Cloud Foundry, are available by default to all global accounts and their directorys, and therefore are not made available as entitlements.
 
 __Tip:__
-You must be assigned to the global account admin or viewer role.
+You must be assigned to the admin role of the global account or the directory.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas>

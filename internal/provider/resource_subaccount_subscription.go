@@ -49,7 +49,7 @@ func (rs *subaccountSubscriptionResource) Schema(_ context.Context, _ resource.S
 Custom or partner-developed applications are currently not supported.
 
 __Tip:__
-You must be assigned to the subaccount admin role.`,
+You must be assigned to the admin role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

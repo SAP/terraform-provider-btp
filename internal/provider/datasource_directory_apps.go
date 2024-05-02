@@ -59,7 +59,10 @@ func (ds *directoryAppsDataSource) Configure(_ context.Context, req datasource.C
 
 func (ds *directoryAppsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Lists all apps.`,
+		MarkdownDescription: `Lists all apps.
+		
+__Tip:__
+You must be assigned to the admin or viewer role of the global account, directory.`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",

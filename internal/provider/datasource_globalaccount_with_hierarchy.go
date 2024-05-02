@@ -315,7 +315,7 @@ func (ds *globalaccountWithHierarchyDataSource) Schema(_ context.Context, _ data
 		MarkdownDescription: `Gets details about a global account's hierarchy structure
 
 __Tip:__
-You must be assigned to the global account admin or viewer role.
+You must be assigned to the admin or viewer role of the global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>`,

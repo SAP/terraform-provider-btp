@@ -41,7 +41,7 @@ func (rs *globalaccountSecuritySettingsResource) Schema(_ context.Context, _ res
 		MarkdownDescription: `Sets the security settings of a global account.
 
 __Tip:__
-You must be administrator of the global account.
+You must be assigned to the admin role of the global account.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/configure-trusted-domains-for-sap-authorization-and-trust-management-service>

@@ -60,7 +60,10 @@ func (ds *subaccountAppsDataSource) Configure(_ context.Context, req datasource.
 
 func (ds *subaccountAppsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Lists all apps in a subaccount.`,
+		MarkdownDescription: `Lists all apps in a subaccount.
+
+__Tip:__
+You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

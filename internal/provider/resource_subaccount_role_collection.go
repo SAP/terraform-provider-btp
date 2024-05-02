@@ -66,6 +66,9 @@ func (rs *subaccountRoleCollectionResource) Schema(_ context.Context, _ resource
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Creates a role collection in a subaccount.
 
+__Tip__
+You must be assigned to the admin role of the subaccount.		
+
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
 		Attributes: map[string]schema.Attribute{
