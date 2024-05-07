@@ -12,6 +12,7 @@ on:
 # GitHub considers creating releases and uploading assets as writing contents.
 permissions:
   contents: write
+  issues: write
 
 jobs:
   call-workflow-test:
@@ -20,6 +21,9 @@ jobs:
   call-workflow-regression-test:
     uses: ./.github/workflows/schema-regression-test.yml  
     secrets: inherit
+    permissions:
+      contents: read
+      issues: write
   goreleaser:
     runs-on: ubuntu-latest
     needs: 
