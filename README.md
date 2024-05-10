@@ -15,13 +15,14 @@ You will find the detailed information about the [provider](https://registry.ter
 
 You find usage examples in the [examples folder](./examples/) of this repository.  
 
+## Usage of the Provider
+
+Refer to the [Quick Start Guide](./guides/QUICKSTART.md) for instructions to efficiently begin utilizing the Terraform Provider for BTP. For the best experience using the Terraform Provider for SAP BTP, we recommend applying the common best practices for Terraform adoption as described in the [Hashicorp documentation](https://developer.hashicorp.com/well-architected-framework/operational-excellence/operational-excellence-terraform-maturity).
+
 ## Developing & Contributing to the Provider
 
 The [developer documentation](DEVELOPER.md) file is a basic outline on how to build and develop the provider.
 
-## Usage of the Provider
-
-For the best experience using the Terraform Provider for SAP BTP, we recommend applying the common best practices for Terraform adoption as described in the [Hashicorp documentation](https://developer.hashicorp.com/well-architected-framework/operational-excellence/operational-excellence-terraform-maturity).
 
 ## Support, Feedback, Contributing
 
