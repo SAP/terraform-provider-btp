@@ -46,6 +46,7 @@ You must be assigned to the admin or viewer role of the global account, director
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Optional:            true,
+				Computed:            true,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 					stringvalidator.ConflictsWith(path.MatchRoot("region"), path.MatchRoot("subdomain")),
@@ -95,6 +96,7 @@ You must be assigned to the admin or viewer role of the global account, director
 			"region": schema.StringAttribute{
 				MarkdownDescription: "The region in which the subaccount was created.",
 				Optional:            true,
+				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("subdomain")),
 				},
@@ -131,6 +133,7 @@ You must be assigned to the admin or viewer role of the global account, director
 			"subdomain": schema.StringAttribute{
 				MarkdownDescription: "The subdomain that becomes part of the path used to access the authorization tenant of the subaccount. Must be unique within the defined region. Use only letters (a-z), digits (0-9), and hyphens (not at the start or end). Maximum length is 63 characters. Cannot be changed after the subaccount has been created.",
 				Optional:            true,
+				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("region")),
 				},
