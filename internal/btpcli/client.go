@@ -20,6 +20,26 @@ import (
 
 const DefaultServerURL string = "https://cli.btp.cloud.sap"
 
+// We define an Uber Error type that is used to handle errors from the BTP CLI client.
+// The error structure comprises the possible JSON structure of the error responses
+type BtpClientError struct {
+	Message     string         `json:"error"` // This should always be available
+	Description string         `json:"description"`
+	BrokerError *SmBrokerError `json:"broker_error"` // Service Broker/Service Manager specific
+}
+
+// The service broker error
+type SmBrokerError struct {
+	// The broker status code.
+	StatusCode int32 `json:"StatusCode"`
+	// A machine-readable error string that may be returned by the broker.
+	ErrorMessage string `json:"ErrorMessage"`
+	// A human-readable description of the error that may be returned by the broker.
+	Description string `json:"Description"`
+	// ResponseError is set to the error that occurred when unmarshalling a response body from the broker.
+	ResponseError string `json:"ResponseError"`
+}
+
 func NewV2Client(serverURL *url.URL) *v2Client {
 	return NewV2ClientWithHttpClient(http.DefaultClient, serverURL)
 }
@@ -250,7 +270,7 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 
 	var browserResponse BrowserResponse
 	err = v2.parseResponse(ctx, res, &browserResponse, http.StatusOK, map[int]string{
-		http.StatusUnauthorized: "Login failed. Check your credentials.",
+		http.StatusUnauthorized:       "Login failed. Check your credentials.",
 		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
 		http.StatusGatewayTimeout:     "Login timed out. Please try again later.",
 	})
@@ -266,7 +286,7 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 
 	fullQualifiedEndpointURL := v2.serverURL.ResolveReference(endpointURL)
 	err = openUserAgent(fullQualifiedEndpointURL.String(), isRealBrowser)
-	
+
 	if err != nil {
 		fmt.Printf("browser_login_open_browser_failed : %s", fullQualifiedEndpointURL.String())
 		return nil, err
@@ -281,7 +301,7 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 
 	var browserLoginPostResponse BrowserLoginPostResponse
 	err = v2.parseResponse(ctx, res, &browserLoginPostResponse, http.StatusOK, map[int]string{
-		http.StatusUnauthorized: "Login failed. Check your credentials.",
+		http.StatusUnauthorized:       "Login failed. Check your credentials.",
 		http.StatusForbidden:          fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
 		http.StatusNotFound:           fmt.Sprintf("Global account '%s' not found. Try again and make sure to provide the global account's subdomain.", loginReq.GlobalAccountSubdomain),
 		http.StatusPreconditionFailed: "Login failed due to outdated provider version. Update to the latest version of the provider.",
@@ -306,7 +326,7 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 }
 
 /*
-The variable isRealBrowser primarily serves testing purposes. During the testing of the browser login flow, the  variable is intentionally set to 
+The variable isRealBrowser primarily serves testing purposes. During the testing of the browser login flow, the  variable is intentionally set to
 false. This configuration is allows the stubbing of the call that opens the browser, as no validation is necessary in this scenario.
 */
 var isRealBrowser = true
@@ -314,7 +334,7 @@ var isRealBrowser = true
 func openUserAgent(url string, isRealBrowser bool) error {
 	if isRealBrowser {
 		switch runtime.GOOS {
-		case "linux": 
+		case "linux":
 			return exec.Command("xdg-open", url).Start()
 		case "windows":
 			return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
@@ -424,12 +444,12 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 
 	if cmdRes.StatusCode >= 400 {
 
-		var backendError struct {
-			Message string `json:"error"`
-		}
+		var backendError BtpClientError
 
 		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {
 			err = fmt.Errorf(backendError.Message)
+			// Handle scenarios where more error context can potentially be provided
+			err = handleSpecialErrors(backendError, err)
 		} else if res.Header.Get(HeaderCLIServerMessage) != "" {
 			err = fmt.Errorf("the backend responded with an error: %s", res.Header.Get(HeaderCLIServerMessage))
 		} else {
@@ -442,6 +462,16 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 	cmdRes.Body = res.Body
 	cmdRes.ContentType = res.Header.Get(HeaderCLIBackendMediaType)
 	return
+}
+
+func handleSpecialErrors(backendError BtpClientError, plainError error) error {
+	// Errors that go beyond the plain error message can be handled in this function
+	if backendError.BrokerError != nil {
+		// Handle the additional information provided by the service broker/service manager
+		return fmt.Errorf("%s - %s", backendError.Message, backendError.BrokerError.Description)
+	}
+
+	return plainError
 }
 
 func (v2 *v2Client) GetGlobalAccountSubdomain() string {
