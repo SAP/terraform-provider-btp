@@ -94,6 +94,10 @@ You must be assigned to the admin or the service administrator role of the subac
 				MarkdownDescription: "The configuration parameters for the service instance.",
 				Optional:            true,
 				Sensitive:           true,
+				Default:             stringdefault.StaticString(`{}`),
+				PlanModifiers:		 []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
 				},
