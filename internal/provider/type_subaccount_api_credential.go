@@ -23,19 +23,26 @@ type apiCredentialType struct {
 	ServiceInstanceId		types.String `tfsdk:"service_instance_id"`
 }
 
-func subaccountApiCredentialFromValue(ctx context.Context, cliRes xsuaa_api.ApiCredentialCreateBody) (apiCredentialType, diag.Diagnostics){
-	return apiCredentialType{
+func subaccountApiCredentialFromValue(ctx context.Context, cliRes xsuaa_api.ApiCredentialSubaccount) (apiCredentialType, diag.Diagnostics){
+	
+	res := apiCredentialType{
 		SubaccountId: 		types.StringValue(cliRes.SubaccountId),
 		Name: 				types.StringValue(cliRes.Name),
 		ClientId: 			types.StringValue(cliRes.ClientId),
 		CredentialType: 	types.StringValue(cliRes.CredentialType),
-		ClientSecret: 		types.StringValue(cliRes.ClientSecret),
-		Certificate: 		types.StringValue(cliRes.Certificate),
-		Key:				types.StringValue(cliRes.Key),		
 		ReadOnly: 			types.BoolValue(cliRes.ReadOnly),
 		TokenUrl: 			types.StringValue(cliRes.TokenUrl),
 		ApiUrl:				types.StringValue(cliRes.ApiUrl),
 		XsAppname: 			types.StringValue(cliRes.XsAppname),
 		ServiceInstanceId: 	types.StringValue(cliRes.ServiceInstanceId),
-	}, diag.Diagnostics{}
+	}
+
+	if len(cliRes.ClientSecret) > 0 {
+		res.ClientSecret = types.StringValue(cliRes.ClientSecret)
+	} else {
+		res.Certificate = types.StringValue(cliRes.Certificate)
+		res.Key = types.StringValue(cliRes.Key)
+	}		
+	
+	return res, diag.Diagnostics{}
 }

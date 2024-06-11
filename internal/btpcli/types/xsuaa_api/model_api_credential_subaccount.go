@@ -1,6 +1,6 @@
 package xsuaa_api
 
-type ApiCredentialCreateBody struct {
+type ApiCredentialSubaccount struct {
 	TenantMode			string	`json:"tenantmode"`
 	SubaccountId		string	`json:"subaccountid"`
 	CredentialType  	string	`json:"credential-type"`
