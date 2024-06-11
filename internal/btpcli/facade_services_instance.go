@@ -114,7 +114,7 @@ func (f servicesInstanceFacade) Create(ctx context.Context, args *ServiceInstanc
 	if cmdRes.StatusCode != 202 && err == nil {
 		return serviceInstanceResponseObject, cmdRes, err
 	} else if cmdRes.StatusCode == 202 && err == nil {
-		return f.GetByName(ctx, args.Subaccount, args.Name)
+		return f.GetById(ctx, args.Subaccount, serviceInstanceResponseObject.Id)
 	} else {
 		// Error case as default
 		return servicemanager.ServiceInstanceResponseObject{}, cmdRes, err
