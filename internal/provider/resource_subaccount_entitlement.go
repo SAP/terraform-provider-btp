@@ -369,7 +369,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 
 			// No error returned even if operation failed
 			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
-				return *entitlement, entitlement.Assignment.EntityState, fmt.Errorf(entitlement.Assignment.StateMessage)
+				return *entitlement, entitlement.Assignment.EntityState, errors.New(entitlement.Assignment.StateMessage)
 			}
 
 			return entitlement, cis_entitlements.StateProcessing, nil
