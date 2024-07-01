@@ -14,7 +14,8 @@ type apiCredentialType struct {
 	ClientId                types.String `tfsdk:"client_id"`
 	CredentialType        	types.String `tfsdk:"credential_type"`
 	ClientSecret           	types.String `tfsdk:"client_secret"`
-	Certificate				types.String `tfsdk:"certificate"`
+	CertificatePassed 		types.String `tfsdk:"certificate_passed"`
+	Certificate				types.String `tfsdk:"certificate_received"`
 	Key						types.String `tfsdk:"key"`
 	ReadOnly           		types.Bool 	 `tfsdk:"read_only"`
 	TokenUrl				types.String `tfsdk:"token_url"`

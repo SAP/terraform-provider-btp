@@ -25,19 +25,19 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
-func newApiCredentialResource() resource.Resource {
-	return &apiCredentialResource{}
+func newSubaccountApiCredentialResource() resource.Resource {
+	return &subaccountApiCredentialResource{}
 }
 
-type apiCredentialResource struct {
+type subaccountApiCredentialResource struct {
 	cli *btpcli.ClientFacade
 }
 
-func (rs *apiCredentialResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (rs *subaccountApiCredentialResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = fmt.Sprintf("%s_subaccount_api_credential", req.ProviderTypeName)
 }
 
-func (rs *apiCredentialResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (rs *subaccountApiCredentialResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -45,7 +45,7 @@ func (rs *apiCredentialResource) Configure(_ context.Context, req resource.Confi
 	rs.cli = req.ProviderData.(*btpcli.ClientFacade)
 }
 
-func (rs *apiCredentialResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (rs *subaccountApiCredentialResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Assigns the entitlement plan of a service, multitenant application, or environment, to a directory. Note that some environments, such as Cloud Foundry, are available by default to all global accounts and their directorys, and therefore are not made available as entitlements.
 
@@ -81,9 +81,13 @@ __Further documentation:__
 				MarkdownDescription: "The supported credential types are Secrets (Default) or Certificates.",
 				Computed: 			 true,
 			},
-			"certificate": schema.StringAttribute{
+			"certificate_passed": schema.StringAttribute{
 				MarkdownDescription:  "If the user prefers to use a certificate, they must provide the certificate value in PEM format \"----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----\".",
 				Optional: true,
+			},
+			"certificate_received": schema.StringAttribute{
+				MarkdownDescription:  "The certificate that is computed based on the one passed by the user.",
+				Computed: true,
 			},
 			"client_secret": schema.StringAttribute{
 				MarkdownDescription: "If the certificate is omitted, then a unique secret is generated for the api-credential.",
@@ -116,7 +120,7 @@ __Further documentation:__
 	}
 }
 
-func (rs *apiCredentialResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (rs *subaccountApiCredentialResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan apiCredentialType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -127,7 +131,7 @@ func (rs *apiCredentialResource) Create(ctx context.Context, req resource.Create
 	cliRes, _, err := rs.cli.Security.ApiCredential.CreateBySubaccount(ctx, &btpcli.ApiCredentialInput{
 		SubaccountId:     plan.SubaccountId.ValueString(),
 		Name:             plan.Name.ValueString(),
-		Certificate: 	  plan.Certificate.ValueString(),
+		Certificate: 	  plan.CertificatePassed.ValueString(),
 		ReadOnly:		  plan.ReadOnly.ValueBool(),
 	})
 	
@@ -139,11 +143,13 @@ func (rs *apiCredentialResource) Create(ctx context.Context, req resource.Create
 	updatedPlan, diags := subaccountApiCredentialFromValue(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
+	updatedPlan.CertificatePassed = plan.CertificatePassed
+
 	diags = resp.State.Set(ctx, &updatedPlan)
 	resp.Diagnostics.Append(diags...)
 }
 
-func (rs *apiCredentialResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (rs *subaccountApiCredentialResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state apiCredentialType
 	diags := req.State.Get(ctx, &state)
 
@@ -165,16 +171,17 @@ func (rs *apiCredentialResource) Read(ctx context.Context, req resource.ReadRequ
 	resp.Diagnostics.Append(diags...)
 
 	newState.SubaccountId = state.SubaccountId
+	newState.CertificatePassed = state.CertificatePassed
 
 	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
 }
 
-func (rs *apiCredentialResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (rs *subaccountApiCredentialResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 // There is currently no API call that supports the update of the Api credentials
 }
 
-func (rs *apiCredentialResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (rs *subaccountApiCredentialResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state apiCredentialType
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -193,7 +200,7 @@ func (rs *apiCredentialResource) Delete(ctx context.Context, req resource.Delete
 	}
 }
 
-func (rs *apiCredentialResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (rs *subaccountApiCredentialResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	idParts := strings.Split(req.ID, ",")
 
 	if idParts[0] == "" || idParts[1] == "" {
