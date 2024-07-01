@@ -32,7 +32,7 @@ jobs:
       
     - name: Setup Terraform
       id : setup_terraform
-      uses: hashicorp/setup-terraform@v3
+      uses: hashicorp/setup-terraform@v3.1.1
       with:
         terraform_wrapper: false
         terraform_version: latest
@@ -52,7 +52,7 @@ jobs:
         terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -var idp=${{ secrets.BTP_IDP }} -auto-approve -no-color 
 
     - name: Setup Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v5.0.1
       with:
         go-version-file: 'go.mod'
 

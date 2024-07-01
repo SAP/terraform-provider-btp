@@ -15,6 +15,16 @@ type XsuaaParameters struct {
 	TenantMode string `json:"tenant-mode"`
 }
 
+type HanaCloudDataParameters struct {
+	Data HanaCloudParameters `json:"data"`
+}
+
+type HanaCloudParameters struct {
+	Memory                 int    `json:"memory"`
+	GenerateSystemPassword bool   `json:"generateSystemPassword"`
+	Edition                string `json:"edition"`
+}
+
 func TestResourceSubaccountServiceInstance(t *testing.T) {
 	t.Run("happy path - simple service creation wo parameters", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters")
@@ -350,7 +360,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - sharing an instance with a service plan that doesn't support sharing ", func(t *testing.T) {
+	t.Run("error path - sharing an instance with a service plan that doesn't support sharing", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.sharing_error")
 		defer stopQuietly(rec)
 
@@ -359,12 +369,29 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:  hclProviderFor(user) +  hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-audit-log", "default", "auditlog-management"),
+					Config:      hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithSharingBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-audit-log", "default", "auditlog-management"),
 					ExpectError: regexp.MustCompile(`BadRequest`),
 				},
 			},
 		})
 	})
+
+	t.Run("error path - hana instance creation with wrong parameters", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.creation_error")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProviderFor(user) + hclResourceSubaccountServiceInstanceHanaWithParametersBySubaccountByServicePlan("uut", "integration-test-services-static", "tf-test-hanal-cloud", "hana", "hana-cloud"),
+					ExpectError: regexp.MustCompile(`(BrokerError - invalid Parameter \(systempassword\): Required for HANA creation)`),
+				},
+			},
+		})
+	})
+
 }
 
 func hclResourceSubaccountServiceInstanceWoParametersBySubaccountByServicePlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string) string {
@@ -428,6 +455,36 @@ func hclResourceSubaccountServiceInstanceWithParametersBySubaccountByServicePlan
 			serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
 			parameters       = %[6]q
 		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName, string(xsuaaParametersJson))
+}
+
+func hclResourceSubaccountServiceInstanceHanaWithParametersBySubaccountByServicePlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string) string {
+	hanaCloudParameters := HanaCloudParameters{
+		Memory:                 32,
+		GenerateSystemPassword: false,
+		Edition:                "cloud",
+	}
+
+	HanaCloudDataParameters := HanaCloudDataParameters{
+		Data: hanaCloudParameters,
+	}
+
+	hanaCloudDataParametersJson, _ := json.Marshal(HanaCloudDataParameters)
+
+	return fmt.Sprintf(`
+		data "btp_subaccounts" "all" {}
+		data "btp_subaccount_service_plans" "all" {
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+		}
+		data "btp_subaccount_service_offering" "so" {
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			name =  "%[5]s"
+		}
+		resource "btp_subaccount_service_instance" "%[1]s"{
+		    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			name             = "%[3]s"
+			serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
+			parameters       = %[6]q
+		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName, string(hanaCloudDataParametersJson))
 }
 
 func hclResourceSubaccountServiceInstanceNoSubaccountId(resourceName string, name string, servicePlanId string) string {
@@ -549,5 +606,3 @@ func getServiceInstanceIdForImportNoServiceInstanceId(resourceName string) resou
 		return rs.Primary.Attributes["subaccount_id"], nil
 	}
 }
-
-

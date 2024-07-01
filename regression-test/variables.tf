@@ -12,7 +12,7 @@ variable "idp" {
 variable "cli_server" {
   type        = string
   description = "The URL of the CLI server"
-  default     = "https://cpcli.cf.eu10.hana.ondemand.com"
+  default     = "https://cli.btp.cloud.sap"
 }
 
 
