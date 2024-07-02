@@ -19,19 +19,19 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
-func newDirectoryApiCredentialResource() resource.Resource {
-	return &directoryApiCredentialResource{}
+func newGlobalaccountApiCredentialResource() resource.Resource {
+	return &globalaccountApiCredentialResource{}
 }
 
-type directoryApiCredentialResource struct {
+type globalaccountApiCredentialResource struct {
 	cli *btpcli.ClientFacade
 }
 
-func (rs *directoryApiCredentialResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = fmt.Sprintf("%s_directory_api_credential", req.ProviderTypeName)
+func (rs *globalaccountApiCredentialResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = fmt.Sprintf("%s_globalaccount_api_credential", req.ProviderTypeName)
 }
 
-func (rs *directoryApiCredentialResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (rs *globalaccountApiCredentialResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -39,9 +39,9 @@ func (rs *directoryApiCredentialResource) Configure(_ context.Context, req resou
 	rs.cli = req.ProviderData.(*btpcli.ClientFacade)
 }
 
-func (rs *directoryApiCredentialResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (rs *globalaccountApiCredentialResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Assigns the entitlement plan of a service, multitenant application, or environment, to a directory. Note that some environments, such as Cloud Foundry, are available by default to all global accounts and their directorys, and therefore are not made available as entitlements.
+		MarkdownDescription: `Create 
 
 __Tip:__
 You must be assigned to the global account admin or viewer role.
@@ -49,9 +49,9 @@ You must be assigned to the global account admin or viewer role.
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas>`,
 		Attributes: map[string]schema.Attribute{
-			"directory_id": schema.StringAttribute{
-				MarkdownDescription: "The ID of the subaccount.",
-				Required:            true,
+			"globalaccount_id": schema.StringAttribute{
+				MarkdownDescription: "The ID of the globalaccount.",
+				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -114,16 +114,15 @@ __Further documentation:__
 	}
 }
 
-func (rs *directoryApiCredentialResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan directoryApiCredentialType
+func (rs *globalaccountApiCredentialResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan globalaccountApiCredentialType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.ApiCredential.CreateByDirectory(ctx, &btpcli.ApiCredentialInput{
-		DirectoryId:      plan.DirectoryId.ValueString(),
+	cliRes, _, err := rs.cli.Security.ApiCredential.CreateBySubaccount(ctx, &btpcli.ApiCredentialInput{
 		Name:             plan.Name.ValueString(),
 		Certificate: 	  plan.CertificatePassed.ValueString(),
 		ReadOnly:		  plan.ReadOnly.ValueBool(),
@@ -134,7 +133,7 @@ func (rs *directoryApiCredentialResource) Create(ctx context.Context, req resour
 		return
 	}
 
-	updatedPlan, diags := directoryApiCredentialFromValue(ctx, cliRes)
+	updatedPlan, diags := globalaccountApiCredentialFromValue(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
 	updatedPlan.CertificatePassed = plan.CertificatePassed
@@ -143,8 +142,8 @@ func (rs *directoryApiCredentialResource) Create(ctx context.Context, req resour
 	resp.Diagnostics.Append(diags...)
 }
 
-func (rs *directoryApiCredentialResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state directoryApiCredentialType
+func (rs *globalaccountApiCredentialResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state globalaccountApiCredentialType
 	diags := req.State.Get(ctx, &state)
 
 	resp.Diagnostics.Append(diags...)
@@ -152,60 +151,58 @@ func (rs *directoryApiCredentialResource) Read(ctx context.Context, req resource
 		return
 	}
 
-	cliRes, rawRes, err := rs.cli.Security.ApiCredential.GetByDirectory(ctx, &btpcli.ApiCredentialInput{
-		DirectoryId:  state.DirectoryId.ValueString(),
+	cliRes, rawRes, err := rs.cli.Security.ApiCredential.GetByGlobalAccount(ctx, &btpcli.ApiCredentialInput{
 		Name:		  state.Name.ValueString(),
 	})  
 	if err!=nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Api Credential (Directory)")
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Api Credential (Global Account)")
 		return
 	}
 
-	newState, diags := directoryApiCredentialFromValue(ctx, cliRes)
+	newState, diags := globalaccountApiCredentialFromValue(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
-	newState.DirectoryId = state.DirectoryId
+	newState.GlobalaccountId = state.GlobalaccountId
 	newState.CertificatePassed = state.CertificatePassed
 
 	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
 }
 
-func (rs *directoryApiCredentialResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (rs *globalaccountApiCredentialResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 // There is currently no API call that supports the update of the Api credentials
 }
 
-func (rs *directoryApiCredentialResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state directoryApiCredentialType
+func (rs *globalaccountApiCredentialResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state globalaccountApiCredentialType
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	_, _, err := rs.cli.Security.ApiCredential.DeleteByDirectory(ctx, &btpcli.ApiCredentialInput{
-		DirectoryId:  state.DirectoryId.ValueString(),
+	_, _, err := rs.cli.Security.ApiCredential.DeleteByGlobalAccount(ctx, &btpcli.ApiCredentialInput{
 		Name:		  state.Name.ValueString(),
 	})
 
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Deleting Resource Api Credential (Directory)", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("API Error Deleting Resource Api Credential (Global Acount)", fmt.Sprintf("%s", err))
 		return
 	}
 }
 
-func (rs *directoryApiCredentialResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (rs *globalaccountApiCredentialResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	idParts := strings.Split(req.ID, ",")
 
 	if idParts[0] == "" || idParts[1] == "" {
 		resp.Diagnostics.AddError(
 			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: directory_id, name. Got: %q", req.ID),
+			fmt.Sprintf("Expected import identifier with format: globalaccount_id, name. Got: %q", req.ID),
 		)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("globalaccount_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
 }
 
