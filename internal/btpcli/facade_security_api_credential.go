@@ -21,6 +21,7 @@ func (f *securityApiCredentialFacade) getCommand() string {
 
 type ApiCredentialInput struct {
 	SubaccountId        string `btpcli:"subaccount"`
+	DirectoryId         string `btpcli:"directory"`
 	Name            	string `btpcli:"name,omitempty"`
 	Certificate			string `btpcli:"certificate,omitempty"`
 	ReadOnly 			bool   `btpcli:"readOnly,omitempty"`
@@ -47,6 +48,36 @@ func (f *securityApiCredentialFacade) DeleteBySubaccount(ctx context.Context, ar
 }
 
 func (f *securityApiCredentialFacade) GetBySubaccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
+	params, err := tfutils.ToBTPCLIParamsMap(args)
+
+	if err != nil {
+		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
+	}
+
+	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+}
+
+func (f *securityApiCredentialFacade) CreateByDirectory(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
+	params, err := tfutils.ToBTPCLIParamsMap(args)
+
+	if err != nil {
+		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
+	}
+
+	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
+}
+
+func (f *securityApiCredentialFacade) DeleteByDirectory(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
+	params, err := tfutils.ToBTPCLIParamsMap(args)
+
+	if err != nil {
+		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
+	}
+
+	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), params))
+}
+
+func (f *securityApiCredentialFacade) GetByDirectory(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {

@@ -6,16 +6,10 @@ import (
 	"regexp"
 	"strings"
 
-	// "github.com/hashicorp/terraform-plugin-framework/diag"
-	// "github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	// "github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 
-	// "github.com/hashicorp/terraform-plugin-framework/tfsdk"
-
-	// "github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -25,19 +19,19 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
-func newSubaccountApiCredentialResource() resource.Resource {
-	return &subaccountApiCredentialResource{}
+func newDirectoryApiCredentialResource() resource.Resource {
+	return &directoryApiCredentialResource{}
 }
 
-type subaccountApiCredentialResource struct {
+type directoryApiCredentialResource struct {
 	cli *btpcli.ClientFacade
 }
 
-func (rs *subaccountApiCredentialResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = fmt.Sprintf("%s_subaccount_api_credential", req.ProviderTypeName)
+func (rs *directoryApiCredentialResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = fmt.Sprintf("%s_directory_api_credential", req.ProviderTypeName)
 }
 
-func (rs *subaccountApiCredentialResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (rs *directoryApiCredentialResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -45,9 +39,9 @@ func (rs *subaccountApiCredentialResource) Configure(_ context.Context, req reso
 	rs.cli = req.ProviderData.(*btpcli.ClientFacade)
 }
 
-func (rs *subaccountApiCredentialResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (rs *directoryApiCredentialResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Create 
+		MarkdownDescription: `Assigns the entitlement plan of a service, multitenant application, or environment, to a directory. Note that some environments, such as Cloud Foundry, are available by default to all global accounts and their directorys, and therefore are not made available as entitlements.
 
 __Tip:__
 You must be assigned to the global account admin or viewer role.
@@ -55,7 +49,7 @@ You must be assigned to the global account admin or viewer role.
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas>`,
 		Attributes: map[string]schema.Attribute{
-			"subaccount_id": schema.StringAttribute{
+			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
@@ -120,16 +114,16 @@ __Further documentation:__
 	}
 }
 
-func (rs *subaccountApiCredentialResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan subaccountApiCredentialType
+func (rs *directoryApiCredentialResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan directoryApiCredentialType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.ApiCredential.CreateBySubaccount(ctx, &btpcli.ApiCredentialInput{
-		SubaccountId:     plan.SubaccountId.ValueString(),
+	cliRes, _, err := rs.cli.Security.ApiCredential.CreateByDirectory(ctx, &btpcli.ApiCredentialInput{
+		DirectoryId:      plan.DirectoryId.ValueString(),
 		Name:             plan.Name.ValueString(),
 		Certificate: 	  plan.CertificatePassed.ValueString(),
 		ReadOnly:		  plan.ReadOnly.ValueBool(),
@@ -140,7 +134,7 @@ func (rs *subaccountApiCredentialResource) Create(ctx context.Context, req resou
 		return
 	}
 
-	updatedPlan, diags := subaccountApiCredentialFromValue(ctx, cliRes)
+	updatedPlan, diags := directoryApiCredentialFromValue(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
 	updatedPlan.CertificatePassed = plan.CertificatePassed
@@ -149,8 +143,8 @@ func (rs *subaccountApiCredentialResource) Create(ctx context.Context, req resou
 	resp.Diagnostics.Append(diags...)
 }
 
-func (rs *subaccountApiCredentialResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state subaccountApiCredentialType
+func (rs *directoryApiCredentialResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state directoryApiCredentialType
 	diags := req.State.Get(ctx, &state)
 
 	resp.Diagnostics.Append(diags...)
@@ -158,39 +152,39 @@ func (rs *subaccountApiCredentialResource) Read(ctx context.Context, req resourc
 		return
 	}
 
-	cliRes, rawRes, err := rs.cli.Security.ApiCredential.GetBySubaccount(ctx, &btpcli.ApiCredentialInput{
-		SubaccountId: state.SubaccountId.ValueString(),
+	cliRes, rawRes, err := rs.cli.Security.ApiCredential.GetByDirectory(ctx, &btpcli.ApiCredentialInput{
+		DirectoryId:  state.DirectoryId.ValueString(),
 		Name:		  state.Name.ValueString(),
 	})  
 	if err!=nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Api Credential (Subaccount)")
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Api Credential (Directory)")
 		return
 	}
 
-	newState, diags := subaccountApiCredentialFromValue(ctx, cliRes)
+	newState, diags := directoryApiCredentialFromValue(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
-	newState.SubaccountId = state.SubaccountId
+	newState.DirectoryId = state.DirectoryId
 	newState.CertificatePassed = state.CertificatePassed
 
 	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
 }
 
-func (rs *subaccountApiCredentialResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (rs *directoryApiCredentialResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 // There is currently no API call that supports the update of the Api credentials
 }
 
-func (rs *subaccountApiCredentialResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state subaccountApiCredentialType
+func (rs *directoryApiCredentialResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state directoryApiCredentialType
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	_, _, err := rs.cli.Security.ApiCredential.DeleteBySubaccount(ctx, &btpcli.ApiCredentialInput{
-		SubaccountId: state.SubaccountId.ValueString(),
+	_, _, err := rs.cli.Security.ApiCredential.DeleteByDirectory(ctx, &btpcli.ApiCredentialInput{
+		SubaccountId: state.DirectoryId.ValueString(),
 		Name:		  state.Name.ValueString(),
 	})
 
@@ -200,18 +194,18 @@ func (rs *subaccountApiCredentialResource) Delete(ctx context.Context, req resou
 	}
 }
 
-func (rs *subaccountApiCredentialResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (rs *directoryApiCredentialResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	idParts := strings.Split(req.ID, ",")
 
 	if idParts[0] == "" || idParts[1] == "" {
 		resp.Diagnostics.AddError(
 			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount_id, name. Got: %q", req.ID),
+			fmt.Sprintf("Expected import identifier with format: directory_id, name. Got: %q", req.ID),
 		)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
 }
 
