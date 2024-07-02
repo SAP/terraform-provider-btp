@@ -129,7 +129,7 @@ func (rs *subaccountApiCredentialResource) Create(ctx context.Context, req resou
 	}
 
 	cliRes, _, err := rs.cli.Security.ApiCredential.CreateBySubaccount(ctx, &btpcli.ApiCredentialInput{
-		SubaccountId:     plan.SubaccountId.ValueString(),
+		Subaccount:       plan.SubaccountId.ValueString(),
 		Name:             plan.Name.ValueString(),
 		Certificate: 	  plan.CertificatePassed.ValueString(),
 		ReadOnly:		  plan.ReadOnly.ValueBool(),
@@ -159,7 +159,7 @@ func (rs *subaccountApiCredentialResource) Read(ctx context.Context, req resourc
 	}
 
 	cliRes, rawRes, err := rs.cli.Security.ApiCredential.GetBySubaccount(ctx, &btpcli.ApiCredentialInput{
-		SubaccountId: state.SubaccountId.ValueString(),
+		Subaccount:   state.SubaccountId.ValueString(),
 		Name:		  state.Name.ValueString(),
 	})  
 	if err!=nil {
@@ -190,7 +190,7 @@ func (rs *subaccountApiCredentialResource) Delete(ctx context.Context, req resou
 	}
 
 	_, _, err := rs.cli.Security.ApiCredential.DeleteBySubaccount(ctx, &btpcli.ApiCredentialInput{
-		SubaccountId: state.SubaccountId.ValueString(),
+		Subaccount:   state.SubaccountId.ValueString(),
 		Name:		  state.Name.ValueString(),
 	})
 

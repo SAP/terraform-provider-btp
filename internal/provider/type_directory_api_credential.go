@@ -8,8 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type subaccountApiCredentialType struct {
-	SubaccountId            types.String `tfsdk:"subaccount_id"`
+type directoryApiCredentialType struct {
+	DirectoryId             types.String `tfsdk:"directory_id"`
 	Name					types.String `tfsdk:"name"`
 	ClientId                types.String `tfsdk:"client_id"`
 	CredentialType        	types.String `tfsdk:"credential_type"`
@@ -24,10 +24,10 @@ type subaccountApiCredentialType struct {
 	ServiceInstanceId		types.String `tfsdk:"service_instance_id"`
 }
 
-func subaccountApiCredentialFromValue(ctx context.Context, cliRes xsuaa_api.ApiCredentialSubaccount) (subaccountApiCredentialType, diag.Diagnostics){
+func directoryApiCredentialFromValue(ctx context.Context, cliRes xsuaa_api.ApiCredentialSubaccount) (directoryApiCredentialType, diag.Diagnostics){
 	
-	res := subaccountApiCredentialType{
-		SubaccountId: 		types.StringValue(cliRes.SubaccountId),
+	res := directoryApiCredentialType{
+		DirectoryId: 		types.StringValue(cliRes.SubaccountId),
 		Name: 				types.StringValue(cliRes.Name),
 		ClientId: 			types.StringValue(cliRes.ClientId),
 		CredentialType: 	types.StringValue(cliRes.CredentialType),

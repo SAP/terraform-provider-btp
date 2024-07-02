@@ -123,7 +123,7 @@ func (rs *directoryApiCredentialResource) Create(ctx context.Context, req resour
 	}
 
 	cliRes, _, err := rs.cli.Security.ApiCredential.CreateByDirectory(ctx, &btpcli.ApiCredentialInput{
-		DirectoryId:      plan.DirectoryId.ValueString(),
+		Directory:        plan.DirectoryId.ValueString(),
 		Name:             plan.Name.ValueString(),
 		Certificate: 	  plan.CertificatePassed.ValueString(),
 		ReadOnly:		  plan.ReadOnly.ValueBool(),
@@ -153,7 +153,7 @@ func (rs *directoryApiCredentialResource) Read(ctx context.Context, req resource
 	}
 
 	cliRes, rawRes, err := rs.cli.Security.ApiCredential.GetByDirectory(ctx, &btpcli.ApiCredentialInput{
-		DirectoryId:  state.DirectoryId.ValueString(),
+		Directory:    state.DirectoryId.ValueString(),
 		Name:		  state.Name.ValueString(),
 	})  
 	if err!=nil {
@@ -184,7 +184,7 @@ func (rs *directoryApiCredentialResource) Delete(ctx context.Context, req resour
 	}
 
 	_, _, err := rs.cli.Security.ApiCredential.DeleteByDirectory(ctx, &btpcli.ApiCredentialInput{
-		DirectoryId:  state.DirectoryId.ValueString(),
+		Directory:    state.DirectoryId.ValueString(),
 		Name:		  state.Name.ValueString(),
 	})
 
