@@ -285,6 +285,8 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newGlobalaccountRoleResource,
 		newSubaccountRoleResource,
 		newSubaccountApiCredentialResource,
+		newDirectoryApiCredentialResource,
+		newGlobalaccountApiCredentialResource,
 	}
 
 	if !p.betaFeaturesEnabled {
