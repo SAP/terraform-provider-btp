@@ -230,6 +230,21 @@ func hookRedactIntegrationUserCredentials(user TestUser) func(i *cassette.Intera
 			i.Response.Body = reBindingSecret.ReplaceAllString(i.Response.Body, `"password":"redacted"`)
 		}
 
+		if strings.Contains(i.Response.Body, "key") {
+			reBindingSecret := regexp.MustCompile(`"key":"(.*?)"`)
+			i.Response.Body = reBindingSecret.ReplaceAllString(i.Response.Body, `"key":"redacted"`)
+		}
+
+		if strings.Contains(i.Response.Body, "certificate") {
+			reBindingSecret := regexp.MustCompile(`"certificate":"(.*?)"`)
+			i.Response.Body = reBindingSecret.ReplaceAllString(i.Response.Body, `"certificate":"redacted"`)
+		}
+
+		if strings.Contains(i.Request.Body, "certificate") {
+			reBindingSecret := regexp.MustCompile(`"certificate":"(.*?)"`)
+			i.Request.Body = reBindingSecret.ReplaceAllString(i.Request.Body, `"certificate":"redacted"`)
+		}
+
 		return nil
 	}
 }
