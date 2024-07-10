@@ -41,7 +41,9 @@ func (rs *globalaccountApiCredentialResource) Configure(_ context.Context, req r
 
 func (rs *globalaccountApiCredentialResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Create 
+		MarkdownDescription: `Manage API Credentials at the Global Account level. These credentials will enable you to consume
+		the REST APIs of the SAP Authorization and Trust Management service (XSUAA).
+		With the client ID and client secret, or certificate, you can request an access token for the APIs in the targeted global account.
 
 __Tip:__
 You must be assigned to the global account admin or viewer role.
@@ -60,7 +62,7 @@ __Further documentation:__
 				},
 			},
 			"name" : schema.StringAttribute{
-				MarkdownDescription: "The name for the api-credential.",
+				MarkdownDescription: "The name for the API credential.",
 				Optional: 			 true,
 				Computed: 			 true,
 				Validators: []validator.String{
@@ -68,7 +70,7 @@ __Further documentation:__
 				},
 			},
 			"client_id": schema.StringAttribute{
-				MarkdownDescription: "A unique ID associated with the api-credential.",
+				MarkdownDescription: "A unique ID associated with the API credential.",
 				Computed:            true,
 			},
 			"credential_type": schema.StringAttribute{
@@ -84,20 +86,20 @@ __Further documentation:__
 				Computed: true,
 			},
 			"client_secret": schema.StringAttribute{
-				MarkdownDescription: "If the certificate is omitted, then a unique secret is generated for the api-credential.",
+				MarkdownDescription: "If the certificate is omitted, then a unique secret is generated for the API credential.",
 				Computed: 			 true,
 			},
 			"key": schema.StringAttribute{
-				MarkdownDescription: "RSA key generated if the api-credential is created with a certificate.",
+				MarkdownDescription: "RSA key generated if the API credential is created with a certificate.",
 				Computed: true,
 			},
 			"read_only": schema.BoolAttribute{
-				MarkdownDescription: "Access restriction placed on the api-credential. If set to true, the resource has only read-only access. ",
+				MarkdownDescription: "Access restriction placed on the API credential. If set to true, the resource has only read-only access. Note that if a read-only credential is deleted, it will take a while to reflect in the global account.",
 				Optional:            true,
 				Computed: 			 true,
 			},
 			"token_url": schema.StringAttribute{
-				MarkdownDescription: "The URL that must used to fetch the access token to make use of the APIs.",
+				MarkdownDescription: "The URL that must used to fetch the access token to make use of the XSUAA REST APIs.",
 				Computed:            true,
 			},
 			"api_url": schema.StringAttribute{
@@ -122,7 +124,7 @@ func (rs *globalaccountApiCredentialResource) Create(ctx context.Context, req re
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.ApiCredential.CreateBySubaccount(ctx, &btpcli.ApiCredentialInput{
+	cliRes, _, err := rs.cli.Security.ApiCredential.CreateByGlobalAccount(ctx, &btpcli.ApiCredentialInput{
 		Name:             plan.Name.ValueString(),
 		Certificate: 	  plan.CertificatePassed.ValueString(),
 		ReadOnly:		  plan.ReadOnly.ValueBool(),
@@ -162,8 +164,17 @@ func (rs *globalaccountApiCredentialResource) Read(ctx context.Context, req reso
 	newState, diags := globalaccountApiCredentialFromValue(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
-	newState.GlobalaccountId = state.GlobalaccountId
-	newState.CertificatePassed = state.CertificatePassed
+	//The below parameters are not returned by the get call to the Api Credential
+	newState.GlobalaccountId = state.GlobalaccountId 
+	if !state.CertificatePassed.IsUnknown() {
+		newState.CertificatePassed = state.CertificatePassed
+		newState.Key = state.Key
+	} else {
+		newState.ClientSecret = state.ClientSecret
+	}
+
+	newState.ServiceInstanceId = state.ServiceInstanceId
+	newState.XsAppname = state.XsAppname
 
 	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
@@ -194,15 +205,17 @@ func (rs *globalaccountApiCredentialResource) Delete(ctx context.Context, req re
 func (rs *globalaccountApiCredentialResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	idParts := strings.Split(req.ID, ",")
 
-	if idParts[0] == "" || idParts[1] == "" {
+	if idParts[0] == "" {
 		resp.Diagnostics.AddError(
 			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: globalaccount_id, name. Got: %q", req.ID),
+			fmt.Sprintf("Expected import identifier with format: name. Got: %q", req.ID),
 		)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("globalaccount_id"), idParts[0])...)
+	globalaccount := rs.cli.GetGlobalAccountSubdomain()
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("globalaccount_id"), globalaccount)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
 }
 

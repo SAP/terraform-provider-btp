@@ -41,16 +41,18 @@ func (rs *directoryApiCredentialResource) Configure(_ context.Context, req resou
 
 func (rs *directoryApiCredentialResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Assigns the entitlement plan of a service, multitenant application, or environment, to a directory. Note that some environments, such as Cloud Foundry, are available by default to all global accounts and their directorys, and therefore are not made available as entitlements.
+		MarkdownDescription: `Manage API Credentials at the Directory level. These credentials will enable you to consume
+		the REST APIs of the SAP Authorization and Trust Management service (XSUAA).
+		With the client ID and client secret, or certificate, you can request an access token for the APIs in the targeted directory.
 
 __Tip:__
-You must be assigned to the global account admin or viewer role.
+You must be assigned to directory admin or viewer role.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas>`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
-				MarkdownDescription: "The ID of the subaccount.",
+				MarkdownDescription: "The ID of the directory.",
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -60,7 +62,7 @@ __Further documentation:__
 				},
 			},
 			"name" : schema.StringAttribute{
-				MarkdownDescription: "The name for the api-credential.",
+				MarkdownDescription: "The name for the API credential.",
 				Optional: 			 true,
 				Computed: 			 true,
 				Validators: []validator.String{
@@ -68,7 +70,7 @@ __Further documentation:__
 				},
 			},
 			"client_id": schema.StringAttribute{
-				MarkdownDescription: "A unique ID associated with the api-credential.",
+				MarkdownDescription: "A unique ID associated with the API credential.",
 				Computed:            true,
 			},
 			"credential_type": schema.StringAttribute{
@@ -84,20 +86,20 @@ __Further documentation:__
 				Computed: true,
 			},
 			"client_secret": schema.StringAttribute{
-				MarkdownDescription: "If the certificate is omitted, then a unique secret is generated for the api-credential.",
+				MarkdownDescription: "If the certificate is omitted, then a unique secret is generated for the API credential.",
 				Computed: 			 true,
 			},
 			"key": schema.StringAttribute{
-				MarkdownDescription: "RSA key generated if the api-credential is created with a certificate.",
+				MarkdownDescription: "RSA key generated if the API credential is created with a certificate.",
 				Computed: true,
 			},
 			"read_only": schema.BoolAttribute{
-				MarkdownDescription: "Access restriction placed on the api-credential. If set to true, the resource has only read-only access. ",
+				MarkdownDescription: "Access restriction placed on the API credential. If set to true, the resource has only read-only access.",
 				Optional:            true,
 				Computed: 			 true,
 			},
 			"token_url": schema.StringAttribute{
-				MarkdownDescription: "The URL that must used to fetch the access token to make use of the APIs.",
+				MarkdownDescription: "The URL that must used to fetch the access token to make use of the XSUAA REST APIs.",
 				Computed:            true,
 			},
 			"api_url": schema.StringAttribute{
@@ -164,8 +166,17 @@ func (rs *directoryApiCredentialResource) Read(ctx context.Context, req resource
 	newState, diags := directoryApiCredentialFromValue(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
+	//The below parameters are not returned by the get call to the Api Credential
 	newState.DirectoryId = state.DirectoryId
-	newState.CertificatePassed = state.CertificatePassed
+	if !state.CertificatePassed.IsUnknown() {
+		newState.CertificatePassed = state.CertificatePassed
+		newState.Key = state.Key
+	} else {
+		newState.ClientSecret = state.ClientSecret
+	}
+	
+	newState.ServiceInstanceId = state.ServiceInstanceId
+	newState.XsAppname = state.XsAppname
 
 	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
