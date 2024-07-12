@@ -11,10 +11,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 )
 
-var (
-	certificate, _ = tfutils.ReadCertificate()
-)
-
 func TestResourceSubaccountApiCredential(t *testing.T) {
 	t.Parallel()
 
@@ -27,9 +23,9 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountApiCredential("uut", "subaccount-api-credential", "integration-test-acc-static"),
+					Config: hclProviderFor(user) + hclResourceSubaccountApiCredential("uut", "subaccount-api-credential-with-secret", "integration-test-acc-static", false),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "name", "subaccount-api-credential"),
+						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "name", "subaccount-api-credential-with-secret"),
 						resource.TestMatchResourceAttr("btp_subaccount_api_credential.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "credential_type", "secret"),
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "read_only", "false"),
@@ -37,13 +33,15 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 				},
 				{
 					ResourceName: "btp_subaccount_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential"),
+					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential-with-secret"),
 					ImportState: true,
 				},
 			},
 		})
 	})
 
+	//Please note that the following test case must not be re-recorded within the same 24-hour period,
+	//as the deletion of credentials with certificates takes some time to reflect within the subaccount.
 	t.Run("happy path - api-credential with certificate", func(t *testing.T){
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_api_credential.with_certificate")
 		defer stopQuietly(rec)
@@ -53,9 +51,9 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountApiCredentialWithCertificate("uut", "subaccount-api-credential", "integration-test-acc-static"),
+					Config: hclProviderFor(user) + hclResourceSubaccountApiCredentialWithCertificate("uut", "subaccount-api-credential-with-certificate", "integration-test-acc-static", rec.IsRecording()),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "name", "subaccount-api-credential"),
+						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "name", "subaccount-api-credential-with-certificate"),
 						resource.TestMatchResourceAttr("btp_subaccount_api_credential.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "credential_type", "client certificate"),
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "read_only", "false"),
@@ -63,7 +61,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 				},
 				{
 					ResourceName: "btp_subaccount_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential"),
+					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential-with-certificate"),
 					ImportState: true,
 				},
 			},
@@ -79,9 +77,9 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountApiCredentialWithReadOnly("uut", "subaccount-api-credential", "integration-test-acc-static"),
+					Config: hclProviderFor(user) + hclResourceSubaccountApiCredential("uut", "subaccount-api-credential-read-only", "integration-test-acc-static", true),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "name", "subaccount-api-credential"),
+						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "name", "subaccount-api-credential-read-only"),
 						resource.TestMatchResourceAttr("btp_subaccount_api_credential.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "credential_type", "secret"),
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "read_only", "true"),
@@ -89,7 +87,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 				},
 				{
 					ResourceName: "btp_subaccount_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential"),
+					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential-read-only"),
 					ImportState: true,
 				},
 			},
@@ -105,23 +103,20 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountApiCredentialWithInvalidCertificate("uut", "subaccount-api-credential", "integration-test-acc-static"),
+					Config: hclProviderFor(user) + hclResourceSubaccountApiCredentialWithInvalidCertificate("uut", "subaccount-api-credential-invalid-certificate", "integration-test-acc-static", rec.IsRecording()),
 					ExpectError: regexp.MustCompile(`The certificate is not valid PEM format`),
 				},
 			},
 		})
 	})
 
-	t.Run("error path - missing subaccount id", func(t *testing.T){
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_api_credential.error_missing_subaccount_id")
-		defer stopQuietly(rec)
-
+	t.Run("error path - subaccount id is mandatory", func(t *testing.T){
 		resource.Test(t, resource.TestCase{
 			IsUnitTest: true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountApiCredentialWithMissingSubaccountId("uut", "subaccount-api-credential"),
+					Config: hclResourceSubaccountApiCredentialWithMissingSubaccountId("uut", "subaccount-api-credential-no-subaccount-id"),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found.`),
 				},
 			},
@@ -129,17 +124,26 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 	})
 }
 
-func hclResourceSubaccountApiCredential (resourceName string, apiCredentialName string, subaccountName string) string {
+func hclResourceSubaccountApiCredential (resourceName string, apiCredentialName string, subaccountName string, readOnly bool) string {
 	return fmt.Sprintf(`
 data "btp_subaccounts" "all" {}
 resource "btp_subaccount_api_credential" "%s"{
 	name = "%s"
 	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+	read_only = %t
 }
-	`, resourceName, apiCredentialName, subaccountName)
+	`, resourceName, apiCredentialName, subaccountName, readOnly)
 }
 
-func hclResourceSubaccountApiCredentialWithCertificate (resourceName string, apiCredentialName string, subaccountName string) string {
+func hclResourceSubaccountApiCredentialWithCertificate (resourceName string, apiCredentialName string, subaccountName string, recording bool) string {
+
+	var subaccountCertificate string
+
+	if recording {
+		subaccountCertificate, _ = tfutils.ReadCertificate()
+	} else {
+		subaccountCertificate = "redacted"
+	}
 
 	return fmt.Sprintf(`
 data "btp_subaccounts" "all" {}
@@ -148,29 +152,26 @@ resource "btp_subaccount_api_credential" "%s"{
 	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	certificate_passed = "%s"
 }
-	`, resourceName, apiCredentialName, subaccountName, certificate)
+	`, resourceName, apiCredentialName, subaccountName, subaccountCertificate)
 }
 
-func hclResourceSubaccountApiCredentialWithReadOnly (resourceName string, apiCredentialName string, subaccountName string) string {
+func hclResourceSubaccountApiCredentialWithInvalidCertificate (resourceName string, apiCredentialName string, subaccountName string, recording bool) string {
+	
+	var subaccountCertificate string
+	if recording {
+		subaccountCertificate = "Invalid-PEM-Certificate"
+	} else {
+		subaccountCertificate = "redacted"
+	}
+
 	return fmt.Sprintf(`
 data "btp_subaccounts" "all" {}
 resource "btp_subaccount_api_credential" "%s"{
 	name = "%s"
 	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
-	read_only = true
+	certificate_passed = "%s"
 }
-	`, resourceName, apiCredentialName, subaccountName)
-}
-
-func hclResourceSubaccountApiCredentialWithInvalidCertificate (resourceName string, apiCredentialName string, subaccountName string) string {
-	return fmt.Sprintf(`
-data "btp_subaccounts" "all" {}
-resource "btp_subaccount_api_credential" "%s"{
-	name = "%s"
-	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
-	certificate_passed = "Invalid-PEM-Certificate"
-}
-	`,resourceName, apiCredentialName, subaccountName)
+	`,resourceName, apiCredentialName, subaccountName, subaccountCertificate)
 }
 
 func hclResourceSubaccountApiCredentialWithMissingSubaccountId (resourceName string, apiCredentialName string) string {
