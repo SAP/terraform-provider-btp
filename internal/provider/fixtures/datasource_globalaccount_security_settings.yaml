@@ -6,7 +6,7 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 116
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -19,12 +19,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.5.7 terraform-provider-btp/dev
             X-Correlationid:
-                - f2f222b5-0719-eb4f-156b-b14c94c8896f
+                - 1799052e-9118-5452-e566-6c8045cf33d6
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
+        url: https://canary.cli.btp.int.sap/login/v2.64.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -32,18 +32,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
+        content_length: 147
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "153"
+                - "147"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Tue, 14 Nov 2023 08:41:16 GMT
+                - Mon, 15 Jul 2024 13:24:09 GMT
             Expires:
                 - "0"
             Pragma:
@@ -59,12 +61,12 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - eec6a385-b3b6-4eea-74c3-fa72e245e138
+                - d2a4e7f4-1bac-4094-6986-f4795d940f7e
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 2.0637889s
+        duration: 187.651541ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -83,9 +85,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.5.7 terraform-provider-btp/dev
             X-Correlationid:
-                - 26c19903-0674-3800-14a5-16991a512032
+                - de69c1b9-522b-e341-05d6-95d5e3d3ae70
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -94,7 +96,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/security/settings?list
+        url: https://canary.cli.btp.int.sap/command/v2.64.0/security/settings?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -104,14 +106,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369"],"keys":{"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"confidential","passphrase":"","certificate":"-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIGElXjqKNAMA0GCSqGSIb3DQEBCwUAMEoxSDBGBgNVBAMM\nP2h0dHBzOi8vdGVycmFmb3JtaW50Y2FuYXJ5LmF1dGhlbnRpY2F0aW9uLnNhcC5o\nYW5hLm9uZGVtYW5kLmNvbTAgFw0xNjAxMDEwMDAwMDBaGA8yMDUwMDEwMTAwMDAw\nMFowSjFIMEYGA1UEAww/aHR0cHM6Ly90ZXJyYWZvcm1pbnRjYW5hcnkuYXV0aGVu\ndGljYXRpb24uc2FwLmhhbmEub25kZW1hbmQuY29tMIIBIjANBgkqhkiG9w0BAQEF\nAAOCAQ8AMIIBCgKCAQEAsnu5EFrTDlh1hNDBSU7zawN8iJ2yO0MUHtp60+VJTt4d\nibzxAabI5KBZaCnzvMst4iuZaxDNQ9NB32Jykg5Dr9jKKiCQA5JoW3hUi5ai6tjO\n9AkDSzhvAqdPZWqFGn6KILu4JiyqTLO1dAlyd59RsQ67yeRYvMEvpk7qdcOjSJfS\nriRZnMvGXinGr8Al4JroOGIPd0We1HZYycZuTOU2xZEedZ9Onrn+Jhjq+6muEJ/M\nP57KbH/HXqnAS9U6HlB3LQLKeyZh3BIU5oHQkJBNMvt/oyrEhXycOg/jChh9VYdB\nEdEYYZe4XcTGxu57/mbWTnzapgJEvOXvIrQH0uUhMwIDAQABoxAwDjAMBgNVHRMB\nAf8EAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBJN8vh1cB1F8NrtJeXNMhAkhfzykIy\nd5Oo2sSr41gPjzLFBZHHpKRc3fHExH5DDQiLckZO9GotnvV1j5J3LNG0nh0wAbUQ\nSal5ArzMdfaVTkLiw2NtHWEWh3RI+tkntTC/cKYBZBQSOnhyBq3wCh3rmkP6CTU0\nMHjmJWHNPHKj/IUXzQQVe+2+XDbrRr4NLLDz90G0E+JWXVQYCMJ9mhCw8ZvDL8gQ\nl4oVH4VznmyVDFuSZZ4DKB5OXRXo9J4DaPLg9rxyLJui1Tp1tEOBZ4gkdlLkaNth\nVwukQ7tH9INF8mOdJ4r/2xj5j6pBULwIiIKaFCPgTVvFr3rpo21Z88A8\n-----END CERTIFICATE-----\n"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[],"treatUsersWithSameEmailAsSameUser":false,"customEmailDomains":[]}'
+        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369"],"keys":{"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"confidential","passphrase":"","certificate":"-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIGElXjqKNAMA0GCSqGSIb3DQEBCwUAMEoxSDBGBgNVBAMM\nP2h0dHBzOi8vdGVycmFmb3JtaW50Y2FuYXJ5LmF1dGhlbnRpY2F0aW9uLnNhcC5o\nYW5hLm9uZGVtYW5kLmNvbTAgFw0xNjAxMDEwMDAwMDBaGA8yMDUwMDEwMTAwMDAw\nMFowSjFIMEYGA1UEAww/aHR0cHM6Ly90ZXJyYWZvcm1pbnRjYW5hcnkuYXV0aGVu\ndGljYXRpb24uc2FwLmhhbmEub25kZW1hbmQuY29tMIIBIjANBgkqhkiG9w0BAQEF\nAAOCAQ8AMIIBCgKCAQEAsnu5EFrTDlh1hNDBSU7zawN8iJ2yO0MUHtp60+VJTt4d\nibzxAabI5KBZaCnzvMst4iuZaxDNQ9NB32Jykg5Dr9jKKiCQA5JoW3hUi5ai6tjO\n9AkDSzhvAqdPZWqFGn6KILu4JiyqTLO1dAlyd59RsQ67yeRYvMEvpk7qdcOjSJfS\nriRZnMvGXinGr8Al4JroOGIPd0We1HZYycZuTOU2xZEedZ9Onrn+Jhjq+6muEJ/M\nP57KbH/HXqnAS9U6HlB3LQLKeyZh3BIU5oHQkJBNMvt/oyrEhXycOg/jChh9VYdB\nEdEYYZe4XcTGxu57/mbWTnzapgJEvOXvIrQH0uUhMwIDAQABoxAwDjAMBgNVHRMB\nAf8EAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBJN8vh1cB1F8NrtJeXNMhAkhfzykIy\nd5Oo2sSr41gPjzLFBZHHpKRc3fHExH5DDQiLckZO9GotnvV1j5J3LNG0nh0wAbUQ\nSal5ArzMdfaVTkLiw2NtHWEWh3RI+tkntTC/cKYBZBQSOnhyBq3wCh3rmkP6CTU0\nMHjmJWHNPHKj/IUXzQQVe+2+XDbrRr4NLLDz90G0E+JWXVQYCMJ9mhCw8ZvDL8gQ\nl4oVH4VznmyVDFuSZZ4DKB5OXRXo9J4DaPLg9rxyLJui1Tp1tEOBZ4gkdlLkaNth\nVwukQ7tH9INF8mOdJ4r/2xj5j6pBULwIiIKaFCPgTVvFr3rpo21Z88A8\n-----END CERTIFICATE-----\n"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"ac84dca7-7e93-44b4-8789-6cd2a6755371","appId":"read-only!a129991","credentialType":"binding-secret","bindingId":"0d2eca1b-f36e-435a-bd76-72311a0e9e0a"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"ac84dca7-7e93-44b4-8789-6cd2a6755371","appId":"read-only!a129991","credentialType":"binding-secret","bindingId":"0d2eca1b-f36e-435a-bd76-72311a0e9e0a"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"ac84dca7-7e93-44b4-8789-6cd2a6755371","appId":"read-only!a129991","credentialType":"binding-secret","bindingId":"0d2eca1b-f36e-435a-bd76-72311a0e9e0a"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"}],"treatUsersWithSameEmailAsSameUser":false,"useIdpUserNameInTokens":true,"customEmailDomains":[]}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Tue, 14 Nov 2023 08:41:16 GMT
+                - Mon, 15 Jul 2024 13:24:09 GMT
             Expires:
                 - "0"
             Pragma:
@@ -129,18 +133,18 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 140dc6c8-d9d9-4897-6eba-bef50b63c02d
+                - d2c8e397-31be-447b-600c-c5f5b8016cd7
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 225.315ms
+        duration: 251.812959ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 116
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -153,12 +157,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.5.7 terraform-provider-btp/dev
             X-Correlationid:
-                - fe6427c1-b5d0-bfaa-3b1b-20ef1efc6ce6
+                - c7817bc0-30e8-fdc5-581b-3755c94d2c51
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
+        url: https://canary.cli.btp.int.sap/login/v2.64.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -166,18 +170,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
+        content_length: 147
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "153"
+                - "147"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Tue, 14 Nov 2023 08:41:16 GMT
+                - Mon, 15 Jul 2024 13:24:10 GMT
             Expires:
                 - "0"
             Pragma:
@@ -193,12 +199,12 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 79361dba-4e5d-4ef0-412e-fde2d2786d11
+                - b9ec45bc-adc7-4178-5482-fbbd84910307
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 317.4628ms
+        duration: 211.354542ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -217,9 +223,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.5.7 terraform-provider-btp/dev
             X-Correlationid:
-                - e92ea394-5afe-bd56-bd73-3d66dbed4fb4
+                - 5fcf7724-ab04-4614-fa3c-5f4f12f3281e
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -228,7 +234,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/security/settings?list
+        url: https://canary.cli.btp.int.sap/command/v2.64.0/security/settings?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -238,14 +244,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369"],"keys":{"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"confidential","passphrase":"","certificate":"-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIGElXjqKNAMA0GCSqGSIb3DQEBCwUAMEoxSDBGBgNVBAMM\nP2h0dHBzOi8vdGVycmFmb3JtaW50Y2FuYXJ5LmF1dGhlbnRpY2F0aW9uLnNhcC5o\nYW5hLm9uZGVtYW5kLmNvbTAgFw0xNjAxMDEwMDAwMDBaGA8yMDUwMDEwMTAwMDAw\nMFowSjFIMEYGA1UEAww/aHR0cHM6Ly90ZXJyYWZvcm1pbnRjYW5hcnkuYXV0aGVu\ndGljYXRpb24uc2FwLmhhbmEub25kZW1hbmQuY29tMIIBIjANBgkqhkiG9w0BAQEF\nAAOCAQ8AMIIBCgKCAQEAsnu5EFrTDlh1hNDBSU7zawN8iJ2yO0MUHtp60+VJTt4d\nibzxAabI5KBZaCnzvMst4iuZaxDNQ9NB32Jykg5Dr9jKKiCQA5JoW3hUi5ai6tjO\n9AkDSzhvAqdPZWqFGn6KILu4JiyqTLO1dAlyd59RsQ67yeRYvMEvpk7qdcOjSJfS\nriRZnMvGXinGr8Al4JroOGIPd0We1HZYycZuTOU2xZEedZ9Onrn+Jhjq+6muEJ/M\nP57KbH/HXqnAS9U6HlB3LQLKeyZh3BIU5oHQkJBNMvt/oyrEhXycOg/jChh9VYdB\nEdEYYZe4XcTGxu57/mbWTnzapgJEvOXvIrQH0uUhMwIDAQABoxAwDjAMBgNVHRMB\nAf8EAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBJN8vh1cB1F8NrtJeXNMhAkhfzykIy\nd5Oo2sSr41gPjzLFBZHHpKRc3fHExH5DDQiLckZO9GotnvV1j5J3LNG0nh0wAbUQ\nSal5ArzMdfaVTkLiw2NtHWEWh3RI+tkntTC/cKYBZBQSOnhyBq3wCh3rmkP6CTU0\nMHjmJWHNPHKj/IUXzQQVe+2+XDbrRr4NLLDz90G0E+JWXVQYCMJ9mhCw8ZvDL8gQ\nl4oVH4VznmyVDFuSZZ4DKB5OXRXo9J4DaPLg9rxyLJui1Tp1tEOBZ4gkdlLkaNth\nVwukQ7tH9INF8mOdJ4r/2xj5j6pBULwIiIKaFCPgTVvFr3rpo21Z88A8\n-----END CERTIFICATE-----\n"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[],"treatUsersWithSameEmailAsSameUser":false,"customEmailDomains":[]}'
+        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369"],"keys":{"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"confidential","passphrase":"","certificate":"-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIGElXjqKNAMA0GCSqGSIb3DQEBCwUAMEoxSDBGBgNVBAMM\nP2h0dHBzOi8vdGVycmFmb3JtaW50Y2FuYXJ5LmF1dGhlbnRpY2F0aW9uLnNhcC5o\nYW5hLm9uZGVtYW5kLmNvbTAgFw0xNjAxMDEwMDAwMDBaGA8yMDUwMDEwMTAwMDAw\nMFowSjFIMEYGA1UEAww/aHR0cHM6Ly90ZXJyYWZvcm1pbnRjYW5hcnkuYXV0aGVu\ndGljYXRpb24uc2FwLmhhbmEub25kZW1hbmQuY29tMIIBIjANBgkqhkiG9w0BAQEF\nAAOCAQ8AMIIBCgKCAQEAsnu5EFrTDlh1hNDBSU7zawN8iJ2yO0MUHtp60+VJTt4d\nibzxAabI5KBZaCnzvMst4iuZaxDNQ9NB32Jykg5Dr9jKKiCQA5JoW3hUi5ai6tjO\n9AkDSzhvAqdPZWqFGn6KILu4JiyqTLO1dAlyd59RsQ67yeRYvMEvpk7qdcOjSJfS\nriRZnMvGXinGr8Al4JroOGIPd0We1HZYycZuTOU2xZEedZ9Onrn+Jhjq+6muEJ/M\nP57KbH/HXqnAS9U6HlB3LQLKeyZh3BIU5oHQkJBNMvt/oyrEhXycOg/jChh9VYdB\nEdEYYZe4XcTGxu57/mbWTnzapgJEvOXvIrQH0uUhMwIDAQABoxAwDjAMBgNVHRMB\nAf8EAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBJN8vh1cB1F8NrtJeXNMhAkhfzykIy\nd5Oo2sSr41gPjzLFBZHHpKRc3fHExH5DDQiLckZO9GotnvV1j5J3LNG0nh0wAbUQ\nSal5ArzMdfaVTkLiw2NtHWEWh3RI+tkntTC/cKYBZBQSOnhyBq3wCh3rmkP6CTU0\nMHjmJWHNPHKj/IUXzQQVe+2+XDbrRr4NLLDz90G0E+JWXVQYCMJ9mhCw8ZvDL8gQ\nl4oVH4VznmyVDFuSZZ4DKB5OXRXo9J4DaPLg9rxyLJui1Tp1tEOBZ4gkdlLkaNth\nVwukQ7tH9INF8mOdJ4r/2xj5j6pBULwIiIKaFCPgTVvFr3rpo21Z88A8\n-----END CERTIFICATE-----\n"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"ac84dca7-7e93-44b4-8789-6cd2a6755371","appId":"read-only!a129991","credentialType":"binding-secret","bindingId":"0d2eca1b-f36e-435a-bd76-72311a0e9e0a"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"ac84dca7-7e93-44b4-8789-6cd2a6755371","appId":"read-only!a129991","credentialType":"binding-secret","bindingId":"0d2eca1b-f36e-435a-bd76-72311a0e9e0a"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"ac84dca7-7e93-44b4-8789-6cd2a6755371","appId":"read-only!a129991","credentialType":"binding-secret","bindingId":"0d2eca1b-f36e-435a-bd76-72311a0e9e0a"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"}],"treatUsersWithSameEmailAsSameUser":false,"useIdpUserNameInTokens":true,"customEmailDomains":[]}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Tue, 14 Nov 2023 08:41:17 GMT
+                - Mon, 15 Jul 2024 13:24:10 GMT
             Expires:
                 - "0"
             Pragma:
@@ -263,18 +271,18 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 37adc78b-46d3-49b4-77ef-76db6aad181f
+                - 4982c9e9-9baf-4408-453f-8890fd9c1054
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 273.3357ms
+        duration: 447.714584ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 116
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -287,12 +295,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.5.7 terraform-provider-btp/dev
             X-Correlationid:
-                - 4e8ddf58-1ed4-1f55-56de-ba7d01eb9665
+                - 614603a8-cae3-95b0-f627-4bb017381f13
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
+        url: https://canary.cli.btp.int.sap/login/v2.64.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -300,18 +308,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
+        content_length: 147
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "153"
+                - "147"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Tue, 14 Nov 2023 08:41:19 GMT
+                - Mon, 15 Jul 2024 13:24:10 GMT
             Expires:
                 - "0"
             Pragma:
@@ -327,12 +337,12 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 8bdf8255-dcaa-4dbf-4569-1e43ee42f8c9
+                - 358d7aa6-9c30-424a-5905-90e9d303c7ad
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 1.8244702s
+        duration: 222.73625ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -351,9 +361,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.5.7 terraform-provider-btp/dev
             X-Correlationid:
-                - 3593a42f-df17-d3e2-2a49-2e4eff038043
+                - 3f3f3267-4765-3a17-50a5-3c41d4bbad06
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -362,7 +372,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/security/settings?list
+        url: https://canary.cli.btp.int.sap/command/v2.64.0/security/settings?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -372,14 +382,16 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369"],"keys":{"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"confidential","passphrase":"","certificate":"-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIGElXjqKNAMA0GCSqGSIb3DQEBCwUAMEoxSDBGBgNVBAMM\nP2h0dHBzOi8vdGVycmFmb3JtaW50Y2FuYXJ5LmF1dGhlbnRpY2F0aW9uLnNhcC5o\nYW5hLm9uZGVtYW5kLmNvbTAgFw0xNjAxMDEwMDAwMDBaGA8yMDUwMDEwMTAwMDAw\nMFowSjFIMEYGA1UEAww/aHR0cHM6Ly90ZXJyYWZvcm1pbnRjYW5hcnkuYXV0aGVu\ndGljYXRpb24uc2FwLmhhbmEub25kZW1hbmQuY29tMIIBIjANBgkqhkiG9w0BAQEF\nAAOCAQ8AMIIBCgKCAQEAsnu5EFrTDlh1hNDBSU7zawN8iJ2yO0MUHtp60+VJTt4d\nibzxAabI5KBZaCnzvMst4iuZaxDNQ9NB32Jykg5Dr9jKKiCQA5JoW3hUi5ai6tjO\n9AkDSzhvAqdPZWqFGn6KILu4JiyqTLO1dAlyd59RsQ67yeRYvMEvpk7qdcOjSJfS\nriRZnMvGXinGr8Al4JroOGIPd0We1HZYycZuTOU2xZEedZ9Onrn+Jhjq+6muEJ/M\nP57KbH/HXqnAS9U6HlB3LQLKeyZh3BIU5oHQkJBNMvt/oyrEhXycOg/jChh9VYdB\nEdEYYZe4XcTGxu57/mbWTnzapgJEvOXvIrQH0uUhMwIDAQABoxAwDjAMBgNVHRMB\nAf8EAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBJN8vh1cB1F8NrtJeXNMhAkhfzykIy\nd5Oo2sSr41gPjzLFBZHHpKRc3fHExH5DDQiLckZO9GotnvV1j5J3LNG0nh0wAbUQ\nSal5ArzMdfaVTkLiw2NtHWEWh3RI+tkntTC/cKYBZBQSOnhyBq3wCh3rmkP6CTU0\nMHjmJWHNPHKj/IUXzQQVe+2+XDbrRr4NLLDz90G0E+JWXVQYCMJ9mhCw8ZvDL8gQ\nl4oVH4VznmyVDFuSZZ4DKB5OXRXo9J4DaPLg9rxyLJui1Tp1tEOBZ4gkdlLkaNth\nVwukQ7tH9INF8mOdJ4r/2xj5j6pBULwIiIKaFCPgTVvFr3rpo21Z88A8\n-----END CERTIFICATE-----\n"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[],"treatUsersWithSameEmailAsSameUser":false,"customEmailDomains":[]}'
+        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369"],"keys":{"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"confidential","passphrase":"","certificate":"-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIGElXjqKNAMA0GCSqGSIb3DQEBCwUAMEoxSDBGBgNVBAMM\nP2h0dHBzOi8vdGVycmFmb3JtaW50Y2FuYXJ5LmF1dGhlbnRpY2F0aW9uLnNhcC5o\nYW5hLm9uZGVtYW5kLmNvbTAgFw0xNjAxMDEwMDAwMDBaGA8yMDUwMDEwMTAwMDAw\nMFowSjFIMEYGA1UEAww/aHR0cHM6Ly90ZXJyYWZvcm1pbnRjYW5hcnkuYXV0aGVu\ndGljYXRpb24uc2FwLmhhbmEub25kZW1hbmQuY29tMIIBIjANBgkqhkiG9w0BAQEF\nAAOCAQ8AMIIBCgKCAQEAsnu5EFrTDlh1hNDBSU7zawN8iJ2yO0MUHtp60+VJTt4d\nibzxAabI5KBZaCnzvMst4iuZaxDNQ9NB32Jykg5Dr9jKKiCQA5JoW3hUi5ai6tjO\n9AkDSzhvAqdPZWqFGn6KILu4JiyqTLO1dAlyd59RsQ67yeRYvMEvpk7qdcOjSJfS\nriRZnMvGXinGr8Al4JroOGIPd0We1HZYycZuTOU2xZEedZ9Onrn+Jhjq+6muEJ/M\nP57KbH/HXqnAS9U6HlB3LQLKeyZh3BIU5oHQkJBNMvt/oyrEhXycOg/jChh9VYdB\nEdEYYZe4XcTGxu57/mbWTnzapgJEvOXvIrQH0uUhMwIDAQABoxAwDjAMBgNVHRMB\nAf8EAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBJN8vh1cB1F8NrtJeXNMhAkhfzykIy\nd5Oo2sSr41gPjzLFBZHHpKRc3fHExH5DDQiLckZO9GotnvV1j5J3LNG0nh0wAbUQ\nSal5ArzMdfaVTkLiw2NtHWEWh3RI+tkntTC/cKYBZBQSOnhyBq3wCh3rmkP6CTU0\nMHjmJWHNPHKj/IUXzQQVe+2+XDbrRr4NLLDz90G0E+JWXVQYCMJ9mhCw8ZvDL8gQ\nl4oVH4VznmyVDFuSZZ4DKB5OXRXo9J4DaPLg9rxyLJui1Tp1tEOBZ4gkdlLkaNth\nVwukQ7tH9INF8mOdJ4r/2xj5j6pBULwIiIKaFCPgTVvFr3rpo21Z88A8\n-----END CERTIFICATE-----\n"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"ac84dca7-7e93-44b4-8789-6cd2a6755371","appId":"read-only!a129991","credentialType":"binding-secret","bindingId":"0d2eca1b-f36e-435a-bd76-72311a0e9e0a"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"ac84dca7-7e93-44b4-8789-6cd2a6755371","appId":"read-only!a129991","credentialType":"binding-secret","bindingId":"0d2eca1b-f36e-435a-bd76-72311a0e9e0a"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"ac84dca7-7e93-44b4-8789-6cd2a6755371","appId":"read-only!a129991","credentialType":"binding-secret","bindingId":"0d2eca1b-f36e-435a-bd76-72311a0e9e0a"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"2d0d224a-3208-4541-96a4-7714501e361d","appId":"full-access!a129991","credentialType":"x509","bindingId":"b7e02faa-2ca4-4344-8546-bab38ad3232f"}],"treatUsersWithSameEmailAsSameUser":false,"useIdpUserNameInTokens":true,"customEmailDomains":[]}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Tue, 14 Nov 2023 08:41:19 GMT
+                - Mon, 15 Jul 2024 13:24:11 GMT
             Expires:
                 - "0"
             Pragma:
@@ -397,18 +409,18 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - aa7c3b31-7196-4365-7361-7fc94387c0dc
+                - 0f923263-47ad-418b-6c65-e7b16ad1fc2c
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 182.8237ms
+        duration: 173.553583ms
     - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 119
+        content_length: 116
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -421,12 +433,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
+                - Terraform/1.5.7 terraform-provider-btp/dev
             X-Correlationid:
-                - ef81fecb-843d-59d3-f3b0-1f654a63e7ec
+                - f85668cd-fcaf-3fde-0a33-395027b474b7
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
+        url: https://canary.cli.btp.int.sap/login/v2.64.0
         method: POST
       response:
         proto: HTTP/2.0
@@ -434,18 +446,20 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 153
+        content_length: 147
         uncompressed: false
         body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "153"
+                - "147"
+            Content-Security-Policy:
+                - default-src 'self'
             Content-Type:
                 - application/json
             Date:
-                - Tue, 14 Nov 2023 08:41:19 GMT
+                - Mon, 15 Jul 2024 13:24:14 GMT
             Expires:
                 - "0"
             Pragma:
@@ -461,277 +475,9 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - bff84297-8155-4443-4c7c-9d1e6e587c86
+                - dde006f2-e81c-4a79-72a6-2299a72cf62a
             X-Xss-Protection:
-                - "0"
+                - "1"
         status: 200 OK
         code: 200
-        duration: 335.6902ms
-    - id: 7
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 55
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"globalAccount":"terraformintcanary"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - 3d6f397d-bfbe-d470-db0a-efef885f53cd
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/security/settings?list
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369"],"keys":{"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"confidential","passphrase":"","certificate":"-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIGElXjqKNAMA0GCSqGSIb3DQEBCwUAMEoxSDBGBgNVBAMM\nP2h0dHBzOi8vdGVycmFmb3JtaW50Y2FuYXJ5LmF1dGhlbnRpY2F0aW9uLnNhcC5o\nYW5hLm9uZGVtYW5kLmNvbTAgFw0xNjAxMDEwMDAwMDBaGA8yMDUwMDEwMTAwMDAw\nMFowSjFIMEYGA1UEAww/aHR0cHM6Ly90ZXJyYWZvcm1pbnRjYW5hcnkuYXV0aGVu\ndGljYXRpb24uc2FwLmhhbmEub25kZW1hbmQuY29tMIIBIjANBgkqhkiG9w0BAQEF\nAAOCAQ8AMIIBCgKCAQEAsnu5EFrTDlh1hNDBSU7zawN8iJ2yO0MUHtp60+VJTt4d\nibzxAabI5KBZaCnzvMst4iuZaxDNQ9NB32Jykg5Dr9jKKiCQA5JoW3hUi5ai6tjO\n9AkDSzhvAqdPZWqFGn6KILu4JiyqTLO1dAlyd59RsQ67yeRYvMEvpk7qdcOjSJfS\nriRZnMvGXinGr8Al4JroOGIPd0We1HZYycZuTOU2xZEedZ9Onrn+Jhjq+6muEJ/M\nP57KbH/HXqnAS9U6HlB3LQLKeyZh3BIU5oHQkJBNMvt/oyrEhXycOg/jChh9VYdB\nEdEYYZe4XcTGxu57/mbWTnzapgJEvOXvIrQH0uUhMwIDAQABoxAwDjAMBgNVHRMB\nAf8EAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBJN8vh1cB1F8NrtJeXNMhAkhfzykIy\nd5Oo2sSr41gPjzLFBZHHpKRc3fHExH5DDQiLckZO9GotnvV1j5J3LNG0nh0wAbUQ\nSal5ArzMdfaVTkLiw2NtHWEWh3RI+tkntTC/cKYBZBQSOnhyBq3wCh3rmkP6CTU0\nMHjmJWHNPHKj/IUXzQQVe+2+XDbrRr4NLLDz90G0E+JWXVQYCMJ9mhCw8ZvDL8gQ\nl4oVH4VznmyVDFuSZZ4DKB5OXRXo9J4DaPLg9rxyLJui1Tp1tEOBZ4gkdlLkaNth\nVwukQ7tH9INF8mOdJ4r/2xj5j6pBULwIiIKaFCPgTVvFr3rpo21Z88A8\n-----END CERTIFICATE-----\n"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[],"treatUsersWithSameEmailAsSameUser":false,"customEmailDomains":[]}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Type:
-                - application/json
-            Date:
-                - Tue, 14 Nov 2023 08:41:20 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - a61a67fc-d8c1-4ab0-689a-b9ae6d8a6820
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 309.77ms
-    - id: 8
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 119
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - 70e988e6-28b0-d0bb-4ff3-2121805ce94b
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
-            Content-Type:
-                - application/json
-            Date:
-                - Tue, 14 Nov 2023 08:41:22 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - cb4b5548-ff11-43f6-50b4-42cdaefa13e9
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 1.8823601s
-    - id: 9
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 55
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"globalAccount":"terraformintcanary"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - c7b3cd58-6d85-0cf4-3ae6-2a4e2914b1f9
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.49.0/security/settings?list
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369"],"keys":{"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"confidential","passphrase":"","certificate":"-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIGElXjqKNAMA0GCSqGSIb3DQEBCwUAMEoxSDBGBgNVBAMM\nP2h0dHBzOi8vdGVycmFmb3JtaW50Y2FuYXJ5LmF1dGhlbnRpY2F0aW9uLnNhcC5o\nYW5hLm9uZGVtYW5kLmNvbTAgFw0xNjAxMDEwMDAwMDBaGA8yMDUwMDEwMTAwMDAw\nMFowSjFIMEYGA1UEAww/aHR0cHM6Ly90ZXJyYWZvcm1pbnRjYW5hcnkuYXV0aGVu\ndGljYXRpb24uc2FwLmhhbmEub25kZW1hbmQuY29tMIIBIjANBgkqhkiG9w0BAQEF\nAAOCAQ8AMIIBCgKCAQEAsnu5EFrTDlh1hNDBSU7zawN8iJ2yO0MUHtp60+VJTt4d\nibzxAabI5KBZaCnzvMst4iuZaxDNQ9NB32Jykg5Dr9jKKiCQA5JoW3hUi5ai6tjO\n9AkDSzhvAqdPZWqFGn6KILu4JiyqTLO1dAlyd59RsQ67yeRYvMEvpk7qdcOjSJfS\nriRZnMvGXinGr8Al4JroOGIPd0We1HZYycZuTOU2xZEedZ9Onrn+Jhjq+6muEJ/M\nP57KbH/HXqnAS9U6HlB3LQLKeyZh3BIU5oHQkJBNMvt/oyrEhXycOg/jChh9VYdB\nEdEYYZe4XcTGxu57/mbWTnzapgJEvOXvIrQH0uUhMwIDAQABoxAwDjAMBgNVHRMB\nAf8EAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQBJN8vh1cB1F8NrtJeXNMhAkhfzykIy\nd5Oo2sSr41gPjzLFBZHHpKRc3fHExH5DDQiLckZO9GotnvV1j5J3LNG0nh0wAbUQ\nSal5ArzMdfaVTkLiw2NtHWEWh3RI+tkntTC/cKYBZBQSOnhyBq3wCh3rmkP6CTU0\nMHjmJWHNPHKj/IUXzQQVe+2+XDbrRr4NLLDz90G0E+JWXVQYCMJ9mhCw8ZvDL8gQ\nl4oVH4VznmyVDFuSZZ4DKB5OXRXo9J4DaPLg9rxyLJui1Tp1tEOBZ4gkdlLkaNth\nVwukQ7tH9INF8mOdJ4r/2xj5j6pBULwIiIKaFCPgTVvFr3rpo21Z88A8\n-----END CERTIFICATE-----\n"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[],"treatUsersWithSameEmailAsSameUser":false,"customEmailDomains":[]}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Type:
-                - application/json
-            Date:
-                - Tue, 14 Nov 2023 08:41:22 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - 9f6a522d-d23d-4396-6a11-9ae5f7a88b2d
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 143.4399ms
-    - id: 10
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 119
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.6.3 terraform-provider-btp/dev
-            X-Correlationid:
-                - ceb7402c-314e-91a7-3572-b86dd203c7bf
-            X-Cpcli-Format:
-                - json
-        url: https://canary.cli.btp.int.sap/login/v2.49.0
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 153
-        uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Length:
-                - "153"
-            Content-Type:
-                - application/json
-            Date:
-                - Tue, 14 Nov 2023 08:41:22 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - a52425ef-2490-44ea-5d90-1b5f9c721e7c
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 411.042ms
+        duration: 3.456475917s

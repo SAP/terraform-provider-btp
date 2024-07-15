@@ -46,16 +46,16 @@ func TestDataSourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurationBySubaccount("uut", "integration-test-acc-static", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurationBySubaccount("uut", "integration-test-acc-static", "sap.custom"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "id", "terraformint-platform"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "id", "sap.custom"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "description", "Custom Platform Identity Provider"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "name", "terraformint-platform"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "protocol", "OpenID Connect"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "read_only", "true"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "read_only", "false"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "status", "active"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "type", "Platform"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configuration.uut", "type", "Application"),
 					),
 				},
 			},

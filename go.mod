@@ -1,6 +1,6 @@
 module github.com/SAP/terraform-provider-btp
 
-go 1.22
+go 1.22.0
 
 require (
 	github.com/hashicorp/go-uuid v1.0.3
