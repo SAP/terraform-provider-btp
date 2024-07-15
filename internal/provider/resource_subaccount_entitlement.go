@@ -301,7 +301,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 	// Determine the parent of the subaccount
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
 	//Determine if the parent of the subaccount is a directory and if it has authoization enabled
-	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID) 
+	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
 
 	var directoryId string
 

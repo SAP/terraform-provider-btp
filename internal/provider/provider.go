@@ -223,7 +223,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	//Determine and execute the login flow depending on the provided parameters
 	switch authFlow := determineAuthFlow(config, idToken, ssoLogin); authFlow {
 	case ssoFlow:
-		if _,err = client.BrowserLogin(ctx, btpcli.NewBrowserLoginRequest(idp, config.GlobalAccount.ValueString())); err != nil {
+		if _, err = client.BrowserLogin(ctx, btpcli.NewBrowserLoginRequest(idp, config.GlobalAccount.ValueString())); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 		}
 	case userPasswordFlow:

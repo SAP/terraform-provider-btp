@@ -40,12 +40,12 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "john.doe@test.com", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "john.doe@test.com", "sap.custom"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "user_name", "john.doe@test.com"),
-						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "sap.custom"),
 					),
 				},
 			},
@@ -61,13 +61,13 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndGroupBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "tf-test-group", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndGroupBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "tf-test-group", "sap.custom"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "group_name", "tf-test-group"),
-						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "sap.custom"),
 					),
 				},
 			},
@@ -83,14 +83,14 @@ func TestResourceRolCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndAttributeBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "tf_attr_name_test", "tf_attr_val_test", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginAndAttributeBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "tf_attr_name_test", "tf_attr_val_test", "sap.custom"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_role_collection_assignment.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "role_collection_name", "Destination Administrator"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "attribute_name", "tf_attr_name_test"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "attribute_value", "tf_attr_val_test"),
-						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "terraformint-platform"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection_assignment.uut", "origin", "sap.custom"),
 					),
 				},
 			},

@@ -67,7 +67,7 @@ func (ds *globalaccountAppDataSource) Schema(_ context.Context, _ datasource.Sch
 		MarkdownDescription: `Gets details about a specific app.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the global account.`,		
+You must be assigned to the admin or viewer role of the global account.`,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The application ID is the xsappname plus the identifier, which consists of an exclamation mark (!), an identifier for the plan under which the application is deployed, and an index number.",

@@ -59,7 +59,7 @@ func (ds *subaccountServicePlatformsDataSource) Schema(_ context.Context, _ data
 		MarkdownDescription: `Lists all platforms in a subaccount that are registered for service consumption.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the subaccount.`,		
+You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
