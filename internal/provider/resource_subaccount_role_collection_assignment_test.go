@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestResourceRolCollectionAssignment(t *testing.T) {
+func TestResourceSubaccountRoleCollectionAssignment(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - simple role collection assignment", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment")

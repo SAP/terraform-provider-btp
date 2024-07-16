@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestDataSourceGlobalAccount(t *testing.T) {
+func TestDataSourceGlobalaccount(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount")
@@ -22,7 +22,7 @@ func TestDataSourceGlobalAccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceGlobalAccount("uut"),
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccount("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount.uut", "id", "03760ecf-9d89-4189-a92a-1c7efed09298"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount.uut", "name", "terraform-integration-canary"),
@@ -53,7 +53,7 @@ func TestDataSourceGlobalAccount(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalAccount("uut"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccount("uut"),
 					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
@@ -61,6 +61,6 @@ func TestDataSourceGlobalAccount(t *testing.T) {
 	})
 }
 
-func hclDatasourceGlobalAccount(resourceName string) string {
+func hclDatasourceGlobalaccount(resourceName string) string {
 	return fmt.Sprintf(`data "btp_globalaccount" "%s" {}`, resourceName)
 }

@@ -57,16 +57,12 @@ func subaccountValueFrom(ctx context.Context, value cis.SubaccountResponseObject
 	return subaccount, diagnostics
 }
 
-func determineParentIdByFeature(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string, featureType string) (parentId string, isParentGlobalAccount bool) {
-
-	parentId = ""
-	isParentGlobalAccount = false
-
+func determineParentIdByFeature(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string, featureType string) (parentId string, isParentGlobalaccount bool) {
 	parentData, _, err := cli.Accounts.Directory.Get(ctx, parentIdToVerify)
 
 	// The parent is the global account
 	if err != nil {
-		isParentGlobalAccount = true
+		isParentGlobalaccount = true
 		return
 	}
 
@@ -75,26 +71,26 @@ func determineParentIdByFeature(cli *btpcli.ClientFacade, ctx context.Context, p
 		parentId = parentIdToVerify
 	} else {
 		// Parent is a directory, but not with entitlements feature enabled -> step up the hierarchy
-		parentId, isParentGlobalAccount = determineParentIdByFeature(cli, ctx, parentData.ParentGUID, featureType)
+		parentId, isParentGlobalaccount = determineParentIdByFeature(cli, ctx, parentData.ParentGUID, featureType)
 	}
 
 	return
 }
 
 func hasFeature(features []string, featureType string) (featureTypeFound bool) {
-
 	for _, f := range features {
 		if f == featureType {
 			featureTypeFound = true
 		}
 	}
+
 	return
 }
 
-func determineParentIdForEntitlement(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalAccount bool) {
+func determineParentIdForEntitlement(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalaccount bool) {
 	return determineParentIdByFeature(cli, ctx, parentIdToVerify, EntitlementFeature)
 }
 
-func determineParentIdForAuthorization(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalAccount bool) {
+func determineParentIdForAuthorization(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalaccount bool) {
 	return determineParentIdByFeature(cli, ctx, parentIdToVerify, AuthorizationFeature)
 }

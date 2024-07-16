@@ -122,7 +122,7 @@ func TestAccountsEntitlementFacade_AssignToSubaccount(t *testing.T) {
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
 				"globalAccount":   "795b53bb-a3f0-4769-adf0-26173282a975",
-				"directoryID":	   directoryId,	
+				"directoryID":     directoryId,
 				"subaccount":      subaccountId,
 				"serviceName":     serviceName,
 				"servicePlanName": planName,
@@ -155,7 +155,7 @@ func TestAccountsEntitlementFacade_EnableInSubaccount(t *testing.T) {
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
 				"globalAccount":   "795b53bb-a3f0-4769-adf0-26173282a975",
-				"directoryID":	   directoryId,
+				"directoryID":     directoryId,
 				"subaccount":      subaccountId,
 				"serviceName":     serviceName,
 				"servicePlanName": planName,
@@ -188,7 +188,7 @@ func TestAccountsEntitlementFacade_DisableInSubaccount(t *testing.T) {
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
 				"globalAccount":   "795b53bb-a3f0-4769-adf0-26173282a975",
-				"directoryID":	   directoryId,
+				"directoryID":     directoryId,
 				"subaccount":      subaccountId,
 				"serviceName":     serviceName,
 				"servicePlanName": planName,

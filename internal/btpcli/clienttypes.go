@@ -70,15 +70,14 @@ type LoginResponse struct {
 type BrowserLoginPostResponse struct {
 	Issuer       string `json:"issuer"`
 	RefreshToken string `json:"refreshToken"`
-	Username         string `json:"user"`
-	Email         string `json:"mail"`
+	Username     string `json:"user"`
+	Email        string `json:"mail"`
 }
 
 type BrowserResponse struct {
 	LoginID           string `json:"loginId"`
 	SubdomainRequired bool   `json:"subdomainRequired"`
 }
-
 
 /* Command */
 func NewCommandRequest(action Action, command string, args any) *CommandRequest {

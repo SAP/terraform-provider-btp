@@ -17,7 +17,7 @@ type subaccountRoleCollectionRoleRefTestType struct {
 	RoleTemplateName  string `json:"role_template_name"`
 }
 
-func TestResourceSubAccountRoleCollection(t *testing.T) {
+func TestResourceSubaccountRoleCollection(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection")
 		defer stopQuietly(rec)
