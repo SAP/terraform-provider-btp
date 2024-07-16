@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type globalAccountHierarchyType struct {
+type globalaccountHierarchyType struct {
 	ID           types.String `tfsdk:"id"`
 	CreatedDate  types.String `tfsdk:"created_date"`
 	Directories  types.List   `tfsdk:"directories"`
@@ -20,8 +20,8 @@ type globalAccountHierarchyType struct {
 	Type         types.String `tfsdk:"type"`
 }
 
-func globalAccountHierarchyValueFrom(ctx context.Context, value cis.GlobalAccountResponseObject) (globalAccountHierarchyType, diag.Diagnostics) {
-	globalAccount := globalAccountHierarchyType{
+func globalaccountHierarchyValueFrom(ctx context.Context, value cis.GlobalAccountResponseObject) (globalaccountHierarchyType, diag.Diagnostics) {
+	globalaccount := globalaccountHierarchyType{
 		ID:           types.StringValue(value.Guid),
 		CreatedDate:  timeToValue(value.CreatedDate.Time()),
 		ModifiedDate: timeToValue(value.ModifiedDate.Time()),
@@ -35,21 +35,21 @@ func globalAccountHierarchyValueFrom(ctx context.Context, value cis.GlobalAccoun
 
 	if len(value.Children) > 0 {
 		//The dirctory level is mentioned as 6 inorder to align with the schema strcuture defined as per the provider.
-		directories, diags := directoriesHierarchyValueFrom(ctx, value.Children, globalAccount.Name, globalAccount.Type, 6)
+		directories, diags := directoriesHierarchyValueFrom(ctx, value.Children, globalaccount.Name, globalaccount.Type, 6)
 		summary.Append(diags...)
-		globalAccount.Directories, diags = types.ListValueFrom(ctx, directoryObjectType(6), directories)
+		globalaccount.Directories, diags = types.ListValueFrom(ctx, directoryObjectType(6), directories)
 		summary.Append(diags...)
 	} else {
-		globalAccount.Directories = types.ListNull(directoryObjectType(6))
+		globalaccount.Directories = types.ListNull(directoryObjectType(6))
 	}
 
 	if len(value.Subaccounts) > 0 {
-		subaccounts := subaccountsHierarchyValueFrom(ctx, value.Subaccounts, globalAccount.Name, globalAccount.Type)
-		globalAccount.Subaccounts, diags = types.ListValueFrom(ctx, subaccountObjectType, subaccounts)
+		subaccounts := subaccountsHierarchyValueFrom(ctx, value.Subaccounts, globalaccount.Name, globalaccount.Type)
+		globalaccount.Subaccounts, diags = types.ListValueFrom(ctx, subaccountObjectType, subaccounts)
 		summary.Append(diags...)
 	} else {
-		globalAccount.Subaccounts = types.ListNull(subaccountObjectType)
+		globalaccount.Subaccounts = types.ListNull(subaccountObjectType)
 	}
 
-	return globalAccount, summary
+	return globalaccount, summary
 }

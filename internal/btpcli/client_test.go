@@ -287,21 +287,21 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 	srv := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			_, _ = w.Write([]byte("{\"loginId\":\"login.id\",\"subdomainRequired\":false}"))
-		} else if strings.Contains(r.URL.Path, "/login.id"){
+		} else if strings.Contains(r.URL.Path, "/login.id") {
 
 			res, _ := io.ReadAll(r.Body)
-			
+
 			idp := strings.Split(strings.Split(string(res), ",")[0], ":")[1]
 			if idp == "\"\"" {
 				idp = "accounts.sap.com"
 			} else {
 				idp = "customidp.accounts.ondemand.com"
 			}
-	
+
 			w.Header().Add("HeaderCLISessionId", "sessionid")
 			w.WriteHeader(http.StatusOK)
 
-			_, _ = w.Write([]byte("{\"issuer\":\""+idp+"\",\"refreshToken\":\"sessionid\",\"user\":\"john.doe\",\"mail\":\"john.doe@test.com\"}"))
+			_, _ = w.Write([]byte("{\"issuer\":\"" + idp + "\",\"refreshToken\":\"sessionid\",\"user\":\"john.doe\",\"mail\":\"john.doe@test.com\"}"))
 		} else {
 			w.WriteHeader(http.StatusForbidden)
 		}
@@ -334,7 +334,7 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 			},
 		}, uut.session)
 	})
-	
+
 	t.Run("happy path - with custom idp", func(t *testing.T) {
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
 		uut.session = &Session{}
@@ -342,7 +342,7 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 			return "fake-correlation-id"
 		}
 		_, err := uut.BrowserLogin(context.TODO(), &BrowserLoginRequest{
-			CustomIdp: 				"my.custom.idp",
+			CustomIdp:              "my.custom.idp",
 			GlobalAccountSubdomain: "my-subdomain",
 		})
 
