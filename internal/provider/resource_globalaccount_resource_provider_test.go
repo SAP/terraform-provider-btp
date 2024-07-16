@@ -38,14 +38,14 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclResourceGlobalaccountResourceProviderNoDesc("uut",
 						"AWS",
-						"another_resource_provider",
-						"Another Resource Provider",
+						"another_aws_resource_provider",
+						"Another AWS Resource Provider",
 						"{\"access_key_id\":\"AWSACCESSKEY\",\"secret_access_key\":\"AWSSECRETKEY\",\"vpc_id\":\"vpc-test\",\"region\":\"eu-central-1\"}",
 					),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "provider_type", "AWS"),
-						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "technical_name", "another_resource_provider"),
-						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "display_name", "Another Resource Provider"),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "technical_name", "another_aws_resource_provider"),
+						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "display_name", "Another AWS Resource Provider"),
 						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "configuration", "{\"access_key_id\":\"AWSACCESSKEY\",\"secret_access_key\":\"AWSSECRETKEY\",\"vpc_id\":\"vpc-test\",\"region\":\"eu-central-1\"}"),
 					),
 				},

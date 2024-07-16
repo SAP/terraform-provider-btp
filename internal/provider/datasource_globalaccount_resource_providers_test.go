@@ -20,7 +20,7 @@ func TestDataSourceGlobalaccountResourceProviders(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountResourceProviders("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.#", "1"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.#", "2"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.provider_type", "AWS"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.technical_name", "tf_test_resource_provider"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.display_name", "Test AWS Resource Provider"),

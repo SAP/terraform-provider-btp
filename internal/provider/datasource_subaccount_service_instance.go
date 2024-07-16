@@ -41,7 +41,7 @@ func (ds *subaccountServiceInstanceDataSource) Schema(_ context.Context, _ datas
 		MarkdownDescription: `Gets details about a specific provisioned service instance, such as its name, id,  platform to which it belongs, and the last operation performed.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the subaccount.`,		
+You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

@@ -20,7 +20,7 @@ func TestDataSourceSubaccounts(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceSubaccounts("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccounts.uut", "values.#", "3"),
+						resource.TestCheckResourceAttr("data.btp_subaccounts.uut", "values.#", "8"),
 					),
 				},
 			},

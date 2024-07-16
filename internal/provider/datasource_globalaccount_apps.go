@@ -59,7 +59,7 @@ func (ds *globalaccountAppsDataSource) Schema(_ context.Context, _ datasource.Sc
 		MarkdownDescription: `Lists all apps.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the global account.`,		
+You must be assigned to the admin or viewer role of the global account.`,
 		Attributes: map[string]schema.Attribute{
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
