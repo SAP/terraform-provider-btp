@@ -228,6 +228,9 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 		return
 	}
 
+	timeout := 60 * time.Minute
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(timeout)
+
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{saas_manager_service.StateInProcess},
 		Target:  []string{saas_manager_service.StateSubscribed},
@@ -245,9 +248,9 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    10 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    timeout,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
@@ -291,6 +294,9 @@ func (rs *subaccountSubscriptionResource) Delete(ctx context.Context, req resour
 		return
 	}
 
+	timeout := 60 * time.Minute
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(timeout)
+
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{saas_manager_service.StateInProcess},
 		Target:  []string{saas_manager_service.StateNotSubscribed},
@@ -308,9 +314,9 @@ func (rs *subaccountSubscriptionResource) Delete(ctx context.Context, req resour
 
 			return subRes, subRes.State, nil
 		},
-		Timeout:    10 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    timeout,
+		Delay:      delay,
+		MinTimeout: minTimeout,
 	}
 
 	_, err = deleteStateConf.WaitForStateContext(ctx)
