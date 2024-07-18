@@ -456,6 +456,7 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_subaccount_security_settings",
 		"btp_subaccount_service_instance",
 		"btp_subaccount_service_binding",
+		"btp_subaccount_service_broker",
 		"btp_subaccount_subscription",
 		"btp_subaccount_trust_configuration",
 	}
@@ -526,10 +527,8 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_security_settings",
 		"btp_subaccount_service_binding",
 		"btp_subaccount_service_bindings",
-		/*
-			"btp_subaccount_service_broker",
-			"btp_subaccount_service_brokers",
-		*/
+		"btp_subaccount_service_broker",
+		"btp_subaccount_service_brokers",
 		"btp_subaccount_service_instance",
 		"btp_subaccount_service_instances",
 		"btp_subaccount_service_offering",
