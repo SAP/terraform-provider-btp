@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -137,7 +136,7 @@ func (rs *subaccountServiceBrokerResource) Read(ctx context.Context, req resourc
 		return
 	}
 
-	newState, diags := subaccountServiceBrokerValueFrom(ctx, cliRes)
+	newState := subaccountServiceBrokerValueFrom(ctx, cliRes)
 	newState.SubaccountId = state.SubaccountId
 	newState.Name = state.Name
 	newState.Username = state.Username
@@ -170,7 +169,7 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 		return
 	}
 
-	state, diags := subaccountServiceBrokerValueFrom(ctx, cliRes)
+	state := subaccountServiceBrokerValueFrom(ctx, cliRes)
 	state.SubaccountId = plan.SubaccountId
 	state.Name = plan.Name
 	state.Username = plan.Username
@@ -212,7 +211,7 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	newState, diags := subaccountServiceBrokerValueFrom(ctx, cliRes)
+	newState := subaccountServiceBrokerValueFrom(ctx, cliRes)
 	newState.SubaccountId = plan.SubaccountId
 	newState.Name = plan.Name
 	newState.Username = plan.Username
@@ -254,8 +253,8 @@ func (rs *subaccountServiceBrokerResource) ImportState(ctx context.Context, req 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
 }
 
-func subaccountServiceBrokerValueFrom(ctx context.Context, broker servicemanager.ServiceBrokerResponseObject) (serviceBroker subaccountServiceBrokerResourceType, diags diag.Diagnostics) {
-	serviceBroker = subaccountServiceBrokerResourceType{
+func subaccountServiceBrokerValueFrom(ctx context.Context, broker servicemanager.ServiceBrokerResponseObject) subaccountServiceBrokerResourceType {
+	return subaccountServiceBrokerResourceType{
 		Id:           types.StringValue(broker.Id),
 		Name:         types.StringValue(broker.Name),
 		Description:  types.StringValue(broker.Description),
@@ -264,6 +263,4 @@ func subaccountServiceBrokerValueFrom(ctx context.Context, broker servicemanager
 		CreatedDate:  timeToValue(broker.CreatedAt),
 		LastModified: timeToValue(broker.UpdatedAt),
 	}
-
-	return
 }
