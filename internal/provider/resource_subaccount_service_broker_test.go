@@ -30,6 +30,20 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "last_modified", regexpValidRFC3999Format),
 					),
 				},
+				{ // rename and update the description
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBroker("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-broker-with-a-new-name", "another description", "https://my.broker.test", "platform", "a-secure-password"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-broker-with-a-new-name"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "another description"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my.broker.test"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "username", "platform"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "password", "a-secure-password"),
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "last_modified", regexpValidRFC3999Format),
+					),
+				},
 			},
 		})
 	})
