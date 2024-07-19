@@ -28,7 +28,7 @@ type subaccountServiceBrokerDataSourceConfig struct {
 	/* OUTPUT */
 	Ready        types.Bool   `tfsdk:"ready"`
 	Description  types.String `tfsdk:"description"`
-	BrokerUrl    types.String `tfsdk:"broker_url"`
+	Url          types.String `tfsdk:"url"`
 	CreatedDate  types.String `tfsdk:"created_date"`
 	LastModified types.String `tfsdk:"last_modified"`
 	Labels       types.Map    `tfsdk:"labels"`
@@ -52,7 +52,7 @@ func (ds *subaccountServiceBrokerDataSource) Configure(_ context.Context, req da
 
 func (ds *subaccountServiceBrokerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets details about a specific service broker registered in a subaccount, such as its name, description, labels, and URL.
+		MarkdownDescription: `Gets details about a specific service broker registered in a subaccount.
 
 __Tip:__
 You must be assigned to the admin or viewer role of the subaccount.`,
@@ -89,7 +89,7 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 				MarkdownDescription: "The description of the service broker.",
 				Computed:            true,
 			},
-			"broker_url": schema.StringAttribute{
+			"url": schema.StringAttribute{
 				MarkdownDescription: "The URL of the service broker.",
 				Computed:            true,
 			},
@@ -142,7 +142,7 @@ func (ds *subaccountServiceBrokerDataSource) Read(ctx context.Context, req datas
 	data.Name = types.StringValue(cliRes.Name)
 	data.Ready = types.BoolValue(cliRes.Ready)
 	data.Description = types.StringValue(cliRes.Description)
-	data.BrokerUrl = types.StringValue(cliRes.BrokerUrl)
+	data.Url = types.StringValue(cliRes.BrokerUrl)
 	data.CreatedDate = timeToValue(cliRes.CreatedAt)
 	data.LastModified = timeToValue(cliRes.UpdatedAt)
 
