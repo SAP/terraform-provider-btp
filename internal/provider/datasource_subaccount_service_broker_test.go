@@ -97,16 +97,6 @@ func hclDatasourceSubaccountServiceBrokerByNameBySubaccountIdByBrokerName(resour
 	return fmt.Sprintf(template, resourceName, subaccountId, brokerName)
 }
 
-func hclDatasourceSubaccountServiceBrokerByNameBySubaccountNameByBrokerName(resourceName string, subaccountName string, brokerName string) string {
-	template := `
-data "btp_subaccounts" "all" {}
-data "btp_subaccount_service_broker" "%s" {
-	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if startswith(sa.name, "%s")][0]
-	name          = "%s"
-}`
-	return fmt.Sprintf(template, resourceName, subaccountName, brokerName)
-}
-
 func hclDatasourceSubaccountServiceBrokerNoSubaccount(resourceName string, brokerName string) string {
 	template := `data "btp_subaccount_service_broker" "%s" {
 	name          = "%s"
