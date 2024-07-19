@@ -90,7 +90,6 @@ func (f servicesBrokerFacade) Update(ctx context.Context, args SubaccountService
 	return doExecute[servicemanager.ServiceBrokerResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
 }
 
-// TODO Update
 func (f servicesBrokerFacade) Unregister(ctx context.Context, subaccountId string, serviceId string) (CommandResponse, error) {
 	res, err := f.cliClient.Execute(ctx, NewUnregisterRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
