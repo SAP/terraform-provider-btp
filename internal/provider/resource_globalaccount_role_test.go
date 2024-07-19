@@ -85,6 +85,41 @@ func TestResourceGlobalAccountRole(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - update role name", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role.update")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRole(
+						"uut",
+						"GlobalAccount Viewer Test",
+						"GlobalAccount_Viewer",
+						"cis-central!b13",
+					),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_globalaccount_role.uut", "name", "GlobalAccount Viewer Test"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role.uut", "role_template_name", "GlobalAccount_Viewer"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role.uut", "app_id", "cis-central!b13"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRole(
+						"uut",
+						"GlobalAccount Viewer Test updated",
+						"GlobalAccount_Viewer",
+						"cis-central!b13",
+					),
+					ExpectError: regexp.MustCompile(`this resource is not supposed to be updated`),
+				},
+			},
+		})
+	})
+
 }
 
 func hclResourceGlobalAccountRole(resourceName string, name string, roleTemplateName string, appId string) string {
