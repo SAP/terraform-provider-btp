@@ -16,6 +16,7 @@ import (
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/servicemanager"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
@@ -163,11 +164,19 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 		Password:    plan.Password.ValueString(),
 	}
 
-	cliRes, _, err := rs.cli.Services.Broker.Register(ctx, cliReq)
+	registrationRes, _, err := rs.cli.Services.Broker.Register(ctx, cliReq)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	readyStateRes, err := rs.createStateChange(ctx, registrationRes, plan).WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	cliRes := readyStateRes.(servicemanager.ServiceBrokerResponseObject)
 
 	state := subaccountServiceBrokerValueFrom(ctx, cliRes)
 	state.SubaccountId = plan.SubaccountId
@@ -205,11 +214,19 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 		Password:    plan.Password.ValueString(),
 	}
 
-	cliRes, _, err := rs.cli.Services.Broker.Update(ctx, cliReq)
+	updateRes, _, err := rs.cli.Services.Broker.Update(ctx, cliReq)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Service Broker (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	readyStateRes, err := rs.createStateChange(ctx, updateRes, plan).WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Updating Resource Service Broker (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	cliRes := readyStateRes.(servicemanager.ServiceBrokerResponseObject)
 
 	newState := subaccountServiceBrokerValueFrom(ctx, cliRes)
 	newState.SubaccountId = plan.SubaccountId
@@ -251,6 +268,28 @@ func (rs *subaccountServiceBrokerResource) ImportState(ctx context.Context, req 
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
+}
+
+func (rs *subaccountServiceBrokerResource) createStateChange(ctx context.Context, cliRes servicemanager.ServiceBrokerResponseObject, plan subaccountServiceBrokerResourceType) *tfutils.StateChangeConf {
+	state := subaccountServiceBrokerValueFrom(ctx, cliRes)
+	state.SubaccountId = plan.SubaccountId
+	state.Name = plan.Name
+	state.Username = plan.Username
+	state.Password = plan.Password
+
+	return &tfutils.StateChangeConf{
+		Pending: []string{"false"},
+		Target:  []string{"true"},
+		Refresh: func() (interface{}, string, error) {
+			subRes, _, err := rs.cli.Services.Broker.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
+
+			if err != nil {
+				return subRes, "", err
+			}
+
+			return subRes, fmt.Sprintf("%v", subRes.Ready), nil
+		},
+	}
 }
 
 func subaccountServiceBrokerValueFrom(ctx context.Context, broker servicemanager.ServiceBrokerResponseObject) subaccountServiceBrokerResourceType {
