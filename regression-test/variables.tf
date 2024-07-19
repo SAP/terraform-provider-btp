@@ -6,7 +6,7 @@ variable "globalaccount" {
 
 variable "idp" {
   type        = string
-  description = "The IDP to use for authentication."  
+  description = "The IDP to use for authentication."
 }
 
 variable "cli_server" {

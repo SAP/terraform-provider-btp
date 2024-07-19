@@ -21,8 +21,8 @@ locals {
   disclaimer_description                                 = "Please don't modify. This is used for integration tests."
   testing_idps                                           = ["sap.default", btp_globalaccount_trust_configuration.gtc_idp_testing.origin]
   idp_groups                                             = ["BTP Terraform Administrator", "BTP Terraform Developer"]
-  testing_idps_group_mapping                             = {for val in setproduct(var.trusted_idp_origin_keys, local.idp_groups):
-                                                             "${val[0]}-${val[1]}" => val}
+  testing_idps_group_mapping = { for val in setproduct(var.trusted_idp_origin_keys, local.idp_groups) :
+  "${val[0]}-${val[1]}" => val }
 }
 
 ###
@@ -34,7 +34,7 @@ resource "btp_subaccount" "sa_acc_static" {
   description = local.disclaimer_description
   subdomain   = local.integration_test_account_static_extended
   region      = var.region
-  labels      = {
+  labels = {
     label1 = [
       "label text 1"
     ]
@@ -50,10 +50,10 @@ resource "btp_subaccount" "sa_acc_entitlements_stacked" {
 }
 
 resource "btp_subaccount" "sa_services_static" {
-  name         = local.integration_test_services_static
-  subdomain    = local.integration_test_services_static_extended
-  region       = var.region
-  description  = "Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions"
+  name        = local.integration_test_services_static
+  subdomain   = local.integration_test_services_static_extended
+  region      = var.region
+  description = "Subaccount to test:\n- Service Instances\n- Service Bindings\n- App Subscriptions"
 }
 
 resource "btp_subaccount" "sa_security_settings" {
@@ -85,7 +85,7 @@ resource "btp_directory" "dir_se_static" {
   name        = local.integration_test_dir_se_static
   description = local.disclaimer_description
   features    = ["DEFAULT", "ENTITLEMENTS", "AUTHORIZATIONS"]
-  labels      = {
+  labels = {
     my-label-1 = [
       "Label text 1"
     ]
@@ -192,7 +192,7 @@ resource "btp_globalaccount_resource_provider" "grp_aws" {
   display_name   = "Test AWS Resource Provider"
   description    = "Description of the resource provider"
   provider_type  = "AWS"
-  configuration  = jsonencode({
+  configuration = jsonencode({
     access_key_id     = "AWSACCESSKEY"
     secret_access_key = "AWSSECRETKEY"
     vpc_id            = "vpc-test"
@@ -250,7 +250,7 @@ data "btp_subaccount_service_plan" "ssp_sa_services_static_alert_notification_fr
   subaccount_id = btp_subaccount.sa_services_static.id
   name          = "free"
   offering_name = "alert-notification"
-  depends_on    = [
+  depends_on = [
     btp_subaccount_entitlement.se_sa_services_static_alert_notification
   ]
 }
@@ -265,7 +265,7 @@ data "btp_subaccount_service_plan" "ssp_sa_services_static_malware_scanner_defau
   subaccount_id = btp_subaccount.sa_services_static.id
   name          = "clamav"
   offering_name = "malware-scanner"
-  depends_on    = [
+  depends_on = [
     btp_subaccount_entitlement.se_sa_services_static_malware_scanner
   ]
 }
@@ -274,8 +274,8 @@ resource "btp_subaccount_service_instance" "ssi_sa_services_static_malware_scann
   subaccount_id  = btp_subaccount.sa_services_static.id
   serviceplan_id = data.btp_subaccount_service_plan.ssp_sa_services_static_malware_scanner_default.id
   name           = "tf-testacc-malware-scanner-sample"
-  labels         = {
-    org          = [
+  labels = {
+    org = [
       "testvalue"
     ]
   }
