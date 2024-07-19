@@ -43,7 +43,7 @@ resource "btp_directory" "child" {
 resource "btp_directory" "dir_with_features" {
   name        = "my-feat-directory"
   description = "This is a directory with features."
-  features    = ["DEFAULT","ENTITLEMENTS","AUTHORIZATIONS"]
+  features    = ["DEFAULT", "ENTITLEMENTS", "AUTHORIZATIONS"]
 }
 ```
 
