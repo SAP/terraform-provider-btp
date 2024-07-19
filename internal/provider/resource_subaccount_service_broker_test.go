@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceSubaccountServiceBroker(t *testing.T) {
@@ -44,9 +45,27 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "last_modified", regexpValidRFC3999Format),
 					),
 				},
+				{
+					ResourceName:            "btp_subaccount_service_broker.uut",
+					ImportStateIdFunc:       getServiceBrokerIdForImport("btp_subaccount_service_broker.uut"),
+					ImportState:             true,
+					ImportStateVerify:       true,
+					ImportStateVerifyIgnore: []string{"name", "username", "password"},
+				},
 			},
 		})
 	})
+}
+
+func getServiceBrokerIdForImport(resourceName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+
+		return fmt.Sprintf("%s,%s", rs.Primary.Attributes["subaccount_id"], rs.Primary.ID), nil
+	}
 }
 
 func hclResourceSubaccountServiceBroker(resourceName string, subaccountId string, name string, description string, url string, username string, password string) string {

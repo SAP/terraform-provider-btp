@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -143,7 +144,7 @@ func (rs *subaccountServiceBrokerResource) Read(ctx context.Context, req resourc
 	newState.Username = state.Username
 	newState.Password = state.Password
 
-	diags = resp.State.Set(ctx, &state)
+	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -170,7 +171,7 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 		return
 	}
 
-	readyStateRes, err := rs.createStateChange(ctx, registrationRes, plan).WaitForStateContext(ctx)
+	readyStateRes, err := rs.createStateChange(ctx, registrationRes, plan, "creation").WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount)", fmt.Sprintf("%s", err))
 		return
@@ -220,7 +221,7 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	readyStateRes, err := rs.createStateChange(ctx, updateRes, plan).WaitForStateContext(ctx)
+	readyStateRes, err := rs.createStateChange(ctx, updateRes, plan, "update").WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Service Broker (Subaccount)", fmt.Sprintf("%s", err))
 		return
@@ -270,7 +271,7 @@ func (rs *subaccountServiceBrokerResource) ImportState(ctx context.Context, req 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
 }
 
-func (rs *subaccountServiceBrokerResource) createStateChange(ctx context.Context, cliRes servicemanager.ServiceBrokerResponseObject, plan subaccountServiceBrokerResourceType) *tfutils.StateChangeConf {
+func (rs *subaccountServiceBrokerResource) createStateChange(ctx context.Context, cliRes servicemanager.ServiceBrokerResponseObject, plan subaccountServiceBrokerResourceType, operation string) *tfutils.StateChangeConf {
 	state := subaccountServiceBrokerValueFrom(ctx, cliRes)
 	state.SubaccountId = plan.SubaccountId
 	state.Name = plan.Name
@@ -278,8 +279,8 @@ func (rs *subaccountServiceBrokerResource) createStateChange(ctx context.Context
 	state.Password = plan.Password
 
 	return &tfutils.StateChangeConf{
-		Pending: []string{"false"},
-		Target:  []string{"true"},
+		Pending: []string{servicemanager.StateInProgress},
+		Target:  []string{servicemanager.StateSucceeded},
 		Refresh: func() (interface{}, string, error) {
 			subRes, _, err := rs.cli.Services.Broker.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
 
@@ -287,8 +288,17 @@ func (rs *subaccountServiceBrokerResource) createStateChange(ctx context.Context
 				return subRes, "", err
 			}
 
-			return subRes, fmt.Sprintf("%v", subRes.Ready), nil
+			// No error returned even if operation failed
+			if subRes.LastOperation.State == servicemanager.StateFailed {
+				opsError := extractDetailedError(subRes.LastOperation.Errors, operation)
+				return subRes, subRes.LastOperation.State, opsError
+			}
+
+			return subRes, subRes.LastOperation.State, nil
 		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
 	}
 }
 
