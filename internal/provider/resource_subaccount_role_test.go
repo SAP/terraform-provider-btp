@@ -105,6 +105,42 @@ func TestResourceSubAccountRole(t *testing.T) {
 		})
 	})
 
+	t.Run("error path - update", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role.update")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountRole(
+						"uut",
+						"integration-test-acc-static",
+						"Subaccount Viewer Test",
+						"Subaccount_Viewer",
+						"cis-local!b2",
+					),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_role.uut", "name", "Subaccount Viewer Test"),
+						resource.TestCheckResourceAttr("btp_subaccount_role.uut", "role_template_name", "Subaccount_Viewer"),
+						resource.TestCheckResourceAttr("btp_subaccount_role.uut", "app_id", "cis-local!b2"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountRole(
+						"uut",
+						"integration-test-acc-static",
+						"Subaccount Viewer Test updated",
+						"Subaccount_Viewer",
+						"cis-local!b2",
+					),
+					ExpectError: regexp.MustCompile(`This resource is not supposed to be updated`),
+				},
+			},
+		})
+	})
+
 }
 
 func hclResourceSubaccountRole(resourceName string, subaccountName string, name string, roleTemplateName string, appId string) string {
