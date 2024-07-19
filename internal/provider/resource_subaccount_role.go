@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -49,7 +50,7 @@ __Further documentation:__
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
-				Optional:            true,
+				Required:            true,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
@@ -65,14 +66,23 @@ __Further documentation:__
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role.",
 				Required:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"app_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the xsuaa application.",
 				Required:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"role_template_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role template.",
 				Required:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "The role description.",
@@ -135,6 +145,7 @@ func (rs *subaccountRoleResource) Create(ctx context.Context, req resource.Creat
 		AppId:            plan.RoleTemplateAppId.ValueString(),
 		RoleTemplateName: plan.RoleTemplateName.ValueString(),
 		SubaccountId:     plan.SubaccountId.ValueString(),
+		Description:      plan.Description.ValueString(),
 	})
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Role (Subaccount)", fmt.Sprintf("%s", err))

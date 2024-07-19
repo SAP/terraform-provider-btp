@@ -223,7 +223,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	//Determine and execute the login flow depending on the provided parameters
 	switch authFlow := determineAuthFlow(config, idToken, ssoLogin); authFlow {
 	case ssoFlow:
-		if _,err = client.BrowserLogin(ctx, btpcli.NewBrowserLoginRequest(idp, config.GlobalAccount.ValueString())); err != nil {
+		if _, err = client.BrowserLogin(ctx, btpcli.NewBrowserLoginRequest(idp, config.GlobalAccount.ValueString())); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 		}
 	case userPasswordFlow:
@@ -281,9 +281,6 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 	betaResources := []func() resource.Resource{
 		//Beta resources should be excluded from sonar scan.
 		//If you add them to production code, remove them from sonar exclusion list
-		newDirectoryRoleResource,
-		newGlobalaccountRoleResource,
-		newSubaccountRoleResource,
 	}
 
 	if !p.betaFeaturesEnabled {
@@ -310,6 +307,9 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newSubaccountServiceInstanceResource,
 		newSubaccountSubscriptionResource,
 		newSubaccountTrustConfigurationResource,
+		newDirectoryRoleResource,
+		newGlobalaccountRoleResource,
+		newSubaccountRoleResource,
 	}, betaResources...)
 }
 
