@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceSubAccountRole(t *testing.T) {
@@ -141,6 +142,28 @@ func TestResourceSubAccountRole(t *testing.T) {
 		})
 	})
 
+	t.Run("error path - import fails", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role.error_import")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountRole("uut", "integration-test-acc-static", "Subaccount Viewer Test", "Subaccount_Viewer", "cis-local!b2"),
+				},
+				{
+					ResourceName:      "btp_subaccount_role.uut",
+					ImportStateIdFunc: getSubaccountRoleImportIdNoAppIdNoRoleTemplateName("btp_subaccount_role.uut"),
+					ImportState:       true,
+					ImportStateVerify: true,
+					ExpectError:       regexp.MustCompile(`Unexpected Import Identifier`),
+				},
+			},
+		})
+	})
+
 }
 
 func hclResourceSubaccountRole(resourceName string, subaccountName string, name string, roleTemplateName string, appId string) string {
@@ -164,4 +187,14 @@ resource "btp_subaccount_role" "%s" {
 }`
 
 	return fmt.Sprintf(template, resourceName, subaccountId, name, roleTemplateName, appId)
+}
+
+func getSubaccountRoleImportIdNoAppIdNoRoleTemplateName(resourceName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+		return rs.Primary.Attributes["subaccount_id"], nil
+	}
 }

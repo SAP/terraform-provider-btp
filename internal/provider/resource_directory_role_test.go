@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceDirectoryRole(t *testing.T) {
@@ -116,6 +117,64 @@ func TestResourceDirectoryRole(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - update role name", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory_role.update")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryRole(
+						"uut",
+						"integration-test-dir-roles",
+						"Directory Viewer Test",
+						"Directory_Viewer",
+						"cis-central!b13",
+					),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_directory_role.uut", "name", "Directory Viewer Test"),
+						resource.TestCheckResourceAttr("btp_directory_role.uut", "role_template_name", "Directory_Viewer"),
+						resource.TestCheckResourceAttr("btp_directory_role.uut", "app_id", "cis-central!b13"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryRole(
+						"uut",
+						"integration-test-dir-roles",
+						"Directory Viewer Test Updated",
+						"Directory_Viewer",
+						"cis-central!b13",
+					),
+					ExpectError: regexp.MustCompile(`This resource is not supposed to be updated`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - import fails", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory_role.error_import")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryRole("uut", "integration-test-dir-roles", "Directory Viewer Test", "Directory_Viewer", "cis-central!b13"),
+				},
+				{
+					ResourceName:      "btp_directory_role.uut",
+					ImportStateIdFunc: getDirectoryRoleImportIdNoAppIdNoRoleTemplateName("btp_directory_role.uut"),
+					ImportState:       true,
+					ImportStateVerify: true,
+					ExpectError:       regexp.MustCompile(`Unexpected Import Identifier`),
+				},
+			},
+		})
+	})
 }
 
 func hclResourceDirectoryRole(resourceName string, directoryName string, name string, roleTemplateName string, appId string) string {
@@ -139,4 +198,14 @@ resource "btp_directory_role" "%s" {
     app_id             = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, directoryId, name, roleTemplateName, appId)
+}
+
+func getDirectoryRoleImportIdNoAppIdNoRoleTemplateName(resourceName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+		return rs.Primary.Attributes["directory_id"], nil
+	}
 }
