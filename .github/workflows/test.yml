@@ -79,7 +79,8 @@ jobs:
     name: Terraform Provider Acceptance Tests
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Timeout for tests set to 25 minutes to safeguard long running tests (specifically for service instances) 
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
