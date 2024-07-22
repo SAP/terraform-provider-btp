@@ -288,9 +288,6 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 	betaResources := []func() resource.Resource{
 		//Beta resources should be excluded from sonar scan.
 		//If you add them to production code, remove them from sonar exclusion list
-		newDirectoryRoleResource,
-		newGlobalaccountRoleResource,
-		newSubaccountRoleResource,
 	}
 
 	if !p.betaFeaturesEnabled {
@@ -318,6 +315,9 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newSubaccountServiceInstanceResource,
 		newSubaccountSubscriptionResource,
 		newSubaccountTrustConfigurationResource,
+		newDirectoryRoleResource,
+		newGlobalaccountRoleResource,
+		newSubaccountRoleResource,
 	}, betaResources...)
 }
 

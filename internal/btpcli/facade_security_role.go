@@ -2,6 +2,7 @@ package btpcli
 
 import (
 	"context"
+
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_authz"
@@ -69,6 +70,7 @@ type DirectoryRoleCreateInput struct {
 	AppId            string `btpcli:"appId"`
 	RoleTemplateName string `btpcli:"roleTemplateName"`
 	DirectoryId      string `btpcli:"directory"`
+	Description      string `btpcli:"description"`
 }
 
 func (f *securityRoleFacade) CreateByDirectory(ctx context.Context, args *DirectoryRoleCreateInput) (xsuaa_authz.Role, CommandResponse, error) {
@@ -76,6 +78,11 @@ func (f *securityRoleFacade) CreateByDirectory(ctx context.Context, args *Direct
 
 	if err != nil {
 		return xsuaa_authz.Role{}, CommandResponse{}, err
+	}
+
+	_, exist := params["description"]
+	if !exist {
+		params["description"] = ""
 	}
 
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
@@ -95,6 +102,7 @@ type SubaccountRoleCreateInput struct {
 	AppId            string `btpcli:"appId"`
 	RoleTemplateName string `btpcli:"roleTemplateName"`
 	SubaccountId     string `btpcli:"subaccount"`
+	Description      string `btpcli:"description"`
 }
 
 func (f *securityRoleFacade) CreateBySubaccount(ctx context.Context, args *SubaccountRoleCreateInput) (xsuaa_authz.Role, CommandResponse, error) {
@@ -102,6 +110,11 @@ func (f *securityRoleFacade) CreateBySubaccount(ctx context.Context, args *Subac
 
 	if err != nil {
 		return xsuaa_authz.Role{}, CommandResponse{}, err
+	}
+
+	_, exist := params["description"]
+	if !exist {
+		params["description"] = ""
 	}
 
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
@@ -120,6 +133,7 @@ type GlobalAccountRoleCreateInput struct {
 	RoleName         string `btpcli:"roleName"`
 	AppId            string `btpcli:"appId"`
 	RoleTemplateName string `btpcli:"roleTemplateName"`
+	Description      string `btpcli:"description"`
 }
 
 func (f *securityRoleFacade) CreateByGlobalAccount(ctx context.Context, args *GlobalAccountRoleCreateInput) (xsuaa_authz.Role, CommandResponse, error) {
@@ -130,6 +144,11 @@ func (f *securityRoleFacade) CreateByGlobalAccount(ctx context.Context, args *Gl
 	}
 
 	params["globalAccount"] = f.cliClient.GetGlobalAccountSubdomain()
+
+	_, exist := params["description"]
+	if !exist {
+		params["description"] = ""
+	}
 
 	return doExecute[xsuaa_authz.Role](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
