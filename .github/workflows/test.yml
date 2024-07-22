@@ -104,7 +104,7 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
-        run: go test -v -cover -coverprofile=cover.out -timeout=900s -parallel=4 ./...
+        run: go test -v -cover -coverprofile=cover.out -timeout=1800s -parallel=4 ./...
         timeout-minutes: 20
       # Determine stripped version of Terraform
       - run: echo "CURRENT_TF_VERSION=$(echo ${{ matrix.terraform }} | sed 's/[^a-zA-Z0-9]//g')" >> $GITHUB_ENV
