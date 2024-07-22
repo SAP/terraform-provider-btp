@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceGlobalAccountRole(t *testing.T) {
@@ -31,6 +32,11 @@ func TestResourceGlobalAccountRole(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_role.uut", "description", ""),
 						resource.TestCheckResourceAttr("btp_globalaccount_role.uut", "read_only", "false"),
 					),
+				},
+				{
+					ResourceName:      "btp_globalaccount_role.uut",
+					ImportStateIdFunc: getIdForGlobalAccountRoleImportId("btp_globalaccount_role.uut", "GlobalAccount Viewer Test", "GlobalAccount_Viewer", "cis-central!b13"),
+					ImportState:       true,
 				},
 			},
 		})
@@ -129,4 +135,15 @@ func hclResourceGlobalAccountRole(resourceName string, name string, roleTemplate
 		role_template_name  = "%s"
 		app_id              = "%s"
     }`, resourceName, name, roleTemplateName, appId)
+}
+
+func getIdForGlobalAccountRoleImportId(resourceName string, name string, role_template_name string, app_id string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+
+		return fmt.Sprintf("%s,%s,%s", rs.Primary.Attributes["name"], role_template_name, app_id), nil
+	}
 }

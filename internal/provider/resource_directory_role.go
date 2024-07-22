@@ -172,7 +172,6 @@ func (rs *directoryRoleResource) Read(ctx context.Context, req resource.ReadRequ
 
 	updatedState, diags := directoryRoleFromValue(ctx, cliRes)
 	updatedState.DirectoryId = state.DirectoryId
-	updatedState.Id = state.DirectoryId
 
 	if updatedState.Id.IsNull() || updatedState.Id.IsUnknown() {
 		// Setting ID of state - required by hashicorps terraform plugin testing framework for Import. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84

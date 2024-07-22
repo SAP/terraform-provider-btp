@@ -30,6 +30,12 @@ func TestResourceDirectoryRole(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_directory_role.uut", "scopes.#", "7"),
 					),
 				},
+				{
+					ResourceName:      "btp_directory_role.uut",
+					ImportStateIdFunc: getIdForDirectoryRoleImportId("btp_directory_role.uut", "Directory Viewer Test", "Directory_Viewer", "cis-central!b13"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
 			},
 		})
 	})
@@ -207,5 +213,16 @@ func getDirectoryRoleImportIdNoAppIdNoRoleTemplateName(resourceName string) reso
 			return "", fmt.Errorf("not found: %s", resourceName)
 		}
 		return rs.Primary.Attributes["directory_id"], nil
+	}
+}
+
+func getIdForDirectoryRoleImportId(resourceName string, name string, role_template_name string, app_id string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+
+		return fmt.Sprintf("%s,%s,%s,%s", rs.Primary.Attributes["directory_id"], name, role_template_name, app_id), nil
 	}
 }

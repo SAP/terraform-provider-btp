@@ -37,6 +37,7 @@ func TestResourceSubAccountRole(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_role.uut",
+					ImportStateIdFunc: getIdForSubaccountRoleImportId("btp_subaccount_role.uut", "Subaccount Viewer Test", "Subaccount_Viewer", "cis-local!b2"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -196,5 +197,16 @@ func getSubaccountRoleImportIdNoAppIdNoRoleTemplateName(resourceName string) res
 			return "", fmt.Errorf("not found: %s", resourceName)
 		}
 		return rs.Primary.Attributes["subaccount_id"], nil
+	}
+}
+
+func getIdForSubaccountRoleImportId(resourceName string, name string, role_template_name string, app_id string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+
+		return fmt.Sprintf("%s,%s,%s,%s", rs.Primary.Attributes["subaccount_id"], name, role_template_name, app_id), nil
 	}
 }
