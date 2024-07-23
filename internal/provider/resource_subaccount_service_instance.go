@@ -150,6 +150,10 @@ You must be assigned to the admin or the service administrator role of the subac
 				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
+			"dashboard_url": schema.StringAttribute{
+				MarkdownDescription: "The URL of the web-based management UI for the service instance.",
+				Computed:            true,
+			},
 		},
 	}
 }
