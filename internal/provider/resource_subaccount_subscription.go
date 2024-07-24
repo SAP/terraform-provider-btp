@@ -5,8 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -43,7 +44,7 @@ func (rs *subaccountSubscriptionResource) Configure(_ context.Context, req resou
 	rs.cli = req.ProviderData.(*btpcli.ClientFacade)
 }
 
-func (rs *subaccountSubscriptionResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (rs *subaccountSubscriptionResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Subscribes a subaccount to a multitenant application.
 Custom or partner-developed applications are currently not supported.
@@ -79,6 +80,14 @@ You must be assigned to the admin role of the subaccount.`,
 					jsonvalidator.ValidJSON(),
 				},
 			},
+			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
+				Create:            true,
+				CreateDescription: "Timeout for creating the service instance.",
+				Update:            true,
+				UpdateDescription: "Timeout for updating the service instance.",
+				Delete:            true,
+				DeleteDescription: "Timeout for deleting the service instance.",
+			}),
 			"additional_plan_features": schema.SetAttribute{
 				ElementType:         types.StringType,
 				MarkdownDescription: "The list of features specific to this plan.",
@@ -228,30 +237,8 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 		return
 	}
 
-	timeout := 60 * time.Minute
-	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(timeout)
-
-	createStateConf := &tfutils.StateChangeConf{
-		Pending: []string{saas_manager_service.StateInProcess},
-		Target:  []string{saas_manager_service.StateSubscribed},
-		Refresh: func() (interface{}, string, error) {
-			subRes, _, err := rs.cli.Accounts.Subscription.Get(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString())
-
-			if err != nil {
-				return subRes, "", err
-			}
-
-			// No error returned even is subscription failed
-			if subRes.State == saas_manager_service.StateSubscribeFailed {
-				return subRes, subRes.State, errors.New("undefined API error during subscription")
-			}
-
-			return subRes, subRes.State, nil
-		},
-		Timeout:    timeout,
-		Delay:      delay,
-		MinTimeout: minTimeout,
-	}
+	createStateConf, diags := rs.CreateStateChange(ctx, plan, "create")
+	resp.Diagnostics.Append(diags...)
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
 	if err != nil {
@@ -294,30 +281,8 @@ func (rs *subaccountSubscriptionResource) Delete(ctx context.Context, req resour
 		return
 	}
 
-	timeout := 60 * time.Minute
-	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(timeout)
-
-	deleteStateConf := &tfutils.StateChangeConf{
-		Pending: []string{saas_manager_service.StateInProcess},
-		Target:  []string{saas_manager_service.StateNotSubscribed},
-		Refresh: func() (interface{}, string, error) {
-			subRes, _, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
-
-			if err != nil {
-				return subRes, subRes.State, err
-			}
-
-			// No error returned even is unsubscribe failed
-			if subRes.State == saas_manager_service.StateUnsubscribeFailed {
-				return subRes, subRes.State, errors.New("undefined API error during unsubscription")
-			}
-
-			return subRes, subRes.State, nil
-		},
-		Timeout:    timeout,
-		Delay:      delay,
-		MinTimeout: minTimeout,
-	}
+	deleteStateConf, diags := rs.DeleteStateChange(ctx, state, "delete")
+	resp.Diagnostics.Append(diags...)
 
 	_, err = deleteStateConf.WaitForStateContext(ctx)
 	if err != nil {
@@ -340,4 +305,71 @@ func (rs *subaccountSubscriptionResource) ImportState(ctx context.Context, req r
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_name"), idParts[1])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
+}
+
+func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context, plan subaccountSubscriptionType, operation string) (tfutils.StateChangeConf, diag.Diagnostics) {
+	var summary diag.Diagnostics
+
+	timeoutsLocal := plan.Timeouts
+
+	createTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	summary.Append(diags...)
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
+
+	return tfutils.StateChangeConf{
+			Pending: []string{saas_manager_service.StateInProcess},
+			Target:  []string{saas_manager_service.StateSubscribed},
+			Refresh: func() (interface{}, string, error) {
+				subRes, _, err := rs.cli.Accounts.Subscription.Get(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString())
+
+				if err != nil {
+					return subRes, "", err
+				}
+
+				// No error returned even is subscription failed
+				if subRes.State == saas_manager_service.StateSubscribeFailed {
+					return subRes, subRes.State, errors.New("undefined API error during subscription")
+				}
+
+				return subRes, subRes.State, nil
+			},
+			Timeout:    createTimeout,
+			Delay:      delay,
+			MinTimeout: minTimeout,
+		},
+		summary
+}
+
+func (rs *subaccountSubscriptionResource) DeleteStateChange(ctx context.Context, state subaccountSubscriptionType, operation string) (tfutils.StateChangeConf, diag.Diagnostics) {
+
+	var summary diag.Diagnostics
+
+	timeoutsLocal := state.Timeouts
+
+	deleteTimeout, diags := timeoutsLocal.Delete(ctx, tfutils.DefaultTimeout)
+	summary.Append(diags...)
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
+
+	return tfutils.StateChangeConf{
+			Pending: []string{saas_manager_service.StateInProcess},
+			Target:  []string{saas_manager_service.StateNotSubscribed},
+			Refresh: func() (interface{}, string, error) {
+				subRes, _, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
+
+				if err != nil {
+					return subRes, subRes.State, err
+				}
+
+				// No error returned even is unsubscribe failed
+				if subRes.State == saas_manager_service.StateUnsubscribeFailed {
+					return subRes, subRes.State, errors.New("undefined API error during unsubscription")
+				}
+
+				return subRes, subRes.State, nil
+			},
+			Timeout:    deleteTimeout,
+			Delay:      delay,
+			MinTimeout: minTimeout,
+		},
+		summary
 }
