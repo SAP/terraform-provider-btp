@@ -19,10 +19,24 @@ You must be assigned to the admin role of the subaccount.
 ## Example Usage
 
 ```terraform
+# create a subscription to workzone
 resource "btp_subaccount_subscription" "workzone" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   app_name      = "SAPLaunchpad"
   plan_name     = "free"
+}
+
+
+# create a subscription to workzone with a timeout
+resource "btp_subaccount_subscription" "workzone" {
+  subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  app_name      = "SAPLaunchpad"
+  plan_name     = "free"
+  timeouts = {
+    create = "25m"
+    update = "15m"
+    delete = "15m"
+  }
 }
 ```
 
@@ -38,6 +52,7 @@ resource "btp_subaccount_subscription" "workzone" {
 ### Optional
 
 - `parameters` (String) The parameters of the subscription as a valid JSON object.
+- `timeouts` (Attributes) (see [below for nested schema](#nestedatt--timeouts))
 
 ### Read-Only
 
@@ -64,6 +79,15 @@ resource "btp_subaccount_subscription" "workzone" {
 - `supports_parameters_updates` (Boolean) Specifies whether a consumer, whose subaccount is subscribed to the application, can change its subscriptions parameters.
 - `supports_plan_updates` (Boolean) Specifies whether a consumer, whose subaccount is subscribed to the application, can change the subscription to a different plan that is available for this application and subaccount.
 - `tenant_id` (String) The tenant ID of the application provider.
+
+<a id="nestedatt--timeouts"></a>
+### Nested Schema for `timeouts`
+
+Optional:
+
+- `create` (String) Timeout for creating the service instance.
+- `delete` (String) Timeout for deleting the service instance.
+- `update` (String) Timeout for updating the service instance.
 
 ## Import
 
