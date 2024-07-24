@@ -82,11 +82,11 @@ You must be assigned to the admin role of the subaccount.`,
 			},
 			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
 				Create:            true,
-				CreateDescription: "Timeout for creating the service instance.",
+				CreateDescription: "Timeout for creating the subscription.",
 				Update:            true,
-				UpdateDescription: "Timeout for updating the service instance.",
+				UpdateDescription: "Timeout for updating the subscription.",
 				Delete:            true,
-				DeleteDescription: "Timeout for deleting the service instance.",
+				DeleteDescription: "Timeout for deleting the subscription.",
 			}),
 			"additional_plan_features": schema.SetAttribute{
 				ElementType:         types.StringType,
@@ -201,6 +201,8 @@ func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource
 		return
 	}
 
+	timeoutsLocal := state.Timeouts
+
 	cliRes, rawRes, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
 	if err != nil {
 		handleReadErrors(ctx, rawRes, resp, err, "Resource Subscription (Subaccount)")
@@ -208,6 +210,7 @@ func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource
 	}
 
 	newState, diags := subaccountSubscriptionValueFrom(ctx, cliRes)
+	newState.Timeouts = timeoutsLocal
 
 	if newState.Parameters.IsNull() && !state.Parameters.IsNull() {
 		// The parameters are not returned by the API so we transfer the existing state to the read result if not existing
@@ -247,6 +250,7 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 
 	updatedPlan, diags := subaccountSubscriptionValueFrom(ctx, updatedRes.(saas_manager_service.EntitledApplicationsResponseObject))
 	updatedPlan.Parameters = plan.Parameters
+	updatedPlan.Timeouts = plan.Timeouts
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedPlan)

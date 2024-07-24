@@ -43,6 +43,43 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("happy path - simple subscription with timeouts", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_with_timeouts")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "auditlog-viewer", "free"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "auditlog-viewer"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_id", "auditlog-viewer!t49"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "state", "SUBSCRIBED"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "quota", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "customer_developed", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "authentication_provider", "XSUAA"),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.create", "25m"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.update", "15m"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.delete", "15m"),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_subscription.uut",
+					ImportStateIdFunc: getSubscriptionImportStateId("btp_subaccount_subscription.uut", "auditlog-viewer", "free"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -113,6 +150,21 @@ func hclResourceSubaccountSubscriptionBySubaccount(resourceName string, subaccou
 			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 			app_name         = "%s"
 			plan_name        = "%s"
+		}`, resourceName, subaccountName, appName, planName)
+}
+
+func hclResourceSubaccountSubscriptionBySubaccountWithTimeout(resourceName string, subaccountName string, appName string, planName string) string {
+	return fmt.Sprintf(`
+		data "btp_subaccounts" "all" {}
+		resource "btp_subaccount_subscription" "%s"{
+			subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+			app_name         = "%s"
+			plan_name        = "%s"
+			timeouts = {
+				create = "25m"
+				update = "15m"
+				delete = "15m"
+			  }
 		}`, resourceName, subaccountName, appName, planName)
 }
 

@@ -85,9 +85,9 @@ resource "btp_subaccount_subscription" "workzone" {
 
 Optional:
 
-- `create` (String) Timeout for creating the service instance.
-- `delete` (String) Timeout for deleting the service instance.
-- `update` (String) Timeout for updating the service instance.
+- `create` (String) Timeout for creating the subscription.
+- `delete` (String) Timeout for deleting the subscription.
+- `update` (String) Timeout for updating the subscription.
 
 ## Import
 
