@@ -170,10 +170,12 @@ func (ds *subaccountDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	if !data.Subdomain.IsNull() && !data.Region.IsNull() {
 
+		cachedData := data
+
 		data, accountFound, _ := ds.getSubbacountByRegionSubdomain(ctx, data.Region.ValueString(), data.Subdomain.ValueString(), resp)
 
 		if !accountFound {
-			resp.Diagnostics.AddError("API Error Reading Resource Subaccount : Please provide correct value for subdomain and region", fmt.Sprintf("Subaccount not found with subdomain %s in region %s", data.Subdomain.ValueString(), data.Region.ValueString()))
+			resp.Diagnostics.AddError("API Error Reading Resource Subaccount : Please provide correct value for subdomain and region", fmt.Sprintf("Subaccount not found with subdomain %q in region %q", cachedData.Subdomain.ValueString(), cachedData.Region.ValueString()))
 			return
 		}
 
