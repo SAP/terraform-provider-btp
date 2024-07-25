@@ -13,7 +13,6 @@ resource "btp_subaccount_subscription" "workzone" {
   plan_name     = "free"
   timeouts = {
     create = "25m"
-    update = "15m"
     delete = "15m"
   }
 }

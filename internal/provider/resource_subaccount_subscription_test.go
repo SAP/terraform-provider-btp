@@ -67,7 +67,6 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.create", "25m"),
-						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.update", "15m"),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.delete", "15m"),
 					),
 				},
@@ -162,7 +161,6 @@ func hclResourceSubaccountSubscriptionBySubaccountWithTimeout(resourceName strin
 			plan_name        = "%s"
 			timeouts = {
 				create = "25m"
-				update = "15m"
 				delete = "15m"
 			  }
 		}`, resourceName, subaccountName, appName, planName)

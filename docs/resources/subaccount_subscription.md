@@ -34,7 +34,6 @@ resource "btp_subaccount_subscription" "workzone" {
   plan_name     = "free"
   timeouts = {
     create = "25m"
-    update = "15m"
     delete = "15m"
   }
 }
@@ -87,7 +86,6 @@ Optional:
 
 - `create` (String) Timeout for creating the subscription.
 - `delete` (String) Timeout for deleting the subscription.
-- `update` (String) Timeout for updating the subscription.
 
 ## Import
 
