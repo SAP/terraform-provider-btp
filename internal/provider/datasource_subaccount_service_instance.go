@@ -118,6 +118,10 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 				MarkdownDescription: "The set of words or phrases assigned to the service instance.",
 				Computed:            true,
 			},
+			"dashboard_url": schema.StringAttribute{
+				MarkdownDescription: "The URL of the web-based management UI for the service instance.",
+				Computed:            true,
+			},
 		},
 	}
 }

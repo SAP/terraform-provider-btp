@@ -46,6 +46,7 @@ data "btp_subaccount_service_instance" "by_name" {
 
 - `context` (String) Contextual data for the resource.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `dashboard_url` (String) The URL of the web-based management UI for the service instance.
 - `labels` (Map of Set of String) The set of words or phrases assigned to the service instance.
 - `last_modified` (String) The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `parameters` (String) The configuration parameters for the service instance.
