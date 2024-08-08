@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
@@ -323,7 +324,12 @@ func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context,
 			Pending: []string{saas_manager_service.StateInProcess},
 			Target:  []string{saas_manager_service.StateSubscribed},
 			Refresh: func() (interface{}, string, error) {
-				subRes, _, err := rs.cli.Accounts.Subscription.Get(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString())
+				subRes, cmdRes, err := rs.cli.Accounts.Subscription.Get(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString())
+
+				if cmdRes.StatusCode == http.StatusTooManyRequests {
+					// Retry in case of rate limiting
+					return subRes, saas_manager_service.StateInProcess, nil
+				}
 
 				if err != nil {
 					return subRes, "", err
@@ -357,7 +363,12 @@ func (rs *subaccountSubscriptionResource) DeleteStateChange(ctx context.Context,
 			Pending: []string{saas_manager_service.StateInProcess},
 			Target:  []string{saas_manager_service.StateNotSubscribed},
 			Refresh: func() (interface{}, string, error) {
-				subRes, _, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
+				subRes, cmdRes, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
+
+				if cmdRes.StatusCode == http.StatusTooManyRequests {
+					// Retry in case of rate limiting
+					return subRes, saas_manager_service.StateInProcess, nil
+				}
 
 				if err != nil {
 					return subRes, subRes.State, err
