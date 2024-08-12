@@ -395,9 +395,14 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{"DELETED"},
 		Refresh: func() (interface{}, string, error) {
-			subRes, comRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
+			subRes, cmdRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 
-			if comRes.StatusCode == http.StatusNotFound {
+			if cmdRes.StatusCode == http.StatusTooManyRequests {
+				// Retry in case of rate limiting
+				return subRes, servicemanager.StateInProgress, nil
+			}
+
+			if cmdRes.StatusCode == http.StatusNotFound {
 				return subRes, "DELETED", nil
 			}
 
@@ -458,7 +463,12 @@ func (rs *subaccountServiceInstanceResource) CreateStateChange(ctx context.Conte
 			Pending: []string{servicemanager.StateInProgress},
 			Target:  []string{servicemanager.StateSucceeded},
 			Refresh: func() (interface{}, string, error) {
-				subRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
+				subRes, cmdRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
+
+				if cmdRes.StatusCode == http.StatusTooManyRequests {
+					// Retry in case of rate limiting
+					return subRes, servicemanager.StateInProgress, nil
+				}
 
 				if err != nil {
 					return subRes, "", err
@@ -496,7 +506,12 @@ func (rs *subaccountServiceInstanceResource) UpdateStateChange(ctx context.Conte
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{servicemanager.StateSucceeded},
 		Refresh: func() (interface{}, string, error) {
-			subRes, _, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
+			subRes, cmdRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
+
+			if cmdRes.StatusCode == http.StatusTooManyRequests {
+				// Retry in case of rate limiting
+				return subRes, servicemanager.StateInProgress, nil
+			}
 
 			if err != nil {
 				return subRes, "", err
