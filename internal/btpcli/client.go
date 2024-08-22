@@ -447,7 +447,7 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 		var backendError BtpClientError
 
 		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {
-			err = fmt.Errorf(backendError.Message)
+			err = fmt.Errorf("%s", backendError.Message)
 			// Handle scenarios where more error context can potentially be provided
 			err = handleSpecialErrors(backendError, err)
 		} else if res.Header.Get(HeaderCLIServerMessage) != "" {

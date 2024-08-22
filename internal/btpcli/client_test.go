@@ -609,7 +609,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 				w.Header().Add(key, value)
 			}
 			w.WriteHeader(config.srvReturnStatus)
-			fmt.Fprintf(w, config.srvReturnContent)
+			fmt.Fprintf(w,"%s",config.srvReturnContent)
 		}
 	}))
 	defer srv.Close()
