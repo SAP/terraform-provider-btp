@@ -165,9 +165,9 @@ func (f servicesInstanceFacade) Update(ctx context.Context, args *ServiceInstanc
 }
 
 type ServiceInstanceShareInput struct {
-	Id			 string `btpcli:"id"`
-	Subaccount 	 string	`btpcli:"subaccount"`
-	Name 		 string `btpcli:"name"`
+	Id         string `btpcli:"id"`
+	Subaccount string `btpcli:"subaccount"`
+	Name       string `btpcli:"name"`
 }
 
 func (f servicesInstanceFacade) Share(ctx context.Context, args *ServiceInstanceShareInput) (servicemanager.ServiceInstanceResponseObject, CommandResponse, error) {

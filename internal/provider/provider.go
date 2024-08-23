@@ -220,10 +220,17 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		password = config.Password.ValueString()
 	}
 
+	//Check for conflicts between the different auth flows
+	//This can happen if the user proivdes the values via ENV variables as the schema validation will not catch this
+	if len(idToken) > 0 && (len(username) > 0 || len(password) > 0) {
+		resp.Diagnostics.AddError(unableToCreateClient, "Cannot provide both id token and username/password")
+		return
+	}
+
 	//Determine and execute the login flow depending on the provided parameters
 	switch authFlow := determineAuthFlow(config, idToken, ssoLogin); authFlow {
 	case ssoFlow:
-		if _,err = client.BrowserLogin(ctx, btpcli.NewBrowserLoginRequest(idp, config.GlobalAccount.ValueString())); err != nil {
+		if _, err = client.BrowserLogin(ctx, btpcli.NewBrowserLoginRequest(idp, config.GlobalAccount.ValueString())); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 		}
 	case userPasswordFlow:
@@ -310,9 +317,13 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newSubaccountRoleCollectionResource,
 		newSubaccountSecuritySettingsResource,
 		newSubaccountServiceBindingResource,
+		newSubaccountServiceBrokerResource,
 		newSubaccountServiceInstanceResource,
 		newSubaccountSubscriptionResource,
 		newSubaccountTrustConfigurationResource,
+		newDirectoryRoleResource,
+		newGlobalaccountRoleResource,
+		newSubaccountRoleResource,
 	}, betaResources...)
 }
 
@@ -327,8 +338,6 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newGlobalaccountAppsDataSource,
 		newGlobalaccountResourceProviderDataSource,
 		newGlobalaccountResourceProvidersDataSource,
-		newSubaccountServiceBrokerDataSource,
-		newSubaccountServiceBrokersDataSource,
 		newSubaccountServicePlatformDataSource,
 		newSubaccountServicePlatformsDataSource,
 	}
@@ -376,6 +385,8 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newSubaccountSecuritySettingsDataSource,
 		newSubaccountServiceBindingDataSource,
 		newSubaccountServiceBindingsDataSource,
+		newSubaccountServiceBrokerDataSource,
+		newSubaccountServiceBrokersDataSource,
 		newSubaccountServiceInstanceDataSource,
 		newSubaccountServiceInstancesDataSource,
 		newSubaccountServiceOfferingDataSource,

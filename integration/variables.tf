@@ -13,7 +13,7 @@ variable "subaccount_subdomain_extension" {
 variable "testing_idp" {
   description = "The IDP used for testing. Contains test users and should not be used for other purposes. URL must not contain a protocol prefix. Must not be part of trusted_idps."
   type        = string
-  default = "terraformint.accounts400.ondemand.com"
+  default     = "terraformint.accounts400.ondemand.com"
 }
 
 variable "trusted_idp_origin_keys" {

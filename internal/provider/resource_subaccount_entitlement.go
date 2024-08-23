@@ -224,7 +224,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 				return callResult, entitlementCallRetrySucceeded, nil
 			}
 
-			if err != nil && isRetriableError(err) {
+			if isRetriableError(err) {
 				return callResult, entitlementCallRetryPending, nil
 			}
 
@@ -234,9 +234,9 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 
 			return callResult, entitlementCallRetryPending, err
 		},
-		Timeout:    5 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    10 * time.Minute,
+		Delay:      10 * time.Second,
+		MinTimeout: 10 * time.Second,
 	}
 
 	_, err := RetryApiCallConf.WaitForStateContext(ctx)
@@ -272,8 +272,8 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 			return *entitlement, entitlement.Assignment.EntityState, nil
 		},
 		Timeout:    10 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Delay:      10 * time.Second,
+		MinTimeout: 10 * time.Second,
 	}
 
 	entitlement, err := createStateConf.WaitForStateContext(ctx)
@@ -301,7 +301,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 	// Determine the parent of the subaccount
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
 	//Determine if the parent of the subaccount is a directory and if it has authoization enabled
-	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID) 
+	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
 
 	var directoryId string
 
@@ -327,7 +327,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 				return callResult, entitlementCallRetrySucceeded, nil
 			}
 
-			if err != nil && isRetriableError(err) {
+			if isRetriableError(err) {
 				return callResult, entitlementCallRetryPending, nil
 			}
 
@@ -337,9 +337,9 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 
 			return callResult, entitlementCallRetryPending, err
 		},
-		Timeout:    5 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Timeout:    10 * time.Minute,
+		Delay:      10 * time.Second,
+		MinTimeout: 10 * time.Second,
 	}
 
 	_, err := RetryApiCallConf.WaitForStateContext(ctx)
@@ -375,8 +375,8 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 			return entitlement, cis_entitlements.StateProcessing, nil
 		},
 		Timeout:    10 * time.Minute,
-		Delay:      5 * time.Second,
-		MinTimeout: 5 * time.Second,
+		Delay:      10 * time.Second,
+		MinTimeout: 10 * time.Second,
 	}
 
 	_, err = deleteStateConf.WaitForStateContext(ctx)
@@ -429,8 +429,11 @@ func isRetriableError(err error) bool {
 	if strings.Contains(err.Error(), "[Error: 30004/400]") {
 		// Error code for a locking scenario - API call must be retried
 		return true
+	} else if strings.Contains(err.Error(), "[Error: 11006/429]") {
+		// Error code when hitting a rate limit - API call must be retried
+		return true
 	} else {
-		// No retry possible as errro code does not indicate a valid retry scenario
+		// No retry possible as error code does not indicate a valid retry scenario
 		return false
 	}
 

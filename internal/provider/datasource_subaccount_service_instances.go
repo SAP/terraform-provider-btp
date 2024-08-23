@@ -29,6 +29,7 @@ type subaccountServiceInstancesValueConfig struct {
 	CreatedDate   types.String `tfsdk:"created_date"`
 	LastModified  types.String `tfsdk:"last_modified"`
 	Labels        types.Map    `tfsdk:"labels"`
+	DashboardUrl  types.String `tfsdk:"dashboard_url"`
 }
 
 type subaccountServiceInstancesDataSourceConfig struct {
@@ -62,7 +63,7 @@ func (ds *subaccountServiceInstancesDataSource) Schema(_ context.Context, _ data
 		MarkdownDescription: `Lists all service instances in a subaccount.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the subaccount.`,		
+You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -136,6 +137,10 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 							MarkdownDescription: "The set of words or phrases assigned to the service instance.",
 							Computed:            true,
 						},
+						"dashboard_url": schema.StringAttribute{
+							MarkdownDescription: "The URL of the web-based management UI for the service instance.",
+							Computed:            true,
+						},
 					},
 				},
 				Computed: true,
@@ -181,6 +186,7 @@ func (ds *subaccountServiceInstancesDataSource) Read(ctx context.Context, req da
 			Context:       types.StringValue(string(serviceInstance.Context)),
 			CreatedDate:   timeToValue(serviceInstance.CreatedAt),
 			LastModified:  timeToValue(serviceInstance.UpdatedAt),
+			DashboardUrl:  types.StringValue(serviceInstance.DashboardUrl),
 		}
 
 		val.Labels, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, serviceInstance.Labels)

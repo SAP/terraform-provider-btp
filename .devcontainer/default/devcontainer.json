@@ -1,7 +1,7 @@
 {
 	"name": "Terraform provider for SAP BTP - Development",
 	//https://mcr.microsoft.com/en-us/product/devcontainers/go/tags
-	"image": "mcr.microsoft.com/devcontainers/go:1.22-bullseye",
+	"image": "mcr.microsoft.com/devcontainers/go:1.23-bullseye",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/terraform:1": {},
@@ -18,7 +18,8 @@
 		},
 		"codespaces": {}
 	},
-	"postCreateCommand": "cp ./assets/provider-config-local.txt ~/.terraformrc && mkdir ~/.terraform.d && cp ./assets/credentials.tfrc.json.txt ~/.terraform.d/credentials.tfrc.json && bash ./.devcontainer/scripts/install-xdg.sh",
+	// If you want to use SSO in the devcontainer, you must install the xdg-utils package (see .devcontainer/scripts/install-xdg.sh).
+	"postCreateCommand": "cp ./assets/provider-config-local.txt ~/.terraformrc && mkdir ~/.terraform.d && cp ./assets/credentials.tfrc.json.txt ~/.terraform.d/credentials.tfrc.json",
 	"hostRequirements": {
 		"memory": "4gb"
 	},

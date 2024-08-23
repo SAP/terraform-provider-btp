@@ -28,6 +28,7 @@ type subaccountServiceInstanceType struct {
 	LastModified         types.String   `tfsdk:"last_modified"`
 	Labels               types.Map      `tfsdk:"labels"`
 	Timeouts             timeouts.Value `tfsdk:"timeouts"`
+	DashboardUrl         types.String   `tfsdk:"dashboard_url"`
 }
 
 func subaccountServiceInstanceValueFrom(ctx context.Context, value servicemanager.ServiceInstanceResponseObject) (subaccountServiceInstanceType, diag.Diagnostics) {
@@ -45,6 +46,7 @@ func subaccountServiceInstanceValueFrom(ctx context.Context, value servicemanage
 		State:                types.StringValue(value.LastOperation.State),
 		CreatedDate:          timeToValue(value.CreatedAt),
 		LastModified:         timeToValue(value.UpdatedAt),
+		DashboardUrl:         types.StringValue(value.DashboardUrl),
 	}
 
 	var diags, diagnostics diag.Diagnostics
@@ -74,6 +76,7 @@ type subaccountServiceInstanceDataSourceType struct {
 	CreatedDate          types.String `tfsdk:"created_date"`
 	LastModified         types.String `tfsdk:"last_modified"`
 	Labels               types.Map    `tfsdk:"labels"`
+	DashboardUrl         types.String `tfsdk:"dashboard_url"`
 }
 
 func subaccountServiceInstanceDataSourceValueFrom(ctx context.Context, value servicemanager.ServiceInstanceResponseObject) (subaccountServiceInstanceDataSourceType, diag.Diagnostics) {
@@ -92,6 +95,7 @@ func subaccountServiceInstanceDataSourceValueFrom(ctx context.Context, value ser
 		Context:              types.StringValue(string(value.Context)),
 		CreatedDate:          timeToValue(value.CreatedAt),
 		LastModified:         timeToValue(value.UpdatedAt),
+		DashboardUrl:         types.StringValue(value.DashboardUrl),
 	}
 
 	var diags, diagnostics diag.Diagnostics

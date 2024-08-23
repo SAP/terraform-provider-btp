@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestDataSourceGlobalAccountSecuritySettings(t *testing.T) {
+func TestDataSourceGlobalaccountSecuritySettings(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - security settings by id", func(t *testing.T) {

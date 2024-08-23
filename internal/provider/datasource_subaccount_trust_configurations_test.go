@@ -24,7 +24,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceSubaccountTrustConfigurationsBySubaccount("uut", "integration-test-acc-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configurations.uut", "values.#", "3"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_trust_configurations.uut", "values.#", "4"),
 					),
 				},
 			},

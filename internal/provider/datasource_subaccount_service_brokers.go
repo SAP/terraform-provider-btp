@@ -23,7 +23,7 @@ type subaccountServiceBrokerValue struct {
 	Name         types.String `tfsdk:"name" btpcli:"name,get"`
 	Ready        types.Bool   `tfsdk:"ready"`
 	Description  types.String `tfsdk:"description"`
-	BrokerUrl    types.String `tfsdk:"broker_url"`
+	Url          types.String `tfsdk:"url"`
 	CreatedDate  types.String `tfsdk:"created_date"`
 	LastModified types.String `tfsdk:"last_modified"`
 	Labels       types.Map    `tfsdk:"labels"`
@@ -59,7 +59,7 @@ func (ds *subaccountServiceBrokersDataSource) Schema(_ context.Context, _ dataso
 		MarkdownDescription: `Lists all service brokers in a subaccount.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the subaccount.`,		
+You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -101,7 +101,7 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 							MarkdownDescription: "The description of the service broker.",
 							Computed:            true,
 						},
-						"broker_url": schema.StringAttribute{
+						"url": schema.StringAttribute{
 							MarkdownDescription: "The URL of the service broker.",
 							Computed:            true,
 						},
@@ -160,7 +160,7 @@ func (ds *subaccountServiceBrokersDataSource) Read(ctx context.Context, req data
 			Name:         types.StringValue(broker.Name),
 			Ready:        types.BoolValue(broker.Ready),
 			Description:  types.StringValue(broker.Description),
-			BrokerUrl:    types.StringValue(broker.BrokerUrl),
+			Url:          types.StringValue(broker.BrokerUrl),
 			CreatedDate:  timeToValue(broker.CreatedAt),
 			LastModified: timeToValue(broker.UpdatedAt),
 		}

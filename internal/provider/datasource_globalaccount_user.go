@@ -52,7 +52,7 @@ func (ds *globalaccountUserDataSource) Schema(_ context.Context, _ datasource.Sc
 		MarkdownDescription: `Shows registered users in a global account. Users belong to one of the identity providers (IdPs) of the global account.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the global account.`,		
+You must be assigned to the admin or viewer role of the global account.`,
 		Attributes: map[string]schema.Attribute{
 			"origin": schema.StringAttribute{
 				MarkdownDescription: "The identity provider that hosts the user. Only needed for custom identity provider.",

@@ -285,6 +285,7 @@ func TestSecurityRoleFacade_CreateByDirectory(t *testing.T) {
 				"appId":            roleTemplateAppId,
 				"roleName":         roleName,
 				"roleTemplateName": roleTemplateName,
+				"description":      "",
 			})
 		}))
 		defer srv.Close()
@@ -321,6 +322,7 @@ func TestSecurityRoleFacade_CreateBySubaccount(t *testing.T) {
 				"appId":            roleTemplateAppId,
 				"roleName":         roleName,
 				"roleTemplateName": roleTemplateName,
+				"description":      "",
 			})
 		}))
 		defer srv.Close()
@@ -356,6 +358,7 @@ func TestSecurityRoleFacade_CreateByGlobalAccount(t *testing.T) {
 				"appId":            roleTemplateAppId,
 				"roleName":         roleName,
 				"roleTemplateName": roleTemplateName,
+				"description":      "",
 			})
 		}))
 		defer srv.Close()

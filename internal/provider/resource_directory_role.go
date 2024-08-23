@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -16,6 +18,25 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
+
+var directoryScopeObjType = types.ObjectType{
+	AttrTypes: map[string]attr.Type{
+		"name":        types.StringType,
+		"description": types.StringType,
+		"custom_grant_as_authority_to_apps": types.SetType{
+			ElemType: types.StringType,
+		},
+		"custom_granted_apps": types.SetType{
+			ElemType: types.StringType,
+		},
+		"grant_as_authority_to_apps": types.SetType{
+			ElemType: types.StringType,
+		},
+		"granted_apps": types.SetType{
+			ElemType: types.StringType,
+		},
+	},
+}
 
 func newDirectoryRoleResource() resource.Resource {
 	return &directoryRoleResource{}
@@ -65,14 +86,23 @@ __Further documentation:__
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role.",
 				Required:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"app_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the xsuaa application.",
 				Required:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"role_template_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role template.",
 				Required:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "The role description.",
@@ -142,7 +172,6 @@ func (rs *directoryRoleResource) Read(ctx context.Context, req resource.ReadRequ
 
 	updatedState, diags := directoryRoleFromValue(ctx, cliRes)
 	updatedState.DirectoryId = state.DirectoryId
-	updatedState.Id = state.DirectoryId
 
 	if updatedState.Id.IsNull() || updatedState.Id.IsUnknown() {
 		// Setting ID of state - required by hashicorps terraform plugin testing framework for Import. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
@@ -168,6 +197,7 @@ func (rs *directoryRoleResource) Create(ctx context.Context, req resource.Create
 		AppId:            plan.RoleTemplateAppId.ValueString(),
 		RoleTemplateName: plan.RoleTemplateName.ValueString(),
 		DirectoryId:      plan.DirectoryId.ValueString(),
+		Description:      plan.Description.ValueString(),
 	})
 
 	if err != nil {

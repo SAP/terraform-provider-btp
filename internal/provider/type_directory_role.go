@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_authz"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -24,9 +25,9 @@ type directoryRoleType struct {
 	RoleTemplateAppId types.String `tfsdk:"app_id"`
 	RoleTemplateName  types.String `tfsdk:"role_template_name"`
 	/* OUTPUT */
-	Description types.String         `tfsdk:"description"`
-	IsReadOnly  types.Bool           `tfsdk:"read_only"`
-	Scopes      []directoryRoleScope `tfsdk:"scopes"`
+	Description types.String `tfsdk:"description"`
+	IsReadOnly  types.Bool   `tfsdk:"read_only"`
+	Scopes      types.List   `tfsdk:"scopes"`
 }
 
 func directoryRoleFromValue(ctx context.Context, value xsuaa_authz.Role) (directoryRoleType, diag.Diagnostics) {
@@ -38,7 +39,9 @@ func directoryRoleFromValue(ctx context.Context, value xsuaa_authz.Role) (direct
 	dirRole.RoleTemplateName = types.StringValue(value.RoleTemplateName)
 	dirRole.RoleTemplateAppId = types.StringValue(value.RoleTemplateAppId)
 
-	dirRole.Scopes = []directoryRoleScope{}
+	// dirRole.Scopes = []directoryRoleScope{}
+
+	dirRoleScopes := []directoryRoleScope{}
 
 	var summary, diags diag.Diagnostics
 
@@ -60,8 +63,11 @@ func directoryRoleFromValue(ctx context.Context, value xsuaa_authz.Role) (direct
 		scopeVal.GrantedApps, diags = types.SetValueFrom(ctx, types.StringType, scope.GrantedApps)
 		summary.Append(diags...)
 
-		dirRole.Scopes = append(dirRole.Scopes, scopeVal)
+		dirRoleScopes = append(dirRoleScopes, scopeVal)
 	}
+
+	dirRole.Scopes, diags = types.ListValueFrom(ctx, directoryScopeObjType, dirRoleScopes)
+	summary.Append(diags...)
 
 	return dirRole, summary
 }

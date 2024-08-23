@@ -32,7 +32,7 @@ jobs:
       
     - name: Setup Terraform
       id : setup_terraform
-      uses: hashicorp/setup-terraform@v3.1.1
+      uses: hashicorp/setup-terraform@v3.1.2
       with:
         terraform_wrapper: false
         terraform_version: latest
@@ -49,10 +49,10 @@ jobs:
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -var idp=${{ secrets.BTP_IDP }} -auto-approve -no-color 
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -auto-approve -no-color 
 
     - name: Setup Go
-      uses: actions/setup-go@v5.0.1
+      uses: actions/setup-go@v5.0.2
       with:
         go-version-file: 'go.mod'
 
@@ -74,7 +74,7 @@ jobs:
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} plan -var globalaccount=${{ secrets.GLOBALACCOUNT }} -var idp=${{ secrets.BTP_IDP }} -no-color -detailed-exitcode
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} plan -var globalaccount=${{ secrets.GLOBALACCOUNT }} -no-color -detailed-exitcode
 
 
     - name: Remove init data and override
@@ -98,7 +98,7 @@ jobs:
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -var idp='${{ secrets.BTP_IDP }}' -auto-approve -no-color
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -auto-approve -no-color
 
     - name: State deviation - find existing issue for deviation
       id: find_deviation_issue

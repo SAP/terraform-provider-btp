@@ -25,7 +25,7 @@ func TestDataSourceSubaccountRoles(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountRoles("uut", "integration-test-acc-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_roles.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_roles.uut", "values.#", "26"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_roles.uut", "values.#", "30"),
 						resource.TestCheckResourceAttrSet("data.btp_subaccount_roles.uut", "values.0.app_name"),
 					),
 				},

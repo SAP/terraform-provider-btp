@@ -53,7 +53,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "description", "Custom Platform Identity Provider"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "identity_provider", "terraformint.accounts400.ondemand.com"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "name", "terraformint-platform"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "domain", ""),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "domain", "terraformint.accounts400.ondemand.com"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "protocol", "OpenID Connect"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "read_only", "false"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_trust_configuration.uut", "status", "active"),

@@ -10,7 +10,7 @@ import (
 )
 
 func TestResourceSubaccountTrustConfiguration(t *testing.T) {
-	var testIdp = getenv("BTP_TEST_IDP", "terraformtest.accounts400.ondemand.com")
+	var testIdp = getenv("BTP_TEST_IDP", "btpterraform.accounts400.ondemand.com")
 
 	t.Parallel()
 
@@ -23,7 +23,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationCompleteBySubaccount("uut", "integration-test-acc-static", testIdp, testIdp, "Custom IAS tenant for apps", "Description for "+testIdp, "custom link text", false, false, "inactive"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationCompleteBySubaccount("uut", "integration-test-trust-settings", testIdp, testIdp, "Custom IAS tenant for apps", "Description for "+testIdp, "custom link text", false, false, "inactive"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", testIdp),
@@ -42,7 +42,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", testIdp),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-trust-settings", testIdp),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", testIdp),
@@ -79,7 +79,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", testIdp),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-trust-settings", testIdp),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", testIdp),
@@ -98,7 +98,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationCompleteBySubaccount("uut", "integration-test-acc-static", testIdp, testIdp, "Custom IAS tenant for apps", "Description for "+testIdp, "custom link text", false, false, "inactive"),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationCompleteBySubaccount("uut", "integration-test-trust-settings", testIdp, testIdp, "Custom IAS tenant for apps", "Description for "+testIdp, "custom link text", false, false, "inactive"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_trust_configuration.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_trust_configuration.uut", "identity_provider", testIdp),
@@ -135,7 +135,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-acc-static", testIdp),
+					Config: hclProviderFor(user) + hclResourceSubaccountTrustConfigurationMinimalBySubaccount("uut", "integration-test-trust-settings", testIdp),
 				},
 				{
 					ResourceName:      "btp_subaccount_trust_configuration.uut",

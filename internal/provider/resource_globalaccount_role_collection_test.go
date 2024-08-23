@@ -16,7 +16,7 @@ type globalaccountRoleCollectionRoleRefTestType struct {
 	RoleTemplateName  string `json:"role_template_name"`
 }
 
-func TestResourceGlobalAccountRoleCollection(t *testing.T) {
+func TestResourceGlobalaccountRoleCollection(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection")
 		defer stopQuietly(rec)
@@ -26,7 +26,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollection(
 						"uut",
 						"My new role collection",
 						"Description of my new role collection",
@@ -60,7 +60,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollection(
 						"uut",
 						"My new role collection",
 						"Description of my new role collection",
@@ -77,7 +77,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollection(
 						"uut",
 						"My new role collection",
 						"Description of my updated role collection",
@@ -112,7 +112,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollection(
 						"uut",
 						"My new role collection",
 						"Description of my new role collection",
@@ -129,7 +129,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollection(
 						"uut",
 						"My new role collection",
 						"",
@@ -164,7 +164,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection(
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollection(
 						"uut",
 						"My new role collection",
 						"Description of my new role collection",
@@ -181,7 +181,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollectionWoDescription(
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollectionWoDescription(
 						"uut",
 						"My new role collection",
 						globalaccountRoleCollectionRoleRefTestType{
@@ -215,7 +215,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalAccountRoleCollection("uut", "My new role collection", "Description of my new role collection"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollection("uut", "My new role collection", "Description of my new role collection"),
 				},
 				{
 					ResourceName:      "btp_globalaccount_role_collection.uut",
@@ -229,7 +229,7 @@ func TestResourceGlobalAccountRoleCollection(t *testing.T) {
 	})
 }
 
-func hclResourceGlobalAccountRoleCollection(resourceName string, displayName string, description string, roles ...globalaccountRoleCollectionRoleRefTestType) string {
+func hclResourceGlobalaccountRoleCollection(resourceName string, displayName string, description string, roles ...globalaccountRoleCollectionRoleRefTestType) string {
 	if roles == nil {
 		roles = []globalaccountRoleCollectionRoleRefTestType{}
 	}
@@ -242,7 +242,7 @@ func hclResourceGlobalAccountRoleCollection(resourceName string, displayName str
     }`, resourceName, displayName, description, string(rolesJson))
 }
 
-func hclResourceGlobalAccountRoleCollectionWoDescription(resourceName string, displayName string, roles ...globalaccountRoleCollectionRoleRefTestType) string {
+func hclResourceGlobalaccountRoleCollectionWoDescription(resourceName string, displayName string, roles ...globalaccountRoleCollectionRoleRefTestType) string {
 	if roles == nil {
 		roles = []globalaccountRoleCollectionRoleRefTestType{}
 	}
