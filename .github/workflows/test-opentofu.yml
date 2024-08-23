@@ -1,0 +1,64 @@
+# This is a restricted test set for OpenTofu
+# The full test is defined in the test.yml workflow. 
+# This file is intended to focus testing the OpenTofu compatibility against the latest provider version. 
+name: OpenTofu Provider Tests
+
+on:
+  workflow_dispatch:
+
+# Testing only needs permissions to read the repository contents.
+permissions:
+  contents: read
+
+  
+jobs:
+  # Ensure project builds before running testing matrix
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4 # v4.0.0
+      - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+      - run: go mod download
+      - run: go build -v .
+      - name: Run linters
+        uses: golangci/golangci-lint-action@aaa42aa0628b4ae2578232a66b541047968fac86 # v3.7.1
+        with:
+          version: latest
+
+
+  # Run acceptance tests in a matrix with OpenTofu CLI versions
+  test:
+    name: Terraform Provider Acceptance Tests for OpenTofu
+    needs: build
+    runs-on: ubuntu-latest
+    # Timeout for tests set to 25 minutes to safeguard long running tests (specifically for service instances) 
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        # list of OpenTofu versions to test against
+        opentofu:
+          - '1.6.*'
+          - '1.7.*'
+          - '1.8.*'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: ${{ matrix.opentofu }}
+          tofu_wrapper: false
+      - run: go mod download
+      - env:
+          TF_ACC: "1"
+        run: go test -v -cover -coverprofile=cover.out -timeout=1800s -parallel=4 ./...
+        timeout-minutes: 20
+     
