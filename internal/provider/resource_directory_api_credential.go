@@ -99,11 +99,11 @@ __Further documentation:__
 				Computed: 			 true,
 			},
 			"token_url": schema.StringAttribute{
-				MarkdownDescription: "The URL that must used to fetch the access token to make use of the XSUAA REST APIs.",
+				MarkdownDescription: "The URL to be used to fetch the access token to make use of the XSUAA REST APIs.",
 				Computed:            true,
 			},
 			"api_url": schema.StringAttribute{
-				MarkdownDescription: "The URL that must be used to make the API calls.",
+				MarkdownDescription: "The URL to be used to make the API calls.",
 				Computed:            true,
 			},
 			"xsapp_name": schema.StringAttribute{

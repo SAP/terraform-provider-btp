@@ -66,8 +66,6 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 		})
 	})
 
-	//Please note that the following test case must not be re-recorded within the same 24-hour period,
-	//as the deletion of credentials with certificates takes some time to reflect within the directory.
 	t.Run("happy path - api-credential with read-only set to true", func(t *testing.T){
 		rec, user := setupVCR(t, "fixtures/resource_directory_api_credential.read_only_credentials")
 		defer stopQuietly(rec)

@@ -35,7 +35,7 @@ func New() provider.Provider {
 }
 
 func NewWithClient(httpClient *http.Client) provider.Provider {
-	return &btpcliProvider{httpClient: httpClient}
+	return &btpcliProvider{httpClient: httpClient, betaFeaturesEnabled: true}
 }
 
 type btpcliProvider struct {

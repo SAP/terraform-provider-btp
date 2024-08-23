@@ -40,8 +40,6 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 		})
 	})
 
-	//Please note that the following test case must not be re-recorded within the same 24-hour period,
-	//as the deletion of credentials with certificates takes some time to reflect within the subaccount.
 	t.Run("happy path - api-credential with certificate", func(t *testing.T){
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_api_credential.with_certificate")
 		defer stopQuietly(rec)
