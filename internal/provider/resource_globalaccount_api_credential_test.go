@@ -35,7 +35,7 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 					ResourceName: "btp_globalaccount_api_credential.uut",
 					ImportStateIdFunc: getImportStateIdForGlobalaccountApiCredential("btp_globalaccount_api_credential.uut", "globalaccount-api-credential-with-secret"),
 					ImportState: true,
-					ImportStateVerify: true,
+					ImportStateVerifyIdentifierAttribute: "globalaccount_id",
 				},
 			},
 		})
