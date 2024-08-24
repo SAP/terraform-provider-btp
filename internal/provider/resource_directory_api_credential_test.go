@@ -35,6 +35,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 					ResourceName: "btp_directory_api_credential.uut",
 					ImportStateIdFunc: getImportStateIdForDirectoryApiCredential("btp_directory_api_credential.uut", "directory-api-credential-with-secret"),
 					ImportState: true,
+					ImportStateVerifyIdentifierAttribute: "directory_id",
 				},
 			},
 		})
@@ -61,6 +62,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 					ResourceName: "btp_directory_api_credential.uut",
 					ImportStateIdFunc: getImportStateIdForDirectoryApiCredential("btp_directory_api_credential.uut", "directory-api-credential-with-certificate"),
 					ImportState: true,
+					ImportStateVerifyIdentifierAttribute: "directory_id",
 				},
 			},
 		})
@@ -87,6 +89,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 					ResourceName: "btp_directory_api_credential.uut",
 					ImportStateIdFunc: getImportStateIdForDirectoryApiCredential("btp_directory_api_credential.uut", "directory-api-credential-read-only"),
 					ImportState: true,
+					ImportStateVerifyIdentifierAttribute: "directory_id",
 				},
 			},
 		})

@@ -35,6 +35,7 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 					ResourceName: "btp_globalaccount_api_credential.uut",
 					ImportStateIdFunc: getImportStateIdForGlobalaccountApiCredential("btp_globalaccount_api_credential.uut", "globalaccount-api-credential-with-secret"),
 					ImportState: true,
+					ImportStateVerify: true,
 				},
 			},
 		})
@@ -61,6 +62,7 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 					ResourceName: "btp_globalaccount_api_credential.uut",
 					ImportStateIdFunc: getImportStateIdForGlobalaccountApiCredential("btp_globalaccount_api_credential.uut", "globalaccount-api-credential-with-certificate"),
 					ImportState: true,
+					ImportStateVerifyIdentifierAttribute: "globalaccount_id",
 				},
 			},
 		})
@@ -87,6 +89,7 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 					ResourceName: "btp_globalaccount_api_credential.uut",
 					ImportStateIdFunc: getImportStateIdForGlobalaccountApiCredential("btp_globalaccount_api_credential.uut", "globalaccount-api-credential-read-only"),
 					ImportState: true,
+					ImportStateVerifyIdentifierAttribute: "globalaccount_id",
 				},
 			},
 		})

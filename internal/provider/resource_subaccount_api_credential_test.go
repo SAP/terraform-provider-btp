@@ -23,7 +23,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountApiCredential("uut", "subaccount-api-credential-with-secret", "integration-test-acc-static", false),
+					Config: hclProviderFor(user) + hclResourceSubaccountApiCredential("uut", "subaccount-api-credential-with-secret", "integration-test-security-settings", false),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "name", "subaccount-api-credential-with-secret"),
 						resource.TestMatchResourceAttr("btp_subaccount_api_credential.uut", "subaccount_id", regexpValidUUID),
@@ -35,6 +35,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 					ResourceName: "btp_subaccount_api_credential.uut",
 					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential-with-secret"),
 					ImportState: true,
+					ImportStateVerifyIdentifierAttribute: "subaccount_id",
 				},
 			},
 		})
@@ -49,7 +50,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountApiCredentialWithCertificate("uut", "subaccount-api-credential-with-certificate", "integration-test-acc-static", rec.IsRecording()),
+					Config: hclProviderFor(user) + hclResourceSubaccountApiCredentialWithCertificate("uut", "subaccount-api-credential-with-certificate", "integration-test-security-settings", rec.IsRecording()),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "name", "subaccount-api-credential-with-certificate"),
 						resource.TestMatchResourceAttr("btp_subaccount_api_credential.uut", "subaccount_id", regexpValidUUID),
@@ -61,6 +62,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 					ResourceName: "btp_subaccount_api_credential.uut",
 					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential-with-certificate"),
 					ImportState: true,
+					ImportStateVerifyIdentifierAttribute: "subaccount_id",
 				},
 			},
 		})
@@ -75,7 +77,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountApiCredential("uut", "subaccount-api-credential-read-only", "integration-test-acc-static", true),
+					Config: hclProviderFor(user) + hclResourceSubaccountApiCredential("uut", "subaccount-api-credential-read-only", "integration-test-security-settings", true),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "name", "subaccount-api-credential-read-only"),
 						resource.TestMatchResourceAttr("btp_subaccount_api_credential.uut", "subaccount_id", regexpValidUUID),
@@ -87,6 +89,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 					ResourceName: "btp_subaccount_api_credential.uut",
 					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential-read-only"),
 					ImportState: true,
+					ImportStateVerifyIdentifierAttribute: "subaccount_id",
 				},
 			},
 		})
@@ -101,7 +104,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountApiCredentialWithInvalidCertificate("uut", "subaccount-api-credential-invalid-certificate", "integration-test-acc-static", rec.IsRecording()),
+					Config: hclProviderFor(user) + hclResourceSubaccountApiCredentialWithInvalidCertificate("uut", "subaccount-api-credential-invalid-certificate", "integration-test-security-settings", rec.IsRecording()),
 					ExpectError: regexp.MustCompile(`The certificate is not valid PEM format`),
 				},
 			},
