@@ -35,7 +35,7 @@ func New() provider.Provider {
 }
 
 func NewWithClient(httpClient *http.Client) provider.Provider {
-	return &btpcliProvider{httpClient: httpClient, betaFeaturesEnabled: true}
+	return &btpcliProvider{httpClient: httpClient}
 }
 
 type btpcliProvider struct {
@@ -288,9 +288,6 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 	betaResources := []func() resource.Resource{
 		//Beta resources should be excluded from sonar scan.
 		//If you add them to production code, remove them from sonar exclusion list
-		newDirectoryRoleResource,
-		newGlobalaccountRoleResource,
-		newSubaccountRoleResource,
 		newSubaccountApiCredentialResource,
 		newDirectoryApiCredentialResource,
 		newGlobalaccountApiCredentialResource,
