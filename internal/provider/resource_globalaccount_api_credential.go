@@ -106,12 +106,6 @@ __Further documentation:__
 				MarkdownDescription: "The URL to be used to make the API calls.",
 				Computed:            true,
 			},
-			"xsapp_name": schema.StringAttribute{
-				Computed: true,
-			},
-			"service_instance_id": schema.StringAttribute{
-				Computed: true,
-			},
 		},
 	}
 }
@@ -172,9 +166,6 @@ func (rs *globalaccountApiCredentialResource) Read(ctx context.Context, req reso
 	} else {
 		newState.ClientSecret = state.ClientSecret
 	}
-
-	newState.ServiceInstanceId = state.ServiceInstanceId
-	newState.XsAppname = state.XsAppname
 
 	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)

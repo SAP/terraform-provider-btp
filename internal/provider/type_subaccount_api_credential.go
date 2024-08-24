@@ -20,11 +20,9 @@ type subaccountApiCredentialType struct {
 	ReadOnly           		types.Bool 	 `tfsdk:"read_only"`
 	TokenUrl				types.String `tfsdk:"token_url"`
 	ApiUrl					types.String `tfsdk:"api_url"`
-	XsAppname				types.String `tfsdk:"xsapp_name"`
-	ServiceInstanceId		types.String `tfsdk:"service_instance_id"`
 }
 
-func subaccountApiCredentialFromValue(ctx context.Context, cliRes xsuaa_api.ApiCredentialSubaccount) (subaccountApiCredentialType, diag.Diagnostics){
+func subaccountApiCredentialFromValue(_ context.Context, cliRes xsuaa_api.ApiCredentialSubaccount) (subaccountApiCredentialType, diag.Diagnostics){
 	
 	res := subaccountApiCredentialType{
 		SubaccountId: 		types.StringValue(cliRes.SubaccountId),
@@ -34,8 +32,6 @@ func subaccountApiCredentialFromValue(ctx context.Context, cliRes xsuaa_api.ApiC
 		ReadOnly: 			types.BoolValue(cliRes.ReadOnly),
 		TokenUrl: 			types.StringValue(cliRes.TokenUrl),
 		ApiUrl:				types.StringValue(cliRes.ApiUrl),
-		XsAppname: 			types.StringValue(cliRes.XsAppname),
-		ServiceInstanceId: 	types.StringValue(cliRes.ServiceInstanceId),
 	}
 
 	if len(cliRes.ClientSecret) > 0 {
