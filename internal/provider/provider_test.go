@@ -230,6 +230,21 @@ func hookRedactIntegrationUserCredentials(user TestUser) func(i *cassette.Intera
 			i.Response.Body = reBindingSecret.ReplaceAllString(i.Response.Body, `"password":"redacted"`)
 		}
 
+		if strings.Contains(i.Response.Body, "key") {
+			reBindingSecret := regexp.MustCompile(`"key":"(.*?)"`)
+			i.Response.Body = reBindingSecret.ReplaceAllString(i.Response.Body, `"key":"redacted"`)
+		}
+
+		if strings.Contains(i.Response.Body, "certificate") {
+			reBindingSecret := regexp.MustCompile(`"certificate":"(.*?)"`)
+			i.Response.Body = reBindingSecret.ReplaceAllString(i.Response.Body, `"certificate":"redacted"`)
+		}
+
+		if strings.Contains(i.Request.Body, "certificate") {
+			reBindingSecret := regexp.MustCompile(`"certificate":"(.*?)"`)
+			i.Request.Body = reBindingSecret.ReplaceAllString(i.Request.Body, `"certificate":"redacted"`)
+		}
+
 		return nil
 	}
 }
@@ -436,17 +451,20 @@ data "btp_whoami" "me" {}`,
 
 func TestProvider_HasResources(t *testing.T) {
 	expectedResources := []string{
+		"btp_directory_api_credential",
 		"btp_directory",
 		"btp_directory_entitlement",
 		"btp_directory_role",
 		"btp_directory_role_collection",
 		"btp_directory_role_collection_assignment",
+		"btp_globalaccount_api_credential",
 		"btp_globalaccount_resource_provider",
 		"btp_globalaccount_role",
 		"btp_globalaccount_role_collection",
 		"btp_globalaccount_role_collection_assignment",
 		"btp_globalaccount_security_settings",
 		"btp_globalaccount_trust_configuration",
+		"btp_subaccount_api_credential",
 		"btp_subaccount",
 		"btp_subaccount_entitlement",
 		"btp_subaccount_environment_instance",

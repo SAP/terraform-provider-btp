@@ -295,15 +295,18 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 	}
 
 	return append([]func() resource.Resource{
+		newDirectoryApiCredentialResource,
 		newDirectoryResource,
 		newDirectoryEntitlementResource,
 		newDirectoryRoleCollectionAssignmentResource,
 		newDirectoryRoleCollectionResource,
+		newGlobalaccountApiCredentialResource,
 		newGlobalaccountResourceProviderResource,
 		newGlobalaccountRoleCollectionAssignmentResource,
 		newGlobalaccountRoleCollectionResource,
 		newGlobalaccountSecuritySettingsResource,
 		newGlobalaccountTrustConfigurationResource,
+		newSubaccountApiCredentialResource,
 		newSubaccountEntitlementResource,
 		newSubaccountEnvironmentInstanceResource,
 		newSubaccountResource,
