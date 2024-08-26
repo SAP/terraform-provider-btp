@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 )
@@ -31,12 +30,6 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_directory_api_credential.uut", "read_only", "false"),
 					),
 				},
-				{
-					ResourceName: "btp_directory_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForDirectoryApiCredential("btp_directory_api_credential.uut", "directory-api-credential-with-secret"),
-					ImportState: true,
-					ImportStateVerifyIdentifierAttribute: "directory_id",
-				},
 			},
 		})
 	})
@@ -58,12 +51,6 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_directory_api_credential.uut", "read_only", "false"),
 					),
 				},
-				{
-					ResourceName: "btp_directory_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForDirectoryApiCredential("btp_directory_api_credential.uut", "directory-api-credential-with-certificate"),
-					ImportState: true,
-					ImportStateVerifyIdentifierAttribute: "directory_id",
-				},
 			},
 		})
 	})
@@ -84,12 +71,6 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_directory_api_credential.uut", "credential_type", "secret"),
 						resource.TestCheckResourceAttr("btp_directory_api_credential.uut", "read_only", "true"),
 					),
-				},
-				{
-					ResourceName: "btp_directory_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForDirectoryApiCredential("btp_directory_api_credential.uut", "directory-api-credential-read-only"),
-					ImportState: true,
-					ImportStateVerifyIdentifierAttribute: "directory_id",
 				},
 			},
 		})
@@ -180,14 +161,4 @@ resource "btp_directory_api_credential" "%s"{
 	name = "%s"
 }
 	`,resourceName, apiCredentialName)
-}
-
-func getImportStateIdForDirectoryApiCredential(resourceName string, apiCredentialName string) resource.ImportStateIdFunc {
-	return func(state *terraform.State) (string, error){
-		rs, ok := state.RootModule().Resources[resourceName]
-		if !ok {
-			return "", fmt.Errorf("not found %s", resourceName)
-		}
-		return fmt.Sprintf("%s,%s", rs.Primary.Attributes["directory_id"], apiCredentialName), nil
-	}
 }

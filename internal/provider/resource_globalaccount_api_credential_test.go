@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 )
@@ -31,12 +30,6 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_api_credential.uut", "read_only", "false"),
 					),
 				},
-				{
-					ResourceName: "btp_globalaccount_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForGlobalaccountApiCredential("btp_globalaccount_api_credential.uut", "globalaccount-api-credential-with-secret"),
-					ImportState: true,
-					ImportStateVerifyIdentifierAttribute: "globalaccount_id",
-				},
 			},
 		})
 	})
@@ -58,12 +51,6 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_api_credential.uut", "read_only", "false"),
 					),
 				},
-				{
-					ResourceName: "btp_globalaccount_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForGlobalaccountApiCredential("btp_globalaccount_api_credential.uut", "globalaccount-api-credential-with-certificate"),
-					ImportState: true,
-					ImportStateVerifyIdentifierAttribute: "globalaccount_id",
-				},
 			},
 		})
 	})
@@ -84,12 +71,6 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_api_credential.uut", "credential_type", "secret"),
 						resource.TestCheckResourceAttr("btp_globalaccount_api_credential.uut", "read_only", "true"),
 					),
-				},
-				{
-					ResourceName: "btp_globalaccount_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForGlobalaccountApiCredential("btp_globalaccount_api_credential.uut", "globalaccount-api-credential-read-only"),
-					ImportState: true,
-					ImportStateVerifyIdentifierAttribute: "globalaccount_id",
 				},
 			},
 		})
@@ -153,14 +134,4 @@ resource "btp_globalaccount_api_credential" "%s"{
 	certificate_passed = "%s"
 }
 	`,resourceName, apiCredentialName, globalaccountCertificate)
-}
-
-func getImportStateIdForGlobalaccountApiCredential(resourceName string, apiCredentialName string) resource.ImportStateIdFunc {
-	return func(state *terraform.State) (string, error){
-		rs, ok := state.RootModule().Resources[resourceName]
-		if !ok {
-			return "", fmt.Errorf("not found %s", resourceName)
-		}
-		return fmt.Sprintf("%s,%s", rs.Primary.Attributes["globalaccount_id"], apiCredentialName), nil
-	}
 }

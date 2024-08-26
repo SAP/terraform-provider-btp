@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 )
@@ -31,12 +30,6 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "read_only", "false"),
 					),
 				},
-				{
-					ResourceName: "btp_subaccount_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential-with-secret"),
-					ImportState: true,
-					ImportStateVerifyIdentifierAttribute: "subaccount_id",
-				},
 			},
 		})
 	})
@@ -58,12 +51,6 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "read_only", "false"),
 					),
 				},
-				{
-					ResourceName: "btp_subaccount_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential-with-certificate"),
-					ImportState: true,
-					ImportStateVerifyIdentifierAttribute: "subaccount_id",
-				},
 			},
 		})
 	})
@@ -84,12 +71,6 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "credential_type", "secret"),
 						resource.TestCheckResourceAttr("btp_subaccount_api_credential.uut", "read_only", "true"),
 					),
-				},
-				{
-					ResourceName: "btp_subaccount_api_credential.uut",
-					ImportStateIdFunc: getImportStateIdForSubaccountApiCredential("btp_subaccount_api_credential.uut", "subaccount-api-credential-read-only"),
-					ImportState: true,
-					ImportStateVerifyIdentifierAttribute: "subaccount_id",
 				},
 			},
 		})
@@ -181,14 +162,4 @@ resource "btp_subaccount_api_credential" "%s"{
 	name = "%s"
 }
 	`,resourceName, apiCredentialName)
-}
-
-func getImportStateIdForSubaccountApiCredential(resourceName string, apiCredentialName string) resource.ImportStateIdFunc {
-	return func(state *terraform.State) (string, error){
-		rs, ok := state.RootModule().Resources[resourceName]
-		if !ok {
-			return "", fmt.Errorf("not found %s", resourceName)
-		}
-		return fmt.Sprintf("%s,%s", rs.Primary.Attributes["subaccount_id"], apiCredentialName), nil
-	}
 }
