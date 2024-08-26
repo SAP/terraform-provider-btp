@@ -71,12 +71,4 @@ resource "btp_globalaccount_api_credential" "read-only" {
 - `key` (String) RSA key generated if the API credential is created with a certificate.
 - `token_url` (String) The URL to be used to fetch the access token to make use of the XSUAA REST APIs.
 
-## Import
 
-Import is supported using the following syntax:
-
-```terraform
-# terraform import btp_globalaccount_api_credential.<resource_name> <globalaccount_id>
-
-terraform import btp_globalaccount_api_credential.with_secret d1298936-ddaf-4a82-b1d7-3ad29a732b61, globalaccount-api-credential-with-secret
-```

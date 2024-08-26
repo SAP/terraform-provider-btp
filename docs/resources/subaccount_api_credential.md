@@ -77,12 +77,4 @@ resource "btp_subaccount_api_credential" "read-only" {
 - `key` (String) RSA key generated if the API credential is created with a certificate.
 - `token_url` (String) The URL to be used to fetch the access token to make use of the XSUAA REST APIs.
 
-## Import
 
-Import is supported using the following syntax:
-
-```terraform
-# terraform import btp_subaccount_api_credential.<resource_name> <subaccount_id>
-
-terraform import btp_subaccount_api_credential.with_secret 77395f6a-a601-4c9e-8cd0-c1fcefc7f60f
-```
