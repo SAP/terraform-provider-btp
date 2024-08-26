@@ -288,9 +288,6 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 	betaResources := []func() resource.Resource{
 		//Beta resources should be excluded from sonar scan.
 		//If you add them to production code, remove them from sonar exclusion list
-		newSubaccountApiCredentialResource,
-		newDirectoryApiCredentialResource,
-		newGlobalaccountApiCredentialResource,
 	}
 
 	if !p.betaFeaturesEnabled {
@@ -298,15 +295,18 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 	}
 
 	return append([]func() resource.Resource{
+		newDirectoryApiCredentialResource,
 		newDirectoryResource,
 		newDirectoryEntitlementResource,
 		newDirectoryRoleCollectionAssignmentResource,
 		newDirectoryRoleCollectionResource,
+		newGlobalaccountApiCredentialResource,
 		newGlobalaccountResourceProviderResource,
 		newGlobalaccountRoleCollectionAssignmentResource,
 		newGlobalaccountRoleCollectionResource,
 		newGlobalaccountSecuritySettingsResource,
 		newGlobalaccountTrustConfigurationResource,
+		newSubaccountApiCredentialResource,
 		newSubaccountEntitlementResource,
 		newSubaccountEnvironmentInstanceResource,
 		newSubaccountResource,
