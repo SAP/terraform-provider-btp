@@ -60,6 +60,7 @@ func (ds *directoriesDataSource) Configure(_ context.Context, req datasource.Con
 }
 
 func (ds *directoriesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	// Any changes made to the schema must be reflected in the template file templates/datasources/directories.md.tmpl
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Gets all the directories in a global account, including the directories in directories.
 
