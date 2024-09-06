@@ -13,6 +13,12 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
+
+/*
+The attributes listed below are used in the 'directories' datasource.
+Thus any changes made to the schema must also be reflected in the 
+template file templates/datasources/directories.md.tmpl
+*/
 var dataSourceDirectorySchemaAttributes = map[string]schema.Attribute{
 	"id": schema.StringAttribute{
 		MarkdownDescription: "The ID of the directory.",
