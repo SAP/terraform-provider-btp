@@ -15,6 +15,7 @@ type subaccountSecuritySettingsType struct {
 	TreatUsersWithSameEmailAsSameUser types.Bool   `tfsdk:"treat_users_with_same_email_as_same_user"`
 	AccessTokenValidity               types.Int64  `tfsdk:"access_token_validity"`
 	RefreshTokenValidity              types.Int64  `tfsdk:"refresh_token_validity"`
+	IframeDomains                     types.String `tfsdk:"iframe_domains"`
 }
 
 func subaccountSecuritySettingsFromValue(ctx context.Context, value xsuaa_settings.TenantSettingsResp) (tenantSettings subaccountSecuritySettingsType, diags diag.Diagnostics) {
@@ -37,5 +38,6 @@ func subaccountSecuritySettingsFromValue(ctx context.Context, value xsuaa_settin
 		tenantSettings.CustomEmailDomains, diags = types.SetValueFrom(ctx, types.StringType, []string{})
 	}
 
+	tenantSettings.IframeDomains = types.StringValue(value.IframeDomains)
 	return
 }

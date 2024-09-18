@@ -87,6 +87,11 @@ __Further documentation:__
 				Computed:            true,
 				Default:             int64default.StaticInt64(int64(-1)),
 			},
+			"iframe_domains": schema.StringAttribute{
+				MarkdownDescription: "",
+				Optional:            true,
+				Computed:            true,
+			},
 		},
 	}
 }
@@ -135,6 +140,7 @@ func (rs *subaccountSecuritySettingsResource) Create(ctx context.Context, req re
 		TreatUsersWithSameEmailAsSameUser: plan.TreatUsersWithSameEmailAsSameUser.ValueBool(),
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
 		RefreshTokenValidity:              int(plan.RefreshTokenValidity.ValueInt64()),
+		IFrame:                            plan.IframeDomains.ValueString(),
 	})
 
 	if err != nil {
@@ -174,6 +180,7 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 		TreatUsersWithSameEmailAsSameUser: plan.TreatUsersWithSameEmailAsSameUser.ValueBool(),
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
 		RefreshTokenValidity:              int(plan.RefreshTokenValidity.ValueInt64()),
+		IFrame:                            plan.IframeDomains.ValueString(),
 	})
 
 	if err != nil {
@@ -203,6 +210,7 @@ func (rs *subaccountSecuritySettingsResource) Delete(ctx context.Context, req re
 		TreatUsersWithSameEmailAsSameUser: false,
 		AccessTokenValidity:               -1,
 		RefreshTokenValidity:              -1,
+		IFrame:                            "",
 	})
 
 	if err != nil {
