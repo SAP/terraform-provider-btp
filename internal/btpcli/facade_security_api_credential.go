@@ -20,12 +20,12 @@ func (f *securityApiCredentialFacade) getCommand() string {
 }
 
 type ApiCredentialInput struct {
-	Subaccount     		string `btpcli:"subaccount"`
-	Directory      		string `btpcli:"directory"`
-	GlobalAccount		string `btpcli:"globalAccount"`
-	Name       			string `btpcli:"name,omitempty"`
-	Certificate			string `btpcli:"certificate,omitempty"`
-	ReadOnly 			bool   `btpcli:"readOnly,omitempty"`
+	Subaccount    string `btpcli:"subaccount"`
+	Directory     string `btpcli:"directory"`
+	GlobalAccount string `btpcli:"globalAccount"`
+	Name          string `btpcli:"name,omitempty"`
+	Certificate   string `btpcli:"certificate,omitempty"`
+	ReadOnly      bool   `btpcli:"readOnly,omitempty"`
 }
 
 func (f *securityApiCredentialFacade) CreateBySubaccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
@@ -89,7 +89,7 @@ func (f *securityApiCredentialFacade) GetByDirectory(ctx context.Context, args *
 }
 
 func (f *securityApiCredentialFacade) CreateByGlobalAccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
-	
+
 	args.GlobalAccount = f.cliClient.GetGlobalAccountSubdomain()
 
 	params, err := tfutils.ToBTPCLIParamsMap(args)
@@ -102,9 +102,9 @@ func (f *securityApiCredentialFacade) CreateByGlobalAccount(ctx context.Context,
 }
 
 func (f *securityApiCredentialFacade) DeleteByGlobalAccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
-	
+
 	args.GlobalAccount = f.cliClient.GetGlobalAccountSubdomain()
-	
+
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
@@ -115,9 +115,9 @@ func (f *securityApiCredentialFacade) DeleteByGlobalAccount(ctx context.Context,
 }
 
 func (f *securityApiCredentialFacade) GetByGlobalAccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
-	
+
 	args.GlobalAccount = f.cliClient.GetGlobalAccountSubdomain()
-	
+
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {

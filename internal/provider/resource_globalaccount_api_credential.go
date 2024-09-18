@@ -59,10 +59,10 @@ __Further documentation:__
 					uuidvalidator.ValidUUID(),
 				},
 			},
-			"name" : schema.StringAttribute{
+			"name": schema.StringAttribute{
 				MarkdownDescription: "The name for the API credential.",
-				Optional: 			 true,
-				Computed: 			 true,
+				Optional:            true,
+				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(regexp.MustCompile(`^[a-zA-Z\d-]+$`), "can contain only alphanumberic values and dashes."),
 				},
@@ -73,28 +73,28 @@ __Further documentation:__
 			},
 			"credential_type": schema.StringAttribute{
 				MarkdownDescription: "The supported credential types are Secrets (Default) or Certificates.",
-				Computed: 			 true,
+				Computed:            true,
 			},
 			"certificate_passed": schema.StringAttribute{
-				MarkdownDescription:  "If the user prefers to use a certificate, they must provide the certificate value in PEM format \"----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----\".",
-				Optional: true,
+				MarkdownDescription: "If the user prefers to use a certificate, they must provide the certificate value in PEM format \"----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----\".",
+				Optional:            true,
 			},
 			"certificate_received": schema.StringAttribute{
-				MarkdownDescription:  "The certificate that is computed based on the one passed by the user.",
-				Computed: true,
+				MarkdownDescription: "The certificate that is computed based on the one passed by the user.",
+				Computed:            true,
 			},
 			"client_secret": schema.StringAttribute{
 				MarkdownDescription: "If the certificate is omitted, then a unique secret is generated for the API credential.",
-				Computed: 			 true,
+				Computed:            true,
 			},
 			"key": schema.StringAttribute{
 				MarkdownDescription: "RSA key generated if the API credential is created with a certificate.",
-				Computed: true,
+				Computed:            true,
 			},
 			"read_only": schema.BoolAttribute{
 				MarkdownDescription: "Access restriction placed on the API credential. If set to true, the resource has only read-only access. Note that if a read-only credential is deleted, it will take a while to reflect in the global account.",
 				Optional:            true,
-				Computed: 			 true,
+				Computed:            true,
 			},
 			"token_url": schema.StringAttribute{
 				MarkdownDescription: "The URL to be used to fetch the access token to make use of the XSUAA REST APIs.",
@@ -117,11 +117,11 @@ func (rs *globalaccountApiCredentialResource) Create(ctx context.Context, req re
 	}
 
 	cliRes, _, err := rs.cli.Security.ApiCredential.CreateByGlobalAccount(ctx, &btpcli.ApiCredentialInput{
-		Name:             plan.Name.ValueString(),
-		Certificate: 	  plan.CertificatePassed.ValueString(),
-		ReadOnly:		  plan.ReadOnly.ValueBool(),
+		Name:        plan.Name.ValueString(),
+		Certificate: plan.CertificatePassed.ValueString(),
+		ReadOnly:    plan.ReadOnly.ValueBool(),
 	})
-	
+
 	if err != nil {
 		resp.Diagnostics.AddError("API Error", fmt.Sprintf("%s", err))
 		return
@@ -141,14 +141,14 @@ func (rs *globalaccountApiCredentialResource) Read(ctx context.Context, req reso
 	diags := req.State.Get(ctx, &state)
 
 	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError(){
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	cliRes, rawRes, err := rs.cli.Security.ApiCredential.GetByGlobalAccount(ctx, &btpcli.ApiCredentialInput{
-		Name:		  state.Name.ValueString(),
-	})  
-	if err!=nil {
+		Name: state.Name.ValueString(),
+	})
+	if err != nil {
 		handleReadErrors(ctx, rawRes, resp, err, "Resource Api Credential (Global Account)")
 		return
 	}
@@ -157,7 +157,7 @@ func (rs *globalaccountApiCredentialResource) Read(ctx context.Context, req reso
 	resp.Diagnostics.Append(diags...)
 
 	//The below parameters are not returned by the get call to the Api Credential
-	newState.GlobalaccountId = state.GlobalaccountId 
+	newState.GlobalaccountId = state.GlobalaccountId
 	if !state.CertificatePassed.IsUnknown() {
 		newState.CertificatePassed = state.CertificatePassed
 		newState.Key = state.Key
@@ -170,7 +170,7 @@ func (rs *globalaccountApiCredentialResource) Read(ctx context.Context, req reso
 }
 
 func (rs *globalaccountApiCredentialResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-// There is currently no API call that supports the update of the Api credentials
+	// There is currently no API call that supports the update of the Api credentials
 }
 
 func (rs *globalaccountApiCredentialResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -182,7 +182,7 @@ func (rs *globalaccountApiCredentialResource) Delete(ctx context.Context, req re
 	}
 
 	_, _, err := rs.cli.Security.ApiCredential.DeleteByGlobalAccount(ctx, &btpcli.ApiCredentialInput{
-		Name:		  state.Name.ValueString(),
+		Name: state.Name.ValueString(),
 	})
 
 	if err != nil {

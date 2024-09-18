@@ -13,12 +13,12 @@ import (
 func TestResourceGlobalaccountApiCredential(t *testing.T) {
 	t.Parallel()
 
-	t.Run("happy path - api-credential with client secret", func(t *testing.T){
+	t.Run("happy path - api-credential with client secret", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_api_credential.with_secret")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
-			IsUnitTest: true,
+			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
@@ -34,12 +34,12 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path - api-credential with certificate", func(t *testing.T){
+	t.Run("happy path - api-credential with certificate", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_api_credential.with_certificate")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
-			IsUnitTest: true,
+			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
@@ -55,12 +55,12 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path - api-credential with read-only set to true", func(t *testing.T){
+	t.Run("happy path - api-credential with read-only set to true", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_api_credential.read_only_credentials")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
-			IsUnitTest: true,
+			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
@@ -76,16 +76,16 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - invalid certificate", func(t *testing.T){
+	t.Run("error path - invalid certificate", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_api_credential.error_invalid_certificate")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
-			IsUnitTest: true,
+			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountApiCredentialWithInvalidCertificate("uut", "globalaccount-api-credential-invalid-certificate", rec.IsRecording()),
+					Config:      hclProviderFor(user) + hclResourceGlobalaccountApiCredentialWithInvalidCertificate("uut", "globalaccount-api-credential-invalid-certificate", rec.IsRecording()),
 					ExpectError: regexp.MustCompile(`The certificate is not valid PEM format`),
 				},
 			},
@@ -93,7 +93,7 @@ func TestResourceGlobalaccountApiCredential(t *testing.T) {
 	})
 }
 
-func hclResourceGlobalaccountApiCredential (resourceName string, apiCredentialName string, readOnly bool) string {
+func hclResourceGlobalaccountApiCredential(resourceName string, apiCredentialName string, readOnly bool) string {
 	return fmt.Sprintf(`
 resource "btp_globalaccount_api_credential" "%s"{
 	name = "%s"
@@ -102,7 +102,7 @@ resource "btp_globalaccount_api_credential" "%s"{
 	`, resourceName, apiCredentialName, readOnly)
 }
 
-func hclResourceGlobalaccountApiCredentialWithCertificate (resourceName string, apiCredentialName string, recording bool) string {
+func hclResourceGlobalaccountApiCredentialWithCertificate(resourceName string, apiCredentialName string, recording bool) string {
 
 	var globalaccountCertificate string
 	if recording {
@@ -119,19 +119,19 @@ resource "btp_globalaccount_api_credential" "%s"{
 	`, resourceName, apiCredentialName, globalaccountCertificate)
 }
 
-func hclResourceGlobalaccountApiCredentialWithInvalidCertificate (resourceName string, apiCredentialName string, recording bool) string {
-	
+func hclResourceGlobalaccountApiCredentialWithInvalidCertificate(resourceName string, apiCredentialName string, recording bool) string {
+
 	var globalaccountCertificate string
 	if recording {
 		globalaccountCertificate = "Invalid-PEM-Certificate"
 	} else {
 		globalaccountCertificate = "redacted"
 	}
-	
+
 	return fmt.Sprintf(`
 resource "btp_globalaccount_api_credential" "%s"{
 	name = "%s"
 	certificate_passed = "%s"
 }
-	`,resourceName, apiCredentialName, globalaccountCertificate)
+	`, resourceName, apiCredentialName, globalaccountCertificate)
 }

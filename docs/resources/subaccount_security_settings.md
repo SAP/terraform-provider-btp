@@ -50,6 +50,7 @@ resource "btp_subaccount_security_settings" "subaccount" {
 - `access_token_validity` (Number) The validity of the access token.
 - `custom_email_domains` (Set of String) Set of domains that are allowed to be used for user authentication.
 - `default_identity_provider` (String) The subaccount's default identity provider for business application users.
+- `iframe_domains` (String)
 - `refresh_token_validity` (Number) The validity of the refresh token.
 - `treat_users_with_same_email_as_same_user` (Boolean) If set to true, users with the same email are treated as same users.
 
