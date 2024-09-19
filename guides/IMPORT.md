@@ -12,7 +12,7 @@ To get a quick overview of the resources and if they support the import function
 
 The following list provides an overview of the resources and their support for the import functionality (state: 09.04.2024)
 
-| Resource                                     | Drift Detection Support
+| Resource                                     | Import Support
 |---                                           |---
 | btp_directory                                | Yes
 | btp_directory_api_credential                 | No
