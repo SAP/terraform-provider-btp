@@ -5,12 +5,15 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -56,6 +59,14 @@ __Further documentation:__
 					uuidvalidator.ValidUUID(),
 				},
 			},
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework for imports
+				DeprecationMessage:  "Use the `subaccount_id`attribute instead",
+				MarkdownDescription: "The ID of the security settings used for import operations.",
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"custom_email_domains": schema.SetAttribute{
 				ElementType:         types.StringType,
 				MarkdownDescription: "Set of domains that are allowed to be used for user authentication.",
@@ -88,7 +99,7 @@ __Further documentation:__
 				Default:             int64default.StaticInt64(int64(-1)),
 			},
 			"iframe_domains": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "The new domains of the iframe. Enter as string. To provide multiple domains, separate them by spaces.",
 				Optional:            true,
 				Computed:            true,
 			},
@@ -113,8 +124,13 @@ func (rs *subaccountSecuritySettingsResource) Read(ctx context.Context, req reso
 		return
 	}
 
-	updatedState, diags := subaccountSecuritySettingsFromValue(ctx, cliRes)
+	updatedState, diags := subaccountSecuritySettingsValueFrom(ctx, cliRes)
 	updatedState.SubaccountId = state.SubaccountId
+
+	if state.Id.IsNull() || state.Id.IsUnknown() {
+		// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+		updatedState.Id = state.SubaccountId
+	}
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedState)
@@ -148,8 +164,11 @@ func (rs *subaccountSecuritySettingsResource) Create(ctx context.Context, req re
 		return
 	}
 
-	state, diags := subaccountSecuritySettingsFromValue(ctx, res)
+	state, diags := subaccountSecuritySettingsValueFrom(ctx, res)
 	state.SubaccountId = plan.SubaccountId
+	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
+	state.Id = plan.SubaccountId
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
@@ -174,13 +193,23 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 	diags = plan.CustomEmailDomains.ElementsAs(ctx, &customEmailDomains, false)
 	resp.Diagnostics.Append(diags...)
 
+	//Special handling of IFrame:
+	var IframeDomainsValue string
+	if plan.IframeDomains.ValueString() == "" && state.IframeDomains.ValueString() != "" {
+		// The string should be empty, however to do the update the value must be " " (space)
+		// otherwise the API will ignore it
+		IframeDomainsValue = " "
+	} else {
+		IframeDomainsValue = plan.IframeDomains.ValueString()
+	}
+
 	res, _, err := rs.cli.Security.Settings.UpdateBySubaccount(ctx, plan.SubaccountId.ValueString(), btpcli.SecuritySettingsUpdateInput{
 		CustomEmail:                       customEmailDomains,
 		DefaultIDPForNonInteractiveLogon:  plan.DefaultIdentityProvider.ValueString(),
 		TreatUsersWithSameEmailAsSameUser: plan.TreatUsersWithSameEmailAsSameUser.ValueBool(),
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
 		RefreshTokenValidity:              int(plan.RefreshTokenValidity.ValueInt64()),
-		IFrame:                            plan.IframeDomains.ValueString(),
+		IFrame:                            IframeDomainsValue,
 	})
 
 	if err != nil {
@@ -188,8 +217,9 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 		return
 	}
 
-	state, diags = subaccountSecuritySettingsFromValue(ctx, res)
+	state, diags = subaccountSecuritySettingsValueFrom(ctx, res)
 	state.SubaccountId = plan.SubaccountId
+	state.Id = plan.SubaccountId
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
@@ -210,11 +240,15 @@ func (rs *subaccountSecuritySettingsResource) Delete(ctx context.Context, req re
 		TreatUsersWithSameEmailAsSameUser: false,
 		AccessTokenValidity:               -1,
 		RefreshTokenValidity:              -1,
-		IFrame:                            "",
+		IFrame:                            " ", // The string should be empty, however to do the update the value must be " " (space)
 	})
 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Security Settings (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+}
+
+func (rs *subaccountSecuritySettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), req.ID)...)
 }

@@ -19,7 +19,7 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "terraformint-platform", 4500, 4500, true, "[\"domain1.test\",\"domain2.test\"]"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "terraformint-platform", 4500, 4500, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "access_token_validity", "4500"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "refresh_token_validity", "4500"),
@@ -27,23 +27,30 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.#", "2"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.1", "domain2.test"),
+						resource.TestCheckResourceAttr("tp_globalaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "sap.default", 4500, 4500, false, "[]"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "sap.default", 4500, 4500, false, "[]", "https://iframedomain.test https://updated.iframedomain.test"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "access_token_validity", "4500"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "refresh_token_validity", "4500"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "treat_users_with_same_email_as_same_user", "false"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.#", "0"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test https://updated.iframedomain.test"),
 					),
+				},
+				{
+					ResourceName:      "btp_globalaccount_security_settings.uut",
+					ImportState:       true,
+					ImportStateVerify: true,
 				},
 			},
 		})
 	})
 }
 
-func hclResourceGlobalaccountSecuritySettings(resourceName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string) string {
+func hclResourceGlobalaccountSecuritySettings(resourceName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomains string) string {
 	template := `
 resource "btp_globalaccount_security_settings" "%s" {
     default_identity_provider = "%s"
@@ -54,7 +61,9 @@ resource "btp_globalaccount_security_settings" "%s" {
     treat_users_with_same_email_as_same_user = %v
 
     custom_email_domains = %v
+
+		iframe_domains = "%s"
 }`
 
-	return fmt.Sprintf(template, resourceName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains)
+	return fmt.Sprintf(template, resourceName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains)
 }

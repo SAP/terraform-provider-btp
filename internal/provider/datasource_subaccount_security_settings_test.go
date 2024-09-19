@@ -28,6 +28,7 @@ func TestDataSourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "treat_users_with_same_email_as_same_user", "false"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "access_token_validity", "-1"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "refresh_token_validity", "-1"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "iframe_domains", ""),
 					),
 				},
 			},

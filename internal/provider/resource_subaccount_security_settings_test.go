@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceSubaccountSecuritySettings(t *testing.T) {
@@ -46,12 +47,18 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test https://updated.iframedomain.test"),
 					),
 				},
+				{
+					ResourceName:      "btp_subaccount_security_settings.uut",
+					ImportStateIdFunc: getSecuritySettingsImportStateId("btp_subaccount_security_settings.uut"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
 			},
 		})
 	})
 }
 
-func hclResourceSubaccountSecuritySettings(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomain string) string {
+func hclResourceSubaccountSecuritySettings(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomains string) string {
 	template := `
 data "btp_subaccounts" "all" {}
 resource "btp_subaccount_security_settings" "%s" {
@@ -68,5 +75,15 @@ resource "btp_subaccount_security_settings" "%s" {
 
 		iframe_domains = "%s"
 }`
-	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomain)
+	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains)
+}
+
+func getSecuritySettingsImportStateId(resourceName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+		return rs.Primary.Attributes["subaccount_id"], nil
+	}
 }

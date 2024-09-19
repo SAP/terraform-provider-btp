@@ -72,12 +72,17 @@ __Further documentation:__
 				MarkdownDescription: "The validity of the refresh token.",
 				Computed:            true,
 			},
+			"iframe_domains": schema.StringAttribute{
+				MarkdownDescription: "The new domains of the iframe. Enter as string. To provide multiple domains, separate them by spaces.",
+				Optional:            true,
+				Computed:            true,
+			},
 		},
 	}
 }
 
 func (ds *subaccountSecuritySettingsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data subaccountSecuritySettingsType
+	var data subaccountSecuritySettingsDataSourceType
 
 	diags := req.Config.Get(ctx, &data)
 
@@ -92,7 +97,7 @@ func (ds *subaccountSecuritySettingsDataSource) Read(ctx context.Context, req da
 		return
 	}
 
-	state, diags := subaccountSecuritySettingsFromValue(ctx, cliRes)
+	state, diags := subaccountSecuritySettingsDataSourceValueFrom(ctx, cliRes)
 	state.SubaccountId = data.SubaccountId
 	resp.Diagnostics.Append(diags...)
 
