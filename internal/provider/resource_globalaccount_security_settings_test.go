@@ -27,7 +27,7 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.#", "2"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.1", "domain2.test"),
-						resource.TestCheckResourceAttr("tp_globalaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
 					),
 				},
 				{
