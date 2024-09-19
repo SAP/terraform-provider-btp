@@ -36,6 +36,10 @@ data "btp_subaccount_security_settings" "subaccount" {
 
 - `subaccount_id` (String) The ID of the subaccount.
 
+### Optional
+
+- `iframe_domains` (String) The new domains of the iframe. Enter as string. To provide multiple domains, separate them by spaces.
+
 ### Read-Only
 
 - `access_token_validity` (Number) The validity of the access token.
