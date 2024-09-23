@@ -3,7 +3,9 @@ package provider
 import (
 	"context"
 	"fmt"
+	"regexp"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -102,6 +104,9 @@ __Further documentation:__
 				MarkdownDescription: "The new domains of the iframe. Enter as string. To provide multiple domains, separate them by spaces.",
 				Optional:            true,
 				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.RegexMatches(regexp.MustCompile(`^(|.{4,})$`), "The attribute iframe_domains must be empty or contain domains."),
+				},
 			},
 		},
 	}
@@ -189,19 +194,10 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 	}
 
 	var customEmailDomains []string
-
 	diags = plan.CustomEmailDomains.ElementsAs(ctx, &customEmailDomains, false)
 	resp.Diagnostics.Append(diags...)
 
-	//Special handling of IFrame:
-	var IframeDomainsValue string
-	if plan.IframeDomains.ValueString() == "" && state.IframeDomains.ValueString() != "" {
-		// The string should be empty, however to do the update the value must be " " (space)
-		// otherwise the API will ignore it
-		IframeDomainsValue = " "
-	} else {
-		IframeDomainsValue = plan.IframeDomains.ValueString()
-	}
+	iFrameDomain := transformIframeDomain(plan.IframeDomains.ValueString(), state.IframeDomains.ValueString())
 
 	res, _, err := rs.cli.Security.Settings.UpdateBySubaccount(ctx, plan.SubaccountId.ValueString(), btpcli.SecuritySettingsUpdateInput{
 		CustomEmail:                       customEmailDomains,
@@ -209,7 +205,7 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 		TreatUsersWithSameEmailAsSameUser: plan.TreatUsersWithSameEmailAsSameUser.ValueBool(),
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
 		RefreshTokenValidity:              int(plan.RefreshTokenValidity.ValueInt64()),
-		IFrame:                            IframeDomainsValue,
+		IFrame:                            iFrameDomain,
 	})
 
 	if err != nil {
@@ -251,4 +247,17 @@ func (rs *subaccountSecuritySettingsResource) Delete(ctx context.Context, req re
 
 func (rs *subaccountSecuritySettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), req.ID)...)
+}
+
+func transformIframeDomain(plannedValue string, currentValue string) (iFrameDomainValueNew string) {
+	// The deletion of an Iframe must be triggered by setting the value to " " (space)
+	// We handle this by comparing the planned value with the current value
+
+	iFrameDomainValueNew = plannedValue
+
+	// User wants to delete all values as the current value is not empty
+	if plannedValue == "" && currentValue != "" {
+		iFrameDomainValueNew = " "
+	}
+	return
 }
