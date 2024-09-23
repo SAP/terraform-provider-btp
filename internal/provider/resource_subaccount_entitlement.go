@@ -159,10 +159,40 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
 	parentId, isParentGlobalAccount := determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
 
-	entitlement, rawRes, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
+	readStateConf := &tfutils.StateChangeConf{
+		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
+		Target:  []string{cis_entitlements.StateOK},
+		Refresh: func() (interface{}, string, error) {
+
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
+
+			if isRetriableError(err) {
+				return nil, cis_entitlements.StateProcessing, nil
+			}
+
+			if err != nil {
+				return nil, "", err
+			}
+
+			if entitlement == nil {
+				return nil, cis_entitlements.StateProcessing, nil
+			}
+			// No error returned even if operation failed
+			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
+				return *entitlement, entitlement.Assignment.EntityState, errors.New("undefined API error during entitlement processing")
+			}
+
+			return *entitlement, entitlement.Assignment.EntityState, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      10 * time.Second,
+		MinTimeout: 10 * time.Second,
+	}
+
+	entitlement, err := readStateConf.WaitForStateContext(ctx)
 
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Entitlement (Subaccount)")
+		resp.Diagnostics.AddError(("API Error %s Resource Entitlement (Subaccount) Read"), fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -172,7 +202,7 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 		return
 	}
 
-	updatedState, diags := subaccountEntitlementValueFrom(ctx, *entitlement)
+	updatedState, diags := subaccountEntitlementValueFrom(ctx, entitlement.(btpcli.UnfoldedAssignment))
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedState)
@@ -256,6 +286,10 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		Refresh: func() (interface{}, string, error) {
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), isParentGlobalAccount, parentId)
+
+			if isRetriableError(err) {
+				return nil, cis_entitlements.StateProcessing, nil
+			}
 
 			if err != nil {
 				return nil, "", err
@@ -361,6 +395,10 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 
 			if reflect.ValueOf(entitlement).IsNil() {
 				return entitlement, "DELETED", nil
+			}
+
+			if isRetriableError(err) {
+				return nil, cis_entitlements.StateProcessing, nil
 			}
 
 			if err != nil {
