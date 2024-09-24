@@ -36,7 +36,7 @@ resource "btp_subaccount_security_settings" "sec_setting" {
 
   custom_email_domains                     = ["yourdomain.test"]
 
-  iframe_domains                           = ["https://yourdomain.test"]
+  iframe_domains                           = "https://yourdomain.test"
 }
 ```
 
