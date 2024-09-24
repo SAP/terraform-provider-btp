@@ -248,16 +248,3 @@ func (rs *subaccountSecuritySettingsResource) Delete(ctx context.Context, req re
 func (rs *subaccountSecuritySettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), req.ID)...)
 }
-
-func transformIframeDomain(plannedValue string, currentValue string) (iFrameDomainValueNew string) {
-	// The deletion of an Iframe must be triggered by setting the value to " " (space)
-	// We handle this by comparing the planned value with the current value
-
-	iFrameDomainValueNew = plannedValue
-
-	// User wants to delete all values as the current value is not empty
-	if plannedValue == "" && currentValue != "" {
-		iFrameDomainValueNew = " "
-	}
-	return
-}

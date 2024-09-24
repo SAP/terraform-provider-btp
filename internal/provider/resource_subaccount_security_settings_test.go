@@ -10,8 +10,6 @@ import (
 )
 
 func TestResourceSubaccountSecuritySettings(t *testing.T) {
-	t.Parallel()
-
 	t.Run("happy path - complete configuration", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_security_settings.complete")
 		defer stopQuietly(rec)
@@ -58,8 +56,8 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 		})
 	})
 
-	t.Run("special path - IFrame deletion", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_security_settings.complete")
+	t.Run("happy path - IFrame deletion", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_security_settings.destroy")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

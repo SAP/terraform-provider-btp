@@ -76,3 +76,16 @@ func globalaccountSecuritySettingsDataSourceValueFrom(ctx context.Context, value
 
 	return
 }
+
+func transformIframeDomain(plannedValue string, currentValue string) (iFrameDomainValueNew string) {
+	// The deletion of an Iframe must be triggered by setting the value to " " (space)
+	// We handle this by comparing the planned value with the current value
+
+	iFrameDomainValueNew = plannedValue
+
+	// User wants to delete all values as the current value is not empty
+	if plannedValue == "" && currentValue != "" {
+		iFrameDomainValueNew = " "
+	}
+	return
+}

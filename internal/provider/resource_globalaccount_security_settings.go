@@ -3,7 +3,9 @@ package provider
 import (
 	"context"
 	"fmt"
+	"regexp"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -14,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
@@ -85,6 +88,9 @@ __Further documentation:__
 				MarkdownDescription: "The new domains of the iframe. Enter as string. To provide multiple domains, separate them by spaces.",
 				Optional:            true,
 				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.RegexMatches(regexp.MustCompile(`^(|.{4,})$`), "The attribute iframe_domains must be empty or contain domains."),
+				},
 			},
 			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework for imports
 				DeprecationMessage:  "Automatically filled with the subdomain of the global account",
@@ -185,15 +191,7 @@ func (rs *globalaccountSecuritySettingsResource) Update(ctx context.Context, req
 	diags = plan.CustomEmailDomains.ElementsAs(ctx, &customEmailDomains, false)
 	resp.Diagnostics.Append(diags...)
 
-	// Special handling of IFrame:
-	var IframeDomainsValue string
-	if plan.IframeDomains.ValueString() == "" && currentState.IframeDomains.ValueString() != "" {
-		// The string should be empty, however to do the update the value must be " " (space)
-		// otherwise the API will ignore it
-		IframeDomainsValue = " "
-	} else {
-		IframeDomainsValue = plan.IframeDomains.ValueString()
-	}
+	iFrameDomain := transformIframeDomain(plan.IframeDomains.ValueString(), currentState.IframeDomains.ValueString())
 
 	res, _, err := rs.cli.Security.Settings.UpdateByGlobalAccount(ctx, btpcli.SecuritySettingsUpdateInput{
 		CustomEmail:                       customEmailDomains,
@@ -201,7 +199,7 @@ func (rs *globalaccountSecuritySettingsResource) Update(ctx context.Context, req
 		TreatUsersWithSameEmailAsSameUser: plan.TreatUsersWithSameEmailAsSameUser.ValueBool(),
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
 		RefreshTokenValidity:              int(plan.RefreshTokenValidity.ValueInt64()),
-		IFrame:                            IframeDomainsValue,
+		IFrame:                            iFrameDomain,
 	})
 
 	if err != nil {
