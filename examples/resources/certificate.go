@@ -9,25 +9,24 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 )
 
-
 func main() {
 	err := tfutils.GenerateCertificate()
 
-	if err!=nil{
+	if err != nil {
 		fmt.Printf("Error generating a certificate : %s", err)
-		return 
+		return
 	}
 
 	data, err := os.ReadFile("cert.pem")
 	if err != nil {
 		fmt.Printf("Error reading the certificate : %s", err)
-		return 
+		return
 	}
 
 	pemString := string(data)
 
 	output := map[string]string{
-        "certificate": pemString,
+		"certificate": pemString,
 	}
 
 	if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
@@ -42,4 +41,3 @@ func main() {
 	}
 
 }
-

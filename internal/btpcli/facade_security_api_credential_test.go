@@ -8,14 +8,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSecurityApiCredential_CreateBySubaccount(t *testing.T){
-	
+func TestSecurityApiCredential_CreateBySubaccount(t *testing.T) {
+
 	command := "security/api-credential"
 
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	name := "Subaccount Api-Credentials"
 	certificate := "-----BEGIN CERTIFICATE-----\nMock-PEM-Certificate\n-----END CERTIFICATE-----"
-
 
 	t.Run("constructs the CLI params correctly - client secret", func(t *testing.T) {
 		var srvCalled bool
@@ -25,15 +24,15 @@ func TestSecurityApiCredential_CreateBySubaccount(t *testing.T){
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
 				"subaccount": subaccountId,
-				"name": name,
-				"readOnly": "false",
+				"name":       name,
+				"readOnly":   "false",
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Security.ApiCredential.CreateBySubaccount(context.TODO(), &ApiCredentialInput{
 			Subaccount: subaccountId,
-			Name: name,
+			Name:       name,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -48,19 +47,19 @@ func TestSecurityApiCredential_CreateBySubaccount(t *testing.T){
 			srvCalled = true
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
-				"subaccount": subaccountId,
-				"name": name,
-				"readOnly": "true",
+				"subaccount":  subaccountId,
+				"name":        name,
+				"readOnly":    "true",
 				"certificate": certificate,
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Security.ApiCredential.CreateBySubaccount(context.TODO(), &ApiCredentialInput{
-			Subaccount: subaccountId,
-			Name: name,
+			Subaccount:  subaccountId,
+			Name:        name,
 			Certificate: certificate,
-			ReadOnly: true,
+			ReadOnly:    true,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -69,8 +68,8 @@ func TestSecurityApiCredential_CreateBySubaccount(t *testing.T){
 	})
 }
 
-func TestSecurityApiCredential_DeleteBySubaccount(t *testing.T){
-	
+func TestSecurityApiCredential_DeleteBySubaccount(t *testing.T) {
+
 	command := "security/api-credential"
 
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
@@ -84,15 +83,15 @@ func TestSecurityApiCredential_DeleteBySubaccount(t *testing.T){
 
 			assertCall(t, r, command, ActionDelete, map[string]string{
 				"subaccount": subaccountId,
-				"name": name,
-				"readOnly" : "false",
+				"name":       name,
+				"readOnly":   "false",
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Security.ApiCredential.DeleteBySubaccount(context.TODO(), &ApiCredentialInput{
 			Subaccount: subaccountId,
-			Name: name,
+			Name:       name,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -101,8 +100,8 @@ func TestSecurityApiCredential_DeleteBySubaccount(t *testing.T){
 	})
 }
 
-func TestSecurityApiCredential_GetBySubaccount(t *testing.T){
-	
+func TestSecurityApiCredential_GetBySubaccount(t *testing.T) {
+
 	command := "security/api-credential"
 
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
@@ -116,15 +115,15 @@ func TestSecurityApiCredential_GetBySubaccount(t *testing.T){
 
 			assertCall(t, r, command, ActionGet, map[string]string{
 				"subaccount": subaccountId,
-				"name": name,
-				"readOnly" : "false",
+				"name":       name,
+				"readOnly":   "false",
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Security.ApiCredential.GetBySubaccount(context.TODO(), &ApiCredentialInput{
 			Subaccount: subaccountId,
-			Name: name,
+			Name:       name,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -133,8 +132,8 @@ func TestSecurityApiCredential_GetBySubaccount(t *testing.T){
 	})
 }
 
-func TestSecurityApiCredential_CreateByDirectory(t *testing.T){
-	
+func TestSecurityApiCredential_CreateByDirectory(t *testing.T) {
+
 	command := "security/api-credential"
 
 	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
@@ -149,15 +148,15 @@ func TestSecurityApiCredential_CreateByDirectory(t *testing.T){
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
 				"directory": directoryId,
-				"name": name,
-				"readOnly" : "false",
+				"name":      name,
+				"readOnly":  "false",
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Security.ApiCredential.CreateByDirectory(context.TODO(), &ApiCredentialInput{
 			Directory: directoryId,
-			Name: name,
+			Name:      name,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -172,17 +171,17 @@ func TestSecurityApiCredential_CreateByDirectory(t *testing.T){
 			srvCalled = true
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
-				"directory": directoryId,
-				"name": name,
-				"readOnly" : "false",
-				"certificate" : certificate,
+				"directory":   directoryId,
+				"name":        name,
+				"readOnly":    "false",
+				"certificate": certificate,
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Security.ApiCredential.CreateByDirectory(context.TODO(), &ApiCredentialInput{
-			Directory: directoryId,
-			Name: name,
+			Directory:   directoryId,
+			Name:        name,
 			Certificate: certificate,
 		})
 
@@ -192,8 +191,8 @@ func TestSecurityApiCredential_CreateByDirectory(t *testing.T){
 	})
 }
 
-func TestSecurityApiCredential_DeleteByDirectory(t *testing.T){
-	
+func TestSecurityApiCredential_DeleteByDirectory(t *testing.T) {
+
 	command := "security/api-credential"
 
 	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
@@ -207,15 +206,15 @@ func TestSecurityApiCredential_DeleteByDirectory(t *testing.T){
 
 			assertCall(t, r, command, ActionDelete, map[string]string{
 				"directory": directoryId,
-				"name": name,
-				"readOnly" : "false",
+				"name":      name,
+				"readOnly":  "false",
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Security.ApiCredential.DeleteByDirectory(context.TODO(), &ApiCredentialInput{
 			Directory: directoryId,
-			Name: name,
+			Name:      name,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -224,8 +223,8 @@ func TestSecurityApiCredential_DeleteByDirectory(t *testing.T){
 	})
 }
 
-func TestSecurityApiCredential_GetByDirectory(t *testing.T){
-	
+func TestSecurityApiCredential_GetByDirectory(t *testing.T) {
+
 	command := "security/api-credential"
 
 	directoryId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
@@ -239,15 +238,15 @@ func TestSecurityApiCredential_GetByDirectory(t *testing.T){
 
 			assertCall(t, r, command, ActionGet, map[string]string{
 				"directory": directoryId,
-				"name": name,
-				"readOnly" : "false",
+				"name":      name,
+				"readOnly":  "false",
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Security.ApiCredential.GetByDirectory(context.TODO(), &ApiCredentialInput{
 			Directory: directoryId,
-			Name: name,
+			Name:      name,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -256,13 +255,12 @@ func TestSecurityApiCredential_GetByDirectory(t *testing.T){
 	})
 }
 
-func TestSecurityApiCredential_CreateByGlobalAccount(t *testing.T){
-	
+func TestSecurityApiCredential_CreateByGlobalAccount(t *testing.T) {
+
 	command := "security/api-credential"
 
 	name := "Global Account Api-Credentials"
 	certificate := "-----BEGIN CERTIFICATE-----\nMock-PEM-Certificate\n-----END CERTIFICATE-----"
-
 
 	t.Run("constructs the CLI params correctly - client secret", func(t *testing.T) {
 		var srvCalled bool
@@ -272,8 +270,8 @@ func TestSecurityApiCredential_CreateByGlobalAccount(t *testing.T){
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
 				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
-				"name": name,
-				"readOnly": "false",
+				"name":          name,
+				"readOnly":      "false",
 			})
 		}))
 		defer srv.Close()
@@ -295,17 +293,17 @@ func TestSecurityApiCredential_CreateByGlobalAccount(t *testing.T){
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
 				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
-				"name": name,
-				"readOnly": "true",
-				"certificate": certificate,
+				"name":          name,
+				"readOnly":      "true",
+				"certificate":   certificate,
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Security.ApiCredential.CreateByGlobalAccount(context.TODO(), &ApiCredentialInput{
-			Name: name,
+			Name:        name,
 			Certificate: certificate,
-			ReadOnly: true,
+			ReadOnly:    true,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
@@ -314,8 +312,8 @@ func TestSecurityApiCredential_CreateByGlobalAccount(t *testing.T){
 	})
 }
 
-func TestSecurityApiCredential_DeleteByGlobalAccount(t *testing.T){
-	
+func TestSecurityApiCredential_DeleteByGlobalAccount(t *testing.T) {
+
 	command := "security/api-credential"
 
 	name := "Global Account Api-Credentials"
@@ -328,8 +326,8 @@ func TestSecurityApiCredential_DeleteByGlobalAccount(t *testing.T){
 
 			assertCall(t, r, command, ActionDelete, map[string]string{
 				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
-				"name": name,
-				"readOnly" : "false",
+				"name":          name,
+				"readOnly":      "false",
 			})
 		}))
 		defer srv.Close()
@@ -344,8 +342,8 @@ func TestSecurityApiCredential_DeleteByGlobalAccount(t *testing.T){
 	})
 }
 
-func TestSecurityApiCredential_GetByGlobalAccount(t *testing.T){
-	
+func TestSecurityApiCredential_GetByGlobalAccount(t *testing.T) {
+
 	command := "security/api-credential"
 
 	name := "Global Account Api-Credentials"
@@ -358,8 +356,8 @@ func TestSecurityApiCredential_GetByGlobalAccount(t *testing.T){
 
 			assertCall(t, r, command, ActionGet, map[string]string{
 				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
-				"name": name,
-				"readOnly" : "false",
+				"name":          name,
+				"readOnly":      "false",
 			})
 		}))
 		defer srv.Close()

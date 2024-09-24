@@ -65,7 +65,7 @@ func GenerateCertificate() error {
 func ReadCertificate() (string, error) {
 	err := GenerateCertificate()
 
-	if err!=nil{
+	if err != nil {
 		return "", err
 	}
 
@@ -73,7 +73,7 @@ func ReadCertificate() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	
+
 	// Convert the byte slice to a string and replace all the newline characters with the escaped newline characters
 	pemString := strings.ReplaceAll(string(data), "\n", "\\n")
 
@@ -83,5 +83,5 @@ func ReadCertificate() (string, error) {
 		fmt.Println("Unable to delete PEM file")
 	}
 
-	return pemString, nil 
+	return pemString, nil
 }
