@@ -47,7 +47,7 @@ __Tip:__
 You must be assigned to directory admin or viewer role.
 
 __Further documentation:__
-<https://help.sap.com/docs/btp/sap-business-technology-platform/entitlements-and-quotas>`,
+<https://help.sap.com/docs/btp/sap-business-technology-platform-internal/managing-api-credentials-for-calling-rest-apis-of-sap-authorization-and-trust-management-service>`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",
