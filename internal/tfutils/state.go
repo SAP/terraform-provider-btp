@@ -5,6 +5,7 @@ package tfutils
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 )
@@ -260,6 +261,12 @@ func (conf *StateChangeConf) WaitForStateContext(ctx context.Context) (interface
 				case <-timeout:
 					log.Println("[ERROR] WaitForState exceeded refresh grace period")
 					break forSelect
+				}
+			}
+
+			for _, state := range conf.Pending{
+				if lastResult.State == state {
+					return nil, fmt.Errorf("%s","The timeout has exceeded. Try increasing the timeout for the particular operation.")
 				}
 			}
 
