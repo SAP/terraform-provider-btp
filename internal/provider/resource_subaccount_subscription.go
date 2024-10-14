@@ -316,7 +316,7 @@ func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context,
 
 	timeoutsLocal := plan.Timeouts
 
-	createTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	createTimeout, diags := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
 	summary.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 
