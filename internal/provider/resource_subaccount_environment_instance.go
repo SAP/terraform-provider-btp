@@ -284,6 +284,7 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
 	}
 
 	plan, diags = subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
@@ -339,6 +340,7 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
 	}
 
 	state, diags := subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
