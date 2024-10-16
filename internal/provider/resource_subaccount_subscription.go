@@ -248,6 +248,10 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 		resp.Diagnostics.AddError("API Error Creating Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
 	}
 
+	if updatedRes == nil {
+		return
+	}
+
 	updatedPlan, diags := subaccountSubscriptionValueFrom(ctx, updatedRes.(saas_manager_service.EntitledApplicationsResponseObject))
 	updatedPlan.Parameters = plan.Parameters
 	updatedPlan.Timeouts = plan.Timeouts
@@ -316,7 +320,7 @@ func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context,
 
 	timeoutsLocal := plan.Timeouts
 
-	createTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	createTimeout, diags := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
 	summary.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 

@@ -95,7 +95,7 @@ func (e *TimeoutError) Error() string {
 			expectedState, suffix, e.LastError)
 	}
 
-	return fmt.Sprintf("timeout while waiting for %s%s",
+	return fmt.Sprintf("timeout while waiting for %s%s\ntry increasing the timeout for this particular operation",
 		expectedState, suffix)
 }
 
