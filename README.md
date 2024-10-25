@@ -44,7 +44,15 @@ Members, contributors, and leaders pledge to make participation in our community
 
 Copyright 2024 SAP SE or an SAP affiliate company and `terraform-provider-btp` contributors. See our [LICENSE](LICENSE) for copyright and license information. Detailed information, including third-party components and their licensing/copyright information, is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp).
 
-## Additional information and Guides
+## OpenTofu Compatibility
+
+The Terraform Provider for SAP BTP supports [OpenTofu](https://opentofu.org/) under the following conditions:
+1. **Drop-In Replacement**: The provider can be used with [OpenTofu CLI](https://opentofu.org/docs/cli/) as a direct replacement for [HashiCorp Terraform CLI](https://developer.hashicorp.com/terraform/cli) without modifications.
+2. **Feature Limitations**: The provider does not support OpenTofu specific features or functions outside the standard Terraform functionality.
+3. **Issue Reporting**: Any issues reported for the Terraform Provider for SAP BTP will only be addressed if they are reproducible using the Terraform CLI.
+
+
+## Additional Information and Guides
 
 Through the course of the development of the Terraform provider for SAP BTP and during the constant exchange with customers, several points and questions crossed our path have gathered additional information and guides that might be useful for you. You can find them in the [guides folder](./guides/) covering the following topics:
 
