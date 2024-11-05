@@ -89,7 +89,6 @@ You must be assigned to the admin or the service administrator role of the subac
 				Optional:            true,
 				PlanModifiers: []planmodifier.Map{
 					mapplanmodifier.RequiresReplace(),
-					mapplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"id": schema.StringAttribute{
