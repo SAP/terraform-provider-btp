@@ -14,7 +14,10 @@ import (
 	"time"
 )
 
+var file = "cert.pem" 
+
 func GenerateCertificate() error {
+
 	// Generate a new RSA private key
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
@@ -45,7 +48,7 @@ func GenerateCertificate() error {
 	}
 
 	// Save the certificate to a file
-	certFile, err := os.Create("cert.pem")
+	certFile, err := os.Create(file)
 	if err != nil {
 		return err
 	}
@@ -69,7 +72,7 @@ func ReadCertificate() (string, error) {
 		return "", err
 	}
 
-	data, err := os.ReadFile("cert.pem")
+	data, err := os.ReadFile(file)
 	if err != nil {
 		return "", err
 	}
@@ -78,7 +81,7 @@ func ReadCertificate() (string, error) {
 	pemString := strings.ReplaceAll(string(data), "\n", "\\n")
 
 	// Delete the contents of the file
-	err = os.Remove("cert.pem")
+	err = os.Remove(file)
 	if err != nil {
 		fmt.Println("Unable to delete PEM file")
 	}

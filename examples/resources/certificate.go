@@ -10,6 +10,9 @@ import (
 )
 
 func main() {
+
+	file := "cert.pem"
+
 	err := tfutils.GenerateCertificate()
 
 	if err != nil {
@@ -17,7 +20,7 @@ func main() {
 		return
 	}
 
-	data, err := os.ReadFile("cert.pem")
+	data, err := os.ReadFile(file)
 	if err != nil {
 		fmt.Printf("Error reading the certificate : %s", err)
 		return
@@ -34,7 +37,7 @@ func main() {
 		return
 	}
 
-	err = os.Remove("cert.pem")
+	err = os.Remove(file)
 	if err != nil {
 		fmt.Println("Unable to delete PEM file")
 		return
