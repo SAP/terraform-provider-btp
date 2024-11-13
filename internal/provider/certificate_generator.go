@@ -1,4 +1,4 @@
-package tfutils
+package provider
 
 import (
 	"crypto/rand"

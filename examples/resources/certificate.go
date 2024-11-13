@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/SAP/terraform-provider-btp/internal/tfutils"
+	"github.com/SAP/terraform-provider-btp/internal/provider"
 )
 
 func main() {
 
 	file := "cert.pem"
 
-	err := tfutils.GenerateCertificate()
+	err := provider.GenerateCertificate()
 
 	if err != nil {
 		fmt.Printf("Error generating a certificate : %s", err)

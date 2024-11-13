@@ -6,8 +6,6 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-
-	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 )
 
 func TestResourceDirectoryApiCredential(t *testing.T) {
@@ -121,7 +119,7 @@ func hclResourceDirectoryApiCredentialWithCertificate(resourceName string, apiCr
 
 	var directoryCertificate string
 	if recording {
-		directoryCertificate, _ = tfutils.ReadCertificate()
+		directoryCertificate, _ = ReadCertificate()
 	} else {
 		directoryCertificate = "redacted"
 	}
