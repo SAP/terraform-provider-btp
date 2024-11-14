@@ -160,8 +160,9 @@ func (rs *subaccountApiCredentialResource) Read(ctx context.Context, req resourc
 
 	//The below parameters are not returned by the get call to the Api Credential
 	newState.SubaccountId = state.SubaccountId
-	if !state.CertificatePassed.IsUnknown() {
+	if !state.CertificatePassed.IsNull() {
 		newState.CertificatePassed = state.CertificatePassed
+		newState.Certificate = state.Certificate
 		newState.Key = state.Key
 	} else {
 		newState.ClientSecret = state.ClientSecret

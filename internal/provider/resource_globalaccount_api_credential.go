@@ -158,8 +158,9 @@ func (rs *globalaccountApiCredentialResource) Read(ctx context.Context, req reso
 
 	//The below parameters are not returned by the get call to the Api Credential
 	newState.GlobalaccountId = state.GlobalaccountId
-	if !state.CertificatePassed.IsUnknown() {
+	if !state.CertificatePassed.IsNull() {
 		newState.CertificatePassed = state.CertificatePassed
+		newState.Certificate = state.Certificate
 		newState.Key = state.Key
 	} else {
 		newState.ClientSecret = state.ClientSecret

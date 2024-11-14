@@ -36,7 +36,7 @@ func directoryApiCredentialFromValue(_ context.Context, cliRes xsuaa_api.ApiCred
 
 	if len(cliRes.ClientSecret) > 0 {
 		res.ClientSecret = types.StringValue(cliRes.ClientSecret)
-	} else {
+	} else if len(cliRes.Certificate) > 0 {
 		res.Certificate = types.StringValue(cliRes.Certificate)
 		res.Key = types.StringValue(cliRes.Key)
 	}
