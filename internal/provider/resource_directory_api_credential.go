@@ -160,8 +160,9 @@ func (rs *directoryApiCredentialResource) Read(ctx context.Context, req resource
 
 	//The below parameters are not returned by the get call to the Api Credential
 	newState.DirectoryId = state.DirectoryId
-	if !state.CertificatePassed.IsUnknown() {
+	if !state.CertificatePassed.IsNull() {
 		newState.CertificatePassed = state.CertificatePassed
+		newState.Certificate = state.Certificate
 		newState.Key = state.Key
 	} else {
 		newState.ClientSecret = state.ClientSecret
