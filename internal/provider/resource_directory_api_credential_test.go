@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
@@ -119,7 +120,7 @@ func hclResourceDirectoryApiCredentialWithCertificate(resourceName string, apiCr
 
 	var directoryCertificate string
 	if recording {
-		directoryCertificate, _ = ReadCertificate()
+		directoryCertificate, _ = tfutils.ReadCertificate()
 	} else {
 		directoryCertificate = "redacted"
 	}

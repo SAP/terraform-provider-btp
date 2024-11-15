@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-
 )
 
 func TestResourceSubaccountApiCredential(t *testing.T) {
@@ -121,7 +121,7 @@ func hclResourceSubaccountApiCredentialWithCertificate(resourceName string, apiC
 	var subaccountCertificate string
 
 	if recording {
-		subaccountCertificate, _ = ReadCertificate()
+		subaccountCertificate, _ = tfutils.ReadCertificate()
 	} else {
 		subaccountCertificate = "redacted"
 	}
