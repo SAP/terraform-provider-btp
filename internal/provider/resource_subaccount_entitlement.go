@@ -248,17 +248,9 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 			var err error
 
 			if !hasPlanQuota(plan) {
-				if !plan.PlanUniqueIdentifier.IsNull() {
-					callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccountWithUniqueIdentifier(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.PlanUniqueIdentifier.ValueString(), true)
-				} else {
-					callResult, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
-				}
+				callResult, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.PlanUniqueIdentifier.ValueString(), true)
 			} else {
-				if !plan.PlanUniqueIdentifier.IsNull() {
-					callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccountWithUniqueIdentifier(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.PlanUniqueIdentifier.ValueString(), true)
-				} else {
-					callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()))
-				}
+				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()))
 			}
 
 			if err == nil {
