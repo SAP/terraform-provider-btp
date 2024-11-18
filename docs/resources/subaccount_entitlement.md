@@ -50,6 +50,7 @@ resource "btp_subaccount_entitlement" "uas_reporting" {
 ### Optional
 
 - `amount` (Number) The quota assigned to the subaccount.
+- `plan_unique_identifier` (String) The name of the unique identifier for the plan
 
 ### Read-Only
 
