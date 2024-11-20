@@ -81,7 +81,7 @@ func (f *accountsEntitlementFacade) AssignToSubaccount(ctx context.Context, dire
 	return res, err
 }
 
-func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string) (CommandResponse, error) {
+func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string, planUniqueIdentifier string, enable bool) (CommandResponse, error) {
 
 	params := map[string]string{
 		"globalAccount":   f.cliClient.GetGlobalAccountSubdomain(),
@@ -94,8 +94,11 @@ func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, dire
 	if len(directoryId) > 0 {
 		params["directoryID"] = directoryId
 	}
-	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), params))
+	if planUniqueIdentifier != "" {
+		params["planUniqueIdentifier"] = planUniqueIdentifier
+	}
 
+	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), params))
 	return res, err
 }
 
