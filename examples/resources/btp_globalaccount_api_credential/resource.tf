@@ -4,15 +4,10 @@ resource "btp_globalaccount_api_credential" "with-secret" {
   read_only = false
 }
 
-// This datasource runs a go script to dynamically generate a PEM certificate which is used in the resource below
-data "external" "values" {
-  program = ["go","run","../certificate.go"]
-}
-
 # Create a certificate type API credential at the globalaccount level
 resource "btp_globalaccount_api_credential" "with-certificate" {
   name = "globalaccount-api-credential-with-certificate"
-  certificate_passed = data.external.values.result["certificate"]
+  certificate_passed = "-----BEGIN CERTIFICATE-----\n-not-a-valid-certificate-\n-----END CERTIFICATE----\n"
   read_only = false
 }
 

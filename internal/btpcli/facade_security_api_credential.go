@@ -28,101 +28,71 @@ type ApiCredentialInput struct {
 	ReadOnly      bool   `btpcli:"readOnly,omitempty"`
 }
 
-func (f *securityApiCredentialFacade) CreateBySubaccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
+func (f *securityApiCredentialFacade) CreateByDirectoryorSubaccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredential, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
+		return xsuaa_api.ApiCredential{}, CommandResponse{}, err
 	}
 
-	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
+	return doExecute[xsuaa_api.ApiCredential](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *securityApiCredentialFacade) DeleteBySubaccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
+func (f *securityApiCredentialFacade) DeleteByDirectoryorSubaccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredential, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
+		return xsuaa_api.ApiCredential{}, CommandResponse{}, err
 	}
 
-	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), params))
+	return doExecute[xsuaa_api.ApiCredential](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), params))
 }
 
-func (f *securityApiCredentialFacade) GetBySubaccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
+func (f *securityApiCredentialFacade) GetByDirectoryorSubaccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredential, CommandResponse, error) {
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
+		return xsuaa_api.ApiCredential{}, CommandResponse{}, err
 	}
 
-	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+	return doExecute[xsuaa_api.ApiCredential](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
 }
 
-func (f *securityApiCredentialFacade) CreateByDirectory(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
-	params, err := tfutils.ToBTPCLIParamsMap(args)
-
-	if err != nil {
-		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
-	}
-
-	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
-}
-
-func (f *securityApiCredentialFacade) DeleteByDirectory(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
-	params, err := tfutils.ToBTPCLIParamsMap(args)
-
-	if err != nil {
-		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
-	}
-
-	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), params))
-}
-
-func (f *securityApiCredentialFacade) GetByDirectory(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
-	params, err := tfutils.ToBTPCLIParamsMap(args)
-
-	if err != nil {
-		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
-	}
-
-	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
-}
-
-func (f *securityApiCredentialFacade) CreateByGlobalAccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
+func (f *securityApiCredentialFacade) CreateByGlobalAccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredential, CommandResponse, error) {
 
 	args.GlobalAccount = f.cliClient.GetGlobalAccountSubdomain()
 
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
+		return xsuaa_api.ApiCredential{}, CommandResponse{}, err
 	}
 
-	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
+	return doExecute[xsuaa_api.ApiCredential](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *securityApiCredentialFacade) DeleteByGlobalAccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
+func (f *securityApiCredentialFacade) DeleteByGlobalAccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredential, CommandResponse, error) {
 
 	args.GlobalAccount = f.cliClient.GetGlobalAccountSubdomain()
 
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
+		return xsuaa_api.ApiCredential{}, CommandResponse{}, err
 	}
 
-	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), params))
+	return doExecute[xsuaa_api.ApiCredential](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), params))
 }
 
-func (f *securityApiCredentialFacade) GetByGlobalAccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredentialSubaccount, CommandResponse, error) {
+func (f *securityApiCredentialFacade) GetByGlobalAccount(ctx context.Context, args *ApiCredentialInput) (xsuaa_api.ApiCredential, CommandResponse, error) {
 
 	args.GlobalAccount = f.cliClient.GetGlobalAccountSubdomain()
 
 	params, err := tfutils.ToBTPCLIParamsMap(args)
 
 	if err != nil {
-		return xsuaa_api.ApiCredentialSubaccount{}, CommandResponse{}, err
+		return xsuaa_api.ApiCredential{}, CommandResponse{}, err
 	}
 
-	return doExecute[xsuaa_api.ApiCredentialSubaccount](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+	return doExecute[xsuaa_api.ApiCredential](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
 }

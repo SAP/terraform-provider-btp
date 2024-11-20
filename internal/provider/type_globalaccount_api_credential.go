@@ -22,7 +22,7 @@ type globalaccountApiCredentialType struct {
 	ApiUrl            types.String `tfsdk:"api_url"`
 }
 
-func globalaccountApiCredentialFromValue(_ context.Context, cliRes xsuaa_api.ApiCredentialSubaccount) (globalaccountApiCredentialType, diag.Diagnostics) {
+func globalaccountApiCredentialFromValue(_ context.Context, cliRes xsuaa_api.ApiCredential) (globalaccountApiCredentialType, diag.Diagnostics) {
 
 	res := globalaccountApiCredentialType{
 		GlobalaccountId: types.StringValue(cliRes.SubaccountId),

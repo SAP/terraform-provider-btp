@@ -22,7 +22,7 @@ type directoryApiCredentialType struct {
 	ApiUrl            types.String `tfsdk:"api_url"`
 }
 
-func directoryApiCredentialFromValue(_ context.Context, cliRes xsuaa_api.ApiCredentialSubaccount) (directoryApiCredentialType, diag.Diagnostics) {
+func directoryApiCredentialFromValue(_ context.Context, cliRes xsuaa_api.ApiCredential) (directoryApiCredentialType, diag.Diagnostics) {
 
 	res := directoryApiCredentialType{
 		DirectoryId:    types.StringValue(cliRes.SubaccountId),

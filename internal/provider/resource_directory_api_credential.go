@@ -116,7 +116,7 @@ func (rs *directoryApiCredentialResource) Create(ctx context.Context, req resour
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.ApiCredential.CreateByDirectory(ctx, &btpcli.ApiCredentialInput{
+	cliRes, _, err := rs.cli.Security.ApiCredential.CreateByDirectoryorSubaccount(ctx, &btpcli.ApiCredentialInput{
 		Directory:   plan.DirectoryId.ValueString(),
 		Name:        plan.Name.ValueString(),
 		Certificate: plan.CertificatePassed.ValueString(),
@@ -146,7 +146,7 @@ func (rs *directoryApiCredentialResource) Read(ctx context.Context, req resource
 		return
 	}
 
-	cliRes, rawRes, err := rs.cli.Security.ApiCredential.GetByDirectory(ctx, &btpcli.ApiCredentialInput{
+	cliRes, rawRes, err := rs.cli.Security.ApiCredential.GetByDirectoryorSubaccount(ctx, &btpcli.ApiCredentialInput{
 		Directory: state.DirectoryId.ValueString(),
 		Name:      state.Name.ValueString(),
 	})
@@ -184,7 +184,7 @@ func (rs *directoryApiCredentialResource) Delete(ctx context.Context, req resour
 		return
 	}
 
-	_, _, err := rs.cli.Security.ApiCredential.DeleteByDirectory(ctx, &btpcli.ApiCredentialInput{
+	_, _, err := rs.cli.Security.ApiCredential.DeleteByDirectoryorSubaccount(ctx, &btpcli.ApiCredentialInput{
 		Directory: state.DirectoryId.ValueString(),
 		Name:      state.Name.ValueString(),
 	})
