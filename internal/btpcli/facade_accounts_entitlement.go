@@ -94,6 +94,7 @@ func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, dire
 	if len(directoryId) > 0 {
 		params["directoryID"] = directoryId
 	}
+
 	if planUniqueIdentifier != "" {
 		params["planUniqueIdentifier"] = planUniqueIdentifier
 	}

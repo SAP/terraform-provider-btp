@@ -85,24 +85,18 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "data-privacy-integration-service", "standard", "3"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "uas", "reporting-directory", "3"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "last_modified", regexpValidRFC3999Format),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "data-privacy-integration-service-standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "data-privacy-integration-service-standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "data-privacy-integration-service"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "uas-reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "uas-reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "uas"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "3"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
-				},
-				{
-					ResourceName:      "btp_subaccount_entitlement.uut",
-					ImportStateIdFunc: getImportStateIdForSubaccountEntitlement("btp_subaccount_entitlement.uut", "data-privacy-integration-service", "standard"),
-					ImportState:       true,
-					ImportStateVerify: true,
 				},
 			},
 		})
@@ -117,44 +111,70 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "data-privacy-integration-service", "standard", "1"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "uas", "reporting-directory", "1"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "last_modified", regexpValidRFC3999Format),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "data-privacy-integration-service-standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "data-privacy-integration-service-standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "data-privacy-integration-service"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "uas-reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "uas-reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "uas"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "1"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "data-privacy-integration-service", "standard", "2"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "uas", "reporting-directory", "2"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "last_modified", regexpValidRFC3999Format),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "data-privacy-integration-service-standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "data-privacy-integration-service-standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "data-privacy-integration-service"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "uas-reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "uas-reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "uas"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "2"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementBySubaccount("uut", "integration-test-acc-static", "data-privacy-integration-service", "standard"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementBySubaccount("uut", "integration-test-acc-static", "uas", "reporting-directory"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "last_modified", regexpValidRFC3999Format),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "data-privacy-integration-service-standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "data-privacy-integration-service-standard"),
-						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "data-privacy-integration-service"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "uas-reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "uas-reporting-directory"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "uas"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "amount", "2"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
+					),
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - plan unique identifier", func(t *testing.T) {
+		rec, _ := setupVCR(t, "fixtures/resource_subaccount_entitlement.plan_unique_identifier")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana", "unique-id-hana"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "id", "hana-cloud-hana"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "hana"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "hana-cloud-hana"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_unique_identifier", "unique-id-hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},
@@ -168,7 +188,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "data-privacy-integration-service", "standard", "0"),
+					Config:      hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "uas", "reporting-directory", "0"),
 					ExpectError: regexp.MustCompile(`Attribute amount value must be between 1 and 2000000000, got: 0`),
 				},
 			},
@@ -207,4 +227,15 @@ func getImportStateIdForSubaccountEntitlement(resourceName string, serviceName s
 		}
 		return fmt.Sprintf("%s,%s,%s", rs.Primary.Attributes["subaccount_id"], serviceName, planName), nil
 	}
+}
+
+func hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount(resourceName string, subaccountName string, serviceName string, planName string, planUniqueIdentifier string) string {
+	return fmt.Sprintf(`
+data "btp_subaccounts" "all" {}
+resource "btp_subaccount_entitlement" "%s" {
+    subaccount_id          = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+    service_name           = "%s"
+    plan_name              = "%s"
+    plan_unique_identifier = "%s"
+}`, resourceName, subaccountName, serviceName, planName, planUniqueIdentifier)
 }

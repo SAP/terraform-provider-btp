@@ -125,6 +125,10 @@ __Further documentation:__
 			"plan_unique_identifier": schema.StringAttribute{
 				MarkdownDescription: "The name of the unique identifier for the plan",
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"state": schema.StringAttribute{
 				MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
