@@ -89,6 +89,22 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 		})
 	})
 
+	t.Run("error path - service plan without offering id or offering name", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plan.err_with_subaccount_only")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclDatasourceSubaccountPlanWithSubaccountOnly("uut","00000000-0000-0000-0000-000000000000"),
+					ExpectError: regexp.MustCompile(`neither offering ID, nor offering Name have been provided`),
+				},
+			},
+		})
+	})
+
 }
 
 func hclDatasourceSubaccountPlanByIdBySubaccountIdFromFilteredList(resourceName string, subaccountName string, planName string, offeringName string) string {
@@ -136,4 +152,12 @@ data "btp_subaccount_service_plan" "%s" {
 	offering_name = "%s"
 }`
 	return fmt.Sprintf(template, resourceName, planName, offeringName)
+}
+
+func hclDatasourceSubaccountPlanWithSubaccountOnly(resourceName string, subaccountId string) string{
+	template:= `
+data "btp_subaccount_service_plan" "%s" {
+    subaccount_id = "%s"
+}`
+	return fmt.Sprintf(template,resourceName, subaccountId)
 }

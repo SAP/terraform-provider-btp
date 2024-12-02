@@ -35,4 +35,10 @@ func TestLoginRequest(t *testing.T) {
 			assert.Equal(t, `{"customIdp":"my-idp","subdomain":"my-subdomain","userName":"my-user","password":"my-pass"}`, string(b))
 		}
 	})
+	t.Run("NewBrowserLoginRequest(...) uses all given values", func(t *testing.T) {
+		uut := NewBrowserLoginRequest("my-idp", "my-subdomain")
+		assert.Equal(t, "my-idp", uut.CustomIdp)
+		assert.Equal(t, "my-subdomain", uut.GlobalAccountSubdomain)
+	})
+	
 }

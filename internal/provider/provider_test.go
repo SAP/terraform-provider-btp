@@ -406,6 +406,28 @@ data "btp_whoami" "me" {}`,
 			},
 		})
 	})
+	t.Run("error path - invalid client server url", func(t *testing.T) {
+		rec, _ := setupVCR(t, "fixtures/provider.error_cli_server_url")
+		defer stopQuietly(rec)
+
+		testingResource.Test(t, testingResource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []testingResource.TestStep{
+				{
+					Config: `
+					provider "btp" {
+						cli_server_url = "://canary.cli .btp.int.sap"
+						globalaccount  = "ga"
+						username       = "username"
+						password       = "password"
+					}
+					data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`unableToCreateClient`),
+				},
+			},
+		})
+	})
 }
 
 func TestProvider_ConfigurationWithIdToken(t *testing.T) {
