@@ -24,10 +24,10 @@ on:
 permissions:
   contents: read
 
-# Define the latest Terraform version to use for upload of coverage report  
-env: 
-  LATEST_VERSION: 19
-  
+# Define the latest Terraform version to use for upload of coverage report
+env:
+  SONAR_CLOUD_TF_VERSION: 19
+
 jobs:
   # Ensure project builds before running testing matrix
   build:
@@ -79,18 +79,18 @@ jobs:
     name: Terraform Provider Acceptance Tests
     needs: build
     runs-on: ubuntu-latest
-    # Timeout for tests set to 25 minutes to safeguard long running tests (specifically for service instances) 
+    # Timeout for tests set to 25 minutes to safeguard long running tests (specifically for service instances)
     timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
         # list whatever Terraform versions here you would like to support
         terraform:
-          - '1.5.*' #end of security support under MPL 31 Dec 2023
           - '1.6.*' #end of security support under BSL 31 Dec 2025
           - '1.7.*' #end of security support under BSL 31 Dec 2026
           - '1.8.*' #end of security support under BSL 31 Dec 2026
           - '1.9.*' #end of security support under BSL 31 Dec 2026
+          - '1.10.*'
     steps:
       - uses: actions/checkout@v4 # v4.0.0
       - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a # v5.2.0
@@ -110,7 +110,7 @@ jobs:
       - run: echo "CURRENT_TF_VERSION=$(echo ${{ matrix.terraform }} | sed 's/[^a-zA-Z0-9]//g')" >> $GITHUB_ENV
       # Upload coverage report for latest Terraform version only to avoid nameing issues in upload (see also https://github.com/actions/upload-artifact/tree/v4/?tab=readme-ov-file#breaking-changes)
       - uses: actions/upload-artifact@v4
-        if: ${{ env.CURRENT_TF_VERSION == env.LATEST_VERSION}}  
+        if: ${{ env.CURRENT_TF_VERSION == env.SONAR_CLOUD_TF_VERSION}}
         with:
           name: coverage-report
           path: cover.out
