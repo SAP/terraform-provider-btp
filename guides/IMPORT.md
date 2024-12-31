@@ -10,7 +10,7 @@ To get a quick overview of the resources and if they support the import function
 
 ## Resource Overview
 
-The following list provides an overview of the resources and their support for the import functionality (state: 09.04.2024)
+The following list provides an overview of the resources and their support for the import functionality (state: 01.01.2025)
 
 | Resource                                     | Import Support
 |---                                           |---
