@@ -18,7 +18,7 @@ Consequently a drift will only show up for changes in the resource configuration
 
 From a technical perspective the drift detection requires the ability to compare the current state of the resources on SAP BTP with the Terraform state. This is achieved by the Terraform provider for SAP BTP by querying the platform APIs for the current state of the resources. Unfortunately, not all resources on SAP BTP support this i.e., the query of the current state of the resource on the platform is either not supported by the platform APIs at all or it does not return the full set of parameters.
 
-The following overview list des resources and their support for drift detection (state: 09.04.2024):
+The following overview list des resources and their support for drift detection (state: 01.01.2025):
 
 | Resource                                     | Drift Detection Support | Comments                                                                                                                                  |
 |---                                           |---                      |---                                                                                                                                        |
@@ -27,12 +27,12 @@ The following overview list des resources and their support for drift detection 
 | btp_directory_entitlement                    | Yes                     | -                                                                                                                                         |
 | btp_directory_role                           | Yes                     | -                                                                                                                                         |
 | btp_directory_role_collection                | Yes                     | -                                                                                                                                         |
-| btp_directory_role_collection_assignment     | No                      | READ capability of resource not available. Improvement planned for H2/2024 see [issue](https://github.com/SAP/terraform-provider-btp/issues/748) |
+| btp_directory_role_collection_assignment     | No                      | READ capability of resource not available. Improvement planned for H1/2025 see [issue](https://github.com/SAP/terraform-provider-btp/issues/748) |
 | btp_globalaccount_api_credential             | No                      | -                                                                                                                                         |
 | btp_globalaccount_resource_provider          | Yes                     | -                                                                                                                                         |
 | btp_globalaccount_role                       | Yes                     | -                                                                                                                                         |
 | btp_globalaccount_role_collection            | Yes                     | -                                                                                                                                         |
-| btp_globalaccount_role_collection_assignment | No                      | READ capability of resource not available. Improvement planned for H2/2024 see [issue](https://github.com/SAP/terraform-provider-btp/issues/748) |
+| btp_globalaccount_role_collection_assignment | No                      | READ capability of resource not available. Improvement planned for H1/2025 see [issue](https://github.com/SAP/terraform-provider-btp/issues/748) |
 | btp_globalaccount_security_settings          | Yes                     | -                                                                                                                                         |
 | btp_globalaccount_trust_configuration        | Yes                     | -                                                                                                                                         |
 | btp_subaccount                               | Yes                     | -                                                                                                                                         |
@@ -41,7 +41,7 @@ The following overview list des resources and their support for drift detection 
 | btp_subaccount_environment_instance          | Yes                     | -                                                                                                                                         |
 | btp_subaccount_role                          | Yes                     | -                                                                                                                                         |
 | btp_subaccount_role_collection               | Yes                     | -                                                                                                                                         |
-| btp_subaccount_role_collection_assignment    | No                      | READ capability of resource not available. Improvement planned for H2/2024 see [issue](https://github.com/SAP/terraform-provider-btp/issues/748) |
+| btp_subaccount_role_collection_assignment    | No                      | READ capability of resource not available. Improvement planned for H1/2025 see [issue](https://github.com/SAP/terraform-provider-btp/issues/748) |
 | btp_subaccount_security_settings             | Yes                     | -                                                                                                                                         |
 | btp_subaccount_service_binding               | Yes                     | -                                                                                                                                         |
 | btp_subaccount_service_broker                | Yes                      | -                                                                                                                                         |

@@ -13,7 +13,7 @@ The Terraform provider for SAP BTP allows the management of resources on the [SA
 
 You will find the detailed information about the [provider](https://registry.terraform.io/browse/providers) in the official [documentation](https://registry.terraform.io/browse/providers) in the [Terraform registry](https://registry.terraform.io/).
 
-You find usage examples in the [examples folder](./examples/) of this repository.  
+You find usage examples in the [examples folder](./examples/) of this repository.
 
 ## Usage of the Provider
 
@@ -42,7 +42,7 @@ Members, contributors, and leaders pledge to make participation in our community
 
 ## Licensing
 
-Copyright 2024 SAP SE or an SAP affiliate company and `terraform-provider-btp` contributors. See our [LICENSE](LICENSE) for copyright and license information. Detailed information, including third-party components and their licensing/copyright information, is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp).
+Copyright 2025 SAP SE or an SAP affiliate company and `terraform-provider-btp` contributors. See our [LICENSE](LICENSE) for copyright and license information. Detailed information, including third-party components and their licensing/copyright information, is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/terraform-provider-btp).
 
 ## OpenTofu Compatibility
 
