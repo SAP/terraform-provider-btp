@@ -9,7 +9,7 @@ import (
 func TestGenerateCertificate(t *testing.T) {
 
 	t.Run("Generate Certificate - Should Create Certificate File", func(t *testing.T) {
-		
+
 		err := GenerateCertificate()
 		if err != nil {
 			t.Fatalf("Generate Certificate failed: %v", err)
@@ -51,4 +51,3 @@ func TestReadCertificate(t *testing.T) {
 		}
 	})
 }
-

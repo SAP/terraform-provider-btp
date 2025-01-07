@@ -98,7 +98,7 @@ func TestDataSourceSubaccountServicePlan(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountPlanWithSubaccountOnly("uut","00000000-0000-0000-0000-000000000000"),
+					Config:      hclProviderFor(user) + hclDatasourceSubaccountPlanWithSubaccountOnly("uut", "00000000-0000-0000-0000-000000000000"),
 					ExpectError: regexp.MustCompile(`neither offering ID, nor offering Name have been provided`),
 				},
 			},
@@ -154,10 +154,10 @@ data "btp_subaccount_service_plan" "%s" {
 	return fmt.Sprintf(template, resourceName, planName, offeringName)
 }
 
-func hclDatasourceSubaccountPlanWithSubaccountOnly(resourceName string, subaccountId string) string{
-	template:= `
+func hclDatasourceSubaccountPlanWithSubaccountOnly(resourceName string, subaccountId string) string {
+	template := `
 data "btp_subaccount_service_plan" "%s" {
     subaccount_id = "%s"
 }`
-	return fmt.Sprintf(template,resourceName, subaccountId)
+	return fmt.Sprintf(template, resourceName, subaccountId)
 }
