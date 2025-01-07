@@ -21,7 +21,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 func newSubaccountResource() resource.Resource {
@@ -97,9 +96,6 @@ __Further documentation:__
 				MarkdownDescription: "The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.",
 				Computed:            true,
 				Optional:            true,
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
-				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 					stringplanmodifier.UseStateForUnknown(),
