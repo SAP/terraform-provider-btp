@@ -25,7 +25,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 func newDirectoryResource() resource.Resource {
@@ -103,9 +102,6 @@ __Further documentation:__
 				MarkdownDescription: "The ID of the directory's parent entity. Typically this is the global account.",
 				Optional:            true,
 				Computed:            true,
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
-				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 					stringplanmodifier.RequiresReplace(),

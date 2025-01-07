@@ -27,7 +27,6 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
-						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
@@ -43,7 +42,6 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
-						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
@@ -75,7 +73,6 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
-						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
@@ -92,7 +89,6 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
-						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
@@ -125,7 +121,6 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
-						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
@@ -142,7 +137,6 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
-						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
@@ -170,7 +164,6 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", "My subaccount description"),
-						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
@@ -188,7 +181,6 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", "My subaccount description"),
-						resource.TestMatchResourceAttr("btp_subaccount.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
 						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
@@ -208,18 +200,6 @@ func TestResourceSubaccount(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - parent_id not a valid UUID", func(t *testing.T) {
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclResourceSubaccountWithParent("uut", "this-is-not-a-uuid", "a-subaccount", "eu12", "a-subaccount"),
-					ExpectError: regexp.MustCompile(`Attribute parent_id value must be a valid UUID, got: this-is-not-a-uuid`),
-				},
-			},
-		})
-	})
 	t.Run("error path - name must not contain slashes", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -292,18 +272,6 @@ resource "btp_subaccount" "%s" {
 
 	result := fmt.Sprintf(template, resourceName, displayName, region, subdomain, description, usage, betaEnabled)
 	return result
-}
-
-func hclResourceSubaccountWithParent(resourceName string, parentId string, displayName string, region string, subdomain string) string {
-	template := `
-resource "btp_subaccount" "%s" {
-    parent_id = "%s"
-    name      = "%s"
-    region    = "%s"
-    subdomain = "%s"
-}`
-
-	return fmt.Sprintf(template, resourceName, parentId, displayName, region, subdomain)
 }
 
 func hclResourceSubaccountUsedForProd(resourceName string, displayName string, region string, subdomain string) string {
