@@ -270,6 +270,10 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 		Refresh: func() (interface{}, string, error) {
 			subRes, _, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, plan.SubaccountId.ValueString(), cliRes.Id)
 
+			if tfutils.IsRetriableErrorForEnvInstance(err) {
+				return nil, provisioning.StateCreating, nil
+			}
+
 			if err != nil {
 				return subRes, "", err
 			}
@@ -326,6 +330,10 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 		Refresh: func() (interface{}, string, error) {
 			subRes, _, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, plan.SubaccountId.ValueString(), plan.Id.ValueString())
 
+			if tfutils.IsRetriableErrorForEnvInstance(err) {
+				return nil, provisioning.StateUpdating, nil
+			}
+
 			if err != nil {
 				return subRes, "", err
 			}
@@ -379,6 +387,10 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 
 			if comRes.StatusCode == http.StatusNotFound {
 				return subRes, "DELETED", nil
+			}
+
+			if tfutils.IsRetriableErrorForEnvInstance(err) {
+				return nil, provisioning.StateDeleting, nil
 			}
 
 			if err != nil {

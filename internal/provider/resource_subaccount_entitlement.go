@@ -166,7 +166,7 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
-			if isRetriableError(err) {
+			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
 
@@ -254,7 +254,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 				return callResult, entitlementCallRetrySucceeded, nil
 			}
 
-			if isRetriableError(err) {
+			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return callResult, entitlementCallRetryPending, nil
 			}
 
@@ -287,7 +287,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
-			if isRetriableError(err) {
+			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
 
@@ -361,7 +361,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 				return callResult, entitlementCallRetrySucceeded, nil
 			}
 
-			if isRetriableError(err) {
+			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return callResult, entitlementCallRetryPending, nil
 			}
 
@@ -397,7 +397,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 				return entitlement, "DELETED", nil
 			}
 
-			if isRetriableError(err) {
+			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
 
@@ -455,24 +455,4 @@ func hasPlanQuota(state subaccountEntitlementType) bool {
 	}
 
 	return true
-}
-
-func isRetriableError(err error) bool {
-
-	if err == nil {
-		//If no error was raised a retry is not necessary
-		return false
-	}
-
-	if strings.Contains(err.Error(), "[Error: 30004/400]") {
-		// Error code for a locking scenario - API call must be retried
-		return true
-	} else if strings.Contains(err.Error(), "[Error: 11006/429]") {
-		// Error code when hitting a rate limit - API call must be retried
-		return true
-	} else {
-		// No retry possible as error code does not indicate a valid retry scenario
-		return false
-	}
-
 }
