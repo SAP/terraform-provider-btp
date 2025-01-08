@@ -57,5 +57,5 @@ The Terraform Provider for SAP BTP supports [OpenTofu](https://opentofu.org/) un
 Through the course of the development of the Terraform provider for SAP BTP and during the constant exchange with customers, several points and questions crossed our path have gathered additional information and guides that might be useful for you. You can find them in the [guides folder](./guides/) covering the following topics:
 
 - [Overview on importable resources](./guides/IMPORT.md)
-- [Overview on drift detection](./guides/IMPORT.md)
+- [Overview on drift detection](./guides/DRIFTDETECTION.md)
 - How to access parameters of service instances marked as [sensitive data](./guides/SENSITIVEDATA.md)
