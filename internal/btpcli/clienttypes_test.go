@@ -40,5 +40,5 @@ func TestLoginRequest(t *testing.T) {
 		assert.Equal(t, "my-idp", uut.CustomIdp)
 		assert.Equal(t, "my-subdomain", uut.GlobalAccountSubdomain)
 	})
-	
+
 }

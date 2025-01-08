@@ -34,7 +34,7 @@ func TestDataSourceSubaccountEnvironmentInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      `
+					Config: `
 					data "btp_subaccount_environment_instance" "instance" {
 						id = "DA2883C7-0FAF-4D4A-80BB-A0B54AC9743D"
 					}`,

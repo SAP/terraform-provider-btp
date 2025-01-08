@@ -322,14 +322,14 @@ func TestAccountsEntitlementFacade_GetAssignedBySubaccount(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionList, map[string]string{
-				"directory": "",
-				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directory":        "",
+				"globalAccount":    "795b53bb-a3f0-4769-adf0-26173282a975",
 				"subaccountFilter": subaccountId,
 			})
 		}))
 		defer srv.Close()
 
-		_,res, err := uut.Accounts.Entitlement.GetAssignedBySubaccount(context.TODO(), subaccountId, serviceName, planName, false, "")
+		_, res, err := uut.Accounts.Entitlement.GetAssignedBySubaccount(context.TODO(), subaccountId, serviceName, planName, false, "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -351,17 +351,16 @@ func TestAccountsEntitlementFacade_GetEntitledByDirectory(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionList, map[string]string{
-				"directory": directoryId,
+				"directory":     directoryId,
 				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
 			})
 		}))
 		defer srv.Close()
 
-		_,res, err := uut.Accounts.Entitlement.GetEntitledByDirectory(context.TODO(), directoryId, serviceName, planName)
+		_, res, err := uut.Accounts.Entitlement.GetEntitledByDirectory(context.TODO(), directoryId, serviceName, planName)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
 		}
 	})
 }
-

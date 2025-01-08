@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-var file = "cert.pem" 
+var file = "cert.pem"
 
 func GenerateCertificate() error {
 
