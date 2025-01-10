@@ -1,6 +1,6 @@
 # This is a restricted test set for OpenTofu
-# The full test is defined in the test.yml workflow. 
-# This file is intended to focus testing the OpenTofu compatibility against the latest provider version. 
+# The full test is defined in the test.yml workflow.
+# This file is intended to focus testing the OpenTofu compatibility against the latest provider version.
 name: OpenTofu Provider Tests
 
 on:
@@ -10,7 +10,7 @@ on:
 permissions:
   contents: read
 
-  
+
 jobs:
   # Ensure project builds before running testing matrix
   build:
@@ -36,7 +36,7 @@ jobs:
     name: Terraform Provider Acceptance Tests for OpenTofu
     needs: build
     runs-on: ubuntu-latest
-    # Timeout for tests set to 25 minutes to safeguard long running tests (specifically for service instances) 
+    # Timeout for tests set to 25 minutes to safeguard long running tests (specifically for service instances)
     timeout-minutes: 25
     strategy:
       fail-fast: false
@@ -46,6 +46,7 @@ jobs:
           - '1.6.*'
           - '1.7.*'
           - '1.8.*'
+          - '1.9.*'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34
@@ -61,4 +62,3 @@ jobs:
           TF_ACC: "1"
         run: go test -v -cover -coverprofile=cover.out -timeout=1800s -parallel=4 ./...
         timeout-minutes: 20
-     
