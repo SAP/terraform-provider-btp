@@ -25,7 +25,7 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceDirectoryUsersDefaultIdp("uut", "integration-test-dir-se-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_directory_users.uut", "directory_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "9"),
+						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "8"),
 					),
 				},
 			},
@@ -40,10 +40,10 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDirectoryUsersWithCustomIdp("uut", "integration-test-dir-se-static", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryUsersWithCustomIdp("uut", "integration-test-dir-se-static", "iasprovidertestblr-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_directory_users.uut", "directory_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "5"),
+						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "1"),
 					),
 				},
 			},
