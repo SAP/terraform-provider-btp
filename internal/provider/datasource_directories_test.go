@@ -20,7 +20,7 @@ func TestDataSourceDirectories(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDataSourceDirectories("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_directories.uut", "values.#", "8"),
+						resource.TestCheckResourceAttr("data.btp_directories.uut", "values.#", "9"),
 					),
 				},
 			},
