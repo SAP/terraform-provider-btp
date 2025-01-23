@@ -31,7 +31,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", ""),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", ""),
 						resource.TestMatchResourceAttr("data.btp_directory_user.uut", "id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "1"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "false"),
 					),
 				},
@@ -47,16 +47,16 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDirectoryUserCustomIdp("uut", "integration-test-dir-se-static", "jenny.doe@test.com", "iasprovidertestblr-platform"),
+					Config: hclProviderFor(user) + hclDatasourceDirectoryUserCustomIdp("uut", "integration-test-dir-se-static", "jenny.doe@test.com", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_directory_user.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "user_name", "jenny.doe@test.com"),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "origin", "iasprovidertestblr-platform"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "origin", "terraformint-platform"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "active", "true"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", ""),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", ""),
 						resource.TestMatchResourceAttr("data.btp_directory_user.uut", "id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "1"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "false"),
 					),
 				},
