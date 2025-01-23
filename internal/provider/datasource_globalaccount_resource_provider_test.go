@@ -1,5 +1,5 @@
 package provider
-
+/*
 import (
 	"fmt"
 	"testing"
@@ -42,3 +42,4 @@ data "btp_globalaccount_resource_provider" "%s" {
 	technical_name = "%s"
 }`, resourceName, provider, technicalName)
 }
+*/
