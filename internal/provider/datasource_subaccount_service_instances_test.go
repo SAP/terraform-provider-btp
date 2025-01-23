@@ -22,7 +22,7 @@ func TestDataSourceSubaccountServiceInstances(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceInstanceBySubaccount("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "4"),
 					),
 				},
 			},
@@ -60,7 +60,7 @@ func TestDataSourceSubaccountServiceInstances(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountInstancesBySubaccountAndFields("uut", "integration-test-services-static", "true"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "4"),
 					),
 				},
 			},
