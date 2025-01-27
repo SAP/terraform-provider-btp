@@ -40,12 +40,12 @@ func TestResourceDirectoryRoleCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginByDirectory("uut", "integration-test-dir-se-static", "Directory Viewer", "john.doe@test.com", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginByDirectory("uut", "integration-test-dir-se-static", "Directory Viewer", "john.doe@test.com", "iasprovidertestblr-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection_assignment.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "role_collection_name", "Directory Viewer"),
 						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "user_name", "john.doe@test.com"),
-						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "origin", "terraformint-platform"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "origin", "iasprovidertestblr-platform"),
 					),
 				},
 			},
@@ -61,13 +61,13 @@ func TestResourceDirectoryRoleCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginAndGroupByDirectory("uut", "integration-test-dir-se-static", "Directory Viewer", "tf-test-group", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginAndGroupByDirectory("uut", "integration-test-dir-se-static", "Directory Viewer", "tf-test-group", "iasprovidertestblr-platform"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection_assignment.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "role_collection_name", "Directory Viewer"),
 						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "group_name", "tf-test-group"),
-						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "origin", "terraformint-platform"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "origin", "iasprovidertestblr-platform"),
 					),
 				},
 			},
@@ -83,14 +83,14 @@ func TestResourceDirectoryRoleCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginAndAttributeByDirectory("uut", "integration-test-dir-se-static", "Directory Viewer", "tf_attr_name_test", "tf_attr_val_test", "terraformint-platform"),
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionAssignmentWithOriginAndAttributeByDirectory("uut", "integration-test-dir-se-static", "Directory Viewer", "tf_attr_name_test", "tf_attr_val_test", "iasprovidertestblr-platform"),
 					// We do not get back any information about the group, so if the call succeeds we assume that the asssignment/unassignment worked
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_directory_role_collection_assignment.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "role_collection_name", "Directory Viewer"),
 						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "attribute_name", "tf_attr_name_test"),
 						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "attribute_value", "tf_attr_val_test"),
-						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "origin", "terraformint-platform"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection_assignment.uut", "origin", "iasprovidertestblr-platform"),
 					),
 				},
 			},

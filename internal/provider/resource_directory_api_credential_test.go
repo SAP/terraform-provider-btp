@@ -21,7 +21,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryApiCredential("uut", "directory-api-credential-with-secret", "test-with_um", false),
+					Config: hclProviderFor(user) + hclResourceDirectoryApiCredential("uut", "directory-api-credential-with-secret", "test_dir", false),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_directory_api_credential.uut", "name", "directory-api-credential-with-secret"),
 						resource.TestMatchResourceAttr("btp_directory_api_credential.uut", "directory_id", regexpValidUUID),
@@ -42,7 +42,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryApiCredentialWithCertificate("uut", "directory-api-credential-with-certificate", "test-with_um", rec.IsRecording()),
+					Config: hclProviderFor(user) + hclResourceDirectoryApiCredentialWithCertificate("uut", "directory-api-credential-with-certificate", "test_dir", rec.IsRecording()),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_directory_api_credential.uut", "name", "directory-api-credential-with-certificate"),
 						resource.TestMatchResourceAttr("btp_directory_api_credential.uut", "directory_id", regexpValidUUID),
@@ -63,7 +63,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryApiCredential("uut", "directory-api-credential-read-only", "test-with_um", true),
+					Config: hclProviderFor(user) + hclResourceDirectoryApiCredential("uut", "directory-api-credential-read-only", "test_dir", true),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_directory_api_credential.uut", "name", "directory-api-credential-read-only"),
 						resource.TestMatchResourceAttr("btp_directory_api_credential.uut", "directory_id", regexpValidUUID),
@@ -84,7 +84,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclResourceDirectoryApiCredentialWithInvalidCertificate("uut", "directory-api-credential-invalid-certificate", "test-with_um", rec.IsRecording()),
+					Config:      hclProviderFor(user) + hclResourceDirectoryApiCredentialWithInvalidCertificate("uut", "directory-api-credential-invalid-certificate", "test_dir", rec.IsRecording()),
 					ExpectError: regexp.MustCompile(`The certificate is not valid PEM format`),
 				},
 			},
