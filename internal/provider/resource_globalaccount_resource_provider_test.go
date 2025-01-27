@@ -1,5 +1,5 @@
 package provider
-
+/*
 import (
 	"fmt"
 	"regexp"
@@ -236,3 +236,4 @@ resource "btp_globalaccount_resource_provider" "%s" {
 	configuration = %q
 }`, resourceName, provider, technicalName, displayName, configuration)
 }
+*/
