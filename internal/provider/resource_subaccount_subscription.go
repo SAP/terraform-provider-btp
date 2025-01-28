@@ -341,7 +341,8 @@ func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context,
 
 				// No error returned even is subscription failed
 				if subRes.State == saas_manager_service.StateSubscribeFailed {
-					return subRes, subRes.State, errors.New("undefined API error during subscription")
+					errorMessage := getErrorFromResponse(subRes)
+					return subRes, subRes.State, errors.New(errorMessage)
 				}
 
 				return subRes, subRes.State, nil
@@ -390,4 +391,18 @@ func (rs *subaccountSubscriptionResource) DeleteStateChange(ctx context.Context,
 			MinTimeout: minTimeout,
 		},
 		summary
+}
+
+func getErrorFromResponse(subRes saas_manager_service.EntitledApplicationsResponseObject) (errorMessage string) {
+	errorMessage = "undefined API error during subscription"
+
+	if subRes.SubscriptionError == nil {
+		return errorMessage
+	}
+
+	if subRes.SubscriptionError.AppError != "" {
+		return subRes.SubscriptionError.ErrorMessage
+	} else {
+		return errorMessage
+	}
 }
