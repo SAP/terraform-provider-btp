@@ -24,7 +24,7 @@ func TestDataSourceRegions(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceRegions("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_regions.uut", "values.#", "5"),
+						resource.TestCheckResourceAttr("data.btp_regions.uut", "values.#", "6"),
 					),
 				},
 			},

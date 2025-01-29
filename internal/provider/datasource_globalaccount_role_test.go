@@ -29,7 +29,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "app_id", "cis-central!b13"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "description", "Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions."),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "read_only", "true"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "scopes.#", "9"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "scopes.#", "10"),
 					),
 				},
 			},

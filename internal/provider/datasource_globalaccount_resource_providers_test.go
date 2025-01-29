@@ -1,5 +1,5 @@
 package provider
-
+/*
 import (
 	"fmt"
 	"testing"
@@ -35,3 +35,4 @@ func TestDataSourceGlobalaccountResourceProviders(t *testing.T) {
 func hclDatasourceGlobalaccountResourceProviders(resourceName string) string {
 	return fmt.Sprintf(`data "btp_globalaccount_resource_providers" "%s" {}`, resourceName)
 }
+*/

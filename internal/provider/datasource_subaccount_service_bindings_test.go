@@ -23,7 +23,7 @@ func TestDataSourceSubaccountServiceBindings(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceBindings("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_bindings.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_bindings.uut", "values.#", "3"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_bindings.uut", "values.#", "4"),
 					),
 				},
 			},

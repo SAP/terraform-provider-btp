@@ -24,7 +24,7 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountUsers("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "30"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "35"),
 					),
 				},
 			},
@@ -41,7 +41,7 @@ func TestDataSourceGlobalaccountUsers(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountUsersWithCustomIdp("uut", "terraformint-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "7"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_users.uut", "values.#", "8"),
 					),
 				},
 			},

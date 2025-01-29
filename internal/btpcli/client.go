@@ -72,7 +72,7 @@ const (
 	HeaderCLIServerMessage    string = "X-Cpcli-Server-Message"
 )
 
-const cliTargetProtocolVersion string = "v2.64.0"
+const cliTargetProtocolVersion string = "v2.77.1"
 
 type v2ContextKey string
 
