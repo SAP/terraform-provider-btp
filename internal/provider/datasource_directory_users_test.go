@@ -43,7 +43,7 @@ func TestDataSourceDirectoryUsers(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceDirectoryUsersWithCustomIdp("uut", "integration-test-dir-se-static", "iasprovidertestblr-platform"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_directory_users.uut", "directory_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "1"),
+						resource.TestCheckResourceAttr("data.btp_directory_users.uut", "values.#", "2"),
 					),
 				},
 			},

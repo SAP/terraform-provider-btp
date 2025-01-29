@@ -31,7 +31,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", ""),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", ""),
 						resource.TestMatchResourceAttr("data.btp_directory_user.uut", "id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "1"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "false"),
 					),
 				},
