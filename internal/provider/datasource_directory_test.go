@@ -33,7 +33,7 @@ func TestDataSourceDirectory(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_directory.uut", "name", "integration-test-dir-static"),
 						resource.TestMatchResourceAttr("data.btp_directory.uut", "parent_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_directory.uut", "state", "OK"),
-						resource.TestCheckResourceAttr("data.btp_directory.uut", "subdomain", ""),
+						resource.TestMatchResourceAttr("data.btp_directory.uut", "subdomain", regexpValidUUID),
 					),
 				},
 				{ // security enabled directory
