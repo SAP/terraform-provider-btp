@@ -110,9 +110,13 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 
 func (f *accountsSubaccountFacade) Subscribe(ctx context.Context, subaccountId string, appName string, planName string, parameters string) (saas_manager_service.SubscriptionAssignmentResponseObject, CommandResponse, error) {
 	commandOptions := map[string]string{
-		"subaccount":         subaccountId,
-		"appName":            appName,
-		"subscriptionParams": parameters,
+		"subaccount": subaccountId,
+		"appName":    appName,
+	}
+
+	// Some app subscriptions cannot handle empty JSON objects as subscription parameters. In this case, the parameters must not be transferred to the API call.
+	if parameters != "{}" {
+		commandOptions["subscriptionParams"] = parameters
 	}
 
 	// The plan name can be empty in case of subscription hosted in the same account. In this case the plan name is not required and must not be transferred to the API call.

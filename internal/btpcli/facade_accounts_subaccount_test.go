@@ -214,9 +214,32 @@ func TestAccountsSubaccountFacade_Subscribe(t *testing.T) {
 	appName := "SAPLaunchpad"
 	planName := "free"
 	planNameEmpty := ""
-	parameters := "{}"
+	parametersEmpty := "{}"
+	parameters := "{\"param1\": \"value1\"}"
 
-	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+	t.Run("constructs the CLI params correctly with empty JSON params", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionSubscribe, map[string]string{
+				"subaccount": subaccountId,
+				"appName":    appName,
+				"planName":   planName,
+			})
+
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Accounts.Subaccount.Subscribe(context.TODO(), subaccountId, appName, planName, parametersEmpty)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs the CLI params correctly with JSON params", func(t *testing.T) {
 		var srvCalled bool
 
 		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -238,7 +261,6 @@ func TestAccountsSubaccountFacade_Subscribe(t *testing.T) {
 			assert.Equal(t, 200, res.StatusCode)
 		}
 	})
-
 	t.Run("constructs the CLI params correctly with empty plan", func(t *testing.T) {
 		var srvCalled bool
 
@@ -246,15 +268,14 @@ func TestAccountsSubaccountFacade_Subscribe(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionSubscribe, map[string]string{
-				"subaccount":         subaccountId,
-				"appName":            appName,
-				"subscriptionParams": parameters,
+				"subaccount": subaccountId,
+				"appName":    appName,
 			})
 
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Accounts.Subaccount.Subscribe(context.TODO(), subaccountId, appName, planNameEmpty, parameters)
+		_, res, err := uut.Accounts.Subaccount.Subscribe(context.TODO(), subaccountId, appName, planNameEmpty, parametersEmpty)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
