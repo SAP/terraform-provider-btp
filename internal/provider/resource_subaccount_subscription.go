@@ -401,7 +401,7 @@ func getErrorFromResponse(subRes saas_manager_service.EntitledApplicationsRespon
 	}
 
 	if subRes.SubscriptionError.AppError != "" {
-		return subRes.SubscriptionError.ErrorMessage
+		return subRes.SubscriptionError.AppError
 	} else {
 		return errorMessage
 	}
