@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version-file: 'go.mod'
-          cache: true
+          cache: false
       - run: go mod download
       - run: go build -v .
       - name: Run linters
@@ -45,7 +45,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version-file: 'go.mod'
-          cache: true
+          cache: false
       - uses: opentofu/setup-opentofu@v1
         with:
           tofu_version: ${{ matrix.opentofu }}
