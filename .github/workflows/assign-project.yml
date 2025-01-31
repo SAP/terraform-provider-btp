@@ -1,0 +1,20 @@
+# Automatically assign a issue/PR to the central Terraform project
+name: Add issues and PRs to central Project Board
+
+on:
+  issues:
+    types:
+      - opened
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  add-to-project:
+    name: Add issue/pr to project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@RELEASE_VERSION
+        with:
+          project-url: https://github.com/orgs/SAP/projects/72
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
