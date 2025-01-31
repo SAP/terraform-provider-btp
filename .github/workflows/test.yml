@@ -39,13 +39,16 @@ jobs:
       - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
         with:
           go-version-file: 'go.mod'
-          cache: true
-      - run: go mod download
+          cache: false
+      - run: |
+         go mod download
+         go mod tidy
       - run: go build -v .
       - name: Run linters
         uses: golangci/golangci-lint-action@ec5d18412c0aeab7936cb16880d708ba2a64e1ae # v3.7.1
         with:
           version: latest
+          skip-cache: true
 
   generate:
     if: github.event.pull_request.draft == false
@@ -56,7 +59,7 @@ jobs:
       - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
         with:
           go-version-file: 'go.mod'
-          cache: true
+          cache: false
       - run: go generate ./...
       - name: git diff
         run: |
@@ -96,12 +99,14 @@ jobs:
       - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
         with:
           go-version-file: 'go.mod'
-          cache: true
+          cache: false
       - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
-      - run: go mod download
+      - run: |
+         go mod download
+         go mod tidy
       - env:
           TF_ACC: "1"
         run: go test -v -cover -coverprofile=cover.out -timeout=1800s -parallel=4 ./...

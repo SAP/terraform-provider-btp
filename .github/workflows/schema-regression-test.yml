@@ -1,6 +1,6 @@
 name: Regression Test - Terraform Provider
 
-# Idea: 
+# Idea:
 # 1. Setup infrastructure with stable release of the provider in the live environment
 # 2. Switch to a local build of the provider
 # 3. Execute a terraform plan and check for deviations
@@ -29,7 +29,7 @@ jobs:
     - name: Check out Git repository
       id: checkout_repo
       uses: actions/checkout@v4
-      
+
     - name: Setup Terraform
       id : setup_terraform
       uses: hashicorp/setup-terraform@v3.1.2
@@ -49,12 +49,13 @@ jobs:
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -auto-approve -no-color 
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -auto-approve -no-color
 
     - name: Setup Go
       uses: actions/setup-go@v5.3.0
       with:
         go-version-file: 'go.mod'
+        cache: false
 
     - name: Install local Terraform provider
       id: build_provider
@@ -92,7 +93,7 @@ jobs:
         terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} init -upgrade -no-color
 
     - name: Terraform Destroy with stable provider
-      if: always()  
+      if: always()
       id: terraform_destroy
       shell: bash
       run: |
@@ -103,8 +104,8 @@ jobs:
     - name: State deviation - find existing issue for deviation
       id: find_deviation_issue
       uses: micalevisk/last-issue-action@v2
-      if: ${{ steps.execute_deviation_check.outcome == 'failure' }} 
-      with: 
+      if: ${{ steps.execute_deviation_check.outcome == 'failure' }}
+      with:
         state: open
         labels: |
           state deviation
@@ -112,7 +113,7 @@ jobs:
 
     - name: State deviation - create or update issue
       uses: peter-evans/create-issue-from-file@v5
-      if: ${{ steps.execute_deviation_check.outcome == 'failure' }} 
+      if: ${{ steps.execute_deviation_check.outcome == 'failure' }}
       with:
         title: State deviation found
         # If issue number is empty a new issue gets created
@@ -122,13 +123,13 @@ jobs:
 
     - name: Cleanup plan output
       id: execute_plan_cleanup
-      if: always() 
+      if: always()
       shell: bash
       run: |
         rm -rf ${{ env.TEMP_PLAN_OUTPUT }}
 
     - name: State deviation - Set run to failed
-      if: ${{ steps.execute_deviation_check.outcome == 'failure' }} 
+      if: ${{ steps.execute_deviation_check.outcome == 'failure' }}
       uses: actions/github-script@v7
       with:
         script: |
