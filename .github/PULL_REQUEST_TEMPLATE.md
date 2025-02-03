@@ -1,6 +1,6 @@
 ## Purpose
 <!-- Describe the intention of the changes being proposed. What problem does it solve or functionality does it add? -->
-* ...
+- ...
 
 ## Does this introduce a breaking change?
 <!-- Mark one with an "x". -->
@@ -23,26 +23,17 @@ What kind of change does this Pull Request introduce?
 
 ## How to Test
 
-* Test the code via automated test
+- Test the code via automated test
 
 ```bash
-go test ./...
-```
-
-<!-- Add additional steps if applicable -->
-* Additional test steps
-
-```
-...
+make test
 ```
 
 ## What to Check
 
 Verify that the following are valid:
 
-* Automated tests are executed successfully
-<!-- Add additional conditions if applicable -->
-* ...
+- Automated tests are executed successfully
 
 ## Other Information
 <!-- Add any other helpful information that may be needed here. -->
@@ -52,8 +43,7 @@ Verify that the following are valid:
 <!-- This checklist needs to completed by the reviewer of the PR -->
 The following organizational tasks must be completed before merging this PR:
 
-* [ ] The PR is assigned to the Terraform project and a status is set (typically "in review").
-* [ ] The PR has the matching labels assigned to it.
-* [ ] The PR has a milestone assigned to it.
-* [ ] If the PR closes an issue, the issue is referenced.
-* [ ] Possible follow-up items are created and linked.
+- [ ] The PR status on the Project board is set (typically "in review").
+- [ ] The PR has the matching labels assigned to it.
+- [ ] If the PR closes an issue, the issue is referenced.
+- [ ] Possible follow-up issues are created and linked.
