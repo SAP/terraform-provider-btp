@@ -1,0 +1,55 @@
+
+name: Set default values to PR
+# Add the PR to the central project (status in project is set via workflow in project)
+# Add the creator of the PR as assignee
+# Add the next available milestone to the PR
+
+on:
+  pull_request:
+    types:
+      - opened
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  set-default-values:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add PR to default project
+        uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/orgs/SAP/projects/72
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+
+      - name: Add creator as assignee
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        env:
+         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+          --method POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /repos/${{github.repository}}/issues/${{github.event.number}}/assignees \
+           -f "assignees[]=${{github.actor}}"
+
+      - name: Add next milestone
+        uses: actions/github-script@v7
+        with:
+         script: |
+           const milestones = await github.rest.issues.listMilestones({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             state: "open",
+             sort: "due_on",
+             direction: "asc"
+           })
+
+           await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              milestone: milestones.data[0].number
+           });
