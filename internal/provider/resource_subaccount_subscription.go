@@ -56,6 +56,9 @@ You must be assigned to the admin role of the subaccount.`,
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
@@ -63,10 +66,16 @@ You must be assigned to the admin role of the subaccount.`,
 			"app_name": schema.StringAttribute{
 				MarkdownDescription: "The unique registration name of the deployed multitenant application as defined by the app developer.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"plan_name": schema.StringAttribute{
 				MarkdownDescription: "The plan name of the application to which the consumer has subscribed.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"parameters": schema.StringAttribute{
 				MarkdownDescription: "The parameters of the subscription as a valid JSON object.",
