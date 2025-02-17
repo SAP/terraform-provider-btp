@@ -2,7 +2,7 @@ terraform {
   required_providers {
     btp = {
       source  = "SAP/btp"
-      version = "1.9.0"
+      version = "1.10.0"
     }
   }
 }
@@ -11,4 +11,3 @@ terraform {
 provider "btp" {
   cli_server_url = "https://canary.cli.btp.int.sap"
 }
-
