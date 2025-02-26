@@ -159,14 +159,14 @@ func (rs *directoryRoleResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.Role.GetByDirectory(ctx,
+	cliRes, rawRes, err := rs.cli.Security.Role.GetByDirectory(ctx,
 		state.DirectoryId.ValueString(),
 		state.Name.ValueString(),
 		state.RoleTemplateAppId.ValueString(),
 		state.RoleTemplateName.ValueString(),
 	)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Role (Directory)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Role (Directory)")
 		return
 	}
 

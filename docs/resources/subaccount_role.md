@@ -14,7 +14,7 @@ description: |-
 Creates a role in a subaccount.
 
 __Tip:__
-You must be assigned to the admin role of the subaccount.		
+You must be assigned to the admin role of the subaccount.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>
