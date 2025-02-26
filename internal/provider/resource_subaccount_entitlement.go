@@ -164,19 +164,13 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 		Target:  []string{cis_entitlements.StateOK},
 		Refresh: func() (interface{}, string, error) {
 
-			entitlement, rawRes, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
 			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
 
 			if err != nil {
-
-				if rawRes.StatusCode == 404 {
-					// Treat "Not Found" as a signal to recreate resource see https://developer.hashicorp.com/terraform/plugin/framework/resources/read#recommendations
-					return nil, "", fmt.Errorf("%s", "404")
-				}
-
 				return nil, "", err
 			}
 
@@ -198,12 +192,11 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 	entitlement, err := readStateConf.WaitForStateContext(ctx)
 
 	if err != nil {
-		if err.Error() == "404" {
+		if notFoundErr(err) {
 			// Treat "Not Found" as a signal to recreate resource see https://developer.hashicorp.com/terraform/plugin/framework/resources/read#recommendations
 			resp.State.RemoveResource(ctx)
 			return
 		}
-
 		resp.Diagnostics.AddError(("API Error %s Resource Entitlement (Subaccount) Read"), fmt.Sprintf("%s", err))
 		return
 	}
@@ -467,4 +460,11 @@ func hasPlanQuota(state subaccountEntitlementType) bool {
 	}
 
 	return true
+}
+
+func notFoundErr(err error) bool {
+	if err.Error() != "" && strings.Contains(err.Error(), "couldn't find resource") {
+		return true
+	}
+	return false
 }
