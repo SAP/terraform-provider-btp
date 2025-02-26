@@ -1,47 +1,18 @@
 {
 	"name": "Terraform provider for SAP BTP - Development",
-	// Switching to manual build due to slow adoption of new go version on https://github.com/devcontainers/
-	//"image": "mcr.microsoft.com/devcontainers/go:1.23-bullseye",
-	"build": {
-		"dockerfile": "./Dockerfile",
-		"context": "."
-	},
+	//https://mcr.microsoft.com/en-us/product/devcontainers/go/tags
+	"image": "mcr.microsoft.com/devcontainers/go:1.24-bullseye",
+	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
-		"ghcr.io/devcontainers/features/common-utils:2": {
-			"installZsh": "true",
-			"username": "vscode",
-			"userUid": "1000",
-			"userGid": "1000",
-			"upgradePackages": "true"
-		},
-		"ghcr.io/devcontainers/features/go:1": {
-			"version": "none"
-		},
-		"ghcr.io/devcontainers/features/node:1": {
-			"version": "none"
-		},
-		"ghcr.io/devcontainers/features/git:1": {
-			"version": "latest",
-			"ppa": "false"
-		},
 		"ghcr.io/devcontainers/features/terraform:1": {},
 		"ghcr.io/devcontainers/features/github-cli:1": {},
 		"ghcr.io/robbert229/devcontainer-features/opentofu:1": {
-			"version": "1.8.1"
+			"version": "1.9.0"
 		}
 	},
-	"runArgs": [
-		"--cap-add=SYS_PTRACE",
-		"--security-opt",
-		"seccomp=unconfined"
-	],
 	"customizations": {
 		"vscode": {
-			"settings": {
-				"go.toolsManagement.checkForUpdates": "local",
-				"go.useLanguageServer": true,
-				"go.gopath": "/go"
-			},
+			"settings": {},
 			"extensions": [
 				"golang.go",
 				"HashiCorp.terraform",
@@ -55,5 +26,7 @@
 	"hostRequirements": {
 		"memory": "4gb"
 	},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
 	"remoteUser": "vscode"
 }
