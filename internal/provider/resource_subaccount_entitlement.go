@@ -197,7 +197,7 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 			resp.State.RemoveResource(ctx)
 			return
 		}
-		resp.Diagnostics.AddError(("API Error %s Resource Entitlement (Subaccount) Read"), fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(("API Error Resource Entitlement (Subaccount) Read"), fmt.Sprintf("%s", err))
 		return
 	}
 
