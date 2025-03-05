@@ -18,7 +18,7 @@ description: |-
 
 ## Get Started
 
-If you're not familiar with Terraform yet, see the [Fundamentals](https://developer.hashicorp.com/terraform/tutorials/cli) section with a lot of helpful tutorials. 
+If you're not familiar with Terraform yet, see the [Fundamentals](https://developer.hashicorp.com/terraform/tutorials/cli) section with a lot of helpful tutorials.
 
 To learn how to use this provider, see the [Get Started with the Terraform Provider for SAP BTP](https://developers.sap.com/tutorials/btp-terraform-get-started.html) tutorial in the SAP Developer Center.
 
@@ -28,19 +28,90 @@ For the best experience using the {{.RenderedProviderName}} provider, we recomme
 
 ## Authentication
 
-The {{.RenderedProviderName}} provider offers the authentication via `username` and `password`. Be aware that this authentication is not compatible with the SAP Universal ID. For details on how to resolve this please see SAP Note [3085908 - Getting an error (e.g. invalid credentials) in certain applications (e.g. SAP Download Manager) when using S-user ID or SAP Universal ID](https://me.sap.com/notes/3085908). 
+### Important Note about Authentication
 
-## Custom User-Agent Information
+The SAP BTP provider offers the authentication via `username` and `password`. Be aware that this authentication is not compatible with the SAP Universal ID. For details on how to resolve this please see SAP Note [3085908 - Getting an error (e.g. invalid credentials) in certain applications (e.g. SAP Download Manager) when using S-user ID or SAP Universal ID](https://me.sap.com/notes/3085908).
 
-By default, the underlying BTP client used by the Terraform BTP Provider creates requests with User-Agent headers that include information about Terraform and BTP Terraform provider versions. To add more details to the User-Agent headers, the `BTP_APPEND_USER_AGENT` environment variable can be set, and its value will be and its value will be directly added to HTTP requests. E.g.,
+### Authentication Independent Parameters
 
-```bash
-% export BTP_APPEND_USER_AGENT="Optional_Extra_Information"
+Some parameters offered by the provider configuration are not depending on the login flow. They must be set depending on your SAP BTP landscape and your overall authentication setup. These parameters are:
+
+- `globalaccount`: You must always specify the *subdomain* of your SAP BTP Global Account that you want to address.
+- `idp`: You must provide a value for the identity provider if you use a custom identity provider to authenticate. Be aware that the value for the `idp` is not URL of the identity provider but the name as e.g. visible in the SAP BTP Cockpit in the Trust Configurations.
+- `cli_server_url`: Depending on your SAP BTP landscape you might need to provide a URL for the BTP CLI server. The URL is defaulted to `https://cli.btp.cloud.sap` which should be correct for most scenarios. If you are in a private cloud and your operator has provided you with a different server URL, you must enter that one.
+
+
+### Authentication to SAP BTP using Username and Password
+
+A supported authentication flow is the *username-password flow*. The configuration of the provider using the SAP default identity provider requires values for the `globalaccount`, `username` and `password`.
+
+An example for a provider configuration looks like this:
+
+```terraform
+# Configure the BTP Provider
+# We recommend to source username and password from environment variables
+provider "btp" {
+  globalaccount = "my-global-account-subdomain"
+  username      = var.username
+  password      = var.password
+}
 ```
+
+The configuration of the provider using a custom identity provider requires in addition to the previous example a value for the parameter `idp`.
+
+An example for a provider configuration with a custom identity provider looks like this:
+
+```terraform
+# Configure the BTP Provider
+# We recommend to source username and password from environment variables
+provider "btp" {
+  globalaccount = "my-global-account-subdomain"
+  idp           = "customerTenant.accounts.ondemand.com"
+  username      = var.username
+  password      = var.password
+}
+```
+
+We recommend sourcing the username and password via the environment variables `BTP_USERNAME` and `BTP_PASSWORD`. In case you want to provide the username and password via variables make sure to follow the guidance given in the [Hashicorp documentation](https://developer.hashicorp.com/terraform/tutorials/configuration-language/sensitive-variables) and never commit the values to a source code management system.
+
+### Authentication to SAP BTP using X509 certificates
+
+A supported authentication flow is the *X509 flow*. This authentication must be configured in the SAP Cloud Identity Service as described in [help.sap.com](https://help.sap.com/docs/cloud-identity-services/cloud-identity-services/configure-x-509-client-certificates-for-user-authentication).
+
+For our example configuration we assume that the X509 certificate and the X509 private key are stored in local files called `btp-tech-user-cert.pem` and `btp-tech-user-key.pem`. The files must be PEM encoded. You can achieve this e.g., via [openssl](https://docs.openssl.org/master/man1/openssl-x509/).
+
+An example for a provider configuration looks like this:
+
+```terraform
+# Configure the BTP Provider
+provider "btp" {
+  globalaccount          = "my-global-account-subdomain"
+  idp                    = "customerTenant.accounts.ondemand.com"
+  username               = "btp-tech-user@customer-domain.de"
+  tls_client_certificate = file("PATH_TO_FILE/btp-tech-user-cert.pem")
+  tls_client_key         = file("PATH_TO_FILE/btp-tech-user-key.pem")
+  tls_idp_url            = "https://customerTenant.accounts.ondemand.com"
+}
+```
+
+We used the Terraform [file function](https://developer.hashicorp.com/terraform/language/functions/file) to provide the content for the parameters `tls_client_certificate` and `tls_client_key` as a string. You can also directly provide the string to these parameters
+
+### SAP Internal Authentication Parameters
+
+Some parameters offered by the provider configuration are for SAP-internal use only. They are not in scope of this documentation.
+The parameter that falls into this category is the `idtoken`.
 
 ## Single Sign On
 
 The provider supports login via Single Sign-On (SSO) as well. To enable this you need to set the environment variable `BTP_ENABLE_SSO` to `true`. Additionally, ensure that you run your scripts in a desktop environment. It's important to note that the SSO login feature is not intended for use in containerized environments or CI/CD pipelines.
+
+## Custom User-Agent Information
+
+By default, the underlying BTP client used by the Terraform BTP Provider creates requests with User-Agent headers that include information about Terraform and BTP Terraform provider versions. To add more details to the User-Agent headers, the `BTP_APPEND_USER_AGENT` environment variable can be set, and its value will be directly added to HTTP requests. E.g.,
+
+```bash
+% export BTP_APPEND_USER_AGENT="Optional_Extra_Information"
+```
 
 ## Drift Detection
 
@@ -48,4 +119,4 @@ You find further information on drift detection in the [Terraform provider repos
 
 ## Import
 
-The documentation of each resource shows if the resource can be imported and which keys are needed. To provide a quick overview we listed the resources in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/blob/main/guides/IMPORT.md).
+The documentation of each resource shows if the resource can be imported, and which keys are needed. To provide a quick overview we listed the resources in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/blob/main/guides/IMPORT.md).
