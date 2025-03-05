@@ -192,7 +192,12 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 	entitlement, err := readStateConf.WaitForStateContext(ctx)
 
 	if err != nil {
-		resp.Diagnostics.AddError(("API Error %s Resource Entitlement (Subaccount) Read"), fmt.Sprintf("%s", err))
+		if notFoundErr(err) {
+			// Treat "Not Found" as a signal to recreate resource see https://developer.hashicorp.com/terraform/plugin/framework/resources/read#recommendations
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.AddError(("API Error Resource Entitlement (Subaccount) Read"), fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -455,4 +460,11 @@ func hasPlanQuota(state subaccountEntitlementType) bool {
 	}
 
 	return true
+}
+
+func notFoundErr(err error) bool {
+	if err.Error() != "" && strings.Contains(err.Error(), "couldn't find resource") {
+		return true
+	}
+	return false
 }

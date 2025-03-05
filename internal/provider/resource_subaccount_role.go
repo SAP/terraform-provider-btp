@@ -43,7 +43,7 @@ func (rs *subaccountRoleResource) Schema(_ context.Context, _ resource.SchemaReq
 		MarkdownDescription: `Creates a role in a subaccount.
 
 __Tip:__
-You must be assigned to the admin role of the subaccount.		
+You must be assigned to the admin role of the subaccount.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
@@ -107,14 +107,14 @@ func (rs *subaccountRoleResource) Read(ctx context.Context, req resource.ReadReq
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.Role.GetBySubaccount(ctx,
+	cliRes, rawRes, err := rs.cli.Security.Role.GetBySubaccount(ctx,
 		state.SubaccountId.ValueString(),
 		state.Name.ValueString(),
 		state.RoleTemplateAppId.ValueString(),
 		state.RoleTemplateName.ValueString(),
 	)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Role (Subaccount)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Role (Subaccount)")
 		return
 	}
 

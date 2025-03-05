@@ -88,13 +88,13 @@ func (rs *globalaccountRoleResource) Read(ctx context.Context, req resource.Read
 		return
 	}
 
-	cliRes, _, err := rs.cli.Security.Role.GetByGlobalAccount(ctx,
+	cliRes, rawRes, err := rs.cli.Security.Role.GetByGlobalAccount(ctx,
 		state.Name.ValueString(),
 		state.RoleTemplateAppId.ValueString(),
 		state.RoleTemplateName.ValueString(),
 	)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading Resource Role (Global Account)", fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, resp, err, "Resource Role (Global Account)")
 		return
 	}
 
