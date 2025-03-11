@@ -26,7 +26,7 @@ permissions:
 
 # Define the latest Terraform version to use for upload of coverage report
 env:
-  SONAR_CLOUD_TF_VERSION: 19
+  LATEST_TF_VERSION: 1.11.*
 
 jobs:
   # Ensure project builds before running testing matrix
@@ -87,12 +87,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # list whatever Terraform versions here you would like to support
+        # List of Terraform versions to be tested - last three versions are in scope
+        # Check https://endoflife.date/terraform for end of support dates
+        # '1.6.*' end of security support 10 Apr 2024
+        # '1.7.*' end of security support 26 Jun 2024
+        # '1.8.*' end of security support 26 Nov 2024
         terraform:
-          - '1.6.*' #end of security support under BSL 31 Dec 2025
-          - '1.7.*' #end of security support under BSL 31 Dec 2026
-          - '1.8.*' #end of security support under BSL 31 Dec 2026
-          - '1.9.*' #end of security support under BSL 31 Dec 2026
+          - '1.9.*' #end of security support 27 Feb 2025
           - '1.10.*'
           - '1.11.*'
     steps:
@@ -108,15 +109,22 @@ jobs:
       - run: |
          go mod download
          go mod tidy
-      - env:
+      - run: go test -v -timeout=1800s -parallel=4 ./...
+        if: ${{ matrix.terraform != env.LATEST_VERSION}}
+        env:
           TF_ACC: "1"
-        run: go test -v -cover -coverprofile=cover.out -timeout=1800s -parallel=4 ./...
         timeout-minutes: 20
-      # Determine stripped version of Terraform
-      - run: echo "CURRENT_TF_VERSION=$(echo ${{ matrix.terraform }} | sed 's/[^a-zA-Z0-9]//g')" >> $GITHUB_ENV
+      # For the latest version we also run coverage and use a dedicated action for a visual display of the test results
+      - uses: robherley/go-test-action@v0
+        if: ${{ matrix.terraform == env.LATEST_VERSION}}
+        env:
+          TF_ACC: "1"
+        with:
+          testArguments: -v -cover -coverprofile=cover.out -timeout=900s -parallel=4 ./...
+
       # Upload coverage report for latest Terraform version only to avoid nameing issues in upload (see also https://github.com/actions/upload-artifact/tree/v4/?tab=readme-ov-file#breaking-changes)
       - uses: actions/upload-artifact@v4
-        if: ${{ env.CURRENT_TF_VERSION == env.SONAR_CLOUD_TF_VERSION}}
+        if: ${{ matrix.terraform == env.LATEST_TF_VERSION}}
         with:
           name: coverage-report
           path: cover.out
