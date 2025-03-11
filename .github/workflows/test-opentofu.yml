@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  LATEST_VERSION: 1.9.*
+
 jobs:
   build:
     name: Build
@@ -55,7 +58,15 @@ jobs:
           tofu_wrapper: false
       - run: go mod download
       - run: go mod tidy # Ensure all dependencies are correctly downloaded.
-      - run: go test -v -cover -coverprofile=cover.out -timeout=1800s -parallel=4 ./...
+      - run: go test -v -timeout=1800s -parallel=4 ./...
+        if: ${{ matrix.opentofu }} != ${{ env.LATEST_VERSION }}
         env:
           TF_ACC: "1"
         timeout-minutes: 20
+      # For the latest version we also run coverage and use a dedicated action for a visual display of the test results
+      - uses: robherley/go-test-action@v0
+        if: ${{ matrix.opentofu == env.LATEST_VERSION}}
+        env:
+          TF_ACC: "1"
+        with:
+          testArguments: -v -timeout=1800s -parallel=4 ./...
