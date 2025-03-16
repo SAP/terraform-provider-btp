@@ -31,9 +31,11 @@ __Further documentation:__
 ```terraform
 # register a AZURE project as resource provider
 resource "btp_globalaccount_resource_provider" "azure" {
-  id                = "my_azure_provider"
-  resource_provider = "AZURE"
-  parameters = jsonencode({
+  display_name   = "my_azure_provider"
+  provider_type  = "AZURE"
+  technical_name = "AZURE"
+  description    = "My Azure Resource Provider"
+  configuration   = jsonencode({
     region              = "westeurope"
     client_id           = "AZURECLIENTID"
     client_secret       = "AZURECLIENTSECRET"
@@ -45,9 +47,11 @@ resource "btp_globalaccount_resource_provider" "azure" {
 
 # register an AWS account as resource provider
 resource "btp_globalaccount_resource_provider" "aws" {
-  id                = "my_aws_provider"
-  resource_provider = "AWS"
-  parameters = jsonencode({
+  display_name   = "my_aws_provider"
+  provider_type  = "AWS"
+  technical_name = "AWS"
+  description    = "My AWS Resource Provider"
+  configuration   = jsonencode({
     access_key_id     = "AWSACCESSKEY"
     secret_access_key = "AWSSECRETKEY"
     vpc_id            = "vpc-test"
