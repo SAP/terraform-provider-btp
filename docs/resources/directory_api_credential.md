@@ -8,7 +8,7 @@ description: |-
   Tip:
   You must be assigned to directory admin or viewer role.
   Further documentation:
-  https://help.sap.com/docs/btp/sap-business-technology-platform-internal/managing-api-credentials-for-calling-rest-apis-of-sap-authorization-and-trust-management-service
+  https://help.sap.com/docs/btp/sap-business-technology-platform/managing-api-credentials-for-calling-rest-apis-of-sap-authorization-and-trust-management-service
 ---
 
 # btp_directory_api_credential (Resource)
@@ -21,7 +21,7 @@ __Tip:__
 You must be assigned to directory admin or viewer role.
 
 __Further documentation:__
-<https://help.sap.com/docs/btp/sap-business-technology-platform-internal/managing-api-credentials-for-calling-rest-apis-of-sap-authorization-and-trust-management-service>
+<https://help.sap.com/docs/btp/sap-business-technology-platform/managing-api-credentials-for-calling-rest-apis-of-sap-authorization-and-trust-management-service>
 
 ## Example Usage
 
