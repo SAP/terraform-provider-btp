@@ -165,7 +165,13 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana", "unique-id-hana"),
+					Config: hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount(
+						"uut",
+						"integration-test-acc-static",
+						"hana-cloud",
+						"hana",
+						"hana-cloud-hana",
+					),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),

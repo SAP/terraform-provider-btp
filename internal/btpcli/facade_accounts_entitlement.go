@@ -63,6 +63,13 @@ func (f *accountsEntitlementFacade) ListByDirectory(ctx context.Context, directo
 	}))
 }
 
+func (f *accountsEntitlementFacade) FilterBySubaccount(ctx context.Context, subaccountID string) (cis_entitlements.EntitledAndAssignedServicesResponseObject, CommandResponse, error) {
+	return doExecute[cis_entitlements.EntitledAndAssignedServicesResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
+		"globalAccount":    f.cliClient.GetGlobalAccountSubdomain(),
+		"subaccountFilter": subaccountID,
+	}))
+}
+
 func (f *accountsEntitlementFacade) AssignToSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string, amount int) (CommandResponse, error) {
 
 	params := map[string]string{
@@ -214,6 +221,20 @@ func (f *accountsEntitlementFacade) EnableInDirectory(ctx context.Context, direc
 		"enable":          "true",
 		"distribute":      strconv.FormatBool(distribute),
 		"autoAssign":      strconv.FormatBool(autoAssign),
+	}))
+	return res, err
+}
+
+func (f *accountsEntitlementFacade) EnableInDirectoryWithUniqueIdentifier(ctx context.Context, directoryId string, serviceName string, servicePlanName string, planUniqueIdentifier string, distribute bool, autoAssign bool, enable bool) (CommandResponse, error) {
+	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
+		"globalAccount":        f.cliClient.GetGlobalAccountSubdomain(),
+		"directory":            directoryId,
+		"serviceName":          serviceName,
+		"servicePlanName":      servicePlanName,
+		"planUniqueIdentifier": planUniqueIdentifier,
+		"enable":               "true",
+		"distribute":           strconv.FormatBool(distribute),
+		"autoAssign":           strconv.FormatBool(autoAssign),
 	}))
 
 	return res, err
