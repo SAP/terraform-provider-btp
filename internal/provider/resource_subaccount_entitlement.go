@@ -122,6 +122,14 @@ __Further documentation:__
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"plan_unique_identifier": schema.StringAttribute{
+				MarkdownDescription: "The name of the unique identifier for the plan",
+				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"state": schema.StringAttribute{
 				MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
 					getFormattedValueAsTableRow("state", "description") +
@@ -232,7 +240,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 
 	// Determine the parent of the subaccount
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, plan.SubaccountId.ValueString())
-	//Determine if the parent of the subaccount is a directory and if it has authoization enabled
+	// Determine if the parent of the subaccount is a directory and if it has authorization enabled
 	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
 
 	var directoryId string
@@ -245,12 +253,11 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		Pending: []string{entitlementCallRetryPending},
 		Target:  []string{entitlementCallRetryFailed, entitlementCallRetrySucceeded},
 		Refresh: func() (interface{}, string, error) {
-
 			var callResult btpcli.CommandResponse
 			var err error
 
 			if !hasPlanQuota(plan) {
-				callResult, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
+				callResult, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.PlanUniqueIdentifier.ValueString(), true)
 			} else {
 				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), int(plan.Amount.ValueInt64()))
 			}
@@ -289,7 +296,6 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK},
 		Refresh: func() (interface{}, string, error) {
-
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
 			if tfutils.IsRetriableErrorForEntitlement(err) {
@@ -303,6 +309,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 			if entitlement == nil {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
+
 			// No error returned even if operation failed
 			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
 				return *entitlement, entitlement.Assignment.EntityState, errors.New("undefined API error during entitlement processing")

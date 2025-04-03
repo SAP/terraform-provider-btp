@@ -146,6 +146,7 @@ func TestAccountsEntitlementFacade_EnableInSubaccount(t *testing.T) {
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	serviceName := "alert-notification"
 	planName := "free"
+	planUniqueIdentifier := "my-unique-id"
 
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
 		var srvCalled bool
@@ -154,17 +155,18 @@ func TestAccountsEntitlementFacade_EnableInSubaccount(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionAssign, map[string]string{
-				"globalAccount":   "795b53bb-a3f0-4769-adf0-26173282a975",
-				"directoryID":     directoryId,
-				"subaccount":      subaccountId,
-				"serviceName":     serviceName,
-				"servicePlanName": planName,
-				"enable":          "true",
+				"globalAccount":        "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directoryID":          directoryId,
+				"subaccount":           subaccountId,
+				"serviceName":          serviceName,
+				"servicePlanName":      planName,
+				"planUniqueIdentifier": planUniqueIdentifier,
+				"enable":               "true",
 			})
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.EnableInSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName)
+		res, err := uut.Accounts.Entitlement.EnableInSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName, planUniqueIdentifier, true)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)

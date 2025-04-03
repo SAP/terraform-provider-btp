@@ -20,6 +20,7 @@ type directoryEntitlementType struct {
 	Distribute           types.Bool   `tfsdk:"distribute"`
 	Category             types.String `tfsdk:"category"`
 	PlanId               types.String `tfsdk:"plan_id"`
+	PlanUniqueIdentifier types.String `tfsdk:"plan_unique_identifier"`
 }
 
 func directoryEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedEntitlement, directoryId string, distribute bool) (directoryEntitlementType, diag.Diagnostics) {
@@ -34,5 +35,6 @@ func directoryEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedEnt
 		AutoAssign:           types.BoolValue(value.Plan.AutoAssign),
 		AutoDistributeAmount: types.Int64Value(int64(value.Plan.AutoDistributeAmount)),
 		Distribute:           types.BoolValue(distribute),
+		PlanUniqueIdentifier: types.StringValue(value.Plan.UniqueIdentifier),
 	}, diag.Diagnostics{}
 }
