@@ -98,6 +98,12 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},
+				{
+					ResourceName:      "btp_subaccount_entitlement.uut",
+					ImportStateIdFunc: getImportStateIdForSubaccountEntitlement("btp_subaccount_entitlement.uut", "uas", "reporting-directory"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
 			},
 		})
 	})
@@ -155,7 +161,6 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			},
 		})
 	})
-
 	t.Run("happy path - plan unique identifier", func(t *testing.T) {
 		rec, _ := setupVCR(t, "fixtures/resource_subaccount_entitlement.plan_unique_identifier")
 		defer stopQuietly(rec)
@@ -225,6 +230,17 @@ func hclResourceSubaccountEntitlementWithAmountBySubaccount(resourceName string,
     }`, resourceName, subaccountName, serviceName, planName, amount)
 }
 
+func hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount(resourceName, subaccountId, serviceName, planName, planUniqueIdentifier string) string {
+	return fmt.Sprintf(`
+resource "btp_subaccount_entitlement" "%s" {
+  subaccount_id           = "%s"
+  service_name            = "%s"
+  plan_name               = "%s"
+  plan_unique_identifier  = "%s"
+}
+`, resourceName, subaccountId, serviceName, planName, planUniqueIdentifier)
+}
+
 func getImportStateIdForSubaccountEntitlement(resourceName string, serviceName string, planName string) resource.ImportStateIdFunc {
 	return func(state *terraform.State) (string, error) {
 		rs, ok := state.RootModule().Resources[resourceName]
@@ -233,15 +249,4 @@ func getImportStateIdForSubaccountEntitlement(resourceName string, serviceName s
 		}
 		return fmt.Sprintf("%s,%s,%s", rs.Primary.Attributes["subaccount_id"], serviceName, planName), nil
 	}
-}
-
-func hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount(resourceName string, subaccountName string, serviceName string, planName string, planUniqueIdentifier string) string {
-	return fmt.Sprintf(`
-data "btp_subaccounts" "all" {}
-resource "btp_subaccount_entitlement" "%s" {
-    subaccount_id          = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
-    service_name           = "%s"
-    plan_name              = "%s"
-    plan_unique_identifier = "%s"
-}`, resourceName, subaccountName, serviceName, planName, planUniqueIdentifier)
 }
