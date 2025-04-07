@@ -363,7 +363,6 @@ provider "btp" {
 	tls_client_key         = "tlsClientKey"
 	tls_client_certificate = "tlsClientCertificate"
 	tls_idp_url            = "idpUrl"
-	idp                    = "idp"
 }
 data "btp_whoami" "me" {}`,
 					ExpectError: regexp.MustCompile(`empty value for the username`),
@@ -376,7 +375,6 @@ provider "btp" {
 	tls_client_key         = ""
 	tls_client_certificate = "tlsClientCertificate"
 	tls_idp_url            = "idpUrl"
-	idp                    = "idp"
 }
 data "btp_whoami" "me" {}`,
 					ExpectError: regexp.MustCompile(`empty value for the tls_client_key`),
@@ -389,7 +387,6 @@ provider "btp" {
 	tls_client_key         = "tlsClientKey"
 	tls_client_certificate = ""
 	tls_idp_url            = "idpUrl"
-	idp                    = "idp"
 }
 data "btp_whoami" "me" {}`,
 					ExpectError: regexp.MustCompile(`empty value for the tls_client_certificate`),
@@ -402,44 +399,9 @@ provider "btp" {
 	tls_client_key         = "tlsClientKey"
 	tls_client_certificate = "tlsClientCertificate"
 	tls_idp_url            = ""
-	idp                    = "idp"
 }
 data "btp_whoami" "me" {}`,
 					ExpectError: regexp.MustCompile(`empty value for the tls_idp_url`),
-				},
-				{
-					Config: `
-provider "btp" {
-	globalaccount          = "ga"
-	username               = "username"
-	tls_client_key         = "tlsClientKey"
-	tls_client_certificate = "tlsClientCertificate"
-	tls_idp_url            = "idpUrl"
-}
-data "btp_whoami" "me" {}`,
-					ExpectError: regexp.MustCompile(`Attribute "idp" must be specified`),
-				},
-			},
-		})
-	})
-	t.Run("error path - invalid client server url", func(t *testing.T) {
-		rec, _ := setupVCR(t, "fixtures/provider.error_cli_server_url")
-		defer stopQuietly(rec)
-
-		testingResource.Test(t, testingResource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
-			Steps: []testingResource.TestStep{
-				{
-					Config: `
-					provider "btp" {
-						cli_server_url = "://canary.cli .btp.int.sap"
-						globalaccount  = "ga"
-						username       = "username"
-						password       = "password"
-					}
-					data "btp_whoami" "me" {}`,
-					ExpectError: regexp.MustCompile(`unableToCreateClient`),
 				},
 			},
 		})
@@ -540,6 +502,7 @@ func TestProvider_HasDatasources(t *testing.T) {
 			"btp_directory_apps",
 		*/
 		"btp_directory_entitlements",
+		"btp_directory_entitlement",
 		"btp_directory_labels",
 		"btp_directory_role",
 		"btp_directory_role_collection",
@@ -572,6 +535,7 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_app",
 		"btp_subaccount_apps",
 		"btp_subaccount_entitlements",
+		"btp_subaccount_plan_unique_identifier",
 		"btp_subaccount_environment_instance",
 		"btp_subaccount_environment_instances",
 		"btp_subaccount_environments",

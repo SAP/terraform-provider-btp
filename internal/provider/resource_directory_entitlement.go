@@ -87,6 +87,14 @@ __Further documentation:__
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"plan_unique_identifier": schema.StringAttribute{
+				MarkdownDescription: "The unique identifier of the plan.",
+				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"amount": schema.Int64Attribute{
 				MarkdownDescription: "The quota assigned to the directory.",
 				Optional:            true,
@@ -195,7 +203,15 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 
 	var err error
 	if !hasPlanQuotaDir(plan) {
-		_, err = rs.cli.Accounts.Entitlement.EnableInDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.Distribute.ValueBool(), plan.AutoAssign.ValueBool())
+		_, err = rs.cli.Accounts.Entitlement.EnableInDirectory(
+			ctx,
+			plan.DirectoryId.ValueString(),
+			plan.ServiceName.ValueString(),
+			plan.PlanName.ValueString(),
+			plan.Distribute.ValueBool(),
+			plan.AutoAssign.ValueBool(),
+			plan.PlanUniqueIdentifier.ValueString(),
+		)
 	} else {
 
 		dirAssignmentInput := btpcli.DirectoryAssignmentInput{
