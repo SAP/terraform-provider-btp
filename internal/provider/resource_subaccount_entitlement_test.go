@@ -226,6 +226,7 @@ func hclResourceSubaccountEntitlementWithAmountBySubaccount(resourceName string,
 
 func hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount(resourceName, subaccountId, serviceName, planName, planUniqueIdentifier string) string {
 	return fmt.Sprintf(`
+data "btp_subaccounts" "all" {}
 resource "btp_subaccount_entitlement" "%s" {
   subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
   service_name            = "%s"
