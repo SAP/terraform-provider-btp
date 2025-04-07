@@ -91,6 +91,15 @@ __Further documentation:__
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"plan_unique_identifier": schema.StringAttribute{
+				MarkdownDescription: "The unique identifier of the service plan.",
+				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+
 			"category": schema.StringAttribute{
 				MarkdownDescription: "The current state of the entitlement. Possible values are: \n " +
 					getFormattedValueAsTableRow("value", "description") +
@@ -120,14 +129,6 @@ __Further documentation:__
 				},
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
-				},
-			},
-			"plan_unique_identifier": schema.StringAttribute{
-				MarkdownDescription: "The unique identifier of the service plan.",
-				Optional:            true,
-				Computed:            true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"state": schema.StringAttribute{
@@ -174,7 +175,7 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
-			if isRetriableError(err) {
+			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
 
@@ -200,7 +201,12 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 	entitlement, err := readStateConf.WaitForStateContext(ctx)
 
 	if err != nil {
-		resp.Diagnostics.AddError(("API Error %s Resource Entitlement (Subaccount) Read"), fmt.Sprintf("%s", err))
+		if notFoundErr(err) {
+			// Treat "Not Found" as a signal to recreate resource see https://developer.hashicorp.com/terraform/plugin/framework/resources/read#recommendations
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.AddError(("API Error Resource Entitlement (Subaccount) Read"), fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -235,7 +241,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 
 	// Determine the parent of the subaccount
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, plan.SubaccountId.ValueString())
-	// Determine if the parent of the subaccount is a directory and if it has authorization enabled
+	//Determine if the parent of the subaccount is a directory and if it has authoization enabled
 	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
 
 	var directoryId string
@@ -248,6 +254,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		Pending: []string{entitlementCallRetryPending},
 		Target:  []string{entitlementCallRetryFailed, entitlementCallRetrySucceeded},
 		Refresh: func() (interface{}, string, error) {
+
 			var callResult btpcli.CommandResponse
 			var err error
 
@@ -261,7 +268,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 				return callResult, entitlementCallRetrySucceeded, nil
 			}
 
-			if isRetriableError(err) {
+			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return callResult, entitlementCallRetryPending, nil
 			}
 
@@ -291,9 +298,10 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK},
 		Refresh: func() (interface{}, string, error) {
+
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
-			if isRetriableError(err) {
+			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
 
@@ -304,7 +312,6 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 			if entitlement == nil {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
-
 			// No error returned even if operation failed
 			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
 				return *entitlement, entitlement.Assignment.EntityState, errors.New("undefined API error during entitlement processing")
@@ -368,7 +375,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 				return callResult, entitlementCallRetrySucceeded, nil
 			}
 
-			if isRetriableError(err) {
+			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return callResult, entitlementCallRetryPending, nil
 			}
 
@@ -404,7 +411,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 				return entitlement, "DELETED", nil
 			}
 
-			if isRetriableError(err) {
+			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return nil, cis_entitlements.StateProcessing, nil
 			}
 
@@ -464,22 +471,9 @@ func hasPlanQuota(state subaccountEntitlementType) bool {
 	return true
 }
 
-func isRetriableError(err error) bool {
-
-	if err == nil {
-		//If no error was raised a retry is not necessary
-		return false
-	}
-
-	if strings.Contains(err.Error(), "[Error: 30004/400]") {
-		// Error code for a locking scenario - API call must be retried
+func notFoundErr(err error) bool {
+	if err.Error() != "" && strings.Contains(err.Error(), "couldn't find resource") {
 		return true
-	} else if strings.Contains(err.Error(), "[Error: 11006/429]") {
-		// Error code when hitting a rate limit - API call must be retried
-		return true
-	} else {
-		// No retry possible as error code does not indicate a valid retry scenario
-		return false
 	}
-
+	return false
 }
