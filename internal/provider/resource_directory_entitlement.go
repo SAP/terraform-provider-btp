@@ -88,7 +88,7 @@ __Further documentation:__
 				},
 			},
 			"plan_unique_identifier": schema.StringAttribute{
-				MarkdownDescription: "The unique identifier of the plan.",
+				MarkdownDescription: "The unique identifier of the service plan.",
 				Optional:            true,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
