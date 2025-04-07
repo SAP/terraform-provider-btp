@@ -170,7 +170,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana", "hana-cloud-hana"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -227,7 +227,7 @@ func hclResourceSubaccountEntitlementWithAmountBySubaccount(resourceName string,
 func hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount(resourceName, subaccountId, serviceName, planName, planUniqueIdentifier string) string {
 	return fmt.Sprintf(`
 resource "btp_subaccount_entitlement" "%s" {
-  subaccount_id           = "%s"
+  subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
   service_name            = "%s"
   plan_name               = "%s"
   plan_unique_identifier  = "%s"
