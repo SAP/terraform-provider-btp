@@ -151,7 +151,7 @@ func (rs *subaccountApiCredentialResource) Read(ctx context.Context, req resourc
 		Name:       state.Name.ValueString(),
 	})
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Api Credential (Subaccount)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Api Credential (Subaccount)")
 		return
 	}
 

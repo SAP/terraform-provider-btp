@@ -149,7 +149,7 @@ func (rs *globalaccountApiCredentialResource) Read(ctx context.Context, req reso
 		Name: state.Name.ValueString(),
 	})
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Api Credential (Global Account)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Api Credential (Global Account)")
 		return
 	}
 

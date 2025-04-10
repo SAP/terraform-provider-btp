@@ -182,7 +182,7 @@ func (rs *directoryResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	cliRes, rawRes, err := rs.cli.Accounts.Directory.Get(ctx, state.ID.ValueString())
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Directory")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Directory")
 		return
 	}
 

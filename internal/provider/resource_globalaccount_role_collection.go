@@ -128,7 +128,7 @@ func (rs *globalaccountRoleCollectionResource) Read(ctx context.Context, req res
 
 	cliRes, rawRes, err := rs.cli.Security.RoleCollection.GetByGlobalAccount(ctx, state.Name.ValueString())
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Role Collection (Global Account)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Role Collection (Global Account)")
 		return
 	}
 

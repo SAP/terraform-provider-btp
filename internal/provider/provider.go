@@ -85,7 +85,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
-					stringvalidator.AlsoRequires(path.MatchRoot("tls_client_key"), path.MatchRoot("tls_client_certificate"),path.MatchRoot("idp")),
+					stringvalidator.AlsoRequires(path.MatchRoot("tls_client_key"), path.MatchRoot("tls_client_certificate"), path.MatchRoot("idp")),
 				},
 			},
 			"tls_client_key": schema.StringAttribute{
@@ -93,7 +93,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
-					stringvalidator.AlsoRequires(path.MatchRoot("tls_idp_url"), path.MatchRoot("tls_client_certificate"),path.MatchRoot("idp")),
+					stringvalidator.AlsoRequires(path.MatchRoot("tls_idp_url"), path.MatchRoot("tls_client_certificate"), path.MatchRoot("idp")),
 				},
 			},
 			"tls_client_certificate": schema.StringAttribute{
@@ -101,7 +101,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.MatchRoot("password"), path.MatchRoot("idtoken")),
-					stringvalidator.AlsoRequires(path.MatchRoot("tls_idp_url"), path.MatchRoot("tls_client_key"),path.MatchRoot("idp")),
+					stringvalidator.AlsoRequires(path.MatchRoot("tls_idp_url"), path.MatchRoot("tls_client_key"), path.MatchRoot("idp")),
 				},
 			},
 		},

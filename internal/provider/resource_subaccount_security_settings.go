@@ -125,7 +125,7 @@ func (rs *subaccountSecuritySettingsResource) Read(ctx context.Context, req reso
 	cliRes, rawRes, err := rs.cli.Security.Settings.ListBySubaccount(ctx, state.SubaccountId.ValueString())
 
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Security Settings (Subaccount)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Security Settings (Subaccount)")
 		return
 	}
 

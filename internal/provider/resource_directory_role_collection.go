@@ -137,7 +137,7 @@ func (rs *directoryRoleCollectionType) Read(ctx context.Context, req resource.Re
 
 	cliRes, rawRes, err := rs.cli.Security.RoleCollection.GetByDirectory(ctx, state.DirectoryId.ValueString(), state.Name.ValueString())
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Role Collection (Directory)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Role Collection (Directory)")
 		return
 	}
 
