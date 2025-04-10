@@ -208,7 +208,14 @@ func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource
 
 	timeoutsLocal := state.Timeouts
 
-	cliRes, rawRes, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
+	// We determine the technical app name as this is needed by the API
+	technicalAppName, _, err := rs.determineAppNames(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining subscription app name (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	cliRes, rawRes, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), technicalAppName, state.PlanName.ValueString())
 	if err != nil || cliRes.State == saas_manager_service.StateNotSubscribed {
 		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Subscription (Subaccount)")
 		return
@@ -239,13 +246,20 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 		return
 	}
 
-	_, _, err := rs.cli.Accounts.Subaccount.Subscribe(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString(), plan.Parameters.ValueString())
+	// We determine the technical app name as this is needed by the API
+	technicalAppName, _, err := rs.determineAppNames(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining subscription app name (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	_, _, err = rs.cli.Accounts.Subaccount.Subscribe(ctx, plan.SubaccountId.ValueString(), technicalAppName, plan.PlanName.ValueString(), plan.Parameters.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
 
-	createStateConf, diags := rs.CreateStateChange(ctx, plan, "create")
+	createStateConf, diags := rs.CreateStateChange(ctx, plan, "create", technicalAppName)
 	resp.Diagnostics.Append(diags...)
 
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
@@ -334,13 +348,20 @@ func (rs *subaccountSubscriptionResource) Delete(ctx context.Context, req resour
 		return
 	}
 
-	_, _, err := rs.cli.Accounts.Subaccount.Unsubscribe(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString())
+	// We determine the technical app name as this is needed by the API
+	technicalAppName, _, err := rs.determineAppNames(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining subscription app name (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	_, _, err = rs.cli.Accounts.Subaccount.Unsubscribe(ctx, state.SubaccountId.ValueString(), technicalAppName)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
 
-	deleteStateConf, diags := rs.DeleteStateChange(ctx, state, "delete")
+	deleteStateConf, diags := rs.DeleteStateChange(ctx, state, "delete", technicalAppName)
 	resp.Diagnostics.Append(diags...)
 
 	_, err = deleteStateConf.WaitForStateContext(ctx)
@@ -366,7 +387,7 @@ func (rs *subaccountSubscriptionResource) ImportState(ctx context.Context, req r
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
 }
 
-func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context, plan subaccountSubscriptionType, operation string) (tfutils.StateChangeConf, diag.Diagnostics) {
+func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context, plan subaccountSubscriptionType, operation string, technicalAppName string) (tfutils.StateChangeConf, diag.Diagnostics) {
 	var summary diag.Diagnostics
 
 	timeoutsLocal := plan.Timeouts
@@ -379,7 +400,7 @@ func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context,
 			Pending: []string{saas_manager_service.StateInProcess},
 			Target:  []string{saas_manager_service.StateSubscribed},
 			Refresh: func() (interface{}, string, error) {
-				subRes, cmdRes, err := rs.cli.Accounts.Subscription.Get(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString())
+				subRes, cmdRes, err := rs.cli.Accounts.Subscription.Get(ctx, plan.SubaccountId.ValueString(), technicalAppName, plan.PlanName.ValueString())
 
 				if cmdRes.StatusCode == http.StatusTooManyRequests {
 					// Retry in case of rate limiting
@@ -405,7 +426,7 @@ func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context,
 		summary
 }
 
-func (rs *subaccountSubscriptionResource) DeleteStateChange(ctx context.Context, state subaccountSubscriptionType, operation string) (tfutils.StateChangeConf, diag.Diagnostics) {
+func (rs *subaccountSubscriptionResource) DeleteStateChange(ctx context.Context, state subaccountSubscriptionType, operation string, technicalAppName string) (tfutils.StateChangeConf, diag.Diagnostics) {
 
 	var summary diag.Diagnostics
 
@@ -419,7 +440,7 @@ func (rs *subaccountSubscriptionResource) DeleteStateChange(ctx context.Context,
 			Pending: []string{saas_manager_service.StateInProcess},
 			Target:  []string{saas_manager_service.StateNotSubscribed},
 			Refresh: func() (interface{}, string, error) {
-				subRes, cmdRes, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
+				subRes, cmdRes, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), technicalAppName, state.PlanName.ValueString())
 
 				if cmdRes.StatusCode == http.StatusTooManyRequests {
 					// Retry in case of rate limiting
@@ -495,4 +516,28 @@ func getErrorFromResponse(subRes saas_manager_service.EntitledApplicationsRespon
 	} else {
 		return errorMessage
 	}
+}
+
+func (rs *subaccountSubscriptionResource) determineAppNames(ctx context.Context, subaccountId string, planAppName string) (technicalAppName string, commercialAppName string, err error) {
+	// The caller might hand over the technical or commercial app name
+	// We ensure that the right name is used for the subscription namely in the API calls
+	appList, _, err := rs.cli.Accounts.Subscription.List(ctx, subaccountId)
+
+	if err != nil {
+		return "", "", err
+	}
+
+	for _, app := range appList {
+		if app.AppName == planAppName || app.CommercialAppName == planAppName {
+			technicalAppName = app.AppName
+			commercialAppName = app.CommercialAppName
+			return technicalAppName, commercialAppName, nil
+		}
+	}
+
+	if len(technicalAppName) == 0 || len(commercialAppName) == 0 {
+		return "", "", fmt.Errorf("no application found with name %q", planAppName)
+	}
+
+	return
 }
