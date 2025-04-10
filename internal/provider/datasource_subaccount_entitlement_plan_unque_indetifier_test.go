@@ -23,7 +23,9 @@ func TestDataSourceSubaccountEntitlementUniqueIdentifier(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountEntitlementUniqueIdentifier("uut", "integration-test-acc-static", "hana-cloud", "hana"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_entitlement_unique_identifier.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttrSet("data.btp_subaccount_entitlement_unique_identifier.uut", "plan_unique_identifier"),
+						resource.TestCheckResourceAttrSet("data.btp_subaccount_entitlement_unique_identifier.uut", "entitlements.0.plan_unique_identifier"),
+						resource.TestCheckResourceAttrSet("data.btp_subaccount_entitlement_unique_identifier.uut", "entitlements.0.service_name"),
+						resource.TestCheckResourceAttrSet("data.btp_subaccount_entitlement_unique_identifier.uut", "entitlements.0.plan_name"),
 					),
 				},
 			},
@@ -58,19 +60,21 @@ data "btp_subaccount_entitlement_unique_identifier" "uut" {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderFor(user) + hclDatasourceSubaccountEntitlementUniqueIdentifier("uut", "integration-test-acc-static", "invalid-service", "invalid-plan"),
-					ExpectError: regexp.MustCompile(`Could not find service 'invalid-service' with plan 'invalid-plan'`),
+					ExpectError: regexp.MustCompile(`(?s)No entitlements found for service 'invalid-service' with plan 'invalid-plan'`),
 				},
 			},
 		})
 	})
 }
+
 func hclDatasourceSubaccountEntitlementUniqueIdentifier(resourceName, subaccountId, serviceName, planName string) string {
 	return fmt.Sprintf(`
-	data "btp_subaccounts" "all" {}
-	data "btp_subaccount_entitlement_unique_identifier" "%s" {
-  	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
-  	service_name  = "%s"
-  	plan_name     = "%s"
-	}
-	`, resourceName, subaccountId, serviceName, planName)
+data "btp_subaccounts" "all" {}
+
+data "btp_subaccount_entitlement_unique_identifier" "%s" {
+  subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+  service_name  = "%s"
+  plan_name     = "%s"
+}
+`, resourceName, subaccountId, serviceName, planName)
 }

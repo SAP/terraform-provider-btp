@@ -22,5 +22,14 @@ Returns the `plan_unique_identifier` for a given service and plan name from a su
 
 ### Read-Only
 
+- `entitlements` (Attributes List) List of entitlements that match the service and plan names. (see [below for nested schema](#nestedatt--entitlements))
 - `id` (String) Internal Terraform tracking ID.
-- `plan_unique_identifier` (String) The unique identifier for the specified service plan.
+
+<a id="nestedatt--entitlements"></a>
+### Nested Schema for `entitlements`
+
+Read-Only:
+
+- `plan_name` (String)
+- `plan_unique_identifier` (String)
+- `service_name` (String)
