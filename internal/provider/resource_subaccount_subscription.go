@@ -222,6 +222,7 @@ func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource
 	}
 
 	newState, diags := subaccountSubscriptionValueFrom(ctx, cliRes)
+	newState.AppName = state.AppName
 	newState.Timeouts = timeoutsLocal
 
 	if newState.Parameters.IsNull() && !state.Parameters.IsNull() {
@@ -272,6 +273,9 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 	}
 
 	updatedPlan, diags := subaccountSubscriptionValueFrom(ctx, updatedRes.(saas_manager_service.EntitledApplicationsResponseObject))
+	// We must override the API values with the plan values as we might have had to change the app name
+	// due to a mismatch of the technical and commercial app name
+	updatedPlan.AppName = plan.AppName
 	updatedPlan.Parameters = plan.Parameters
 	updatedPlan.Timeouts = plan.Timeouts
 	resp.Diagnostics.Append(diags...)
