@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -23,11 +24,11 @@ type subaccountEntitlementUniqueIdentifierDataSource struct {
 }
 
 type subaccountEntitlementUniqueIdentifierDataSourceModel struct {
-	SubaccountId         types.String `tfsdk:"subaccount_id"`
-	ServiceName          types.String `tfsdk:"service_name"`
-	PlanName             types.String `tfsdk:"plan_name"`
-	PlanUniqueIdentifier types.String `tfsdk:"plan_unique_identifier"`
-	Id                   types.String `tfsdk:"id"`
+	SubaccountId types.String `tfsdk:"subaccount_id"`
+	ServiceName  types.String `tfsdk:"service_name"`
+	PlanName     types.String `tfsdk:"plan_name"`
+	Entitlements types.List   `tfsdk:"entitlements"`
+	Id           types.String `tfsdk:"id"`
 }
 
 func (ds *subaccountEntitlementUniqueIdentifierDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -59,9 +60,22 @@ func (ds *subaccountEntitlementUniqueIdentifierDataSource) Schema(_ context.Cont
 				Required:            true,
 				MarkdownDescription: "The name of the service plan.",
 			},
-			"plan_unique_identifier": schema.StringAttribute{
+			"entitlements": schema.ListNestedAttribute{
 				Computed:            true,
-				MarkdownDescription: "The unique identifier for the specified service plan.",
+				MarkdownDescription: "List of entitlements that match the service and plan names.",
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"service_name": schema.StringAttribute{
+							Computed: true,
+						},
+						"plan_name": schema.StringAttribute{
+							Computed: true,
+						},
+						"plan_unique_identifier": schema.StringAttribute{
+							Computed: true,
+						},
+					},
+				},
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
@@ -72,17 +86,17 @@ func (ds *subaccountEntitlementUniqueIdentifierDataSource) Schema(_ context.Cont
 }
 
 func (ds *subaccountEntitlementUniqueIdentifierDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data subaccountEntitlementUniqueIdentifierDataSourceModel
+	var config subaccountEntitlementUniqueIdentifierDataSourceModel
 
-	diags := req.Config.Get(ctx, &data)
+	diags := req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	subaccountID := data.SubaccountId.ValueString()
-	serviceName := data.ServiceName.ValueString()
-	planName := data.PlanName.ValueString()
+	subaccountID := config.SubaccountId.ValueString()
+	serviceName := config.ServiceName.ValueString()
+	planName := config.PlanName.ValueString()
 
 	subaccountData, _, err := ds.cli.Accounts.Subaccount.Get(ctx, subaccountID)
 	if err != nil {
@@ -98,29 +112,57 @@ func (ds *subaccountEntitlementUniqueIdentifierDataSource) Read(ctx context.Cont
 	} else {
 		cliRes, _, err = ds.cli.Accounts.Entitlement.ListBySubaccountWithDirectoryParent(ctx, subaccountID, parentId)
 	}
-
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to list entitlements", err.Error())
 		return
 	}
 
-	// Locate the specific service plan and return the unique identifier
+	var entitlementsList []attr.Value
+
 	for _, service := range cliRes.EntitledServices {
 		if service.Name == serviceName {
 			for _, plan := range service.ServicePlans {
 				if plan.Name == planName {
-					data.PlanUniqueIdentifier = types.StringValue(plan.UniqueIdentifier)
-					data.Id = types.StringValue(fmt.Sprintf("%s:%s:%s", subaccountID, serviceName, planName))
-					diags = resp.State.Set(ctx, &data)
-					resp.Diagnostics.Append(diags...)
-					return
+					entitlement, diag := types.ObjectValue(map[string]attr.Type{
+						"service_name":           types.StringType,
+						"plan_name":              types.StringType,
+						"plan_unique_identifier": types.StringType,
+					}, map[string]attr.Value{
+						"service_name":           types.StringValue(service.Name),
+						"plan_name":              types.StringValue(plan.Name),
+						"plan_unique_identifier": types.StringValue(plan.UniqueIdentifier),
+					})
+					if diag.HasError() {
+						resp.Diagnostics.Append(diag...)
+						return
+					}
+					entitlementsList = append(entitlementsList, entitlement)
 				}
 			}
 		}
 	}
 
-	resp.Diagnostics.AddError(
-		"Plan Not Found",
-		fmt.Sprintf("Could not find service '%s' with plan '%s' in entitlements for subaccount '%s'.", serviceName, planName, subaccountID),
-	)
+	if len(entitlementsList) == 0 {
+		resp.Diagnostics.AddError("No Entitlements Found", fmt.Sprintf("No entitlements found for service '%s' with plan '%s' in subaccount '%s'", serviceName, planName, subaccountID))
+		return
+	}
+
+	entitlements, diag := types.ListValue(types.ObjectType{
+		AttrTypes: map[string]attr.Type{
+			"service_name":           types.StringType,
+			"plan_name":              types.StringType,
+			"plan_unique_identifier": types.StringType,
+		},
+	}, entitlementsList)
+	if diag.HasError() {
+		resp.Diagnostics.Append(diag...)
+		return
+	}
+
+	// Set final state
+	config.Entitlements = entitlements
+	config.Id = types.StringValue(fmt.Sprintf("%s:%s:%s", subaccountID, serviceName, planName))
+
+	diags = resp.State.Set(ctx, &config)
+	resp.Diagnostics.Append(diags...)
 }

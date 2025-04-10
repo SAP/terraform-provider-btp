@@ -17,26 +17,28 @@ func newGlobalaccountEntitlementsDataSource() datasource.DataSource {
 }
 
 type entitledService struct {
-	ServiceName        types.String  `tfsdk:"service_name"`
-	ServiceDisplayName types.String  `tfsdk:"service_display_name"`
-	PlanName           types.String  `tfsdk:"plan_name"`
-	PlanDisplayName    types.String  `tfsdk:"plan_display_name"`
-	PlanDescription    types.String  `tfsdk:"plan_description"`
-	QuotaAssigned      types.Float64 `tfsdk:"quota_assigned"`
-	QuotaRemaining     types.Float64 `tfsdk:"quota_remaining"`
-	Category           types.String  `tfsdk:"category"`
+	ServiceName          types.String  `tfsdk:"service_name"`
+	ServiceDisplayName   types.String  `tfsdk:"service_display_name"`
+	PlanName             types.String  `tfsdk:"plan_name"`
+	PlanDisplayName      types.String  `tfsdk:"plan_display_name"`
+	PlanDescription      types.String  `tfsdk:"plan_description"`
+	PlanUniqueIdentifier types.String  `tfsdk:"plan_unique_identifier"`
+	QuotaAssigned        types.Float64 `tfsdk:"quota_assigned"`
+	QuotaRemaining       types.Float64 `tfsdk:"quota_remaining"`
+	Category             types.String  `tfsdk:"category"`
 }
 
 func entitledServiceType() map[string]attr.Type {
 	return map[string]attr.Type{
-		"service_name":         types.StringType,
-		"service_display_name": types.StringType,
-		"plan_name":            types.StringType,
-		"plan_display_name":    types.StringType,
-		"plan_description":     types.StringType,
-		"quota_assigned":       types.Float64Type,
-		"quota_remaining":      types.Float64Type,
-		"category":             types.StringType,
+		"service_name":           types.StringType,
+		"service_display_name":   types.StringType,
+		"plan_name":              types.StringType,
+		"plan_display_name":      types.StringType,
+		"plan_description":       types.StringType,
+		"plan_unique_identifier": types.StringType,
+		"quota_assigned":         types.Float64Type,
+		"quota_remaining":        types.Float64Type,
+		"category":               types.StringType,
 	}
 }
 
@@ -98,6 +100,10 @@ You must be assigned to either the global account admin or global account viewer
 							MarkdownDescription: "The description of the entitled service plan.",
 							Computed:            true,
 						},
+						"plan_unique_identifier": schema.StringAttribute{
+							MarkdownDescription: "The unique identifier of the entitled service plan.",
+							Computed:            true,
+						},
 						"quota_assigned": schema.Float64Attribute{
 							MarkdownDescription: "The overall quota assigned.",
 							Computed:            true,
@@ -148,14 +154,15 @@ func (ds *globalaccountEntitlementsDataSource) Read(ctx context.Context, req dat
 	for _, service := range cliRes.EntitledServices {
 		for _, servicePlan := range service.ServicePlans {
 			values[fmt.Sprintf("%s:%s", service.Name, servicePlan.Name)] = entitledService{
-				ServiceName:        types.StringValue(service.Name),
-				ServiceDisplayName: types.StringValue(service.DisplayName),
-				PlanName:           types.StringValue(servicePlan.Name),
-				PlanDisplayName:    types.StringValue(servicePlan.DisplayName),
-				PlanDescription:    types.StringValue(servicePlan.Description),
-				QuotaAssigned:      types.Float64Value(servicePlan.Amount),
-				QuotaRemaining:     types.Float64Value(servicePlan.RemainingAmount),
-				Category:           types.StringValue(servicePlan.Category),
+				ServiceName:          types.StringValue(service.Name),
+				ServiceDisplayName:   types.StringValue(service.DisplayName),
+				PlanName:             types.StringValue(servicePlan.Name),
+				PlanDisplayName:      types.StringValue(servicePlan.DisplayName),
+				PlanDescription:      types.StringValue(servicePlan.Description),
+				PlanUniqueIdentifier: types.StringValue(servicePlan.UniqueIdentifier),
+				QuotaAssigned:        types.Float64Value(servicePlan.Amount),
+				QuotaRemaining:       types.Float64Value(servicePlan.RemainingAmount),
+				Category:             types.StringValue(servicePlan.Category),
 			}
 		}
 	}

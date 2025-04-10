@@ -131,7 +131,33 @@ func TestAccountsEntitlementFacade_AssignToSubaccount(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.AssignToSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName, amount)
+		res, err := uut.Accounts.Entitlement.AssignToSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName, "", amount)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs the CLI params correctly with plan unique identifier", func(t *testing.T) {
+		var srvCalled bool
+		planUniqueIdentifier := "alert-notification-free"
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":        "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directoryID":          directoryId,
+				"subaccount":           subaccountId,
+				"serviceName":          serviceName,
+				"servicePlanName":      planName,
+				"amount":               fmt.Sprintf("%d", amount),
+				"planUniqueIdentifier": planUniqueIdentifier,
+			})
+		}))
+		defer srv.Close()
+
+		res, err := uut.Accounts.Entitlement.AssignToSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName, planUniqueIdentifier, amount)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -164,7 +190,33 @@ func TestAccountsEntitlementFacade_EnableInSubaccount(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.EnableInSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName, "", true)
+		res, err := uut.Accounts.Entitlement.EnableInSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName, "")
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs the CLI params correctly with plan unique identifier", func(t *testing.T) {
+		var srvCalled bool
+		planUniqueIdentifier := "alert-notification-free"
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":        "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directoryID":          directoryId,
+				"subaccount":           subaccountId,
+				"serviceName":          serviceName,
+				"servicePlanName":      planName,
+				"enable":               "true",
+				"planUniqueIdentifier": planUniqueIdentifier,
+			})
+		}))
+		defer srv.Close()
+
+		res, err := uut.Accounts.Entitlement.EnableInSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName, planUniqueIdentifier)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -240,6 +292,34 @@ func TestAccountsEntitlementFacade_AssignToDirectory(t *testing.T) {
 			assert.Equal(t, 200, res.StatusCode)
 		}
 	})
+
+	t.Run("constructs the CLI params correctly with plan unique identifier", func(t *testing.T) {
+		var srvCalled bool
+		dirAssignmentInput.PlanUniqueIdentifier = "alert-notification-free"
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":        "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directory":            dirAssignmentInput.DirectoryId,
+				"serviceName":          dirAssignmentInput.ServiceName,
+				"servicePlanName":      dirAssignmentInput.ServicePlanName,
+				"amount":               fmt.Sprintf("%d", dirAssignmentInput.Amount),
+				"planUniqueIdentifier": dirAssignmentInput.PlanUniqueIdentifier,
+				"distribute":           "false",
+				"autoAssign":           "false",
+				"autoDistributeAmount": "0",
+			})
+		}))
+		defer srv.Close()
+
+		res, err := uut.Accounts.Entitlement.AssignToDirectory(context.TODO(), dirAssignmentInput)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
 }
 
 func TestAccountsEntitlementFacade_EnableInDirectory(t *testing.T) {
@@ -268,6 +348,33 @@ func TestAccountsEntitlementFacade_EnableInDirectory(t *testing.T) {
 		defer srv.Close()
 
 		res, err := uut.Accounts.Entitlement.EnableInDirectory(context.TODO(), directoryId, serviceName, planName, false, false, "")
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs the CLI params correctly with plan unique identifier", func(t *testing.T) {
+		var srvCalled bool
+		planUniqueIdentifier := "alert-notification-free"
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionAssign, map[string]string{
+				"globalAccount":        "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directory":            directoryId,
+				"serviceName":          serviceName,
+				"servicePlanName":      planName,
+				"enable":               "true",
+				"distribute":           "false",
+				"autoAssign":           "false",
+				"planUniqueIdentifier": planUniqueIdentifier,
+			})
+		}))
+		defer srv.Close()
+
+		res, err := uut.Accounts.Entitlement.EnableInDirectory(context.TODO(), directoryId, serviceName, planName, false, false, planUniqueIdentifier)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)

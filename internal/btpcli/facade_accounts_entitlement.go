@@ -71,7 +71,7 @@ func (f *accountsEntitlementFacade) FilterBySubaccount(ctx context.Context, suba
 	}))
 }
 
-func (f *accountsEntitlementFacade) AssignToSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string, amount int) (CommandResponse, error) {
+func (f *accountsEntitlementFacade) AssignToSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string, planUniqueIdentifier string, amount int) (CommandResponse, error) {
 
 	params := map[string]string{
 		"globalAccount":   f.cliClient.GetGlobalAccountSubdomain(),
@@ -84,12 +84,16 @@ func (f *accountsEntitlementFacade) AssignToSubaccount(ctx context.Context, dire
 	if len(directoryId) > 0 {
 		params["directoryID"] = directoryId
 	}
+
+	if planUniqueIdentifier != "" {
+		params["planUniqueIdentifier"] = planUniqueIdentifier
+	}
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), params))
 
 	return res, err
 }
 
-func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string, planUniqueIdentifier string, enable bool) (CommandResponse, error) {
+func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string, planUniqueIdentifier string) (CommandResponse, error) {
 
 	params := map[string]string{
 		"globalAccount":   f.cliClient.GetGlobalAccountSubdomain(),
@@ -199,7 +203,7 @@ func (f *accountsEntitlementFacade) searchPlansForEntitlement(servicePlans []cis
 }
 
 func (f *accountsEntitlementFacade) AssignToDirectory(ctx context.Context, dirAssignmentInput DirectoryAssignmentInput) (CommandResponse, error) {
-	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
+	params := map[string]string{
 		"globalAccount":        f.cliClient.GetGlobalAccountSubdomain(),
 		"directory":            dirAssignmentInput.DirectoryId,
 		"serviceName":          dirAssignmentInput.ServiceName,
@@ -208,8 +212,13 @@ func (f *accountsEntitlementFacade) AssignToDirectory(ctx context.Context, dirAs
 		"distribute":           strconv.FormatBool(dirAssignmentInput.Distribute),
 		"autoAssign":           strconv.FormatBool(dirAssignmentInput.AutoAssign),
 		"autoDistributeAmount": fmt.Sprintf("%d", dirAssignmentInput.AutoDistributeAmount),
-	}))
+	}
 
+	if dirAssignmentInput.PlanUniqueIdentifier != "" {
+		params["planUniqueIdentifier"] = dirAssignmentInput.PlanUniqueIdentifier
+	}
+
+	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), params))
 	return res, err
 }
 

@@ -202,6 +202,69 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - with PlanUniqueIdentifier", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.plan_unique_identifier")
+		defer stopQuietly(rec)
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryEntitlementPlanUniqueIdentifierWithAmount("uut", "integration-test-dir-se-static", "hana-cloud", "hana", "hana-cloud-hana"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_entitlement.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "id", "hana-cloud-hana"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "plan_name", "hana"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "plan_id", "hana-cloud-hana"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "plan_unique_identifier", "hana-cloud-hana"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "amount", "3"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "distribute", "false"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "auto_assign", "false"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "auto_distribute_amount", "0"),
+					),
+				},
+				{
+					ResourceName:      "btp_directory_entitlement.uut",
+					ImportStateIdFunc: getDirectoryEntitlementImportStateId("btp_directory_entitlement.uut", "hana-cloud", "hana"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+	t.Run("happy path - with PlanUniqueIdentifier with amount", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.plan_unique_identifier.amount_set")
+		defer stopQuietly(rec)
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryEntitlementWithPlanUniqueIdentifier("uut", "integration-test-dir-se-static", "data-privacy-integration-service", "standard", "data-privacy-integration-service-standard", "3"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_entitlement.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "id", "data-privacy-integration-service-standard"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "plan_name", "standard"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "plan_id", "data-privacy-integration-service-standard"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "service_name", "data-privacy-integration-service"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "plan_unique_identifier", "data-privacy-integration-service-standard"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "amount", "3"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "distribute", "false"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "auto_assign", "false"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "auto_distribute_amount", "0"),
+					),
+				},
+				{
+					ResourceName:      "btp_directory_entitlement.uut",
+					ImportStateIdFunc: getDirectoryEntitlementImportStateId("btp_directory_entitlement.uut", "data-privacy-integration-service", "standard"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
 	t.Run("error path - zero amount", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -264,6 +327,33 @@ func hclResourceDirectoryEntitlementWithAmountAndFlagsByDirectory(resourceName s
 		auto_assign            = "%s"
 		auto_distribute_amount = "%s"
     }`, resourceName, directoryName, serviceName, planName, amount, distribute, autoAssign, autoDistributeAmount)
+}
+
+func hclResourceDirectoryEntitlementPlanUniqueIdentifierWithAmount(resourceName, directoryName, serviceName, planName, planUniqueIdentifier string) string {
+	return fmt.Sprintf(`
+data "btp_directories" "all" {}
+
+resource "btp_directory_entitlement" "%s" {
+  directory_id            = [for d in data.btp_directories.all.values : d.id if d.name == "%s"][0]
+  service_name            = "%s"
+  plan_name               = "%s"
+  plan_unique_identifier  = "%s"
+}
+`, resourceName, directoryName, serviceName, planName, planUniqueIdentifier)
+}
+
+func hclResourceDirectoryEntitlementWithPlanUniqueIdentifier(resourceName, directoryName, serviceName, planName, planUniqueIdentifier string, amount string) string {
+	return fmt.Sprintf(`
+data "btp_directories" "all" {}
+
+resource "btp_directory_entitlement" "%s" {
+  directory_id            = [for d in data.btp_directories.all.values : d.id if d.name == "%s"][0]
+  service_name            = "%s"
+  plan_name               = "%s"
+  plan_unique_identifier  = "%s"
+  amount                =  %s
+}
+`, resourceName, directoryName, serviceName, planName, planUniqueIdentifier, amount)
 }
 
 func getDirectoryEntitlementImportStateId(resourceName string, serviceName string, planName string) resource.ImportStateIdFunc {

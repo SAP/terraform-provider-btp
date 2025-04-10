@@ -218,6 +218,7 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 			DirectoryId:          plan.DirectoryId.ValueString(),
 			ServiceName:          plan.ServiceName.ValueString(),
 			ServicePlanName:      plan.PlanName.ValueString(),
+			PlanUniqueIdentifier: plan.PlanUniqueIdentifier.ValueString(),
 			Amount:               int(plan.Amount.ValueInt64()),
 			Distribute:           plan.Distribute.ValueBool(),
 			AutoAssign:           plan.AutoAssign.ValueBool(),
