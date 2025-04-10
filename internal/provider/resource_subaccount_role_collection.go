@@ -137,7 +137,7 @@ func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resour
 
 	cliRes, rawRes, err := rs.cli.Security.RoleCollection.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Name.ValueString())
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Role Collection (Subaccount)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Role Collection (Subaccount)")
 		return
 	}
 

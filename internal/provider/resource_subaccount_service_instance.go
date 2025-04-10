@@ -170,7 +170,7 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 
 	cliRes, rawRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Service Instance (Subaccount)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Service Instance (Subaccount)")
 		return
 	}
 

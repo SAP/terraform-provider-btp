@@ -166,7 +166,7 @@ func (rs *directoryRoleResource) Read(ctx context.Context, req resource.ReadRequ
 		state.RoleTemplateName.ValueString(),
 	)
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Role (Directory)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Role (Directory)")
 		return
 	}
 

@@ -213,8 +213,8 @@ func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource
 	timeoutsLocal := state.Timeouts
 
 	cliRes, rawRes, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), state.AppName.ValueString(), state.PlanName.ValueString())
-	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Subscription (Subaccount)")
+	if err != nil || cliRes.State == saas_manager_service.StateNotSubscribed {
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Subscription (Subaccount)")
 		return
 	}
 

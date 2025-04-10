@@ -208,7 +208,7 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 
 	cliRes, rawRes, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Environment Instance (Subaccount)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Environment Instance (Subaccount)")
 		return
 	}
 

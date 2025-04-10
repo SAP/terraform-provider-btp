@@ -94,7 +94,7 @@ func (rs *globalaccountRoleResource) Read(ctx context.Context, req resource.Read
 		state.RoleTemplateName.ValueString(),
 	)
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Role (Global Account)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Role (Global Account)")
 		return
 	}
 

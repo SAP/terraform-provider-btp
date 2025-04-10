@@ -134,7 +134,7 @@ func (rs *subaccountServiceBrokerResource) Read(ctx context.Context, req resourc
 
 	cliRes, rawRes, err := rs.cli.Services.Broker.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Service Broker (Subaccount)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Service Broker (Subaccount)")
 		return
 	}
 

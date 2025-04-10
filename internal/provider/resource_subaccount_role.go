@@ -114,7 +114,7 @@ func (rs *subaccountRoleResource) Read(ctx context.Context, req resource.ReadReq
 		state.RoleTemplateName.ValueString(),
 	)
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Role (Subaccount)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Role (Subaccount)")
 		return
 	}
 

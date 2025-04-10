@@ -113,7 +113,7 @@ func (rs *resourceGlobalaccountProviderResource) Read(ctx context.Context, req r
 
 	cliRes, rawRes, err := rs.cli.Accounts.ResourceProvider.Get(ctx, state.Provider.ValueString(), state.TechnicalName.ValueString())
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Resource Provider (Global Account)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Resource Provider (Global Account)")
 		return
 	}
 

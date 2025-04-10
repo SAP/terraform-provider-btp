@@ -159,7 +159,7 @@ func (rs *directoryEntitlementResource) Read(ctx context.Context, req resource.R
 	entitlement, rawRes, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
 
 	if err != nil {
-		handleReadErrors(ctx, rawRes, resp, err, "Resource Entitlement (Directory)")
+		handleReadErrors(ctx, rawRes, entitlement, resp, err, "Resource Entitlement (Directory)")
 		return
 	}
 
