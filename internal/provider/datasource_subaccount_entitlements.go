@@ -83,6 +83,10 @@ You must be assigned to the admin or viewer role of the subaccount. Additionally
 							MarkdownDescription: "The description of the entitled service plan.",
 							Computed:            true,
 						},
+						"plan_unique_identifier": schema.StringAttribute{
+							MarkdownDescription: "The unique identifier of the entitled service plan.",
+							Computed:            true,
+						},
 						"quota_assigned": schema.Float64Attribute{
 							MarkdownDescription: "The overall quota assigned.",
 							Computed:            true,
@@ -154,14 +158,15 @@ func (ds *subaccountEntitlementsDataSource) Read(ctx context.Context, req dataso
 			servicePlanDescription := determineServicePlanDescription(servicePlan.Name, servicePlan.DisplayName, entitledServiceFromList.ServicePlans)
 
 			values[fmt.Sprintf("%s:%s", service.Name, servicePlan.Name)] = entitledService{
-				ServiceName:        types.StringValue(service.Name),
-				ServiceDisplayName: types.StringValue(service.DisplayName),
-				PlanName:           types.StringValue(servicePlan.Name),
-				PlanDisplayName:    types.StringValue(servicePlan.DisplayName),
-				PlanDescription:    types.StringValue(servicePlanDescription),
-				QuotaAssigned:      types.Float64Value(assignedQuota),
-				QuotaRemaining:     types.Float64Value(remainingQuota),
-				Category:           types.StringValue(servicePlan.Category),
+				ServiceName:          types.StringValue(service.Name),
+				ServiceDisplayName:   types.StringValue(service.DisplayName),
+				PlanName:             types.StringValue(servicePlan.Name),
+				PlanDisplayName:      types.StringValue(servicePlan.DisplayName),
+				PlanDescription:      types.StringValue(servicePlanDescription),
+				PlanUniqueIdentifier: types.StringValue(servicePlan.UniqueIdentifier),
+				QuotaAssigned:        types.Float64Value(assignedQuota),
+				QuotaRemaining:       types.Float64Value(remainingQuota),
+				Category:             types.StringValue(servicePlan.Category),
 			}
 		}
 	}

@@ -84,6 +84,10 @@ To view all the resources that a directory and its subdirectories and subaccount
 							MarkdownDescription: "The description of the entitled service plan.",
 							Computed:            true,
 						},
+						"plan_unique_identifier": schema.StringAttribute{
+							MarkdownDescription: "The unique identifier of the entitled service plan.",
+							Computed:            true,
+						},
 						"quota_assigned": schema.Float64Attribute{
 							MarkdownDescription: "The overall quota assigned.",
 							Computed:            true,
@@ -134,14 +138,15 @@ func (ds *directoryEntitlementsDataSource) Read(ctx context.Context, req datasou
 	for _, service := range cliRes.EntitledServices {
 		for _, servicePlan := range service.ServicePlans {
 			values[fmt.Sprintf("%s:%s", service.Name, servicePlan.Name)] = entitledService{
-				ServiceName:        types.StringValue(service.Name),
-				ServiceDisplayName: types.StringValue(service.DisplayName),
-				PlanName:           types.StringValue(servicePlan.Name),
-				PlanDisplayName:    types.StringValue(servicePlan.DisplayName),
-				PlanDescription:    types.StringValue(servicePlan.Description),
-				QuotaAssigned:      types.Float64Value(servicePlan.Amount),
-				QuotaRemaining:     types.Float64Value(servicePlan.RemainingAmount),
-				Category:           types.StringValue(servicePlan.Category),
+				ServiceName:          types.StringValue(service.Name),
+				ServiceDisplayName:   types.StringValue(service.DisplayName),
+				PlanName:             types.StringValue(servicePlan.Name),
+				PlanDisplayName:      types.StringValue(servicePlan.DisplayName),
+				PlanDescription:      types.StringValue(servicePlan.Description),
+				PlanUniqueIdentifier: types.StringValue(servicePlan.UniqueIdentifier),
+				QuotaAssigned:        types.Float64Value(servicePlan.Amount),
+				QuotaRemaining:       types.Float64Value(servicePlan.RemainingAmount),
+				Category:             types.StringValue(servicePlan.Category),
 			}
 		}
 	}

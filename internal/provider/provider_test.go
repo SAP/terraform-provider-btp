@@ -540,6 +540,7 @@ func TestProvider_HasDatasources(t *testing.T) {
 			"btp_directory_apps",
 		*/
 		"btp_directory_entitlements",
+		"btp_directory_entitlement",
 		"btp_directory_labels",
 		"btp_directory_role",
 		"btp_directory_role_collection",
@@ -572,6 +573,7 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_app",
 		"btp_subaccount_apps",
 		"btp_subaccount_entitlements",
+		"btp_subaccount_entitlement_unique_identifier",
 		"btp_subaccount_environment_instance",
 		"btp_subaccount_environment_instances",
 		"btp_subaccount_environments",
