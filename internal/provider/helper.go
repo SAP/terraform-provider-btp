@@ -34,9 +34,11 @@ func handleReadErrors(ctx context.Context, rawRes btpcli.CommandResponse, cliRes
 		return
 	}
 
+	// special case for subscriptions as a 404 is not returned in case of unsubscribed subscriptions
 	if strings.Contains(resLogName, "Subscription") {
 
 		if obj, ok := cliRes.(saas_manager_service.EntitledApplicationsResponseObject); ok {
+			// if the state of the subscription is "NOT_SUBSCRIBED", the resource is removed from the state to trigger the recreation
 			if obj.State == saas_manager_service.StateNotSubscribed {
 				resp.State.RemoveResource(ctx)
 				return
