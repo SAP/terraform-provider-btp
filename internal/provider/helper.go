@@ -32,24 +32,24 @@ func handleReadErrors(ctx context.Context, rawRes btpcli.CommandResponse, cliRes
 	if rawRes.StatusCode == 404 {
 		resp.State.RemoveResource(ctx)
 		return
-	} 
-	
+	}
+
 	if strings.Contains(resLogName, "Subscription") {
-	
+
 		if obj, ok := cliRes.(saas_manager_service.EntitledApplicationsResponseObject); ok {
 			if obj.State == saas_manager_service.StateNotSubscribed {
 				resp.State.RemoveResource(ctx)
 				return
 			}
-		} else{
+		} else {
 			resp.Diagnostics.AddError(
-				"Invalid Response Object", 
+				"Invalid Response Object",
 				"Expected object of type EntitledApplicationsResponseObject for subscriptions",
 			)
 			return
 		}
 
-	} 
+	}
 
 	resp.Diagnostics.AddError(fmt.Sprintf("API Error Reading %s", resLogName), fmt.Sprintf("%s", err))
 
