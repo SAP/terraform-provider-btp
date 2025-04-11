@@ -116,7 +116,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 	t.Run("error path - cli server returns error", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
-				fmt.Fprintf(w, "{}")
+				_, _ = fmt.Fprintf(w, "{}")
 				return
 			}
 			w.WriteHeader(http.StatusNotFound)
@@ -143,8 +143,8 @@ func TestDataSourceSubaccount(t *testing.T) {
 				{
 					Config: `
 					data "btp_subaccount" "test" {
-						id = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" 
-						subdomain = "integration-test-acc-static-b8xxozer" 
+						id = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+						subdomain = "integration-test-acc-static-b8xxozer"
 						region = "eu12"
 					}`,
 					ExpectError: regexp.MustCompile(`Attribute "subdomain" cannot be specified when "id" is specified`),
@@ -199,7 +199,7 @@ data "btp_subaccount" "%s" {
 func hclDatasourceSubaccountBySubdomain(resourceName string, region string, subDomain string) string {
 	template := `
 	data "btp_subaccount" "%s" {
-		region = "%s" 
+		region = "%s"
 		subdomain = "%s"
 	}`
 	return fmt.Sprintf(template, resourceName, region, subDomain)
