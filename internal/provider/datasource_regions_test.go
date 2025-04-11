@@ -33,7 +33,7 @@ func TestDataSourceRegions(t *testing.T) {
 	t.Run("error path - cli server returns error", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
-				fmt.Fprintf(w, "{}")
+				_, _ = fmt.Fprintf(w, "{}")
 				return
 			}
 			w.WriteHeader(http.StatusNotFound)

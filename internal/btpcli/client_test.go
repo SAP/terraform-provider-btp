@@ -448,7 +448,7 @@ func TestV2Client_Execute(t *testing.T) {
 			w.Header().Set(HeaderCLIBackendStatus, "200")
 			assertV2DefaultHeader(t, r, http.MethodPost)
 			assert.Equal(t, string(ActionGet), r.URL.RawQuery)
-			fmt.Fprintf(w, "{}")
+			_, _ = fmt.Fprintf(w, "{}")
 		}))
 		defer srv.Close()
 
@@ -462,7 +462,7 @@ func TestV2Client_Execute(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 201))
 			w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
-			fmt.Fprintf(w, "{}")
+			_, _ = fmt.Fprintf(w, "{}")
 		}))
 		defer srv.Close()
 
@@ -479,7 +479,7 @@ func TestV2Client_Execute(t *testing.T) {
 			assert.Equal(t, "my.custom.idp", r.Header.Get(HeaderCLICustomIDP))
 			w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 201))
 			w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
-			fmt.Fprintf(w, "{}")
+			_, _ = fmt.Fprintf(w, "{}")
 		}))
 		defer srv.Close()
 
@@ -505,7 +505,7 @@ func TestV2Client_Execute(t *testing.T) {
 			assert.Equal(t, "my.custom.idp", r.Header.Get(HeaderCLICustomIDP))
 			w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 500))
 			w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
-			fmt.Fprintf(w, `{"error":"this is a backend error"}`)
+			_, _ = fmt.Fprintf(w, `{"error":"this is a backend error"}`)
 		}))
 		defer srv.Close()
 
@@ -531,7 +531,7 @@ func TestV2Client_Execute(t *testing.T) {
 			assert.Equal(t, "my.custom.idp", r.Header.Get(HeaderCLICustomIDP))
 			w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 500))
 			w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
-			fmt.Fprintf(w, `this is a backend error`)
+			_, _ = fmt.Fprintf(w, `this is a backend error`)
 		}))
 		defer srv.Close()
 
@@ -609,7 +609,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 				w.Header().Add(key, value)
 			}
 			w.WriteHeader(config.srvReturnStatus)
-			fmt.Fprintf(w, "%s", config.srvReturnContent)
+			_, _ = fmt.Fprintf(w, "%s", config.srvReturnContent)
 		}
 	}))
 	defer srv.Close()

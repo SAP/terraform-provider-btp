@@ -29,7 +29,12 @@ func doExecute[T interface{}](cliClient *v2Client, ctx context.Context, req *Com
 		return obj, res, err
 	}
 
-	defer res.Body.Close()
+	defer func() {
+		if tempErr := res.Body.Close(); tempErr != nil {
+			err = tempErr
+		}
+	}()
+
 	if err = json.NewDecoder(res.Body).Decode(&obj); err == nil || err == io.EOF {
 		return obj, res, nil
 	} else {
