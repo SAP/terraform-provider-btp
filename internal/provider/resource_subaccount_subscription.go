@@ -411,7 +411,7 @@ func (rs *subaccountSubscriptionResource) DeleteStateChange(ctx context.Context,
 
 	timeoutsLocal := state.Timeouts
 
-	deleteTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	deleteTimeout, diags := timeoutsLocal.Delete(ctx, tfutils.DefaultTimeout)
 	summary.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
 
@@ -450,9 +450,9 @@ func (rs *subaccountSubscriptionResource) UpdateStateChange(ctx context.Context,
 
 	timeoutsLocal := plan.Timeouts
 
-	deleteTimeout, diags := timeoutsLocal.Delete(ctx, tfutils.DefaultTimeout)
+	updateTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
 	summary.Append(diags...)
-	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
 
 	return tfutils.StateChangeConf{
 			Pending: []string{saas_manager_service.StateInProcess},
@@ -469,14 +469,14 @@ func (rs *subaccountSubscriptionResource) UpdateStateChange(ctx context.Context,
 					return subRes, subRes.State, err
 				}
 
-				// No error returned even is unsubscribe failed
-				if subRes.State == saas_manager_service.StateUnsubscribeFailed {
+				// No error returned even is subscription failed
+				if subRes.State == saas_manager_service.StateSubscribeFailed {
 					return subRes, subRes.State, errors.New("undefined API error during updating subscription")
 				}
 
 				return subRes, subRes.State, nil
 			},
-			Timeout:    deleteTimeout,
+			Timeout:    updateTimeout,
 			Delay:      delay,
 			MinTimeout: minTimeout,
 		},
