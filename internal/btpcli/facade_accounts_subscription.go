@@ -42,3 +42,20 @@ func (f *accountsSubscriptionFacade) Get(ctx context.Context, subaccountId strin
 
 	return doExecute[saas_manager_service.EntitledApplicationsResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
 }
+
+func (f *accountsSubscriptionFacade) Update(ctx context.Context, subaccountId string, appName string, planName string, parameters string) (saas_manager_service.EntitledApplicationsResponseObject, CommandResponse, error) {
+	params := map[string]string{
+		"subaccount": subaccountId,
+		"appName":    appName,
+	}
+
+	if len(planName) > 0 {
+		params["planName"] = planName
+	}
+
+	if parameters != "{}" {
+		params["subscriptionParams"] = parameters
+	}
+
+	return doExecute[saas_manager_service.EntitledApplicationsResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
+}
