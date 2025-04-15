@@ -3,6 +3,7 @@ package btpcli
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 )
 
@@ -29,7 +30,16 @@ func doExecute[T interface{}](cliClient *v2Client, ctx context.Context, req *Com
 		return obj, res, err
 	}
 
-	defer res.Body.Close()
+	defer func() {
+		if tempErr := res.Body.Close(); tempErr != nil {
+			if err != nil {
+				err = fmt.Errorf("original error: %v; error while closing response body: %v", err, tempErr)
+			} else {
+				err = tempErr
+			}
+		}
+	}()
+
 	if err = json.NewDecoder(res.Body).Decode(&obj); err == nil || err == io.EOF {
 		return obj, res, nil
 	} else {

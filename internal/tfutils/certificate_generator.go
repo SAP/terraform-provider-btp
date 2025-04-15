@@ -52,7 +52,11 @@ func GenerateCertificate() error {
 	if err != nil {
 		return err
 	}
-	defer certFile.Close()
+	defer func() {
+		if tempErr := certFile.Close(); tempErr != nil {
+			err = tempErr
+		}
+	}()
 
 	certPEM := pem.Block{
 		Type:  "CERTIFICATE",
