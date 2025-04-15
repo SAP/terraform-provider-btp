@@ -73,9 +73,6 @@ You must be assigned to the admin role of the subaccount.`,
 			"plan_name": schema.StringAttribute{
 				MarkdownDescription: "The plan name of the application to which the consumer has subscribed.",
 				Required:            true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
 			},
 			"parameters": schema.StringAttribute{
 				MarkdownDescription: "The parameters of the subscription as a valid JSON object.",
@@ -83,7 +80,6 @@ You must be assigned to the admin role of the subaccount.`,
 				Computed:            true,
 				Default:             stringdefault.StaticString(`{}`),
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
 					stringplanmodifier.UseStateForUnknown(),
 				},
 				Validators: []validator.String{
@@ -278,7 +274,53 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 		return
 	}
 
-	resp.Diagnostics.AddError("API Error Updating Subscription (Subaccount)", "This resource is not supposed to be updated")
+	var state subaccountSubscriptionType
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if plan.PlanName.ValueString() != state.PlanName.ValueString() && !state.SupportsPlanUpdates.ValueBool() {
+		resp.Diagnostics.AddError("API Error Updating Resource Subscription (Subaccount)", "Plan name is not supposed to be updated for this resource")
+		return
+	}
+	if plan.Parameters.ValueString() != state.Parameters.ValueString() && !state.SupportsParametersUpdates.ValueBool() {
+		resp.Diagnostics.AddError("API Error Updating Resource Subscription (Subaccount)", "Parameters are not supposed to be updated for this resource")
+		return
+	}
+
+	if plan.PlanName.ValueString() != state.PlanName.ValueString() || plan.Parameters.ValueString() != state.Parameters.ValueString() {
+		_, _, err := rs.cli.Accounts.Subscription.Update(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString(), plan.Parameters.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Updating Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
+			return
+		}
+
+		updateStateConf, diags := rs.UpdateStateChange(ctx, plan, "update")
+		resp.Diagnostics.Append(diags...)
+
+		updatedRes, err := updateStateConf.WaitForStateContext(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Updating Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
+		}
+
+		if updatedRes == nil {
+			return
+		}
+
+		updatedPlan, diags := subaccountSubscriptionValueFrom(ctx, updatedRes.(saas_manager_service.EntitledApplicationsResponseObject))
+		updatedPlan.Parameters = plan.Parameters
+		updatedPlan.Timeouts = plan.Timeouts
+		resp.Diagnostics.Append(diags...)
+
+		diags = resp.State.Set(ctx, &updatedPlan)
+		resp.Diagnostics.Append(diags...)
+	} else {
+		// The API does not support updating the subscription
+		resp.Diagnostics.AddError("API Error Updating Subscription (Subaccount)", "This resource is not supposed to be updated")
+	}
+
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -396,6 +438,45 @@ func (rs *subaccountSubscriptionResource) DeleteStateChange(ctx context.Context,
 				return subRes, subRes.State, nil
 			},
 			Timeout:    deleteTimeout,
+			Delay:      delay,
+			MinTimeout: minTimeout,
+		},
+		summary
+}
+
+func (rs *subaccountSubscriptionResource) UpdateStateChange(ctx context.Context, plan subaccountSubscriptionType, operation string) (tfutils.StateChangeConf, diag.Diagnostics) {
+
+	var summary diag.Diagnostics
+
+	timeoutsLocal := plan.Timeouts
+
+	updateTimeout, diags := timeoutsLocal.Update(ctx, tfutils.DefaultTimeout)
+	summary.Append(diags...)
+	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
+
+	return tfutils.StateChangeConf{
+			Pending: []string{saas_manager_service.StateInProcess},
+			Target:  []string{saas_manager_service.StateSubscribed},
+			Refresh: func() (interface{}, string, error) {
+				subRes, cmdRes, err := rs.cli.Accounts.Subscription.Get(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString())
+
+				if cmdRes.StatusCode == http.StatusTooManyRequests {
+					// Retry in case of rate limiting
+					return subRes, saas_manager_service.StateInProcess, nil
+				}
+
+				if err != nil {
+					return subRes, subRes.State, err
+				}
+
+				// No error returned even is subscription failed
+				if subRes.State == saas_manager_service.StateSubscribeFailed {
+					return subRes, subRes.State, errors.New("undefined API error during updating subscription")
+				}
+
+				return subRes, subRes.State, nil
+			},
+			Timeout:    updateTimeout,
 			Delay:      delay,
 			MinTimeout: minTimeout,
 		},

@@ -82,3 +82,56 @@ func TestAccountsSubscriptionFacade_Get(t *testing.T) {
 		}
 	})
 }
+
+func TestAccountsSubscriptionFacade_Update(t *testing.T) {
+	command := "accounts/subscription"
+
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	appName := "content-agent-ui"
+
+	t.Run("constructs the CLI params correctly - with planName", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"subaccount": subaccountId,
+				"appName":    appName,
+				"planName":   "free",
+			})
+
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Accounts.Subscription.Update(context.TODO(), subaccountId, appName, "free", "{}")
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs the CLI params correctly - with parameter", func(t *testing.T) {
+		var srvCalled bool
+		parameters := "{\"param1\": \"value1\"}"
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"subaccount":         subaccountId,
+				"appName":            appName,
+				"planName":           "free",
+				"subscriptionParams": parameters,
+			})
+
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Accounts.Subscription.Update(context.TODO(), subaccountId, appName, "free", parameters)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
