@@ -297,7 +297,7 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 			return
 		}
 
-		updateStateConf, diags := rs.UpdateStateChange(ctx, plan, "create")
+		updateStateConf, diags := rs.UpdateStateChange(ctx, plan, "update")
 		resp.Diagnostics.Append(diags...)
 
 		updatedRes, err := updateStateConf.WaitForStateContext(ctx)

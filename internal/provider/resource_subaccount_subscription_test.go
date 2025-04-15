@@ -140,6 +140,63 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - update subscription", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_update")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "SAPLaunchpadSMS", "free"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpadSMS"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.create", "25m"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "SAPLaunchpadSMS", "standard"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpadSMS"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "standard"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.create", "25m"),
+					),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - subscription plan update not supported", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_update_plan.update_error")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "auditlog-viewer", "free"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "auditlog-viewer"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
+					),
+				},
+				{
+					Config:      hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "auditlog-viewer", "default"),
+					ExpectError: regexp.MustCompile(`Plan name is not supposed to be updated for this resource`),
+				},
+			},
+		})
+	})
+
 }
 
 func hclResourceSubaccountSubscriptionBySubaccount(resourceName string, subaccountName string, appName string, planName string) string {
