@@ -22,17 +22,15 @@ type directoryEntitlementDataSource struct {
 }
 
 type directoryEntitlementDataSourceModel struct {
-	DirectoryId          types.String `tfsdk:"directory_id"`
-	ServiceName          types.String `tfsdk:"service_name"`
-	PlanName             types.String `tfsdk:"plan_name"`
-	PlanUniqueIdentifier types.String `tfsdk:"plan_unique_identifier"`
-	PlanId               types.String `tfsdk:"plan_id"`
-	Amount               types.Int64  `tfsdk:"amount"`
-	Category             types.String `tfsdk:"category"`
-	AutoAssign           types.Bool   `tfsdk:"auto_assign"`
-	AutoDistributeAmount types.Int64  `tfsdk:"auto_distribute_amount"`
-	Distribute           types.Bool   `tfsdk:"distribute"`
-	Id                   types.String `tfsdk:"id"`
+	DirectoryId          types.String  `tfsdk:"directory_id"`
+	ServiceName          types.String  `tfsdk:"service_name"`
+	PlanName             types.String  `tfsdk:"plan_name"`
+	PlanUniqueIdentifier types.String  `tfsdk:"plan_unique_identifier"`
+	PlanId               types.String  `tfsdk:"plan_id"`
+	QuotaAssigned        types.Float64 `tfsdk:"quota_assigned"`
+	QuotaRemaining       types.Float64 `tfsdk:"quota_remaining"`
+	Category             types.String  `tfsdk:"category"`
+	Id                   types.String  `tfsdk:"id"`
 }
 
 func (ds *directoryEntitlementDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -72,21 +70,13 @@ func (ds *directoryEntitlementDataSource) Schema(_ context.Context, _ datasource
 				Computed:            true,
 				MarkdownDescription: "The ID of the entitled service plan.",
 			},
-			"amount": schema.Int64Attribute{
+			"quota_assigned": schema.Float64Attribute{
+				MarkdownDescription: "The overall quota assigned.",
 				Computed:            true,
-				MarkdownDescription: "The quota assigned to the directory.",
 			},
-			"auto_assign": schema.BoolAttribute{
+			"quota_remaining": schema.Float64Attribute{
+				MarkdownDescription: "The quota, which is not used.",
 				Computed:            true,
-				MarkdownDescription: "Whether the plan is automatically assigned to new subaccounts.",
-			},
-			"auto_distribute_amount": schema.Int64Attribute{
-				Computed:            true,
-				MarkdownDescription: "The quota automatically distributed to new subaccounts.",
-			},
-			"distribute": schema.BoolAttribute{
-				Computed:            true,
-				MarkdownDescription: "Whether the plan is assigned to existing subaccounts.",
 			},
 			"category": schema.StringAttribute{
 				Computed:            true,
@@ -126,9 +116,8 @@ func (ds *directoryEntitlementDataSource) Read(ctx context.Context, req datasour
 
 	data.PlanUniqueIdentifier = types.StringValue(entitlement.Plan.UniqueIdentifier)
 	data.PlanId = types.StringValue(entitlement.Plan.UniqueIdentifier)
-	data.Amount = types.Int64Value(int64(entitlement.Plan.Amount))
-	data.AutoAssign = types.BoolValue(entitlement.Plan.AutoAssign)
-	data.AutoDistributeAmount = types.Int64Value(int64(entitlement.Plan.AutoDistributeAmount))
+	data.QuotaAssigned = types.Float64Value(entitlement.Plan.Amount)
+	data.QuotaRemaining = types.Float64Value(entitlement.Plan.RemainingAmount)
 	data.Category = types.StringValue(entitlement.Plan.Category)
 
 	diags = resp.State.Set(ctx, &data)

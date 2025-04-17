@@ -368,7 +368,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 			if !hasPlanQuota(state) {
 				callResult, err = rs.cli.Accounts.Entitlement.DisableInSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
 			} else {
-				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.PlanUniqueIdentifier.ValueString(), int(state.Amount.ValueInt64()))
+				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.PlanUniqueIdentifier.ValueString(), 0)
 			}
 
 			if err == nil {

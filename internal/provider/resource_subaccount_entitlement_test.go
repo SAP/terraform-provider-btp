@@ -275,7 +275,7 @@ resource "btp_subaccount_entitlement" "%s" {
   service_name            = "%s"
   plan_name               = "%s"
   plan_unique_identifier  = "%s"
-  Amount				  = %s
+  amount				  = %s
 }
 `, resourceName, subaccountId, serviceName, planName, planUniqueIdentifier, amount)
 }
