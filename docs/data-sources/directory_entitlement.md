@@ -22,11 +22,9 @@ Gets a specific entitlement assigned to a directory.
 
 ### Read-Only
 
-- `amount` (Number) The quota assigned to the directory.
-- `auto_assign` (Boolean) Whether the plan is automatically assigned to new subaccounts.
-- `auto_distribute_amount` (Number) The quota automatically distributed to new subaccounts.
 - `category` (String) The category of the entitlement.
-- `distribute` (Boolean) Whether the plan is assigned to existing subaccounts.
 - `id` (String) Synthetic ID combining directory ID, service name, and plan name.
 - `plan_id` (String) The ID of the entitled service plan.
 - `plan_unique_identifier` (String) The unique identifier of the entitled service plan.
+- `quota_assigned` (Number) The overall quota assigned.
+- `quota_remaining` (Number) The quota, which is not used.
