@@ -346,6 +346,7 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 	return append([]func() datasource.DataSource{
 		newDirectoryDataSource,
 		newDirectoriesDataSource,
+		newDirectoryEntitlementDataSource,
 		newDirectoryEntitlementsDataSource,
 		newDirectoryLabelsDataSource,
 		newDirectoryRoleCollectionDataSource,
@@ -370,6 +371,7 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newSubaccountAppDataSource,
 		newSubaccountAppsDataSource,
 		newSubaccountDataSource,
+		newSubaccountEntitlementDataSource,
 		newSubaccountEntitlementsDataSource,
 		newSubaccountEnvironmentInstanceDataSource,
 		newSubaccountEnvironmentInstancesDataSource,
