@@ -53,6 +53,7 @@ resource "btp_subaccount_security_settings" "sec_setting" {
 - `custom_email_domains` (Set of String) Set of domains that are allowed to be used for user authentication.
 - `default_identity_provider` (String) The subaccount's default identity provider for business application users.
 - `iframe_domains` (String) The new domains of the iframe. Enter as string. To provide multiple domains, separate them by spaces.
+- `iframe_list` (List of String) The new domains of the iframe. Enter as list. It is recommended to use in place of iframe_domains as list of iframes is better handled by this parameter.
 - `refresh_token_validity` (Number) The validity of the refresh token.
 - `treat_users_with_same_email_as_same_user` (Boolean) If set to true, users with the same email are treated as same users.
 

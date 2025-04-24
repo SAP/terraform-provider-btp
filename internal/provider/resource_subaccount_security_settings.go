@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -106,6 +108,22 @@ __Further documentation:__
 				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(regexp.MustCompile(`^(|.{4,})$`), "The attribute iframe_domains must be empty or contain domains."),
+					stringvalidator.ConflictsWith(path.MatchRoot("iframe_domains"), path.MatchRoot("iframe_list")),
+				},
+			},
+			"iframe_list": schema.ListAttribute{
+				MarkdownDescription: "The new domains of the iframe. Enter as list. It is recommended to use in place of iframe_domains as list of iframes is better handled by this parameter.",
+				ElementType:         types.StringType,
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.List{
+					listvalidator.ConflictsWith(
+						path.MatchRoot("iframe_domains"),
+						path.MatchRoot("iframe_list"),
+					),
+					listvalidator.ValueStringsAre(
+						stringvalidator.RegexMatches(regexp.MustCompile(`^(.{4,})$`), "the attribute iframe_list must contain domains."),
+					),
 				},
 			},
 		},
@@ -155,13 +173,26 @@ func (rs *subaccountSecuritySettingsResource) Create(ctx context.Context, req re
 	diags = plan.CustomEmailDomains.ElementsAs(ctx, &customEmailDomains, false)
 	resp.Diagnostics.Append(diags...)
 
+	iFrameDomains := plan.IframeDomains.ValueString()
+	if !plan.IframeList.IsUnknown() {
+		if !plan.IframeList.IsNull() {
+			var domains []string
+			diags := plan.IframeList.ElementsAs(ctx, &domains, false)
+			resp.Diagnostics.Append(diags...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			iFrameDomains = strings.Join(domains, " ")
+		}
+	}
+
 	res, _, err := rs.cli.Security.Settings.UpdateBySubaccount(ctx, plan.SubaccountId.ValueString(), btpcli.SecuritySettingsUpdateInput{
 		CustomEmail:                       customEmailDomains,
 		DefaultIDPForNonInteractiveLogon:  plan.DefaultIdentityProvider.ValueString(),
 		TreatUsersWithSameEmailAsSameUser: plan.TreatUsersWithSameEmailAsSameUser.ValueBool(),
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
 		RefreshTokenValidity:              int(plan.RefreshTokenValidity.ValueInt64()),
-		IFrame:                            plan.IframeDomains.ValueString(),
+		IFrame:                            iFrameDomains,
 	})
 
 	if err != nil {
@@ -197,7 +228,34 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 	diags = plan.CustomEmailDomains.ElementsAs(ctx, &customEmailDomains, false)
 	resp.Diagnostics.Append(diags...)
 
-	iFrameDomain := transformIframeDomain(plan.IframeDomains.ValueString(), state.IframeDomains.ValueString())
+	planIFrameDomains := plan.IframeDomains.ValueString()
+	stateIFrameDomains := state.IframeDomains.ValueString()
+	if !plan.IframeList.IsUnknown() {
+		if !plan.IframeList.IsNull() {
+			var planDomains []string
+			var stateDomains []string
+			diags := plan.IframeList.ElementsAs(ctx, &planDomains, false)
+			resp.Diagnostics.Append(diags...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			planIFrameDomains = strings.Join(planDomains, " ")
+			if len(planIFrameDomains) == 0 {
+				planIFrameDomains = ""
+			}
+			diags = state.IframeList.ElementsAs(ctx, &stateDomains, false)
+			resp.Diagnostics.Append(diags...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			stateIFrameDomains = strings.Join(stateDomains, " ")
+			if len(stateIFrameDomains) == 0 {
+				stateIFrameDomains = ""
+			}
+		}
+	}
+
+	iFrameDomain := transformIframeDomain(planIFrameDomains, stateIFrameDomains)
 
 	res, _, err := rs.cli.Security.Settings.UpdateBySubaccount(ctx, plan.SubaccountId.ValueString(), btpcli.SecuritySettingsUpdateInput{
 		CustomEmail:                       customEmailDomains,

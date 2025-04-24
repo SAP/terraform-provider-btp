@@ -29,6 +29,7 @@ func TestDataSourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "access_token_validity", "-1"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "refresh_token_validity", "-1"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "iframe_domains", ""),
+						resource.TestCheckResourceAttr("data.btp_subaccount_security_settings.uut", "iframe_list.#", "0"),
 					),
 				},
 			},

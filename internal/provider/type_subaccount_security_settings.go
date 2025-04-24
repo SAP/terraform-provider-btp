@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"strings"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_settings"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -17,6 +18,7 @@ type subaccountSecuritySettingsType struct {
 	AccessTokenValidity               types.Int64  `tfsdk:"access_token_validity"`
 	RefreshTokenValidity              types.Int64  `tfsdk:"refresh_token_validity"`
 	IframeDomains                     types.String `tfsdk:"iframe_domains"`
+	IframeList                        types.List   `tfsdk:"iframe_list"`
 }
 
 func subaccountSecuritySettingsValueFrom(ctx context.Context, value xsuaa_settings.TenantSettingsResp) (tenantSettings subaccountSecuritySettingsType, diags diag.Diagnostics) {
@@ -40,6 +42,11 @@ func subaccountSecuritySettingsValueFrom(ctx context.Context, value xsuaa_settin
 	}
 
 	tenantSettings.IframeDomains = types.StringValue(value.IframeDomains)
+	iframeDomainsList := []string{}
+	if value.IframeDomains != "" {
+		iframeDomainsList = strings.Fields(value.IframeDomains)
+	}
+	tenantSettings.IframeList, _ = types.ListValueFrom(ctx, types.StringType, iframeDomainsList)
 
 	return
 }
@@ -52,6 +59,7 @@ type subaccountSecuritySettingsDataSourceType struct {
 	AccessTokenValidity               types.Int64  `tfsdk:"access_token_validity"`
 	RefreshTokenValidity              types.Int64  `tfsdk:"refresh_token_validity"`
 	IframeDomains                     types.String `tfsdk:"iframe_domains"`
+	IframeList                        types.List   `tfsdk:"iframe_list"`
 }
 
 func subaccountSecuritySettingsDataSourceValueFrom(ctx context.Context, value xsuaa_settings.TenantSettingsResp) (tenantSettings subaccountSecuritySettingsDataSourceType, diags diag.Diagnostics) {
@@ -75,6 +83,13 @@ func subaccountSecuritySettingsDataSourceValueFrom(ctx context.Context, value xs
 	}
 
 	tenantSettings.IframeDomains = types.StringValue(value.IframeDomains)
+
+	iframeDomainsList := []string{}
+	if value.IframeDomains != "" {
+		iframeDomainsList = strings.Fields(value.IframeDomains)
+	}
+
+	tenantSettings.IframeList, _ = types.ListValueFrom(ctx, types.StringType, iframeDomainsList)
 
 	return
 }
