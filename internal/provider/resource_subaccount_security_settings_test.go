@@ -30,7 +30,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.1", "domain2.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
-						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_list.#", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "1"),
 					),
 				},
 
@@ -45,12 +45,12 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.#", "1"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test https://updated.iframedomain.test"),
-						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_list.#", "2"),
-						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_list.1", "https://updated.iframedomain.test"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "2"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.1", "https://updated.iframedomain.test"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameList("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "[\"https://iframedomain.test\"]"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "[\"https://iframedomain.test\"]"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "access_token_validity", "4000"),
@@ -60,8 +60,8 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.#", "1"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
-						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_list.#", "1"),
-						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_list.0", "https://iframedomain.test"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.0", "https://iframedomain.test"),
 					),
 				},
 				{
@@ -94,7 +94,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.1", "domain2.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
-						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_list.#", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "1"),
 					),
 				},
 
@@ -109,7 +109,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.#", "1"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains", ""),
-						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_list.#", "0"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "0"),
 					),
 				},
 			},
@@ -128,13 +128,13 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - both iframe_domains and iframe_list is defined in configuration", func(t *testing.T) {
+	t.Run("error path - both iframe_domains and iframe_domains_list is defined in configuration", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountSecuritySettingsWithIFrameListAndIframeDomain("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "https://iframedomain.test", "[\"https://iframedomain.test\"]"),
+					Config:      hclResourceSubaccountSecuritySettingsWithIFrameDomainsListAndIframeDomains("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "https://iframedomain.test", "[\"https://iframedomain.test\"]"),
 					ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
 				},
 			},
@@ -162,7 +162,7 @@ resource "btp_subaccount_security_settings" "%s" {
 	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains)
 }
 
-func hclResourceSubaccountSecuritySettingsWithIFrameListAndIframeDomain(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomains string, iFrameList string) string {
+func hclResourceSubaccountSecuritySettingsWithIFrameDomainsListAndIframeDomains(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomains string, iFrameDomainsList string) string {
 	template := `
 data "btp_subaccounts" "all" {}
 resource "btp_subaccount_security_settings" "%s" {
@@ -178,12 +178,12 @@ resource "btp_subaccount_security_settings" "%s" {
     custom_email_domains = %v
 
 		iframe_domains = "%s"
-		iframe_list = %v
+		iframe_domains_list = %v
 }`
-	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains, iFrameList)
+	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains, iFrameDomainsList)
 }
 
-func hclResourceSubaccountSecuritySettingsWithIFrameList(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameList string) string {
+func hclResourceSubaccountSecuritySettingsWithIFrameDomainsList(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomainsList string) string {
 	template := `
 data "btp_subaccounts" "all" {}
 resource "btp_subaccount_security_settings" "%s" {
@@ -197,9 +197,9 @@ resource "btp_subaccount_security_settings" "%s" {
     treat_users_with_same_email_as_same_user = %v
 
     custom_email_domains = %v
-		iframe_list = %v
+		iframe_domains_list = %v
 }`
-	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameList)
+	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomainsList)
 }
 
 func getSecuritySettingsImportStateId(resourceName string) resource.ImportStateIdFunc {

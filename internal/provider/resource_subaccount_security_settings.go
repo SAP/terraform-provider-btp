@@ -108,21 +108,21 @@ __Further documentation:__
 				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(regexp.MustCompile(`^(|.{4,})$`), "The attribute iframe_domains must be empty or contain domains."),
-					stringvalidator.ConflictsWith(path.MatchRoot("iframe_domains"), path.MatchRoot("iframe_list")),
+					stringvalidator.ConflictsWith(path.MatchRoot("iframe_domains"), path.MatchRoot("iframe_domains_list")),
 				},
 			},
-			"iframe_list": schema.ListAttribute{
-				MarkdownDescription: "The new domains of the iframe. Enter as list. It is recommended to use in place of iframe_domains as list of iframes is better handled by this parameter.",
+			"iframe_domains_list": schema.ListAttribute{
+				MarkdownDescription: "The new domains of the iframe. Enter as list. It is recommended to use in place of iframe_domains as list of iframes is better managed by this parameter.",
 				ElementType:         types.StringType,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.List{
 					listvalidator.ConflictsWith(
 						path.MatchRoot("iframe_domains"),
-						path.MatchRoot("iframe_list"),
+						path.MatchRoot("iframe_domains_list"),
 					),
 					listvalidator.ValueStringsAre(
-						stringvalidator.RegexMatches(regexp.MustCompile(`^([^ ]{4,})$`), "the attribute iframe_list must contain domains."),
+						stringvalidator.RegexMatches(regexp.MustCompile(`^([^ ]{4,})$`), "the attribute iframe_domains_list must contain domains."),
 					),
 				},
 			},
@@ -174,10 +174,10 @@ func (rs *subaccountSecuritySettingsResource) Create(ctx context.Context, req re
 	resp.Diagnostics.Append(diags...)
 
 	iFrameDomains := plan.IframeDomains.ValueString()
-	if !plan.IframeList.IsUnknown() {
-		if !plan.IframeList.IsNull() {
+	if !plan.IframeDomainsList.IsUnknown() {
+		if !plan.IframeDomainsList.IsNull() {
 			var domains []string
-			diags := plan.IframeList.ElementsAs(ctx, &domains, false)
+			diags := plan.IframeDomainsList.ElementsAs(ctx, &domains, false)
 			resp.Diagnostics.Append(diags...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -230,11 +230,11 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 
 	planIFrameDomains := plan.IframeDomains.ValueString()
 	stateIFrameDomains := state.IframeDomains.ValueString()
-	if !plan.IframeList.IsUnknown() {
-		if !plan.IframeList.IsNull() {
+	if !plan.IframeDomainsList.IsUnknown() {
+		if !plan.IframeDomainsList.IsNull() {
 			var planDomains []string
 			var stateDomains []string
-			diags := plan.IframeList.ElementsAs(ctx, &planDomains, false)
+			diags := plan.IframeDomainsList.ElementsAs(ctx, &planDomains, false)
 			resp.Diagnostics.Append(diags...)
 			if resp.Diagnostics.HasError() {
 				return
@@ -243,7 +243,7 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 			if len(planIFrameDomains) == 0 {
 				planIFrameDomains = ""
 			}
-			diags = state.IframeList.ElementsAs(ctx, &stateDomains, false)
+			diags = state.IframeDomainsList.ElementsAs(ctx, &stateDomains, false)
 			resp.Diagnostics.Append(diags...)
 			if resp.Diagnostics.HasError() {
 				return
