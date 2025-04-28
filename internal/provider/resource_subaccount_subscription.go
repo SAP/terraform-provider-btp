@@ -540,11 +540,7 @@ func (rs *subaccountSubscriptionResource) determineAppNames(ctx context.Context,
 		}
 	}
 
-	if len(technicalAppName) == 0 {
-		// We did not find the app name in the list of applications, default to the one handed over by the user for the technical app name
-		// The API will return an error if the app name is not valid
-		return planAppName, "", nil
-	}
-
-	return
+	// We did not find the app name in the list of applications, default to the one handed over by the user for the technical app name
+	// The API will return an error if the app name is not valid
+	return planAppName, "", nil
 }
