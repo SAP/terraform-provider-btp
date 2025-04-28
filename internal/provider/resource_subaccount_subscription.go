@@ -525,6 +525,7 @@ func getErrorFromResponse(subRes saas_manager_service.EntitledApplicationsRespon
 func (rs *subaccountSubscriptionResource) determineAppNames(ctx context.Context, subaccountId string, planAppName string) (technicalAppName string, commercialAppName string, err error) {
 	// The caller might hand over the technical or commercial app name
 	// We ensure that the right name is used for the subscription namely in the API calls
+	// This only works in consumer subaccounts as the List command will filter the apps to make then unique
 	appList, _, err := rs.cli.Accounts.Subscription.List(ctx, subaccountId)
 
 	if err != nil {
@@ -539,8 +540,10 @@ func (rs *subaccountSubscriptionResource) determineAppNames(ctx context.Context,
 		}
 	}
 
-	if len(technicalAppName) == 0 || len(commercialAppName) == 0 {
-		return "", "", fmt.Errorf("no application found with name %q", planAppName)
+	if len(technicalAppName) == 0 {
+		// We did not find the app name in the list of applications, default to the one handed over by the user for the technical app name
+		// The API will return an error if the app name is not valid
+		return planAppName, "", nil
 	}
 
 	return

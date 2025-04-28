@@ -79,6 +79,75 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("happy path - subscription with technical app name", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_techapp_name")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccount("uut", "integration-test-services-static", "SAPLaunchpad", "free"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpad"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "app_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "state", "SUBSCRIBED"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "quota", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "customer_developed", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "authentication_provider", "IAS"),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "last_modified", regexpValidRFC3999Format),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_subscription.uut",
+					ImportStateIdFunc: getSubscriptionImportStateId("btp_subaccount_subscription.uut", "SAPLaunchpad", "free"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - subscription with commercial app name", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_commercialapp_name")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccount("uut", "integration-test-services-static", "SAPLaunchpadSMS", "free"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpadSMS"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "app_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "state", "SUBSCRIBED"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "quota", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "customer_developed", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "authentication_provider", "IAS"),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "last_modified", regexpValidRFC3999Format),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_subscription.uut",
+					ImportStateIdFunc: getSubscriptionImportStateId("btp_subaccount_subscription.uut", "SAPLaunchpadSMS", "free"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
