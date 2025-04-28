@@ -76,6 +76,11 @@ __Further documentation:__
 				MarkdownDescription: "The new domains of the iframe. Enter as string. To provide multiple domains, separate them by spaces.",
 				Computed:            true,
 			},
+			"iframe_domains_list": schema.ListAttribute{
+				MarkdownDescription: "The new domains of the iframe as list.",
+				ElementType:         types.StringType,
+				Computed:            true,
+			},
 		},
 	}
 }
