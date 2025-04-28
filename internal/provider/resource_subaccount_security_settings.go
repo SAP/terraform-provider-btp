@@ -122,7 +122,7 @@ __Further documentation:__
 						path.MatchRoot("iframe_domains_list"),
 					),
 					listvalidator.ValueStringsAre(
-						stringvalidator.RegexMatches(regexp.MustCompile(`^([^ ]{4,})$`), "the attribute iframe_domains_list must contain domains."),
+						stringvalidator.RegexMatches(regexp.MustCompile(`^([^ ]{4,})$`), "the attribute iframe_domains_list must contain valid domains."),
 					),
 				},
 			},
