@@ -95,7 +95,7 @@ func (f *accountsSubaccountFacade) Update(ctx context.Context, args *SubaccountU
 func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId string, directoryId string) (cis.SubaccountResponseObject, CommandResponse, error) {
 
 	// We first try to delete the subaccount with force-delete enabled
-	// This might fail, if the subaccount setting has not enabled this featur
+	// This might fail, if the subaccount setting has not enabled this feature
 	requestArgs := map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 		"subaccount":    subaccountId,
