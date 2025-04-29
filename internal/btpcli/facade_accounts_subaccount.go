@@ -114,7 +114,7 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 		return cisResponse, cmdResponse, nil
 	}
 	// Check if the error is due to the fact that the force-delete option is not available
-	if err != nil && strings.Contains(err.Error(), "Subaccount cannot be deleted with forceDelete=true due to the global account settings") {
+	if err != nil && (strings.Contains(err.Error(), "Subaccount cannot be deleted with forceDelete=true due to the global account settings") || strings.Contains(err.Error(), "Subaccount is marked as used for production and cannot be deleted with forceDelete=true")) {
 		// Retry with force-delete disabled
 		requestArgs["forceDelete"] = "false"
 		return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), requestArgs))
