@@ -2,6 +2,7 @@ package btpcli
 
 import (
 	"context"
+	"strings"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/saas_manager_service"
@@ -93,6 +94,8 @@ func (f *accountsSubaccountFacade) Update(ctx context.Context, args *SubaccountU
 
 func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId string, directoryId string) (cis.SubaccountResponseObject, CommandResponse, error) {
 
+	// We first try to delete the subaccount with force-delete enabled
+	// This might fail, if the subaccount setting has not enabled this feature
 	requestArgs := map[string]string{
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 		"subaccount":    subaccountId,
@@ -105,7 +108,19 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 		requestArgs["directoryID"] = directoryId
 	}
 
-	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), requestArgs))
+	cisResponse, cmdResponse, err := doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), requestArgs))
+
+	if err == nil {
+		return cisResponse, cmdResponse, nil
+	}
+	// Check if the error is due to the fact that the force-delete option is not available
+	if err != nil && (strings.Contains(err.Error(), "Subaccount cannot be deleted with forceDelete=true due to the global account settings") || strings.Contains(err.Error(), "Subaccount is marked as used for production and cannot be deleted with forceDelete=true")) {
+		// Retry with force-delete disabled
+		requestArgs["forceDelete"] = "false"
+		return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), requestArgs))
+	}
+
+	return cisResponse, cmdResponse, err
 }
 
 func (f *accountsSubaccountFacade) Subscribe(ctx context.Context, subaccountId string, appName string, planName string, parameters string) (saas_manager_service.SubscriptionAssignmentResponseObject, CommandResponse, error) {
