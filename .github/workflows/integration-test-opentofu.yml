@@ -63,7 +63,7 @@ jobs:
       uses: opentofu/setup-opentofu@v1
       with:
         tofu_wrapper: false
-        tofu_version: latest
+        tofu_version: 1.9.0
 
     - name: Install local Terraform provider
       id: build_provider
@@ -76,12 +76,6 @@ jobs:
       shell: bash
       run: |
         rm -rf .terraform && rm -rf .terraform.lock.hcl && cp ${{ env.DEV_OVERRIDE }} ~/.terraformrc
-
-    - name: Tofu Plan
-      run: |
-        export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
-        export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} plan -var "globalaccount=${{ secrets.GLOBALACCOUNT }}" -out=${{ env.TEMP_PLAN_OUTPUT }} -no-color
 
 
     - name: Tofu Apply with local provider
@@ -100,10 +94,3 @@ jobs:
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -auto-approve -no-color
-
-    - name: Cleanup plan output
-      id: execute_plan_cleanup
-      if: always()
-      shell: bash
-      run: |
-        rm -rf ${{ env.TEMP_PLAN_OUTPUT }}
