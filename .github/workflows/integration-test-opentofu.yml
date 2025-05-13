@@ -1,8 +1,8 @@
-name: Integration Test - Terraform Provider
+name: Integration Test - OpenTofu
 
 # Idea: 
 # 1. Build the provider from the latest pull
-# 2. Setup Terraform
+# 2. Setup OpenTofu
 # 3. Execute the integration test script
 # 4. All changes must apply
 # 5. Destroy the infrastructure
@@ -43,7 +43,7 @@ jobs:
           skip-cache: true
 
   test:
-    name: Integration Test for Terraform Provider
+    name: Integration Test for OpenTofu
     needs: build
     runs-on: ubuntu-latest
 
@@ -58,12 +58,12 @@ jobs:
         go-version-file: 'go.mod'
         cache: false
 
-    - name: Setup Terraform
-      id : setup_terraform
-      uses: hashicorp/setup-terraform@v3.1.2
+    - name: Setup OpenTofu
+      id : setup_opentofu
+      uses: opentofu/setup-opentofu@v1
       with:
-        terraform_wrapper: false
-        terraform_version: latest
+        tofu_wrapper: false
+        tofu_version: 1.9.0
 
     - name: Install local Terraform provider
       id: build_provider
@@ -77,19 +77,20 @@ jobs:
       run: |
         rm -rf .terraform && rm -rf .terraform.lock.hcl && cp ${{ env.DEV_OVERRIDE }} ~/.terraformrc
 
-    - name: Terraform Apply with local provider
-      id: terraform_apply_local
+
+    - name: Tofu Apply with local provider
+      id: tofu_apply_local
       shell: bash
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -auto-approve -no-color
+        tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -auto-approve -no-color
     
-    - name: Terraform Destroy with local provider
+    - name: tofu Destroy with local provider
       if: always()
-      id: terraform_destory
+      id: tofu_destroy
       shell: bash
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -auto-approve -no-color
+        tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -auto-approve -no-color
