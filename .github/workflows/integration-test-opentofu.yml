@@ -84,6 +84,7 @@ jobs:
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
+        export BTP_IDP=${{ secrets.BTP_IDP }}
         tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -auto-approve -no-color
     
     - name: tofu Destroy with local provider
@@ -93,4 +94,5 @@ jobs:
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
+        export BTP_IDP=${{ secrets.BTP_IDP }}
         tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -auto-approve -no-color
