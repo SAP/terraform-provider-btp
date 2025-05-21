@@ -188,7 +188,10 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 			}
 			// No error returned even if operation failed
 			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
-				return *entitlement, entitlement.Assignment.EntityState, fmt.Errorf("entitlement for service '%s' with plan '%s' is in state 'PROCESSING_FAILED'", state.ServiceName.ValueString(), state.PlanName.ValueString())
+				multilineError := fmt.Errorf(`entitlement for service '%s' with plan '%s' is in state 'PROCESSING_FAILED'
+				reason: %s`, state.ServiceName.ValueString(), state.PlanName.ValueString(), entitlement.Assignment.StateMessage)
+
+				return *entitlement, entitlement.Assignment.EntityState, multilineError
 			}
 
 			return *entitlement, entitlement.Assignment.EntityState, nil
