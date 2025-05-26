@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 
@@ -125,11 +126,37 @@ __Further documentation:__
 	}
 }
 
+type SubaccountRoleCollectionResourceIdentityModel struct {
+	Id   types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
+}
+
+func (rs *subaccountRoleCollectionResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"id": identityschema.StringAttribute{
+				RequiredForImport: true, // can be defaulted by the provider configuration
+			},
+			"name": identityschema.StringAttribute{
+				RequiredForImport: true, // must be set during import by the practitioner
+			},
+		},
+	}
+}
+
 func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state subaccountRoleCollectionType
 
 	diags := req.State.Get(ctx, &state)
 
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	//read identity data
+	var identity SubaccountRoleCollectionResourceIdentityModel
+	diags = req.Identity.Get(ctx, &identity)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -159,6 +186,15 @@ func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resour
 	}
 
 	diags = resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+
+	//set the data returned by API in identity
+	identity = SubaccountRoleCollectionResourceIdentityModel{
+		Id:   types.StringValue(state.SubaccountId.ValueString()),
+		Name: types.StringValue(cliRes.Name),
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -190,6 +226,15 @@ func (rs *subaccountRoleCollectionResource) Create(ctx context.Context, req reso
 	plan.Id = types.StringValue(fmt.Sprintf("%s,%s", plan.SubaccountId.ValueString(), cliRes.Name))
 
 	diags = resp.State.Set(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+
+	// Set data returned by API in identity
+	identity := SubaccountRoleCollectionResourceIdentityModel{
+		Id:   types.StringValue(plan.SubaccountId.ValueString()),
+		Name: types.StringValue(cliRes.Name),
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -270,16 +315,28 @@ func (rs *subaccountRoleCollectionResource) Delete(ctx context.Context, req reso
 }
 
 func (rs *subaccountRoleCollectionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount_id, name. Got: %q", req.ID),
-		)
+		if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: subaccount_id, name. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
+	var identityData SubaccountRoleCollectionResourceIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), identityData.Id)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), identityData.Name)...)
 }
