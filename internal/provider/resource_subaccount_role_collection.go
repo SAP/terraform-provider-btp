@@ -68,7 +68,7 @@ func (rs *subaccountRoleCollectionResource) Schema(_ context.Context, _ resource
 		MarkdownDescription: `Creates a role collection in a subaccount.
 
 __Tip__
-You must be assigned to the admin role of the subaccount.		
+You must be assigned to the admin role of the subaccount.
 
 __Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts>`,
@@ -154,14 +154,6 @@ func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resour
 		return
 	}
 
-	//read identity data
-	var identity SubaccountRoleCollectionResourceIdentityModel
-	diags = req.Identity.Get(ctx, &identity)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
 	cliRes, rawRes, err := rs.cli.Security.RoleCollection.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Name.ValueString())
 	if err != nil {
 		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Role Collection (Subaccount)")
@@ -188,14 +180,19 @@ func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resour
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 
-	//set the data returned by API in identity
-	identity = SubaccountRoleCollectionResourceIdentityModel{
-		Id:   types.StringValue(state.SubaccountId.ValueString()),
-		Name: types.StringValue(cliRes.Name),
-	}
+	var identity SubaccountRoleCollectionResourceIdentityModel
 
-	diags = resp.Identity.Set(ctx, identity)
-	resp.Diagnostics.Append(diags...)
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		// During import the identity is not set yet, so set the data returned by API in identity
+		identity = SubaccountRoleCollectionResourceIdentityModel{
+			Id:   types.StringValue(state.SubaccountId.ValueString()),
+			Name: types.StringValue(cliRes.Name),
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *subaccountRoleCollectionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
