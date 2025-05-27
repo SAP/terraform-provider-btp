@@ -127,14 +127,14 @@ __Further documentation:__
 }
 
 type SubaccountRoleCollectionResourceIdentityModel struct {
-	Id   types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
+	SubaccountId types.String `tfsdk:"subaccount_id"`
+	Name         types.String `tfsdk:"name"`
 }
 
 func (rs *subaccountRoleCollectionResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
 	resp.IdentitySchema = identityschema.Schema{
 		Attributes: map[string]identityschema.Attribute{
-			"id": identityschema.StringAttribute{
+			"subaccount_id": identityschema.StringAttribute{
 				RequiredForImport: true, // can be defaulted by the provider configuration
 			},
 			"name": identityschema.StringAttribute{
@@ -186,8 +186,8 @@ func (rs *subaccountRoleCollectionResource) Read(ctx context.Context, req resour
 	if diags.HasError() {
 		// During import the identity is not set yet, so set the data returned by API in identity
 		identity = SubaccountRoleCollectionResourceIdentityModel{
-			Id:   types.StringValue(state.SubaccountId.ValueString()),
-			Name: types.StringValue(cliRes.Name),
+			SubaccountId: types.StringValue(state.SubaccountId.ValueString()),
+			Name:         types.StringValue(cliRes.Name),
 		}
 
 		diags = resp.Identity.Set(ctx, identity)
@@ -227,7 +227,7 @@ func (rs *subaccountRoleCollectionResource) Create(ctx context.Context, req reso
 
 	// Set data returned by API in identity
 	identity := SubaccountRoleCollectionResourceIdentityModel{
-		Id:   types.StringValue(plan.SubaccountId.ValueString()),
+		SubaccountId:   types.StringValue(plan.SubaccountId.ValueString()),
 		Name: types.StringValue(cliRes.Name),
 	}
 
@@ -334,6 +334,6 @@ func (rs *subaccountRoleCollectionResource) ImportState(ctx context.Context, req
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), identityData.Id)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), identityData.SubaccountId)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), identityData.Name)...)
 }
