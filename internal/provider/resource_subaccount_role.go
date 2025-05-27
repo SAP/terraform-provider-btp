@@ -89,6 +89,34 @@ __Further documentation:__
 				Optional:            true,
 				Computed:            true,
 			},
+			"attribute_list": schema.ListNestedAttribute{
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"attribute_name": schema.StringAttribute{
+							MarkdownDescription: "The name of the role attribute.",
+							Optional:            true,
+						},
+						"attribute_value_origin": schema.StringAttribute{
+							MarkdownDescription: "The origin of the attribute value.",
+							Optional:            true,
+						},
+						"attribute_values": schema.SetAttribute{
+							ElementType: types.StringType,
+							Optional:    true,
+						},
+						"description": schema.StringAttribute{
+							MarkdownDescription: "The description of the role attribute.",
+							Optional:            true,
+						},
+						"value_required": schema.BoolAttribute{
+							MarkdownDescription: "Shows whether the value is required.",
+							Optional:            true,
+						},
+					},
+				},
+				MarkdownDescription: "The scopes available with this role.",
+				Optional:            true,
+			},
 			"read_only": schema.BoolAttribute{
 				MarkdownDescription: "Shows whether the role can be modified or not.",
 				Computed:            true,
@@ -140,13 +168,22 @@ func (rs *subaccountRoleResource) Create(ctx context.Context, req resource.Creat
 		return
 	}
 
+	attributeListString, err := subaccountAttributeListToJsonString(plan.AttributeList)
+
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Creating Resource Role (Subaccount)", fmt.Sprintf("Error converting attribute list to JSON: %s", err))
+		return
+	}
+
 	cliRes, _, err := rs.cli.Security.Role.CreateBySubaccount(ctx, &btpcli.SubaccountRoleCreateInput{
 		RoleName:         plan.Name.ValueString(),
 		AppId:            plan.RoleTemplateAppId.ValueString(),
 		RoleTemplateName: plan.RoleTemplateName.ValueString(),
 		SubaccountId:     plan.SubaccountId.ValueString(),
 		Description:      plan.Description.ValueString(),
+		AttributeList:    attributeListString,
 	})
+
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Role (Subaccount)", fmt.Sprintf("%s", err))
 		return
