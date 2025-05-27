@@ -223,8 +223,8 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 
 	// We check the subdomain value against the recommended format of the API and the BTP Administrator's guide
 	// However we cannot enforce it via the schema as the cockpit allows also deviating formats
-	rg := regexp.MustCompile("^[a-z0-9](?:[a-z0-9|-]{0,61}[a-z0-9])?$")
-	if !rg.MatchString(plan.Subdomain.ValueString()) {
+
+	if !subdomainRegex.MatchString(plan.Subdomain.ValueString()) {
 		resp.Diagnostics.AddAttributeWarning(path.Root("subdomain"), "subdomain is in a non-recommended format", "subdomain should only contain letters (a-z), digits (0-9), and hyphens (not at the start or end)")
 	}
 
