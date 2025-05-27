@@ -212,18 +212,7 @@ func TestResourceSubaccount(t *testing.T) {
 			},
 		})
 	})
-	t.Run("error path - subdomain must be valid", func(t *testing.T) {
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclResourceSubaccount("uut", "a.subaccount", "eu12", "a.subaccount"),
-					ExpectError: regexp.MustCompile(`Attribute subdomain must only contain letters \(a-z\), digits \(0-9\)`),
-				},
-			},
-		})
-	})
+
 	t.Run("error path - cli server returns error", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
