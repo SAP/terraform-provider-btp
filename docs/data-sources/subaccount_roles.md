@@ -46,11 +46,23 @@ Read-Only:
 
 - `app_id` (String) The id of the application that provides the role template and the role.
 - `app_name` (String) The name of the application that provides the role template and the role.
+- `attribute_list` (Attributes List) The attributes assigned to this role. (see [below for nested schema](#nestedatt--values--attribute_list))
 - `description` (String) The description of the role.
 - `name` (String) The name of the role.
 - `read_only` (Boolean) Shows whether the role can be modified or not.
 - `role_template_name` (String) The name of the role template.
 - `scopes` (Attributes List) The scopes available with this role. (see [below for nested schema](#nestedatt--values--scopes))
+
+<a id="nestedatt--values--attribute_list"></a>
+### Nested Schema for `values.attribute_list`
+
+Read-Only:
+
+- `attribute_name` (String) The name of the role attribute.
+- `attribute_value_origin` (String) The origin of the attribute value.
+- `attribute_values` (Set of String)
+- `value_required` (Boolean) Shows whether the value is required.
+
 
 <a id="nestedatt--values--scopes"></a>
 ### Nested Schema for `values.scopes`

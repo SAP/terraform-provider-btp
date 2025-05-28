@@ -22,10 +22,11 @@ type subaccountRolesValue struct {
 	RoleTemplateAppId types.String `tfsdk:"app_id"`
 	RoleTemplateName  types.String `tfsdk:"role_template_name"`
 	/* OUTPUT */
-	Description types.String          `tfsdk:"description"`
-	IsReadOnly  types.Bool            `tfsdk:"read_only"`
-	AppName     types.String          `tfsdk:"app_name"`
-	Scopes      []subaccountRoleScope `tfsdk:"scopes"`
+	Description   types.String              `tfsdk:"description"`
+	IsReadOnly    types.Bool                `tfsdk:"read_only"`
+	AppName       types.String              `tfsdk:"app_name"`
+	Scopes        []subaccountRoleScope     `tfsdk:"scopes"`
+	AttributeList []subaccountRoleAttribute `tfsdk:"attribute_list"`
 }
 
 type subaccountRolesDataSourceConfig struct {
@@ -133,6 +134,30 @@ __Further documentation:__
 							MarkdownDescription: "The scopes available with this role.",
 							Computed:            true,
 						},
+						"attribute_list": schema.ListNestedAttribute{
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"attribute_name": schema.StringAttribute{
+										MarkdownDescription: "The name of the role attribute.",
+										Computed:            true,
+									},
+									"attribute_value_origin": schema.StringAttribute{
+										MarkdownDescription: "The origin of the attribute value.",
+										Computed:            true,
+									},
+									"attribute_values": schema.SetAttribute{
+										ElementType: types.StringType,
+										Computed:    true,
+									},
+									"value_required": schema.BoolAttribute{
+										MarkdownDescription: "Shows whether the value is required.",
+										Computed:            true,
+									},
+								},
+							},
+							MarkdownDescription: "The attributes assigned to this role.",
+							Computed:            true,
+						},
 					},
 				},
 				Computed: true,
@@ -189,6 +214,19 @@ func (ds *subaccountRolesDataSource) Read(ctx context.Context, req datasource.Re
 			resp.Diagnostics.Append(diags...)
 
 			roleVal.Scopes = append(roleVal.Scopes, scopeVal)
+		}
+
+		for _, attribute := range role.AttributeList {
+			attributeLine := subaccountRoleAttribute{
+				AttributeName:        types.StringValue(attribute.AttributeName),
+				AttributeValueOrigin: types.StringValue(attribute.AttributeValueOrigin),
+				ValueRequired:        types.BoolValue(attribute.ValueRequired),
+			}
+
+			attributeLine.AttributeValues, diags = types.SetValueFrom(ctx, types.StringType, attribute.AttributeValues)
+			resp.Diagnostics.Append(diags...)
+
+			roleVal.AttributeList = append(roleVal.AttributeList, attributeLine)
 		}
 
 		data.Values = append(data.Values, roleVal)

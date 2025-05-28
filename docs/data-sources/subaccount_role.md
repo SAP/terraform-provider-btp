@@ -37,10 +37,22 @@ data "btp_subaccount_role" "user_role_auditor" {
 
 ### Read-Only
 
+- `attribute_list` (Attributes List) The attributes assigned to this role. (see [below for nested schema](#nestedatt--attribute_list))
 - `description` (String) The description of the role.
 - `id` (String, Deprecated) The ID of the subaccount.
 - `read_only` (Boolean) Shows whether the role can be modified or not.
 - `scopes` (Attributes List) The scopes available with this role. (see [below for nested schema](#nestedatt--scopes))
+
+<a id="nestedatt--attribute_list"></a>
+### Nested Schema for `attribute_list`
+
+Read-Only:
+
+- `attribute_name` (String) The name of the role attribute.
+- `attribute_value_origin` (String) The origin of the attribute value.
+- `attribute_values` (Set of String)
+- `value_required` (Boolean) Shows whether the value is required.
+
 
 <a id="nestedatt--scopes"></a>
 ### Nested Schema for `scopes`
