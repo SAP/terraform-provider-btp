@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -12,6 +13,8 @@ import (
 
 const EntitlementFeature = "ENTITLEMENTS"
 const AuthorizationFeature = "AUTHORIZATIONS"
+
+var subdomainRegex = regexp.MustCompile("^[a-z0-9](?:[a-z0-9|-]{0,61}[a-z0-9])?$")
 
 type subaccountType struct {
 	ID             types.String `tfsdk:"id"`

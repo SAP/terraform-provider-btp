@@ -113,6 +113,10 @@ terraform import btp_subaccount.my_project 6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f
 ```
 
 
+## Recommended Naming Convention for Subdomain
+
+We recommend that the subdomain should only contain letters (a-z), digits (0-9), and hyphens (not at the start or end). The provider does not prevent using other naming patterns, but it will raise a warning if the subdomain does not follow this convention.
+
 ## Restriction
 
 The resource does not support the move of the subaccount to a new parent account (directory or global account). An update of the `parent_id` attribute will cause a deletion and recreation of the resource including the resources that depend on it.

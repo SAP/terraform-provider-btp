@@ -88,9 +88,6 @@ __Further documentation:__
 					stringplanmodifier.RequiresReplace(),
 					stringplanmodifier.UseStateForUnknown(),
 				},
-				Validators: []validator.String{
-					stringvalidator.RegexMatches(regexp.MustCompile("^[a-z0-9](?:[a-z0-9|-]{0,61}[a-z0-9])?$"), "must only contain letters (a-z), digits (0-9), and hyphens (not at the start or end)"),
-				},
 			},
 			"parent_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.",
@@ -222,6 +219,13 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	// We check the subdomain value against the recommended format of the API and the BTP Administrator's guide
+	// However we cannot enforce it via the schema as the cockpit allows also deviating formats
+
+	if !subdomainRegex.MatchString(plan.Subdomain.ValueString()) {
+		resp.Diagnostics.AddAttributeWarning(path.Root("subdomain"), "subdomain is in a non-recommended format", "subdomain should only contain letters (a-z), digits (0-9), and hyphens (not at the start or end)")
 	}
 
 	args := btpcli.SubaccountCreateInput{
