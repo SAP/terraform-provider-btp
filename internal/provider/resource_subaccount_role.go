@@ -129,7 +129,7 @@ __Further documentation:__
 						},
 					},
 				},
-				MarkdownDescription: "The scopes available with this role.",
+				MarkdownDescription: "The attributes assigned to this role.",
 				Optional:            true,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.RequiresReplace(),

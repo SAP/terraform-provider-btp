@@ -36,6 +36,35 @@ func TestDataSourceSubaccountRole(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("happy path - with attributes", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_role_with_attributes")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclDatasourceSubaccountRole("uut", "integration-test-acc-static", "Application_Frontend_Developer", "Application_Frontend_Developer", "eu12-appfront!b390135"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("data.btp_subaccount_role.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "name", "Application_Frontend_Developer"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "role_template_name", "Application_Frontend_Developer"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "app_id", "eu12-appfront!b390135"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "description", "Developer access to Application Frontend"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "read_only", "true"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "attribute_list.#", "1"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "attribute_list.0.attribute_name", "namespace"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "attribute_list.0.attribute_value_origin", "static"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "attribute_list.0.attribute_values.#", "1"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "attribute_list.0.attribute_values.0", ""),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role.uut", "attribute_list.0.value_required", "false"),
+					),
+				},
+			},
+		})
+	})
 	t.Run("error path - subaccount_id, name, role_template_name and app_id are mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,

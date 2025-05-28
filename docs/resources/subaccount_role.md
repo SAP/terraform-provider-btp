@@ -57,7 +57,7 @@ resource "btp_subaccount_role" "custom" {
 
 ### Optional
 
-- `attribute_list` (Attributes List) The scopes available with this role. (see [below for nested schema](#nestedatt--attribute_list))
+- `attribute_list` (Attributes List) The attributes assigned to this role. (see [below for nested schema](#nestedatt--attribute_list))
 - `description` (String) The role description.
 
 ### Read-Only
