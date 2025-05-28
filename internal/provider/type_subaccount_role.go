@@ -37,6 +37,8 @@ type subaccountRoleType struct {
 func subaccountRoleFromValue(ctx context.Context, value xsuaa_authz.Role) (subaccountRoleType, diag.Diagnostics) {
 	var subaccountRole subaccountRoleType
 
+	diags := diag.Diagnostics{}
+
 	subaccountRole.Description = types.StringValue(value.Description)
 	subaccountRole.IsReadOnly = types.BoolValue(value.IsReadOnly)
 	subaccountRole.Name = types.StringValue(value.Name)
@@ -49,18 +51,18 @@ func subaccountRoleFromValue(ctx context.Context, value xsuaa_authz.Role) (subac
 			AttributeValueOrigin: types.StringValue(attribute.AttributeValueOrigin),
 			ValueRequired:        types.BoolValue(attribute.ValueRequired),
 		}
-
-		attributeLine.AttributeValues, _ = types.SetValueFrom(ctx, types.StringType, attribute.AttributeValues)
+		var diagsLocal diag.Diagnostics
+		attributeLine.AttributeValues, diagsLocal = types.SetValueFrom(ctx, types.StringType, attribute.AttributeValues)
+		diags.Append(diagsLocal...)
 
 		subaccountRole.AttributeList = append(subaccountRole.AttributeList, attributeLine)
 	}
-	return subaccountRole, diag.Diagnostics{}
+	return subaccountRole, diags
 }
 
 func subaccountAttributeListToJsonString(attributeList []subaccountRoleAttribute) (string, error) {
 
 	var attributeListPlain []subaccountRoleAttributePlain
-	var attributeValuePlain []string
 
 	for _, attribute := range attributeList {
 		attributeLinePlain := subaccountRoleAttributePlain{
@@ -69,6 +71,7 @@ func subaccountAttributeListToJsonString(attributeList []subaccountRoleAttribute
 			ValueRequired:        attribute.ValueRequired.ValueBool(),
 		}
 
+		var attributeValuePlain []string
 		for _, value := range attribute.AttributeValues.Elements() {
 			attributeValuePlain = append(attributeValuePlain, value.(types.String).ValueString())
 		}
@@ -77,10 +80,10 @@ func subaccountAttributeListToJsonString(attributeList []subaccountRoleAttribute
 		attributeListPlain = append(attributeListPlain, attributeLinePlain)
 	}
 
-	json, err := json.Marshal(attributeListPlain)
+	attributeListJson, err := json.Marshal(attributeListPlain)
 
 	if err != nil {
 		return "", err
 	}
-	return string(json), nil
+	return string(attributeListJson), nil
 }
