@@ -9,12 +9,18 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type subaccountRoleAttributePlain struct {
+	AttributeName        string   `json:"attributeName"`
+	AttributeValueOrigin string   `json:"attributeValueOrigin"`
+	AttributeValues      []string `json:"attributeValues"`
+	ValueRequired        bool     `json:"valueRequired"`
+}
+
 type subaccountRoleAttribute struct {
-	AttributeName        types.String `tfsdk:"attribute_name" json:"attributeName,omitempty"`
-	AttributeValueOrigin types.String `tfsdk:"attribute_value_origin" json:"attributeValueOrigin,omitempty"`
-	AttributeValues      types.Set    `tfsdk:"attribute_values" json:"attributeValues,omitempty"`
-	Description          types.String `tfsdk:"description" json:"description,omitempty"`      // The description of the role attribute.
-	ValueRequired        types.Bool   `tfsdk:"value_required" json:"valueRequired,omitempty"` // Indicates whether the attribute value is required.
+	AttributeName        types.String `tfsdk:"attribute_name"`
+	AttributeValueOrigin types.String `tfsdk:"attribute_value_origin"`
+	AttributeValues      types.Set    `tfsdk:"attribute_values"`
+	ValueRequired        types.Bool   `tfsdk:"value_required"`
 }
 
 type subaccountRoleType struct {
@@ -41,7 +47,6 @@ func subaccountRoleFromValue(ctx context.Context, value xsuaa_authz.Role) (subac
 		attributeLine := subaccountRoleAttribute{
 			AttributeName:        types.StringValue(attribute.AttributeName),
 			AttributeValueOrigin: types.StringValue(attribute.AttributeValueOrigin),
-			Description:          types.StringValue(attribute.Description),
 			ValueRequired:        types.BoolValue(attribute.ValueRequired),
 		}
 
@@ -53,7 +58,26 @@ func subaccountRoleFromValue(ctx context.Context, value xsuaa_authz.Role) (subac
 }
 
 func subaccountAttributeListToJsonString(attributeList []subaccountRoleAttribute) (string, error) {
-	json, err := json.Marshal(attributeList)
+
+	var attributeListPlain []subaccountRoleAttributePlain
+	var attributeValuePlain []string
+
+	for _, attribute := range attributeList {
+		attributeLinePlain := subaccountRoleAttributePlain{
+			AttributeName:        attribute.AttributeName.ValueString(),
+			AttributeValueOrigin: attribute.AttributeValueOrigin.ValueString(),
+			ValueRequired:        attribute.ValueRequired.ValueBool(),
+		}
+
+		for _, value := range attribute.AttributeValues.Elements() {
+			attributeValuePlain = append(attributeValuePlain, value.(types.String).ValueString())
+		}
+		attributeLinePlain.AttributeValues = attributeValuePlain
+
+		attributeListPlain = append(attributeListPlain, attributeLinePlain)
+	}
+
+	json, err := json.Marshal(attributeListPlain)
 
 	if err != nil {
 		return "", err
