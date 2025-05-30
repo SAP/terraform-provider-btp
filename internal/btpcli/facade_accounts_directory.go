@@ -20,11 +20,19 @@ func (f *accountsDirectoryFacade) getCommand() string {
 }
 
 func (f *accountsDirectoryFacade) Get(ctx context.Context, directoryId string, adminDirectoryId string) (cis.DirectoryResponseObject, CommandResponse, error) {
-	return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
-		"globalAccount":  f.cliClient.GetGlobalAccountSubdomain(),
-		"directoryID":    directoryId,
-		"adminDirectory": adminDirectoryId,
-	}))
+	if adminDirectoryId == "" {
+		return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+			"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
+			"directoryID":   directoryId,
+		}))
+
+	} else {
+		return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+			"globalAccount":  f.cliClient.GetGlobalAccountSubdomain(),
+			"directoryID":    directoryId,
+			"adminDirectory": adminDirectoryId,
+		}))
+	}
 }
 
 type DirectoryCreateInput struct {
@@ -93,11 +101,21 @@ func (f *accountsDirectoryFacade) Enable(ctx context.Context, args *DirectoryEna
 }
 
 func (f *accountsDirectoryFacade) Delete(ctx context.Context, directoryId string, adminDirectoryId string) (cis.DirectoryResponseObject, CommandResponse, error) {
-	return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
-		"globalAccount":  f.cliClient.GetGlobalAccountSubdomain(),
-		"directoryID":    directoryId,
-		"forceDelete":    "true",
-		"confirm":        "true",
-		"adminDirectory": adminDirectoryId,
-	}))
+	if adminDirectoryId == "" {
+		return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
+			"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
+			"directoryID":   directoryId,
+			"forceDelete":   "true",
+			"confirm":       "true",
+		}))
+	} else {
+		return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
+			"globalAccount":  f.cliClient.GetGlobalAccountSubdomain(),
+			"directoryID":    directoryId,
+			"forceDelete":    "true",
+			"confirm":        "true",
+			"adminDirectory": adminDirectoryId,
+		}))
+	}
+
 }
