@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -97,6 +98,32 @@ __Further documentation:__
 	}
 }
 
+type SubaccountRoleResourceIdentityModel struct {
+	SubaccountId      types.String `tfsdk:"subaccount_id"`
+	Name              types.String `tfsdk:"name"`
+	RoleTemplateName  types.String `tfsdk:"role_template_name"`
+	RoleTemplateAppId types.String `tfsdk:"app_id"`
+}
+
+func (rs *subaccountRoleResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"subaccount_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"role_template_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"app_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *subaccountRoleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state subaccountRoleType
 
@@ -130,6 +157,21 @@ func (rs *subaccountRoleResource) Read(ctx context.Context, req resource.ReadReq
 
 	diags = resp.State.Set(ctx, &updatedState)
 	resp.Diagnostics.Append(diags...)
+
+	var identity SubaccountRoleResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = SubaccountRoleResourceIdentityModel{
+			SubaccountId:      types.StringValue(state.SubaccountId.ValueString()),
+			Name:              types.StringValue(cliRes.Name),
+			RoleTemplateName:  types.StringValue(cliRes.RoleTemplateName),
+			RoleTemplateAppId: types.StringValue(cliRes.RoleTemplateAppId),
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *subaccountRoleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -162,6 +204,17 @@ func (rs *subaccountRoleResource) Create(ctx context.Context, req resource.Creat
 
 	diags = resp.State.Set(ctx, &updatedPlan)
 	resp.Diagnostics.Append(diags...)
+
+	identity := SubaccountRoleResourceIdentityModel{
+		SubaccountId:      types.StringValue(plan.SubaccountId.ValueString()),
+		Name:              types.StringValue(updatedPlan.Name.ValueString()),
+		RoleTemplateName:  types.StringValue(updatedPlan.RoleTemplateName.ValueString()),
+		RoleTemplateAppId: types.StringValue(updatedPlan.RoleTemplateAppId.ValueString()),
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+
 }
 
 func (rs *subaccountRoleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -195,18 +248,32 @@ func (rs *subaccountRoleResource) Delete(ctx context.Context, req resource.Delet
 
 // Create the function for the state import
 func (rs *subaccountRoleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 4 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" || idParts[3] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount_id, name, role_template_name, app_id. Got: %q", req.ID),
-		)
+		if len(idParts) != 4 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" || idParts[3] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: subaccount_id, name, role_template_name, app_id. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_template_name"), idParts[2])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_id"), idParts[3])...)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_template_name"), idParts[2])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_id"), idParts[3])...)
+	var identityData SubaccountRoleResourceIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), identityData.SubaccountId)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), identityData.Name)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_template_name"), identityData.RoleTemplateName)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_id"), identityData.RoleTemplateAppId)...)
 }

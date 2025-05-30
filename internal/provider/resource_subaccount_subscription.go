@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -196,6 +197,28 @@ You must be assigned to the admin role of the subaccount.`,
 	}
 }
 
+type SubaccountSubscriptionResourceIdentityModel struct {
+	SubaccountId types.String `tfsdk:"subaccount_id"`
+	AppName      types.String `tfsdk:"app_name"`
+	PlanName     types.String `tfsdk:"plan_name"`
+}
+
+func (rs *subaccountSubscriptionResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"subaccount_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"app_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"plan_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state subaccountSubscriptionType
 
@@ -237,6 +260,20 @@ func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource
 
 	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
+
+	var identity SubaccountSubscriptionResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = SubaccountSubscriptionResourceIdentityModel{
+			SubaccountId: types.StringValue(state.SubaccountId.ValueString()),
+			AppName:      types.StringValue(cliRes.AppName),
+			PlanName:     types.StringValue(cliRes.PlanName),
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -281,6 +318,15 @@ func (rs *subaccountSubscriptionResource) Create(ctx context.Context, req resour
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedPlan)
+	resp.Diagnostics.Append(diags...)
+
+	identity := SubaccountSubscriptionResourceIdentityModel{
+		SubaccountId: types.StringValue(plan.SubaccountId.ValueString()),
+		AppName:      types.StringValue(updatedPlan.AppName.ValueString()),
+		PlanName:     types.StringValue(updatedPlan.PlanName.ValueString()),
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -376,19 +422,32 @@ func (rs *subaccountSubscriptionResource) Delete(ctx context.Context, req resour
 }
 
 func (rs *subaccountSubscriptionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount,app_name,plan_name. Got: %q", req.ID),
-		)
+		if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: subaccount,app_name,plan_name. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_name"), idParts[1])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_name"), idParts[1])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
+	var identityData SubaccountSubscriptionResourceIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), identityData.SubaccountId)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_name"), identityData.AppName)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), identityData.PlanName)...)
 }
 
 func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context, plan subaccountSubscriptionType, operation string, technicalAppName string) (tfutils.StateChangeConf, diag.Diagnostics) {
