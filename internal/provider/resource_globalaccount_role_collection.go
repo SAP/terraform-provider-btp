@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 
@@ -116,6 +117,20 @@ __Further documentation:__
 	}
 }
 
+type GlobalAccountRoleCollectionResourceIdentityModel struct {
+	Name types.String `tfsdk:"name"`
+}
+
+func (rs *globalaccountRoleCollectionResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *globalaccountRoleCollectionResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state globalaccountRoleCollectionType
 
@@ -151,6 +166,18 @@ func (rs *globalaccountRoleCollectionResource) Read(ctx context.Context, req res
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
+
+	var identity GlobalAccountRoleCollectionResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = GlobalAccountRoleCollectionResourceIdentityModel{
+			Name: types.StringValue(cliRes.Name),
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *globalaccountRoleCollectionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -181,6 +208,13 @@ func (rs *globalaccountRoleCollectionResource) Create(ctx context.Context, req r
 	}
 
 	diags = resp.State.Set(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+
+	identity := GlobalAccountRoleCollectionResourceIdentityModel{
+		Name: types.StringValue(cliRes.Name),
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -261,16 +295,29 @@ func (rs *globalaccountRoleCollectionResource) Delete(ctx context.Context, req r
 }
 
 func (rs *globalaccountRoleCollectionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 1 || idParts[0] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: name. Got: %q", req.ID),
-		)
+	if req.ID != "" {
+
+		idParts := strings.Split(req.ID, ",")
+
+		if len(idParts) != 1 || idParts[0] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: name. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[0])...)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[0])...)
+	var identityData GlobalAccountRoleCollectionResourceIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), identityData.Name)...)
 
 }
