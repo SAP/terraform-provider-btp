@@ -242,6 +242,13 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	if !plan.ParentID.IsUnknown() {
 		parentID := plan.ParentID.ValueString()
 		args.Directory = parentID
+
+		//Check which parent ID needs to be used for authorization
+		parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, parentID)
+		if !isParentGlobalAccount && parentId != "" {
+			//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+			args.AdminDirectoryId = parentId
+		}
 	}
 
 	if !plan.BetaEnabled.IsUnknown() {

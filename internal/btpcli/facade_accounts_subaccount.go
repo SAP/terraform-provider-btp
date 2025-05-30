@@ -51,6 +51,7 @@ type SubaccountCreateInput struct { // TODO support all options
 	Subdomain         string              `btpcli:"subdomain"`
 	UsedForProduction string              `btpcli:"usedForProduction"`
 	Globalaccount     string              `btpcli:"globalAccount"`
+	AdminDirectoryId  string              `btpcli:"adminDirectory"`
 	//SubaccountAdmins  string `json:"subaccountAdmins"`
 }
 
