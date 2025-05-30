@@ -188,7 +188,7 @@ func (rs *directoryResource) Read(ctx context.Context, req resource.ReadRequest,
 	}
 
 	if !isParentGlobalAccount && parentId != "" {
-		//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
 		adminDirectoryId = parentId
 	}
 
@@ -236,7 +236,7 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 		}
 
 		if !isParentGlobalAccount && parentId != "" {
-			//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+			//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
 			args.AdminDirectoryId = parentId
 			adminDirectoryId = parentId
 		}
@@ -329,7 +329,7 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 
 	if !isParentGlobalAccount && parentId != "" {
-		//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
 		adminDirectoryId = parentId
 	}
 
@@ -373,7 +373,7 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 	}
 
 	if !isParentGlobalAccount && parentId != "" {
-		//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
 		adminDirectoryId = parentId
 	}
 
