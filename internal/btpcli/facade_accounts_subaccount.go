@@ -105,7 +105,7 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 	}
 
 	if len(directoryId) > 0 {
-		//if the parent of the subaccount is a managed directory, the directoryID must be set to make sure the right authorizations are validated
+		//if the parent is a managed directory, the directoryID must be set to make sure the right authorizations are validated
 		requestArgs["directoryID"] = directoryId
 	}
 

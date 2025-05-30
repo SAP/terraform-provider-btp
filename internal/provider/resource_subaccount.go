@@ -251,7 +251,7 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		}
 
 		if !isParentGlobalAccount && parentId != "" {
-			//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+			//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
 			args.AdminDirectoryId = parentId
 		}
 	}
@@ -389,7 +389,7 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 	var directoryId string
 
 	if !isParentGlobalAccount {
-		//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
 		directoryId = parentId
 	}
 
