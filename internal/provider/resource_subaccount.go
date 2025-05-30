@@ -242,6 +242,18 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	if !plan.ParentID.IsUnknown() {
 		parentID := plan.ParentID.ValueString()
 		args.Directory = parentID
+
+		//Check which parent ID needs to be used for authorization
+		parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, parentID)
+		if err != nil {
+			resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+			return
+		}
+
+		if !isParentGlobalAccount && parentId != "" {
+			//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+			args.AdminDirectoryId = parentId
+		}
 	}
 
 	if !plan.BetaEnabled.IsUnknown() {
@@ -368,12 +380,16 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+		return
+	}
 
 	var directoryId string
 
 	if !isParentGlobalAccount {
-		//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
 		directoryId = parentId
 	}
 

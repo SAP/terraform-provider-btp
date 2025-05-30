@@ -140,7 +140,20 @@ func (ds *directoryDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
-	cliRes, _, err := ds.cli.Accounts.Directory.Get(ctx, data.ID.ValueString())
+	//Check which parent ID needs to be used for authorization
+	var adminDirectoryId string
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(ds.cli, ctx, data.ID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+		return
+	}
+
+	if !isParentGlobalAccount && parentId != "" {
+		//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		adminDirectoryId = parentId
+	}
+
+	cliRes, _, err := ds.cli.Accounts.Directory.Get(ctx, data.ID.ValueString(), adminDirectoryId)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Directory", fmt.Sprintf("%s", err))
 		return
