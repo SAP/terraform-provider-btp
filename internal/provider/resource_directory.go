@@ -180,7 +180,19 @@ func (rs *directoryResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	cliRes, rawRes, err := rs.cli.Accounts.Directory.Get(ctx, state.ID.ValueString())
+	var adminDirectoryId string
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+		return
+	}
+
+	if !isParentGlobalAccount && parentId != "" {
+		//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		adminDirectoryId = parentId
+	}
+
+	cliRes, rawRes, err := rs.cli.Accounts.Directory.Get(ctx, state.ID.ValueString(), adminDirectoryId)
 	if err != nil {
 		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Directory")
 		return
@@ -212,9 +224,22 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 		args.Description = &description
 	}
 
+	var adminDirectoryId string
 	if !plan.ParentID.IsUnknown() {
 		parentID := plan.ParentID.ValueString()
 		args.ParentID = &parentID
+		//Check which parent ID needs to be used for authorization
+		parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, parentID)
+		if err != nil {
+			resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+			return
+		}
+
+		if !isParentGlobalAccount && parentId != "" {
+			//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+			args.AdminDirectoryId = parentId
+			adminDirectoryId = parentId
+		}
 	}
 
 	if !plan.Subdomain.IsUnknown() {
@@ -246,7 +271,7 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 		Pending: []string{cis.StateCreating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateCreationFailed, cis.StateCanceled},
 		Refresh: func() (interface{}, string, error) {
-			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
+			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid, adminDirectoryId)
 
 			if err != nil {
 				return subRes, "", err
@@ -274,7 +299,6 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	//This method makes two distinct calls: one to support features update using the BTP CLI "enable" command, and another for name, description and labels update.
 	//The methods are only called if the corresponding change should be triggered
-
 	var plan directoryType
 	var state directoryType
 
@@ -296,9 +320,22 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	plan.Features.ElementsAs(ctx, &planFeatures, false)
 	state.Features.ElementsAs(ctx, &stateFeatures, false)
 
+	//Check which parent ID needs to be used for authorization
+	var adminDirectoryId string
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+		return
+	}
+
+	if !isParentGlobalAccount && parentId != "" {
+		//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		adminDirectoryId = parentId
+	}
+
 	if strings.Join(planFeatures, ",") != strings.Join(stateFeatures, ",") {
 		//There is a diff in the features, so the features need to be updated
-		rs.enableDirectory(ctx, plan, resp)
+		rs.enableDirectory(ctx, plan, adminDirectoryId, resp)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -311,7 +348,7 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	if (plan.Name.ValueString() != state.Name.ValueString()) || (plan.Description.ValueString() != state.Description.ValueString()) || !(reflect.DeepEqual(planLabels, stateLabels)) {
 		//There is a diff in the directory attributes, so the directory attributes needs to be updated
-		rs.updateDirectory(ctx, plan, resp)
+		rs.updateDirectory(ctx, plan, adminDirectoryId, resp)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -328,7 +365,19 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	cliRes, _, err := rs.cli.Accounts.Directory.Delete(ctx, state.ID.ValueString())
+	var adminDirectoryId string
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+		return
+	}
+
+	if !isParentGlobalAccount && parentId != "" {
+		//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		adminDirectoryId = parentId
+	}
+
+	cliRes, _, err := rs.cli.Accounts.Directory.Delete(ctx, state.ID.ValueString(), adminDirectoryId)
 	if err != nil {
 		resp.Diagnostics.AddError(deleteErrorHeader, fmt.Sprintf("%s", err))
 		return
@@ -338,7 +387,7 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 		Pending: []string{cis.StateDeleting, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateDeletionFailed, cis.StateCanceled, "DELETED"},
 		Refresh: func() (interface{}, string, error) {
-			subRes, comRes, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
+			subRes, comRes, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid, adminDirectoryId)
 
 			if comRes.StatusCode == http.StatusNotFound || comRes.StatusCode == http.StatusForbidden {
 				return subRes, "DELETED", nil
@@ -389,7 +438,7 @@ func sortDiretoryFeatures(directoryFeatures []string) []string {
 	return directoryFeaturesSorted
 }
 
-func (rs *directoryResource) enableDirectory(ctx context.Context, plan directoryType, resp *resource.UpdateResponse) {
+func (rs *directoryResource) enableDirectory(ctx context.Context, plan directoryType, adminDirectoryId string, resp *resource.UpdateResponse) {
 	// This function is responsible to update the features in case of an update
 
 	const updateErrorHeader = "API Error Updating Resource Directory"
@@ -421,7 +470,7 @@ func (rs *directoryResource) enableDirectory(ctx context.Context, plan directory
 		Pending: []string{cis.StateUpdating, cis.StateStarted, cis.StateDeleting, cis.StateCreating},
 		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
 		Refresh: func() (interface{}, string, error) {
-			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
+			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid, adminDirectoryId)
 
 			if err != nil {
 				return subRes, "", err
@@ -446,12 +495,16 @@ func (rs *directoryResource) enableDirectory(ctx context.Context, plan directory
 	resp.Diagnostics.Append(diags...)
 }
 
-func (rs *directoryResource) updateDirectory(ctx context.Context, plan directoryType, resp *resource.UpdateResponse) {
+func (rs *directoryResource) updateDirectory(ctx context.Context, plan directoryType, adminDirectoryId string, resp *resource.UpdateResponse) {
 	// This function is responsible to update the display name, description, and labels of directory resource
 	const updateErrorHeader = "API Error Updating Resource Directory"
 
 	args := btpcli.DirectoryUpdateInput{
 		DirectoryId: plan.ID.ValueString(),
+	}
+
+	if adminDirectoryId != "" {
+		args.AdminDirectoryId = adminDirectoryId
 	}
 
 	if !plan.Name.IsUnknown() {
@@ -482,7 +535,7 @@ func (rs *directoryResource) updateDirectory(ctx context.Context, plan directory
 		Pending: []string{cis.StateUpdating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
 		Refresh: func() (interface{}, string, error) {
-			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid)
+			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid, adminDirectoryId)
 
 			if err != nil {
 				return subRes, "", err
