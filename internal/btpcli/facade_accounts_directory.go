@@ -19,29 +19,32 @@ func (f *accountsDirectoryFacade) getCommand() string {
 	return "accounts/directory"
 }
 
-func (f *accountsDirectoryFacade) Get(ctx context.Context, directoryId string) (cis.DirectoryResponseObject, CommandResponse, error) {
+func (f *accountsDirectoryFacade) Get(ctx context.Context, directoryId string, adminDirectoryId string) (cis.DirectoryResponseObject, CommandResponse, error) {
 	return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
-		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
-		"directoryID":   directoryId,
+		"globalAccount":  f.cliClient.GetGlobalAccountSubdomain(),
+		"directoryID":    directoryId,
+		"adminDirectory": adminDirectoryId,
 	}))
 }
 
 type DirectoryCreateInput struct {
-	DisplayName   string              `btpcli:"displayName"`
-	Description   *string             `btpcli:"description"`
-	ParentID      *string             `btpcli:"parentID"`
-	Subdomain     *string             `btpcli:"subdomain"`
-	Labels        map[string][]string `btpcli:"labels"`
-	Globalaccount string              `btpcli:"globalAccount"`
-	Features      []string            `btpcli:"directoryFeatures"`
+	DisplayName      string              `btpcli:"displayName"`
+	Description      *string             `btpcli:"description"`
+	ParentID         *string             `btpcli:"parentID"`
+	Subdomain        *string             `btpcli:"subdomain"`
+	Labels           map[string][]string `btpcli:"labels"`
+	Globalaccount    string              `btpcli:"globalAccount"`
+	Features         []string            `btpcli:"directoryFeatures"`
+	AdminDirectoryId string              `btpcli:"adminDirectory"`
 }
 
 type DirectoryUpdateInput struct {
-	DirectoryId   string              `btpcli:"directoryID"`
-	Globalaccount string              `btpcli:"globalAccount"`
-	DisplayName   *string             `btpcli:"displayName"`
-	Description   *string             `btpcli:"description"`
-	Labels        map[string][]string `btpcli:"labels"`
+	DirectoryId      string              `btpcli:"directoryID"`
+	Globalaccount    string              `btpcli:"globalAccount"`
+	DisplayName      *string             `btpcli:"displayName"`
+	Description      *string             `btpcli:"description"`
+	Labels           map[string][]string `btpcli:"labels"`
+	AdminDirectoryId string              `btpcli:"adminDirectory"`
 }
 
 type DirectoryEnableInput struct {
@@ -89,11 +92,12 @@ func (f *accountsDirectoryFacade) Enable(ctx context.Context, args *DirectoryEna
 	return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewEnableRequest(f.getCommand(), params))
 }
 
-func (f *accountsDirectoryFacade) Delete(ctx context.Context, directoryId string) (cis.DirectoryResponseObject, CommandResponse, error) {
+func (f *accountsDirectoryFacade) Delete(ctx context.Context, directoryId string, adminDirectoryId string) (cis.DirectoryResponseObject, CommandResponse, error) {
 	return doExecute[cis.DirectoryResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
-		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
-		"directoryID":   directoryId,
-		"forceDelete":   "true",
-		"confirm":       "true",
+		"globalAccount":  f.cliClient.GetGlobalAccountSubdomain(),
+		"directoryID":    directoryId,
+		"forceDelete":    "true",
+		"confirm":        "true",
+		"adminDirectory": adminDirectoryId,
 	}))
 }

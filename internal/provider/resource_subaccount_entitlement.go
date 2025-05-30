@@ -249,7 +249,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 	// Determine the parent of the subaccount
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, plan.SubaccountId.ValueString())
 
-	//Determine if the parent of the subaccount is a directory and if it has authorization enabled
+	//Determine if the parent is a directory and if it has authorization enabled
 	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
 	if err != nil {
 		responseDiagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
@@ -364,7 +364,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 
 	// Determine the parent of the subaccount
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
-	//Determine if the parent of the subaccount is a directory and if it has authoization enabled
+	//Determine if the parent is a directory and if it has authoization enabled
 	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))

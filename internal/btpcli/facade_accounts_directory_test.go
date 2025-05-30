@@ -18,13 +18,14 @@ func TestAccountsDirectoryFacade_Get(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionGet, map[string]string{
-				"directoryID":   "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0",
-				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
+				"directoryID":    "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0",
+				"globalAccount":  "795b53bb-a3f0-4769-adf0-26173282a975",
+				"adminDirectory": "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0",
 			})
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Accounts.Directory.Get(context.TODO(), "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0")
+		_, res, err := uut.Accounts.Directory.Get(context.TODO(), "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0", "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -177,15 +178,16 @@ func TestAccountsDirectoryFacade_Delete(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionDelete, map[string]string{
-				"directoryID":   "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0",
-				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
-				"confirm":       "true",
-				"forceDelete":   "true",
+				"directoryID":    "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0",
+				"globalAccount":  "795b53bb-a3f0-4769-adf0-26173282a975",
+				"confirm":        "true",
+				"forceDelete":    "true",
+				"adminDirectory": "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0",
 			})
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Accounts.Directory.Delete(context.TODO(), "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0")
+		_, res, err := uut.Accounts.Directory.Delete(context.TODO(), "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0", "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)

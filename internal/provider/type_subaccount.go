@@ -61,9 +61,11 @@ func subaccountValueFrom(ctx context.Context, value cis.SubaccountResponseObject
 }
 
 func determineParentIdByFeature(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string, featureType string) (parentId string, isParentGlobalaccount bool, err error) {
+	if parentIdToVerify == "" {
+		return "", true, nil
+	}
 
 	globalAccountHierarchy, _, err := cli.Accounts.GlobalAccount.GetWithHierarchy(ctx)
-
 	if err != nil {
 		return "", false, err
 	}
