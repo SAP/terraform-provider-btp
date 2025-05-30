@@ -123,7 +123,11 @@ func (ds *subaccountEntitlementDataSource) Read(ctx context.Context, req datasou
 		return
 	}
 
-	parentId, isParentGlobalAccount := determineParentIdForEntitlement(ds.cli, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount, err := determineParentIdForEntitlement(ds.cli, ctx, subaccountData.ParentGUID)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining parent features for entitlement", fmt.Sprintf("%s", err))
+		return
+	}
 
 	var cliRes cis_entitlements.EntitledAndAssignedServicesResponseObject
 	if isParentGlobalAccount {

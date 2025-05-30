@@ -60,24 +60,31 @@ func subaccountValueFrom(ctx context.Context, value cis.SubaccountResponseObject
 	return subaccount, diagnostics
 }
 
-func determineParentIdByFeature(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string, featureType string) (parentId string, isParentGlobalaccount bool) {
-	parentData, _, err := cli.Accounts.Directory.Get(ctx, parentIdToVerify)
+func determineParentIdByFeature(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string, featureType string) (parentId string, isParentGlobalaccount bool, err error) {
 
-	// The parent is the global account
+	globalAccountHierarchy, _, err := cli.Accounts.GlobalAccount.GetWithHierarchy(ctx)
+
 	if err != nil {
-		isParentGlobalaccount = true
-		return
+		return "", false, err
 	}
 
-	if hasFeature(parentData.DirectoryFeatures, featureType) {
-		// Parent is a directory with entitlements feature enabled
-		parentId = parentIdToVerify
-	} else {
-		// Parent is a directory, but not with entitlements feature enabled -> step up the hierarchy
-		parentId, isParentGlobalaccount = determineParentIdByFeature(cli, ctx, parentData.ParentGUID, featureType)
+	if parentIdToVerify == globalAccountHierarchy.Guid {
+		return globalAccountHierarchy.GlobalAccountGUID, true, nil
 	}
 
-	return
+	parentId = parentIdToVerify
+	parentIdNew := ""
+
+	for parentId != globalAccountHierarchy.Guid {
+		var parentFeatures []string
+		parentFeatures, parentIdNew = findTargetFeaturesAndParent(parentId, globalAccountHierarchy.Children)
+		if hasFeature(parentFeatures, featureType) {
+			return parentId, false, nil
+		}
+		parentId = parentIdNew
+	}
+
+	return globalAccountHierarchy.GlobalAccountGUID, true, nil
 }
 
 func hasFeature(features []string, featureType string) (featureTypeFound bool) {
@@ -90,10 +97,28 @@ func hasFeature(features []string, featureType string) (featureTypeFound bool) {
 	return
 }
 
-func determineParentIdForEntitlement(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalaccount bool) {
+func findTargetFeaturesAndParent(targetID string, hierarchy []cis.DirectoryResponseObject) (targetFeatures []string, parentId string) {
+
+	for _, child := range hierarchy {
+		if child.Guid == targetID {
+			return child.DirectoryFeatures, child.ParentGUID
+		}
+	}
+
+	for _, child := range hierarchy {
+		targetFeatures, parentId = findTargetFeaturesAndParent(targetID, child.Children)
+		if parentId != "" {
+			return
+		}
+	}
+
+	return
+}
+
+func determineParentIdForEntitlement(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalaccount bool, err error) {
 	return determineParentIdByFeature(cli, ctx, parentIdToVerify, EntitlementFeature)
 }
 
-func determineParentIdForAuthorization(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalaccount bool) {
+func determineParentIdForAuthorization(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (parentId string, isParentGlobalaccount bool, err error) {
 	return determineParentIdByFeature(cli, ctx, parentIdToVerify, AuthorizationFeature)
 }
