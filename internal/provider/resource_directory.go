@@ -229,16 +229,15 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 		parentID := plan.ParentID.ValueString()
 		args.ParentID = &parentID
 		//Check which parent ID needs to be used for authorization
-		parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, parentID)
+		adminDirectoryId, isParentGlobalAccount, err := setAdminDirectoryId(rs.cli, ctx, parentID)
 		if err != nil {
 			resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
 			return
 		}
 
-		if !isParentGlobalAccount && parentId != "" {
+		if !isParentGlobalAccount && adminDirectoryId != "" {
 			//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
-			args.AdminDirectoryId = parentId
-			adminDirectoryId = parentId
+			args.AdminDirectoryId = adminDirectoryId
 		}
 	}
 
@@ -321,16 +320,10 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 	state.Features.ElementsAs(ctx, &stateFeatures, false)
 
 	//Check which parent ID needs to be used for authorization
-	var adminDirectoryId string
-	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	adminDirectoryId, _, err := setAdminDirectoryId(rs.cli, ctx, state.ParentID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
 		return
-	}
-
-	if !isParentGlobalAccount && parentId != "" {
-		//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
-		adminDirectoryId = parentId
 	}
 
 	if strings.Join(planFeatures, ",") != strings.Join(stateFeatures, ",") {
@@ -365,16 +358,10 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	var adminDirectoryId string
-	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	adminDirectoryId, _, err := setAdminDirectoryId(rs.cli, ctx, state.ParentID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
 		return
-	}
-
-	if !isParentGlobalAccount && parentId != "" {
-		//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
-		adminDirectoryId = parentId
 	}
 
 	cliRes, _, err := rs.cli.Accounts.Directory.Delete(ctx, state.ID.ValueString(), adminDirectoryId)
@@ -558,4 +545,20 @@ func (rs *directoryResource) updateDirectory(ctx context.Context, plan directory
 
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
+}
+
+func setAdminDirectoryId(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (adminDirectoryId string, isParentGlobalaccount bool, err error) {
+
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(cli, ctx, parentIdToVerify)
+	if err != nil {
+
+		return "", false, err
+	}
+
+	if !isParentGlobalAccount && parentId != "" {
+		//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		adminDirectoryId = parentId
+	}
+
+	return adminDirectoryId, isParentGlobalAccount, nil
 }

@@ -77,6 +77,7 @@ func determineParentIdByFeature(cli *btpcli.ClientFacade, ctx context.Context, p
 	parentId = parentIdToVerify
 	parentIdNew := ""
 
+	// Due to the structure of the hierarchy, we will end up at the root which is the global account.
 	for parentId != globalAccountHierarchy.Guid {
 		var parentFeatures []string
 		parentFeatures, parentIdNew = findTargetFeaturesAndParent(parentId, globalAccountHierarchy.Children)
