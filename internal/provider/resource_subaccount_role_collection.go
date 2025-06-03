@@ -227,8 +227,8 @@ func (rs *subaccountRoleCollectionResource) Create(ctx context.Context, req reso
 
 	// Set data returned by API in identity
 	identity := SubaccountRoleCollectionResourceIdentityModel{
-		SubaccountId:   types.StringValue(plan.SubaccountId.ValueString()),
-		Name: types.StringValue(cliRes.Name),
+		SubaccountId: types.StringValue(plan.SubaccountId.ValueString()),
+		Name:         types.StringValue(cliRes.Name),
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
