@@ -201,6 +201,7 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path with parent hierarchy", func(t *testing.T) {
+		// When recroding this test, make sure that your are not Global Account Admin, but Directory Admin of the parent directory
 		rec, user := setupVCR(t, "fixtures/resource_subaccount.with_parent_hierarchy")
 		defer stopQuietly(rec)
 
@@ -229,6 +230,7 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path with managed parent", func(t *testing.T) {
+		// When recroding this test, make sure that your are not Global Account Admin, but Directory Admin of the parent directory
 		rec, user := setupVCR(t, "fixtures/resource_subaccount.with_managed_parent")
 		defer stopQuietly(rec)
 

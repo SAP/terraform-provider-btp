@@ -162,6 +162,7 @@ func TestResourceDirectory(t *testing.T) {
 	})
 
 	t.Run("happy path - directory hierarchy", func(t *testing.T) {
+		// When recroding this test, make sure that your are not Global Account Admin, but Directory Admin of the parent directory
 		rec, user := setupVCR(t, "fixtures/resource_directory.with_hierarchy")
 		defer stopQuietly(rec)
 
