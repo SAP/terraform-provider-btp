@@ -200,6 +200,64 @@ func TestResourceSubaccount(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path with parent hierarchy", func(t *testing.T) {
+		// When recroding this test, make sure that your are not Global Account Admin, but Directory Admin of the parent directory
+		rec, user := setupVCR(t, "fixtures/resource_subaccount.with_parent_hierarchy")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountUsedForProdWithParent("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn", "2613212d-a51e-4e7e-858c-7f96c15d67e7"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "USED_FOR_PRODUCTION"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "parent_id", "2613212d-a51e-4e7e-858c-7f96c15d67e7"),
+					),
+				},
+			},
+		})
+	})
+
+	t.Run("happy path with managed parent", func(t *testing.T) {
+		// When recroding this test, make sure that your are not Global Account Admin, but Directory Admin of the parent directory
+		rec, user := setupVCR(t, "fixtures/resource_subaccount.with_managed_parent")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountUsedForProdWithParent("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn", "a9546df7-214e-4414-9191-3d6adfc9cb53"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "USED_FOR_PRODUCTION"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "parent_id", "a9546df7-214e-4414-9191-3d6adfc9cb53"),
+					),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - name must not contain slashes", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -273,4 +331,17 @@ resource "btp_subaccount" "%s" {
 }`
 
 	return fmt.Sprintf(template, resourceName, displayName, region, subdomain)
+}
+
+func hclResourceSubaccountUsedForProdWithParent(resourceName string, displayName string, region string, subdomain string, parentId string) string {
+	template := `
+resource "btp_subaccount" "%s" {
+    name      = "%s"
+    region    = "%s"
+    subdomain = "%s"
+		parent_id = "%s"
+	usage     = "USED_FOR_PRODUCTION"
+}`
+
+	return fmt.Sprintf(template, resourceName, displayName, region, subdomain, parentId)
 }
