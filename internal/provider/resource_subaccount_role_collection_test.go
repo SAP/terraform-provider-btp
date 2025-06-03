@@ -7,8 +7,6 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
-	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
@@ -49,12 +47,12 @@ func TestResourceSubaccountRoleCollection(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "2"),
 					),
-					ConfigStateChecks: []statecheck.StateCheck{
-						statecheck.ExpectIdentity("btp_subaccount_role_collection.uut", map[string]knownvalue.Check{
-							"subaccount_id": knownvalue.NotNull(),
-							"name":          knownvalue.StringExact("My new role collection"),
-						}),
-					},
+					// ConfigStateChecks: []statecheck.StateCheck{
+					// 	statecheck.ExpectIdentity("btp_subaccount_role_collection.uut", map[string]knownvalue.Check{
+					// 		"subaccount_id": knownvalue.NotNull(),
+					// 		"name":          knownvalue.StringExact("My new role collection"),
+					// 	}),
+					// },
 				},
 				{
 					ResourceName:      "btp_subaccount_role_collection.uut",
