@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
@@ -47,18 +49,52 @@ func TestResourceSubaccountRoleCollection(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
 						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "2"),
 					),
-					// ConfigStateChecks: []statecheck.StateCheck{
-					// 	statecheck.ExpectIdentity("btp_subaccount_role_collection.uut", map[string]knownvalue.Check{
-					// 		"subaccount_id": knownvalue.NotNull(),
-					// 		"name":          knownvalue.StringExact("My new role collection"),
-					// 	}),
-					// },
 				},
 				{
 					ResourceName:      "btp_subaccount_role_collection.uut",
 					ImportStateIdFunc: getImportIdForRoleCollection("btp_subaccount_role_collection.uut", "My new role collection"),
 					ImportState:       true,
 					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - import with resource identity ", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection.import_resource_identity")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubAccountRoleCollectionBySubaccount(
+						"uut",
+						"integration-test-acc-static",
+						"My new role collection",
+						"Description of my new role collection",
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Subaccount Viewer",
+							RoleTemplateAppId: "cis-local!b2",
+							RoleTemplateName:  "Subaccount_Viewer",
+						},
+						subaccountRoleCollectionRoleRefTestType{
+							Name:              "Destination Viewer",
+							RoleTemplateAppId: "destination-xsappname!b9",
+							RoleTemplateName:  "Destination_Viewer",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_subaccount_role_collection.uut", "roles.#", "2"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity("btp_subaccount_role_collection.uut", map[string]knownvalue.Check{
+							"subaccount_id": knownvalue.NotNull(),
+							"name":          knownvalue.StringExact("My new role collection"),
+						}),
+					},
 				},
 				{
 					ResourceName:    "btp_subaccount_role_collection.uut",
