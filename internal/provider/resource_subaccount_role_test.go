@@ -6,7 +6,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 func TestResourceSubAccountRole(t *testing.T) {
@@ -40,6 +43,51 @@ func TestResourceSubAccountRole(t *testing.T) {
 					ImportStateIdFunc: getIdForSubaccountRoleImportId("btp_subaccount_role.uut", "Subaccount Viewer Test", "Subaccount_Viewer", "cis-local!b2"),
 					ImportState:       true,
 					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role.import_by_resource_identity")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_12_0),
+			},
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountRole(
+						"uut",
+						"integration-test-acc-static",
+						"Subaccount Viewer Test",
+						"Subaccount_Viewer",
+						"cis-local!b2",
+					),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_role.uut", "name", "Subaccount Viewer Test"),
+						resource.TestCheckResourceAttr("btp_subaccount_role.uut", "role_template_name", "Subaccount_Viewer"),
+						resource.TestCheckResourceAttr("btp_subaccount_role.uut", "app_id", "cis-local!b2"),
+						resource.TestCheckResourceAttr("btp_subaccount_role.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_subaccount_role.uut", "read_only", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_role.uut", "scopes.#", "0"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity("btp_subaccount_role.uut", map[string]knownvalue.Check{
+							"subaccount_id":      knownvalue.NotNull(),
+							"name":               knownvalue.StringExact("Subaccount Viewer Test"),
+							"role_template_name": knownvalue.StringExact("Subaccount_Viewer"),
+							"app_id":             knownvalue.StringExact("cis-local!b2"),
+						}),
+					},
+				},
+				{
+					ResourceName:    "btp_subaccount_role.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})
