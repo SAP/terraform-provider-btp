@@ -7,6 +7,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 // Needed for JSON mapping - fails with data types of globalaccountRoleCollectionRoleRef struc
@@ -46,6 +49,47 @@ func TestResourceGlobalaccountRoleCollection(t *testing.T) {
 					ImportStateId:     "My new role collection",
 					ImportState:       true,
 					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.import_by_resource_identity")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_12_0),
+			},
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceGlobalaccountRoleCollection(
+						"uut",
+						"My new role collection",
+						"Description of my new role collection",
+						globalaccountRoleCollectionRoleRefTestType{
+							Name:              "Global Account Viewer",
+							RoleTemplateAppId: "cis-central!b13",
+							RoleTemplateName:  "GlobalAccount_Viewer",
+						}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "name", "My new role collection"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "description", "Description of my new role collection"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role_collection.uut", "roles.#", "1"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity("btp_globalaccount_role_collection.uut", map[string]knownvalue.Check{
+							"name": knownvalue.StringExact("My new role collection"),
+						}),
+					},
+				},
+				{
+					ResourceName:    "btp_globalaccount_role_collection.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})
