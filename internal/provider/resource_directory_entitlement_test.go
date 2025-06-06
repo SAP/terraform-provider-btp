@@ -6,7 +6,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 func TestResourceDirectoryEntitlement(t *testing.T) {
@@ -38,6 +41,47 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 					ImportStateIdFunc: getDirectoryEntitlementImportStateId("btp_directory_entitlement.uut", "hana-cloud", "hana"),
 					ImportState:       true,
 					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.import_by_resource_identity")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_12_0),
+			},
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryEntitlementByDirectory("uut", "integration-test-dir-se-static", "hana-cloud", "hana"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_entitlement.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "id", "hana-cloud-hana"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "plan_name", "hana"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "plan_id", "hana-cloud-hana"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "amount", "3"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "distribute", "false"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "auto_assign", "false"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "auto_distribute_amount", "0"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity("btp_directory_entitlement.uut", map[string]knownvalue.Check{
+							"directory_id": knownvalue.NotNull(),
+							"service_name": knownvalue.StringExact("hana-cloud"),
+							"plan_name":    knownvalue.StringExact("hana"),
+						}),
+					},
+				},
+				{
+					ResourceName:    "btp_directory_entitlement.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})
