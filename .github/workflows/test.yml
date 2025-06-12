@@ -114,7 +114,7 @@ jobs:
         if: ${{ matrix.terraform != env.LATEST_TF_VERSION}}
         env:
           TF_ACC: "1"
-        timeout-minutes: 25
+        timeout-minutes: 20
       # For the latest version we also run coverage and use a dedicated action for a visual display of the test results
       - uses: robherley/go-test-action@v0
         if: ${{ matrix.terraform == env.LATEST_TF_VERSION}}
