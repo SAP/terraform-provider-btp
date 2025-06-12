@@ -190,7 +190,11 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 	// Determine the parent of the subaccount
 	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
-	parentId, isParentGlobalAccount := determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount, err := determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining parent features for entitlements", fmt.Sprintf("%s", err))
+		return
+	}
 
 	readStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
@@ -282,8 +286,13 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 
 	// Determine the parent of the subaccount
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, plan.SubaccountId.ValueString())
-	//Determine if the parent of the subaccount is a directory and if it has authoization enabled
-	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
+
+	//Determine if the parent is a directory and if it has authorization enabled
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
+	if err != nil {
+		responseDiagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+		return
+	}
 
 	var directoryId string
 	if !isParentGlobalAccount {
@@ -324,7 +333,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		MinTimeout: 10 * time.Second,
 	}
 
-	_, err := RetryApiCallConf.WaitForStateContext(ctx)
+	_, err = RetryApiCallConf.WaitForStateContext(ctx)
 
 	if err != nil {
 		responseDiagnostics.AddError(fmt.Sprintf("API Error %s Resource Entitlement (Subaccount)", action), fmt.Sprintf("%s", err))
@@ -332,7 +341,11 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 	}
 
 	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
-	parentId, isParentGlobalAccount = determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount, err = determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
+	if err != nil {
+		responseDiagnostics.AddError("API Error determining parent features for entitlements", fmt.Sprintf("%s", err))
+		return
+	}
 
 	// wait for the entitlement to become effective
 	createStateConf := &tfutils.StateChangeConf{
@@ -398,8 +411,12 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 
 	// Determine the parent of the subaccount
 	subaccountData, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.SubaccountId.ValueString())
-	//Determine if the parent of the subaccount is a directory and if it has authoization enabled
-	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
+	//Determine if the parent is a directory and if it has authoization enabled
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, subaccountData.ParentGUID)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+		return
+	}
 
 	var directoryId string
 
@@ -440,7 +457,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 		MinTimeout: 10 * time.Second,
 	}
 
-	_, err := RetryApiCallConf.WaitForStateContext(ctx)
+	_, err = RetryApiCallConf.WaitForStateContext(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
@@ -448,7 +465,11 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 	}
 
 	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the GetAssignedBySubaccount call
-	parentId, isParentGlobalAccount = determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount, err = determineParentIdForEntitlement(rs.cli, ctx, subaccountData.ParentGUID)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining parent features for entitlements", fmt.Sprintf("%s", err))
+		return
+	}
 
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},

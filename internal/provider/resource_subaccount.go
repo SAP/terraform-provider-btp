@@ -88,9 +88,6 @@ __Further documentation:__
 					stringplanmodifier.RequiresReplace(),
 					stringplanmodifier.UseStateForUnknown(),
 				},
-				Validators: []validator.String{
-					stringvalidator.RegexMatches(regexp.MustCompile("^[a-z0-9](?:[a-z0-9|-]{0,61}[a-z0-9])?$"), "must only contain letters (a-z), digits (0-9), and hyphens (not at the start or end)"),
-				},
 			},
 			"parent_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.",
@@ -224,6 +221,13 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
+	// We check the subdomain value against the recommended format of the API and the BTP Administrator's guide
+	// However we cannot enforce it via the schema as the cockpit allows also deviating formats
+
+	if !subdomainRegex.MatchString(plan.Subdomain.ValueString()) {
+		resp.Diagnostics.AddAttributeWarning(path.Root("subdomain"), "subdomain is in a non-recommended format", "subdomain should only contain letters (a-z), digits (0-9), and hyphens (not at the start or end)")
+	}
+
 	args := btpcli.SubaccountCreateInput{
 		DisplayName: plan.Name.ValueString(),
 		Subdomain:   plan.Subdomain.ValueString(),
@@ -238,6 +242,18 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	if !plan.ParentID.IsUnknown() {
 		parentID := plan.ParentID.ValueString()
 		args.Directory = parentID
+
+		//Check which parent ID needs to be used for authorization
+		parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, parentID)
+		if err != nil {
+			resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+			return
+		}
+
+		if !isParentGlobalAccount && parentId != "" {
+			//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+			args.AdminDirectoryId = parentId
+		}
 	}
 
 	if !plan.BetaEnabled.IsUnknown() {
@@ -364,12 +380,16 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	parentId, isParentGlobalAccount := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
+		return
+	}
 
 	var directoryId string
 
 	if !isParentGlobalAccount {
-		//if the parent of the subaccount is a managed directory, the directoryId must be set to make sure the right authorizations are validated
+		//if the parent is a managed directory, the directoryId must be set to make sure the right authorizations are validated
 		directoryId = parentId
 	}
 

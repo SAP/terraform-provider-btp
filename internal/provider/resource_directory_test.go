@@ -160,6 +160,31 @@ func TestResourceDirectory(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("happy path - directory hierarchy", func(t *testing.T) {
+		// When recroding this test, make sure that your are not Global Account Admin, but Directory Admin of the parent directory
+		rec, user := setupVCR(t, "fixtures/resource_directory.with_hierarchy")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryWithParent("uut", "my-new-directory", "This is a new directory", "2613212d-a51e-4e7e-858c-7f96c15d67e7"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_directory.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-new-directory"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is a new directory"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "parent_id", "2613212d-a51e-4e7e-858c-7f96c15d67e7"),
+					),
+				},
+			},
+		})
+	})
+
 }
 
 func hclResourceDirectory(resourceName string, displayName string, description string) string {
@@ -167,6 +192,14 @@ func hclResourceDirectory(resourceName string, displayName string, description s
         name        = "%s"
         description = "%s"
     }`, resourceName, displayName, description)
+}
+
+func hclResourceDirectoryWithParent(resourceName string, displayName string, description string, parentId string) string {
+	return fmt.Sprintf(`resource "btp_directory" "%s" {
+        name        = "%s"
+        description = "%s"
+				parent_id   = "%s"
+    }`, resourceName, displayName, description, parentId)
 }
 
 func hclResourceDirectoryWithFeatures(resourceName string, displayName string, description string) string {

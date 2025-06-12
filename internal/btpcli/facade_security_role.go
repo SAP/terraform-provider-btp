@@ -103,6 +103,7 @@ type SubaccountRoleCreateInput struct {
 	RoleTemplateName string `btpcli:"roleTemplateName"`
 	SubaccountId     string `btpcli:"subaccount"`
 	Description      string `btpcli:"description"`
+	AttributeList    string `btpcli:"attributeList"`
 }
 
 func (f *securityRoleFacade) CreateBySubaccount(ctx context.Context, args *SubaccountRoleCreateInput) (xsuaa_authz.Role, CommandResponse, error) {
