@@ -111,5 +111,6 @@ identity = {
   subaccount_id = "<subaccount_id>"
   app_name = "<app_name>"
   plan_name = "<plan_name>"
+  }
 }
 ```

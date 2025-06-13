@@ -104,5 +104,6 @@ identity = {
   directory_id = "<directory_id>"
   service_name = "<service_name>"
   plan_name = "<plan_name>"
+  }
 }
 ```

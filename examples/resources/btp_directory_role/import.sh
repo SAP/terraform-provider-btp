@@ -18,4 +18,5 @@ identity = {
   name = "<name>"
   role_template_name = "<role_template_name>"
   app_id = "<app_id>"
+  }
 }

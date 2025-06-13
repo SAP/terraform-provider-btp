@@ -15,4 +15,5 @@ import {
 to = btp_globalaccount_role_collection.<resource_name>
 identity = {
   name = "<name>"
+  }
 }
