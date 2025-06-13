@@ -77,7 +77,7 @@ import {
   id = "<name>"
 }
 
-# terraform import using identity attribute in import block (supported in terraform version 1.12 or later)
+# this resource supports import using identity attribute from Terraform version 1.12 or higher
 
 import {
 to = btp_globalaccount_role_collection.<resource_name>

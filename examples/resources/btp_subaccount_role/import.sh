@@ -9,7 +9,7 @@ import {
   id = "<subaccount_id>,<name>,<role_template_name>,<app_id>"
 }
 
-# terraform import using identity attribute in import block (supported in terraform version 1.12 or later)
+# this resource supports import using identity attribute from Terraform version 1.12 or higher
 
 import {
 to = btp_subaccount_role.<resource_name>
