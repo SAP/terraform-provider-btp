@@ -6,7 +6,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 func TestResourceDirectoryRole(t *testing.T) {
@@ -35,6 +38,46 @@ func TestResourceDirectoryRole(t *testing.T) {
 					ImportStateIdFunc: getIdForDirectoryRoleImportId("btp_directory_role.uut", "Directory Viewer Test", "Directory_Viewer", "cis-central!b13"),
 					ImportState:       true,
 					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory_role.import_by_resource_identity")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_12_0),
+			},
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryRole("uut", "integration-test-dir-roles", "Directory Viewer Test", "Directory_Viewer", "cis-central!b13"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_role.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_role.uut", "name", "Directory Viewer Test"),
+						resource.TestCheckResourceAttr("btp_directory_role.uut", "role_template_name", "Directory_Viewer"),
+						resource.TestCheckResourceAttr("btp_directory_role.uut", "app_id", "cis-central!b13"),
+						resource.TestCheckResourceAttr("btp_directory_role.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_directory_role.uut", "read_only", "false"),
+						resource.TestCheckResourceAttr("btp_directory_role.uut", "scopes.#", "7"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity("btp_directory_role.uut", map[string]knownvalue.Check{
+							"directory_id":       knownvalue.NotNull(),
+							"name":               knownvalue.StringExact("Directory Viewer Test"),
+							"role_template_name": knownvalue.StringExact("Directory_Viewer"),
+							"app_id":             knownvalue.StringExact("cis-central!b13"),
+						}),
+					},
+				},
+				{
+					ResourceName:    "btp_directory_role.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})

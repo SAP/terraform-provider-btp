@@ -9,10 +9,12 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -153,6 +155,28 @@ __Further documentation:__
 	}
 }
 
+type SubaccountEntitlementResourceIdentityModel struct {
+	SubaccountId types.String `tfsdk:"subaccount_id"`
+	ServiceName  types.String `tfsdk:"service_name"`
+	PlanName     types.String `tfsdk:"plan_name"`
+}
+
+func (rs *subaccountEntitlementResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"subaccount_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"service_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"plan_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state subaccountEntitlementType
 
@@ -228,17 +252,31 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 
 	diags = resp.State.Set(ctx, &updatedState)
 	resp.Diagnostics.Append(diags...)
+
+	var identity SubaccountEntitlementResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = SubaccountEntitlementResourceIdentityModel{
+			SubaccountId: types.StringValue(state.SubaccountId.ValueString()),
+			ServiceName:  types.StringValue(updatedState.ServiceName.ValueString()),
+			PlanName:     types.StringValue(updatedState.PlanName.ValueString()),
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *subaccountEntitlementResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	rs.createOrUpdate(ctx, req.Plan, &resp.Diagnostics, &resp.State, "Creating")
+	rs.createOrUpdate(ctx, req.Plan, &resp.Diagnostics, &resp.State, &resp.Identity, "Creating")
 }
 
 func (rs *subaccountEntitlementResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	rs.createOrUpdate(ctx, req.Plan, &resp.Diagnostics, &resp.State, "Updating")
+	rs.createOrUpdate(ctx, req.Plan, &resp.Diagnostics, &resp.State, &resp.Identity, "Updating")
 }
 
-func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, requestPlan tfsdk.Plan, responseDiagnostics *diag.Diagnostics, responseState *tfsdk.State, action string) {
+func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, requestPlan tfsdk.Plan, responseDiagnostics *diag.Diagnostics, responseState *tfsdk.State, responseIdentity **tfsdk.ResourceIdentity, action string) {
 	var plan subaccountEntitlementType
 	diags := requestPlan.Get(ctx, &plan)
 	responseDiagnostics.Append(diags...)
@@ -352,6 +390,15 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 
 	diags = responseState.Set(ctx, &updatedState)
 	responseDiagnostics.Append(diags...)
+
+	identity := SubaccountEntitlementResourceIdentityModel{
+		SubaccountId: types.StringValue(plan.SubaccountId.ValueString()),
+		ServiceName:  types.StringValue(updatedState.ServiceName.ValueString()),
+		PlanName:     types.StringValue(updatedState.PlanName.ValueString()),
+	}
+
+	diags = (*responseIdentity).Set(ctx, identity)
+	responseDiagnostics.Append(diags...)
 }
 
 func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -464,19 +511,31 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 }
 
 func (rs *subaccountEntitlementResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount,service_name,plan_name. Got: %q", req.ID),
-		)
+		if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: subaccount,service_name,plan_name. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_name"), idParts[1])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
+		return
+	}
+	var identityData SubaccountEntitlementResourceIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_name"), idParts[1])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), identityData.SubaccountId)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_name"), identityData.ServiceName)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), identityData.PlanName)...)
 }
 
 func hasPlanQuota(state subaccountEntitlementType) bool {

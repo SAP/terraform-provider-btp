@@ -6,7 +6,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 func TestResourceGlobalAccountRole(t *testing.T) {
@@ -37,6 +40,48 @@ func TestResourceGlobalAccountRole(t *testing.T) {
 					ResourceName:      "btp_globalaccount_role.uut",
 					ImportStateIdFunc: getIdForGlobalAccountRoleImportId("btp_globalaccount_role.uut", "GlobalAccount Viewer Test", "GlobalAccount_Viewer", "cis-central!b13"),
 					ImportState:       true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role.import_by_resource_identity")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_12_0),
+			},
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceGlobalAccountRole(
+						"uut",
+						"GlobalAccount Viewer Test",
+						"GlobalAccount_Viewer",
+						"cis-central!b13",
+					),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_globalaccount_role.uut", "name", "GlobalAccount Viewer Test"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role.uut", "role_template_name", "GlobalAccount_Viewer"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role.uut", "app_id", "cis-central!b13"),
+						resource.TestCheckResourceAttr("btp_globalaccount_role.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_globalaccount_role.uut", "read_only", "false"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity("btp_globalaccount_role.uut", map[string]knownvalue.Check{
+							"name":               knownvalue.StringExact("GlobalAccount Viewer Test"),
+							"role_template_name": knownvalue.StringExact("GlobalAccount_Viewer"),
+							"app_id":             knownvalue.StringExact("cis-central!b13"),
+						}),
+					},
+				},
+				{
+					ResourceName:    "btp_globalaccount_role.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 
@@ -125,6 +126,24 @@ __Further documentation:__
 	}
 }
 
+type DirectoryRoleCollectionResourceIdentityModel struct {
+	DirectoryId types.String `tfsdk:"directory_id"`
+	Name        types.String `tfsdk:"name"`
+}
+
+func (rs *directoryRoleCollectionType) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"directory_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *directoryRoleCollectionType) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state directoryRoleCollectionTypeConfig
 
@@ -160,6 +179,19 @@ func (rs *directoryRoleCollectionType) Read(ctx context.Context, req resource.Re
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
+
+	var identity DirectoryRoleCollectionResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = DirectoryRoleCollectionResourceIdentityModel{
+			DirectoryId: types.StringValue(state.DirectoryId.ValueString()),
+			Name:        types.StringValue(cliRes.Name),
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *directoryRoleCollectionType) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -192,6 +224,15 @@ func (rs *directoryRoleCollectionType) Create(ctx context.Context, req resource.
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
+
+	identity := DirectoryRoleCollectionResourceIdentityModel{
+		DirectoryId: types.StringValue(plan.DirectoryId.ValueString()),
+		Name:        types.StringValue(cliRes.Name),
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+
 }
 
 func (rs *directoryRoleCollectionType) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -271,16 +312,28 @@ func (rs *directoryRoleCollectionType) Delete(ctx context.Context, req resource.
 }
 
 func (rs *directoryRoleCollectionType) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: directory_id, name. Got: %q", req.ID),
-		)
+		if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: directory_id, name. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
+	var identityData DirectoryRoleCollectionResourceIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), identityData.DirectoryId)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), identityData.Name)...)
 }

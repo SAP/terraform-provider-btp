@@ -8,11 +8,13 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -154,6 +156,28 @@ __Further documentation:__
 	}
 }
 
+type DirectoryEntitlementResourceIdentityModel struct {
+	DirectoryId types.String `tfsdk:"directory_id"`
+	ServiceName types.String `tfsdk:"service_name"`
+	PlanName    types.String `tfsdk:"plan_name"`
+}
+
+func (rs *directoryEntitlementResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"directory_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"service_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"plan_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *directoryEntitlementResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state directoryEntitlementType
 
@@ -183,17 +207,31 @@ func (rs *directoryEntitlementResource) Read(ctx context.Context, req resource.R
 
 	diags = resp.State.Set(ctx, &updatedState)
 	resp.Diagnostics.Append(diags...)
+
+	var identity DirectoryEntitlementResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = DirectoryEntitlementResourceIdentityModel{
+			DirectoryId: types.StringValue(state.DirectoryId.ValueString()),
+			ServiceName: types.StringValue(updatedState.ServiceName.ValueString()),
+			PlanName:    types.StringValue(updatedState.PlanName.ValueString()),
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *directoryEntitlementResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	rs.createOrUpdate(ctx, req.Plan, &resp.Diagnostics, &resp.State, "Creating")
+	rs.createOrUpdate(ctx, req.Plan, &resp.Diagnostics, &resp.State, &resp.Identity, "Creating")
 }
 
 func (rs *directoryEntitlementResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	rs.createOrUpdate(ctx, req.Plan, &resp.Diagnostics, &resp.State, "Updating")
+	rs.createOrUpdate(ctx, req.Plan, &resp.Diagnostics, &resp.State, &resp.Identity, "Updating")
 }
 
-func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requestPlan tfsdk.Plan, responseDiagnostics *diag.Diagnostics, responseState *tfsdk.State, action string) {
+func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requestPlan tfsdk.Plan, responseDiagnostics *diag.Diagnostics, responseState *tfsdk.State, responseIdentity **tfsdk.ResourceIdentity, action string) {
 	var plan directoryEntitlementType
 	diags := requestPlan.Get(ctx, &plan)
 	responseDiagnostics.Append(diags...)
@@ -271,6 +309,16 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 
 	diags = responseState.Set(ctx, &updatedState)
 	responseDiagnostics.Append(diags...)
+
+	// Set data returned by API in identity
+	identity := DirectoryEntitlementResourceIdentityModel{
+		DirectoryId: types.StringValue(plan.DirectoryId.ValueString()),
+		ServiceName: types.StringValue(updatedState.ServiceName.ValueString()),
+		PlanName:    types.StringValue(updatedState.PlanName.ValueString()),
+	}
+
+	diags = (*responseIdentity).Set(ctx, identity)
+	responseDiagnostics.Append(diags...)
 }
 
 func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -335,19 +383,32 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 
 func (rs *directoryEntitlementResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	//Known Gap: The DISTRIBUTE flag cannot be fetched via the platform APIs. Hence, we cannot import the value, it will always be FALSE
-	idParts := strings.Split(req.ID, ",")
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: directory,service_name,plan_name. Got: %q", req.ID),
-		)
+		if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: directory,service_name,plan_name. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_name"), idParts[1])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_name"), idParts[1])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
+	var identityData DirectoryEntitlementResourceIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), identityData.DirectoryId)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_name"), identityData.ServiceName)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), identityData.PlanName)...)
 }
 
 func hasPlanQuotaDir(state directoryEntitlementType) bool {

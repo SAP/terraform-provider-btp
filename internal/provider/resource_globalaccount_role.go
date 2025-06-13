@@ -8,8 +8,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 )
@@ -78,6 +80,28 @@ __Further documentation:__
 	}
 }
 
+type GlobalAccountRoleResourceIdentityModel struct {
+	Name              types.String `tfsdk:"name"`
+	RoleTemplateName  types.String `tfsdk:"role_template_name"`
+	RoleTemplateAppId types.String `tfsdk:"app_id"`
+}
+
+func (rs *globalaccountRoleResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"role_template_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"app_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *globalaccountRoleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state globalaccountRoleType
 
@@ -103,6 +127,21 @@ func (rs *globalaccountRoleResource) Read(ctx context.Context, req resource.Read
 
 	diags = resp.State.Set(ctx, &updatedState)
 	resp.Diagnostics.Append(diags...)
+
+	var identity GlobalAccountRoleResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		// During import the identity is not set yet, so set the data returned by API in identity
+		identity = GlobalAccountRoleResourceIdentityModel{
+			Name:              types.StringValue(cliRes.Name),
+			RoleTemplateName:  types.StringValue(cliRes.RoleTemplateName),
+			RoleTemplateAppId: types.StringValue(cliRes.RoleTemplateAppId),
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *globalaccountRoleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -128,6 +167,15 @@ func (rs *globalaccountRoleResource) Create(ctx context.Context, req resource.Cr
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedPlan)
+	resp.Diagnostics.Append(diags...)
+
+	identity := GlobalAccountRoleResourceIdentityModel{
+		Name:              types.StringValue(cliRes.Name),
+		RoleTemplateName:  types.StringValue(cliRes.RoleTemplateName),
+		RoleTemplateAppId: types.StringValue(cliRes.RoleTemplateAppId),
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -161,18 +209,33 @@ func (rs *globalaccountRoleResource) Delete(ctx context.Context, req resource.De
 }
 
 func (rs *globalaccountRoleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
+	if req.ID != "" {
 
-	if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: name, role_template_name, app_id. Got: %q", req.ID),
-		)
+		idParts := strings.Split(req.ID, ",")
+
+		if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: name, role_template_name, app_id. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_template_name"), idParts[1])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_id"), idParts[2])...)
+
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_template_name"), idParts[1])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_id"), idParts[2])...)
+	var identityData GlobalAccountRoleResourceIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), identityData.Name)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_template_name"), identityData.RoleTemplateName)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_id"), identityData.RoleTemplateAppId)...)
 
 }
