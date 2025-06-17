@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -149,6 +150,32 @@ __Further documentation:__
 	}
 }
 
+type DirectoryRoleResourceIdentityModel struct {
+	DirectoryId       types.String `tfsdk:"directory_id"`
+	Name              types.String `tfsdk:"name"`
+	RoleTemplateName  types.String `tfsdk:"role_template_name"`
+	RoleTemplateAppId types.String `tfsdk:"app_id"`
+}
+
+func (rs *directoryRoleResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"directory_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"role_template_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"app_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *directoryRoleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state directoryRoleType
 
@@ -182,6 +209,21 @@ func (rs *directoryRoleResource) Read(ctx context.Context, req resource.ReadRequ
 
 	diags = resp.State.Set(ctx, &updatedState)
 	resp.Diagnostics.Append(diags...)
+
+	var identity DirectoryRoleResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = DirectoryRoleResourceIdentityModel{
+			DirectoryId:       types.StringValue(state.DirectoryId.ValueString()),
+			Name:              types.StringValue(updatedState.Name.ValueString()),
+			RoleTemplateName:  types.StringValue(updatedState.RoleTemplateName.ValueString()),
+			RoleTemplateAppId: types.StringValue(updatedState.RoleTemplateAppId.ValueString()),
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *directoryRoleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -214,6 +256,16 @@ func (rs *directoryRoleResource) Create(ctx context.Context, req resource.Create
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &updatedPlan)
+	resp.Diagnostics.Append(diags...)
+
+	identity := DirectoryRoleResourceIdentityModel{
+		DirectoryId:       types.StringValue(plan.DirectoryId.ValueString()),
+		Name:              types.StringValue(updatedPlan.Name.ValueString()),
+		RoleTemplateName:  types.StringValue(updatedPlan.RoleTemplateName.ValueString()),
+		RoleTemplateAppId: types.StringValue(updatedPlan.RoleTemplateAppId.ValueString()),
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -248,18 +300,34 @@ func (rs *directoryRoleResource) Delete(ctx context.Context, req resource.Delete
 }
 
 func (rs *directoryRoleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 4 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" || idParts[3] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: directory_id, name, role_template_name, app_id. Got: %q", req.ID),
-		)
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
+
+		if len(idParts) != 4 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" || idParts[3] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: directory_id, name, role_template_name, app_id. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_template_name"), idParts[2])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_id"), idParts[3])...)
+
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_template_name"), idParts[2])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_id"), idParts[3])...)
+	var identityData DirectoryRoleResourceIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("directory_id"), identityData.DirectoryId)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), identityData.Name)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_template_name"), identityData.RoleTemplateName)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_id"), identityData.RoleTemplateAppId)...)
 }

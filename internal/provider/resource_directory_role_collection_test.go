@@ -8,7 +8,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 // Needed for JSON mapping - fails with data types of directoryRoleCollectionRoleRefType struct
@@ -41,6 +44,40 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 					ImportStateIdFunc: getIdForDirectoryRoleCollectionImportId("btp_directory_role_collection.uut", "My own role collection"),
 					ImportState:       true,
 					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.import_by_resource_identity")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_12_0),
+			},
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectoryRoleCollectionNoDescriptionByDirectory("uut", "integration-test-dir-se-static", "My own role collection", "Directory Viewer", "cis-central!b13", "Directory_Viewer"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "name", "My own role collection"),
+						resource.TestCheckResourceAttr("btp_directory_role_collection.uut", "roles.#", "1"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity("btp_directory_role_collection.uut", map[string]knownvalue.Check{
+							"directory_id": knownvalue.NotNull(),
+							"name":         knownvalue.StringExact("My own role collection"),
+						}),
+					},
+				},
+				{
+					ResourceName:    "btp_directory_role_collection.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})
