@@ -198,7 +198,7 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 
 	readStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
-		Target:  []string{cis_entitlements.StateOK},
+		Target:  []string{cis_entitlements.StateOK, cis_entitlements.StateProcessingFailed},
 		Refresh: func() (interface{}, string, error) {
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
@@ -213,13 +213,6 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 
 			if entitlement == nil {
 				return nil, cis_entitlements.StateProcessing, nil
-			}
-			// No error returned even if operation failed
-			if entitlement.Assignment.EntityState == cis_entitlements.StateProcessingFailed {
-				multilineError := fmt.Errorf(`entitlement for service '%s' with plan '%s' is in state 'PROCESSING_FAILED'
-				reason: %s`, state.ServiceName.ValueString(), state.PlanName.ValueString(), entitlement.Assignment.StateMessage)
-
-				return *entitlement, entitlement.Assignment.EntityState, multilineError
 			}
 
 			return *entitlement, entitlement.Assignment.EntityState, nil
