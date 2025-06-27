@@ -10,7 +10,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 
-	"github.com/SAP/terraform-provider-btp/internal/provider"
+	"github.com/SAP/terraform-provider-btp/btp/provider"
 )
 
 func main() {
