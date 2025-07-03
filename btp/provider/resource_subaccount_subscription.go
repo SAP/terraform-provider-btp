@@ -90,7 +90,8 @@ You must be assigned to the admin role of the subaccount.`,
 			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
 				Create:            true,
 				CreateDescription: "Timeout for creating the subscription.",
-				Update:            false,
+				Update:            true,
+				UpdateDescription: "Timeout for updating the subscription.",
 				Delete:            true,
 				DeleteDescription: "Timeout for deleting the subscription.",
 			}),
@@ -354,6 +355,13 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 		return
 	}
 
+	if plan.PlanName.ValueString() == state.PlanName.ValueString() && plan.Parameters.ValueString() == state.Parameters.ValueString() && plan.Timeouts.Equal(state.Timeouts) {
+		// Parameters have been changed that are not supposed to be updated for the resource
+		resp.Diagnostics.AddError("API Error Updating Subscription (Subaccount)", "This provided parameters are not supposed to be updated")
+	}
+
+	var updatedPlan subaccountSubscriptionType
+
 	if plan.PlanName.ValueString() != state.PlanName.ValueString() || plan.Parameters.ValueString() != state.Parameters.ValueString() {
 		_, _, err := rs.cli.Accounts.Subscription.Update(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString(), plan.Parameters.ValueString())
 		if err != nil {
@@ -373,16 +381,20 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 			return
 		}
 
-		updatedPlan, diags := subaccountSubscriptionValueFrom(ctx, updatedRes.(saas_manager_service.EntitledApplicationsResponseObject))
+		updatedPlan, diags = subaccountSubscriptionValueFrom(ctx, updatedRes.(saas_manager_service.EntitledApplicationsResponseObject))
 		updatedPlan.Parameters = plan.Parameters
-		updatedPlan.Timeouts = plan.Timeouts
 		resp.Diagnostics.Append(diags...)
 
 		diags = resp.State.Set(ctx, &updatedPlan)
 		resp.Diagnostics.Append(diags...)
-	} else {
-		// The API does not support updating the subscription
-		resp.Diagnostics.AddError("API Error Updating Subscription (Subaccount)", "This resource is not supposed to be updated")
+	}
+
+	if !plan.Timeouts.Equal(state.Timeouts) {
+		// Update the parameters value as this is initially not set
+		updatedPlan.Parameters = plan.Parameters
+		updatedPlan.Timeouts = plan.Timeouts
+		diags = resp.State.SetAttribute(ctx, path.Root("timeouts"), updatedPlan.Timeouts)
+		resp.Diagnostics.Append(diags...)
 	}
 
 	if resp.Diagnostics.HasError() {

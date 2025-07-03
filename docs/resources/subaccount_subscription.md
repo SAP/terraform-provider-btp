@@ -86,6 +86,7 @@ Optional:
 
 - `create` (String) Timeout for creating the subscription.
 - `delete` (String) Timeout for deleting the subscription.
+- `update` (String) Timeout for updating the subscription.
 
 ## Import
 
