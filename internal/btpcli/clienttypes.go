@@ -19,6 +19,13 @@ func NewLoginRequestWithCustomIDP(idp string, globalaccountSubdomain string, use
 		Password:               password,
 	}
 }
+func NewLoginRequestWithAssertion(idp, globalaccountSubdomain, assertion string) *LoginRequest {
+	return &LoginRequest{
+		Jwt:                    assertion,
+		IdentityProvider:       idp,
+		GlobalAccountSubdomain: globalaccountSubdomain,
+	}
+}
 
 func NewIdTokenLoginRequest(globalaccountSubdomain string, idToken string) *IdTokenLoginRequest {
 	return &IdTokenLoginRequest{
@@ -39,6 +46,7 @@ type LoginRequest struct {
 	GlobalAccountSubdomain string `json:"subdomain"`
 	Username               string `json:"userName"`
 	Password               string `json:"password"`
+	Jwt                    string `json:"jwt"`
 }
 
 type IdTokenLoginRequest struct {
