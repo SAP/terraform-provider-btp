@@ -355,14 +355,7 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 		return
 	}
 
-	if plan.PlanName.ValueString() == state.PlanName.ValueString() && plan.Parameters.ValueString() == state.Parameters.ValueString() && plan.Timeouts.Equal(state.Timeouts) {
-		// Parameters have been changed that are not supposed to be updated for the resource
-		resp.Diagnostics.AddError("API Error Updating Subscription (Subaccount)", "This provided parameters are not supposed to be updated")
-	}
-
-	var updatedPlan subaccountSubscriptionType
-
-	if plan.PlanName.ValueString() != state.PlanName.ValueString() || plan.Parameters.ValueString() != state.Parameters.ValueString() {
+	if plan.PlanName.ValueString() != state.PlanName.ValueString() || plan.Parameters.ValueString() != state.Parameters.ValueString() || !plan.Timeouts.Equal(state.Timeouts) {
 		_, _, err := rs.cli.Accounts.Subscription.Update(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString(), plan.Parameters.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Updating Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
@@ -381,20 +374,16 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 			return
 		}
 
-		updatedPlan, diags = subaccountSubscriptionValueFrom(ctx, updatedRes.(saas_manager_service.EntitledApplicationsResponseObject))
+		updatedPlan, diags := subaccountSubscriptionValueFrom(ctx, updatedRes.(saas_manager_service.EntitledApplicationsResponseObject))
 		updatedPlan.Parameters = plan.Parameters
+		updatedPlan.Timeouts = plan.Timeouts
 		resp.Diagnostics.Append(diags...)
 
 		diags = resp.State.Set(ctx, &updatedPlan)
 		resp.Diagnostics.Append(diags...)
-	}
-
-	if !plan.Timeouts.Equal(state.Timeouts) {
-		// Update the parameters value as this is initially not set
-		updatedPlan.Parameters = plan.Parameters
-		updatedPlan.Timeouts = plan.Timeouts
-		diags = resp.State.SetAttribute(ctx, path.Root("timeouts"), updatedPlan.Timeouts)
-		resp.Diagnostics.Append(diags...)
+	} else {
+		// The update tries to access fields, which are not supposed to be updated
+		resp.Diagnostics.AddError("API Error Updating Subscription (Subaccount)", "This provided parameters are not supposed to be updated")
 	}
 
 	if resp.Diagnostics.HasError() {
