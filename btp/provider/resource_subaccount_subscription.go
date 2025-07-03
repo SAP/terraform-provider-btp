@@ -90,7 +90,8 @@ You must be assigned to the admin role of the subaccount.`,
 			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
 				Create:            true,
 				CreateDescription: "Timeout for creating the subscription.",
-				Update:            false,
+				Update:            true,
+				UpdateDescription: "Timeout for updating the subscription.",
 				Delete:            true,
 				DeleteDescription: "Timeout for deleting the subscription.",
 			}),
@@ -354,7 +355,7 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 		return
 	}
 
-	if plan.PlanName.ValueString() != state.PlanName.ValueString() || plan.Parameters.ValueString() != state.Parameters.ValueString() {
+	if plan.PlanName.ValueString() != state.PlanName.ValueString() || plan.Parameters.ValueString() != state.Parameters.ValueString() || !plan.Timeouts.Equal(state.Timeouts) {
 		_, _, err := rs.cli.Accounts.Subscription.Update(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString(), plan.Parameters.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Updating Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
@@ -381,8 +382,8 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 		diags = resp.State.Set(ctx, &updatedPlan)
 		resp.Diagnostics.Append(diags...)
 	} else {
-		// The API does not support updating the subscription
-		resp.Diagnostics.AddError("API Error Updating Subscription (Subaccount)", "This resource is not supposed to be updated")
+		// The update tries to access fields, which are not supposed to be updated
+		resp.Diagnostics.AddError("API Error Updating Subscription (Subaccount)", "This provided parameters are not supposed to be updated")
 	}
 
 	if resp.Diagnostics.HasError() {
