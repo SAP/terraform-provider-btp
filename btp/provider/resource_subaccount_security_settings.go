@@ -103,6 +103,7 @@ __Further documentation:__
 				Default:             int64default.StaticInt64(int64(-1)),
 			},
 			"iframe_domains": schema.StringAttribute{
+				DeprecationMessage:  "Use the `iframe_domains_list`attribute instead",
 				MarkdownDescription: "The new domains of the iframe. Enter as string. To provide multiple domains, separate them by spaces.",
 				Optional:            true,
 				Computed:            true,
@@ -127,6 +128,7 @@ __Further documentation:__
 				},
 			},
 		},
+		Version: 1,
 	}
 }
 
@@ -228,30 +230,34 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 	diags = plan.CustomEmailDomains.ElementsAs(ctx, &customEmailDomains, false)
 	resp.Diagnostics.Append(diags...)
 
-	planIFrameDomains := plan.IframeDomains.ValueString()
-	stateIFrameDomains := state.IframeDomains.ValueString()
-	if !plan.IframeDomainsList.IsUnknown() {
-		if !plan.IframeDomainsList.IsNull() {
-			var planDomains []string
-			var stateDomains []string
-			diags := plan.IframeDomainsList.ElementsAs(ctx, &planDomains, false)
-			resp.Diagnostics.Append(diags...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-			planIFrameDomains = strings.Join(planDomains, " ")
-			if len(planIFrameDomains) == 0 {
-				planIFrameDomains = ""
-			}
-			diags = state.IframeDomainsList.ElementsAs(ctx, &stateDomains, false)
-			resp.Diagnostics.Append(diags...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-			stateIFrameDomains = strings.Join(stateDomains, " ")
-			if len(stateIFrameDomains) == 0 {
-				stateIFrameDomains = ""
-			}
+	// With schema version 1 the iFrame information is exclusively provided via the `iframe_domains_list` attribute.
+	var stateDomains []string
+	var stateIFrameDomains string
+	var planIFrameDomains string
+
+	diags = state.IframeDomainsList.ElementsAs(ctx, &stateDomains, false)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	stateIFrameDomains = strings.Join(stateDomains, " ")
+	if len(stateIFrameDomains) == 0 {
+		stateIFrameDomains = ""
+	}
+
+	if !plan.IframeDomains.IsUnknown() && !plan.IframeDomains.IsNull() {
+		planIFrameDomains = plan.IframeDomains.ValueString()
+	} else {
+		var planDomains []string
+
+		diags := plan.IframeDomainsList.ElementsAs(ctx, &planDomains, false)
+		resp.Diagnostics.Append(diags...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		planIFrameDomains = strings.Join(planDomains, " ")
+		if len(planIFrameDomains) == 0 {
+			planIFrameDomains = ""
 		}
 	}
 
@@ -305,4 +311,89 @@ func (rs *subaccountSecuritySettingsResource) Delete(ctx context.Context, req re
 
 func (rs *subaccountSecuritySettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), req.ID)...)
+}
+
+func (rs *subaccountSecuritySettingsResource) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
+	return map[int64]resource.StateUpgrader{
+		// State upgrade implementation from 0 (prior state version) to 1 (Schema.Version)
+		// Replicating the schema for easier handling of data
+		0: {
+			PriorSchema: &schema.Schema{
+				Attributes: map[string]schema.Attribute{
+					"subaccount_id": schema.StringAttribute{
+						Required: true,
+					},
+					"id": schema.StringAttribute{
+						Computed: true,
+					},
+					"custom_email_domains": schema.SetAttribute{
+						ElementType: types.StringType,
+						Optional:    true,
+						Computed:    true,
+					},
+					"default_identity_provider": schema.StringAttribute{
+						Optional: true,
+						Computed: true,
+					},
+					"treat_users_with_same_email_as_same_user": schema.BoolAttribute{
+						Optional: true,
+						Computed: true,
+					},
+					"access_token_validity": schema.Int64Attribute{
+						Optional: true,
+						Computed: true,
+					},
+					"refresh_token_validity": schema.Int64Attribute{
+						Optional: true,
+						Computed: true,
+					},
+					"iframe_domains": schema.StringAttribute{
+						Optional: true,
+						Computed: true,
+					},
+					"iframe_domains_list": schema.ListAttribute{
+						ElementType: types.StringType,
+						Optional:    true,
+						Computed:    true,
+					},
+				},
+			},
+
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				var priorStateData subaccountSecuritySettingsType
+
+				resp.Diagnostics.Append(req.State.Get(ctx, &priorStateData)...)
+
+				if resp.Diagnostics.HasError() {
+					return
+				}
+
+				upgradedStateData := subaccountSecuritySettingsType{
+					SubaccountId:                      priorStateData.SubaccountId,
+					Id:                                priorStateData.Id,
+					TreatUsersWithSameEmailAsSameUser: priorStateData.TreatUsersWithSameEmailAsSameUser,
+					CustomEmailDomains:                priorStateData.CustomEmailDomains,
+					DefaultIdentityProvider:           priorStateData.DefaultIdentityProvider,
+					AccessTokenValidity:               priorStateData.AccessTokenValidity,
+					RefreshTokenValidity:              priorStateData.RefreshTokenValidity,
+				}
+
+				var iFrameDomainsLocal string
+
+				if !priorStateData.IframeDomains.IsNull() {
+					iFrameDomainsLocal = priorStateData.IframeDomains.ValueString()
+					upgradedStateData.IframeDomains = types.StringNull()
+				}
+
+				if !priorStateData.IframeDomainsList.IsNull() {
+					upgradedStateData.IframeDomainsList = priorStateData.IframeDomainsList
+				} else {
+					iframeDomainsList := strings.Fields(iFrameDomainsLocal)
+					upgradedStateData.IframeDomainsList, _ = types.ListValueFrom(ctx, types.StringType, iframeDomainsList)
+				}
+
+				resp.Diagnostics.Append(resp.State.Set(ctx, upgradedStateData)...)
+			},
+		},
+	}
 }

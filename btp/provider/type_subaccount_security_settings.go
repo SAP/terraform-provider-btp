@@ -82,7 +82,7 @@ func subaccountSecuritySettingsDataSourceValueFrom(ctx context.Context, value xs
 		tenantSettings.CustomEmailDomains, diags = types.SetValueFrom(ctx, types.StringType, []string{})
 	}
 
-	tenantSettings.IframeDomains = types.StringValue(value.IframeDomains)
+	tenantSettings.IframeDomains = types.StringNull()
 
 	iframeDomainsList := []string{}
 	if value.IframeDomains != "" {
