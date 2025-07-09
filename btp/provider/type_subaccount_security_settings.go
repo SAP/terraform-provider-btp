@@ -111,17 +111,3 @@ func isIFrameDomainsSet(iFrameDomains types.String) bool {
 
 	return true
 }
-
-func isIFrameDomainsListSet(iFrameDomainsList types.List) bool {
-	if iFrameDomainsList.IsUnknown() {
-		// The value is  unkown, so no value is available
-		return false
-	}
-
-	if iFrameDomainsList.IsNull() {
-		// The value is null, so no value is available
-		return false
-	}
-
-	return true
-}
