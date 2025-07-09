@@ -109,11 +109,6 @@ func isIFrameDomainsSet(iFrameDomains types.String) bool {
 		return false
 	}
 
-	if iFrameDomains.ValueString() == "" {
-		// Safeguard as this should not happen: the value is an empty string, so no value is available
-		return false
-	}
-
 	return true
 }
 
@@ -125,11 +120,6 @@ func isIFrameDomainsListSet(iFrameDomainsList types.List) bool {
 
 	if iFrameDomainsList.IsNull() {
 		// The value is null, so no value is available
-		return false
-	}
-
-	if len(iFrameDomainsList.Elements()) == 0 {
-		// Safeguard as this should not happen: Empty list, so no value is available
 		return false
 	}
 
