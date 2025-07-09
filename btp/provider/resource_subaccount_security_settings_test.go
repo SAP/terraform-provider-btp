@@ -143,7 +143,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 	})
 
 	t.Run("happy path - IFrame deletion list", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_security_settings.destroy")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_security_settings.destroy_list")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
