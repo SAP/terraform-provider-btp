@@ -21,7 +21,7 @@ type subaccountSecuritySettingsType struct {
 	IframeDomainsList                 types.List   `tfsdk:"iframe_domains_list"`
 }
 
-func subaccountSecuritySettingsValueFrom(ctx context.Context, value xsuaa_settings.TenantSettingsResp) (tenantSettings subaccountSecuritySettingsType, diags diag.Diagnostics) {
+func subaccountSecuritySettingsValueFrom(ctx context.Context, value xsuaa_settings.TenantSettingsResp, transferIframestring bool) (tenantSettings subaccountSecuritySettingsType, diags diag.Diagnostics) {
 	tenantSettings.TreatUsersWithSameEmailAsSameUser = types.BoolValue(value.TreatUsersWithSameEmailAsSameUser)
 
 	if len(value.DefaultIdp) > 0 {
@@ -41,7 +41,11 @@ func subaccountSecuritySettingsValueFrom(ctx context.Context, value xsuaa_settin
 		tenantSettings.CustomEmailDomains, diags = types.SetValueFrom(ctx, types.StringType, []string{})
 	}
 
-	tenantSettings.IframeDomains = types.StringValue(value.IframeDomains)
+	if transferIframestring {
+		// Transfer of deprecated attribute to the structure only if needed
+		tenantSettings.IframeDomains = types.StringValue(value.IframeDomains)
+	}
+
 	iframeDomainsList := []string{}
 	if value.IframeDomains != "" {
 		iframeDomainsList = strings.Fields(value.IframeDomains)
@@ -92,4 +96,42 @@ func subaccountSecuritySettingsDataSourceValueFrom(ctx context.Context, value xs
 	tenantSettings.IframDomainsList, _ = types.ListValueFrom(ctx, types.StringType, iframeDomainsList)
 
 	return
+}
+
+func isIFrameDomainsSet(iFrameDomains types.String) bool {
+	if iFrameDomains.IsUnknown() {
+		// The value is  unkown, so no value is available
+		return false
+	}
+
+	if iFrameDomains.IsNull() {
+		// The value is null, so no value is available
+		return false
+	}
+
+	if iFrameDomains.ValueString() == "" {
+		// Safeguard as this should not happen: the value is an empty string, so no value is available
+		return false
+	}
+
+	return true
+}
+
+func isIFrameDomainsListSet(iFrameDomainsList types.List) bool {
+	if iFrameDomainsList.IsUnknown() {
+		// The value is  unkown, so no value is available
+		return false
+	}
+
+	if iFrameDomainsList.IsNull() {
+		// The value is null, so no value is available
+		return false
+	}
+
+	if len(iFrameDomainsList.Elements()) == 0 {
+		// Safeguard as this should not happen: Empty list, so no value is available
+		return false
+	}
+
+	return true
 }
