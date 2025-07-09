@@ -154,7 +154,7 @@ func (rs *subaccountSecuritySettingsResource) Read(ctx context.Context, req reso
 	} else {
 		// During IMPORT we must make sure that only one iframe attribute is filled.
 		// Precedence is given to the list attribute, so we clear the computed iframe string attribute
-		// This causes errors when the configuration contains the deprecated value for the iframe string attribute which si intendend.
+		// This causes errors when the configuration contains the deprecated value for the iframe string attribute which is intended.
 		transferIframeString = false
 	}
 
