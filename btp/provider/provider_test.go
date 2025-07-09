@@ -536,7 +536,25 @@ data "btp_whoami" "me" {}`,
 			},
 		})
 	})
+}
 
+func TestProvider_AssertionFlow_failure(t *testing.T) {
+	testingResource.Test(t, testingResource.TestCase{
+		IsUnitTest:               true,
+		ProtoV6ProviderFactories: getProviders(&http.Client{}),
+		Steps: []testingResource.TestStep{
+			{
+				Config: `
+provider "btp" {
+    globalaccount = "ga"
+    idp          = "idp"
+    assertion    = "test-assertion"
+}
+data "btp_whoami" "me" {}`,
+				ExpectError: regexp.MustCompile(`unableToCreateClient`),
+			},
+		},
+	})
 }
 func TestProvider_HasResources(t *testing.T) {
 	expectedResources := []string{
