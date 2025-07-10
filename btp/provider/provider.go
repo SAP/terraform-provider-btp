@@ -27,6 +27,7 @@ const userPasswordFlow = "userPasswordFlow"
 const x509Flow = "x509Flow"
 const idTokenFlow = "idTokenFlow"
 const ssoFlow = "ssoFlow"
+const assertionFlow = "assertionFlow"
 const errorMessagePostfixWithEnv = "If either is already set, ensure the value is not empty."
 const errorMessagePostfixWithoutEnv = "If it is already set, ensure the value is not empty."
 
@@ -76,6 +77,16 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
+			"assertion": schema.StringAttribute{
+				MarkdownDescription: "A valid assertion JWT token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_ASSERTION` environment variable. This authentication method is only supported when using a custom Identity Provider (IdP).",
+				Optional:            true,
+				Sensitive:           true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("tls_idp_url"), path.MatchRoot("tls_client_key"), path.MatchRoot("tls_client_certificate"), path.MatchRoot("idtoken")),
+					stringvalidator.AlsoRequires(path.MatchRoot("idp")),
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
 			"idp": schema.StringAttribute{
 				MarkdownDescription: "The identity provider to be used for authentication (only required for custom idp).",
 				Optional:            true,
@@ -113,6 +124,7 @@ type providerData struct {
 	GlobalAccount        types.String `tfsdk:"globalaccount"`
 	Username             types.String `tfsdk:"username"`
 	Password             types.String `tfsdk:"password"`
+	Assertion            types.String `tfsdk:"assertion"`
 	IdToken              types.String `tfsdk:"idtoken"`
 	IdentityProvider     types.String `tfsdk:"idp"`
 	IdentityProviderURL  types.String `tfsdk:"tls_idp_url"`
@@ -187,6 +199,17 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as id token")
 		return
 	}
+	//BTP_ASSERTION
+	if config.Assertion.IsUnknown() {
+		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as assertion")
+		return
+	}
+	var assertion string
+	if config.Assertion.IsNull() {
+		assertion = os.Getenv("BTP_ASSERTION")
+	} else {
+		assertion = config.Assertion.ValueString()
+	}
 
 	if config.IdToken.IsNull() {
 		idToken = os.Getenv("BTP_IDTOKEN")
@@ -228,7 +251,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	//Determine and execute the login flow depending on the provided parameters
-	switch authFlow := determineAuthFlow(config, idToken, ssoLogin); authFlow {
+	switch authFlow := determineAuthFlow(config, idToken, ssoLogin, assertion); authFlow {
 	case ssoFlow:
 		if _, err = client.BrowserLogin(ctx, btpcli.NewBrowserLoginRequest(idp, config.GlobalAccount.ValueString())); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
@@ -261,6 +284,11 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		}
 
 		if _, err = client.PasscodeLogin(ctx, passcodeLoginReq); err != nil {
+			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
+			return
+		}
+	case assertionFlow:
+		if _, err = client.Login(ctx, btpcli.NewLoginRequestWithAssertion(idp, config.GlobalAccount.ValueString(), assertion)); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 			return
 		}
@@ -403,13 +431,15 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 	}, betaDataSources...)
 }
 
-func determineAuthFlow(config providerData, idToken string, ssoLogin bool) string {
+func determineAuthFlow(config providerData, idToken string, ssoLogin bool, assertion string) string {
 	if ssoLogin {
 		return ssoFlow
 	} else if len(idToken) > 0 {
 		return idTokenFlow
 	} else if !config.TLSClientKey.IsNull() {
 		return x509Flow
+	} else if len(assertion) > 0 {
+		return assertionFlow
 	} else {
 		return userPasswordFlow
 	}

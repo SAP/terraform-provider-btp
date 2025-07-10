@@ -487,6 +487,75 @@ data "btp_whoami" "me" {}`,
 	})
 }
 
+func TestProvider_ConfigurationWithAssertionToken(t *testing.T) {
+	t.Run("error path - attribute conflicts with assertion", func(t *testing.T) {
+		testingResource.Test(t, testingResource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []testingResource.TestStep{
+				{
+					Config: `
+provider "btp" {
+	globalaccount  = "ga"
+	assertion     = "assertion"
+	username       = "username"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`Attribute "username" cannot be specified when "assertion" is specified`),
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount  = "ga"
+	assertion     = "assertion"
+	password       = "password"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`Attribute "password" cannot be specified when "assertion" is specified`),
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount  = "ga"
+	assertion     = "assertion"
+	idtoken        = "idtoken"
+	
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`Attribute "idtoken" cannot be specified when "assertion" is specified`),
+				},
+				{
+					Config: `
+provider "btp" {
+	globalaccount  = "ga"
+	assertion     = "assertion"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`Attribute "idp" must be specified when "assertion" is specified`),
+				},
+			},
+		})
+	})
+}
+
+func TestProvider_AssertionFlow_failure(t *testing.T) {
+	testingResource.Test(t, testingResource.TestCase{
+		IsUnitTest:               true,
+		ProtoV6ProviderFactories: getProviders(&http.Client{}),
+		Steps: []testingResource.TestStep{
+			{
+				Config: `
+provider "btp" {
+    globalaccount = "ga"
+    idp          = "idp"
+    assertion    = "test-assertion"
+}
+data "btp_whoami" "me" {}`,
+				ExpectError: regexp.MustCompile(`unableToCreateClient`),
+			},
+		},
+	})
+}
 func TestProvider_HasResources(t *testing.T) {
 	expectedResources := []string{
 		"btp_directory_api_credential",
