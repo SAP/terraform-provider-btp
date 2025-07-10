@@ -71,7 +71,7 @@ set BTP_ENABLE_SSO=true
 If you use Powershell, do the export via the following commands:
 
 ```Shell
-$Env:BTP_ENABLE_SSO = true
+$Env:BTP_ENABLE_SSO = "true"
 ```
 
 #### Mac
