@@ -74,11 +74,6 @@ type LoginResponse struct {
 	Issuer string `json:"issuer"`
 }
 
-type BrowserLoginPostResponse struct {
-	Issuer string `json:"issuer"`
-	Email  string `json:"mail"`
-}
-
 type BrowserResponse struct {
 	LoginID           string `json:"loginId"`
 	SubdomainRequired bool   `json:"subdomainRequired"`
