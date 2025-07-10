@@ -70,16 +70,13 @@ type BrowserLoginRequest struct {
 }
 
 type LoginResponse struct {
-	Username string `json:"user"`
-	Email    string `json:"mail"`
-	Issuer   string `json:"issuer"`
+	Email  string `json:"mail"`
+	Issuer string `json:"issuer"`
 }
 
 type BrowserLoginPostResponse struct {
-	Issuer       string `json:"issuer"`
-	RefreshToken string `json:"refreshToken"`
-	Username     string `json:"user"`
-	Email        string `json:"mail"`
+	Issuer string `json:"issuer"`
+	Email  string `json:"mail"`
 }
 
 type BrowserResponse struct {

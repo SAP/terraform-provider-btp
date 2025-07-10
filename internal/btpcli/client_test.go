@@ -75,18 +75,16 @@ func TestV2Client_Login(t *testing.T) {
 					HeaderCLISessionId: "sessionid",
 				},
 				expectResponse: &LoginResponse{
-					Issuer:   "accounts.sap.com",
-					Username: "john.doe",
-					Email:    "john.doe@test.com",
+					Issuer: "accounts.sap.com",
+					Email:  "john.doe@test.com",
 				},
 				expectClientSession: &Session{
 					SessionId:              "sessionid",
 					IdentityProvider:       "",
 					GlobalAccountSubdomain: "subdomain",
 					LoggedInUser: &v2LoggedInUser{
-						Issuer:   "accounts.sap.com",
-						Username: "john.doe",
-						Email:    "john.doe@test.com",
+						Issuer: "accounts.sap.com",
+						Email:  "john.doe@test.com",
 					},
 				},
 			},
@@ -102,18 +100,16 @@ func TestV2Client_Login(t *testing.T) {
 					HeaderCLISessionId: "sessionid",
 				},
 				expectResponse: &LoginResponse{
-					Issuer:   "customidp.accounts.ondemand.com",
-					Username: "john.doe",
-					Email:    "john.doe@test.com",
+					Issuer: "customidp.accounts.ondemand.com",
+					Email:  "john.doe@test.com",
 				},
 				expectClientSession: &Session{
 					SessionId:              "sessionid",
 					GlobalAccountSubdomain: "subdomain",
 					IdentityProvider:       "my.custom.idp",
 					LoggedInUser: &v2LoggedInUser{
-						Issuer:   "customidp.accounts.ondemand.com",
-						Username: "john.doe",
-						Email:    "john.doe@test.com",
+						Issuer: "customidp.accounts.ondemand.com",
+						Email:  "john.doe@test.com",
 					},
 				},
 			},
@@ -200,18 +196,16 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 					HeaderCLISessionId: "sessionid",
 				},
 				expectResponse: &LoginResponse{
-					Issuer:   "idp.from.idtoken",
-					Username: "john.doe",
-					Email:    "john.doe@test.com",
+					Issuer: "idp.from.idtoken",
+					Email:  "john.doe@test.com",
 				},
 				expectClientSession: &Session{
 					SessionId:              "sessionid",
 					IdentityProvider:       "idp.from.idtoken",
 					GlobalAccountSubdomain: "subdomain",
 					LoggedInUser: &v2LoggedInUser{
-						Issuer:   "idp.from.idtoken",
-						Username: "john.doe",
-						Email:    "john.doe@test.com",
+						Issuer: "idp.from.idtoken",
+						Email:  "john.doe@test.com",
 					},
 				},
 			},
@@ -298,7 +292,7 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 				idp = "customidp.accounts.ondemand.com"
 			}
 
-			w.Header().Add("HeaderCLISessionId", "sessionid")
+			w.Header().Add("X-Cpcli-Sessionid", "sessionid")
 			w.WriteHeader(http.StatusOK)
 
 			_, _ = w.Write([]byte("{\"issuer\":\"" + idp + "\",\"refreshToken\":\"sessionid\",\"user\":\"john.doe\",\"mail\":\"john.doe@test.com\"}"))
@@ -328,9 +322,8 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 			IdentityProvider:       "",
 			GlobalAccountSubdomain: "my-subdomain",
 			LoggedInUser: &v2LoggedInUser{
-				Issuer:   "accounts.sap.com",
-				Username: "john.doe",
-				Email:    "john.doe@test.com",
+				Issuer: "accounts.sap.com",
+				Email:  "john.doe@test.com",
 			},
 		}, uut.session)
 	})
@@ -352,9 +345,8 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 			IdentityProvider:       "my.custom.idp",
 			GlobalAccountSubdomain: "my-subdomain",
 			LoggedInUser: &v2LoggedInUser{
-				Issuer:   "customidp.accounts.ondemand.com",
-				Username: "john.doe",
-				Email:    "john.doe@test.com",
+				Issuer: "customidp.accounts.ondemand.com",
+				Email:  "john.doe@test.com",
 			},
 		}, uut.session)
 	})
@@ -489,9 +481,8 @@ func TestV2Client_Execute(t *testing.T) {
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			IdentityProvider:       "my.custom.idp",
 			LoggedInUser: &v2LoggedInUser{
-				Email:    "john.doe@int.test",
-				Username: "john.doe@int.test",
-				Issuer:   "customidp.accounts.ondemand.com",
+				Email:  "john.doe@int.test",
+				Issuer: "customidp.accounts.ondemand.com",
 			},
 		}
 
@@ -515,9 +506,8 @@ func TestV2Client_Execute(t *testing.T) {
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			IdentityProvider:       "my.custom.idp",
 			LoggedInUser: &v2LoggedInUser{
-				Email:    "john.doe@int.test",
-				Username: "john.doe@int.test",
-				Issuer:   "customidp.accounts.ondemand.com",
+				Email:  "john.doe@int.test",
+				Issuer: "customidp.accounts.ondemand.com",
 			},
 		}
 
@@ -541,9 +531,8 @@ func TestV2Client_Execute(t *testing.T) {
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			IdentityProvider:       "my.custom.idp",
 			LoggedInUser: &v2LoggedInUser{
-				Email:    "john.doe@int.test",
-				Username: "john.doe@int.test",
-				Issuer:   "customidp.accounts.ondemand.com",
+				Email:  "john.doe@int.test",
+				Issuer: "customidp.accounts.ondemand.com",
 			},
 		}
 
@@ -652,9 +641,8 @@ func TestV2Client_GetLoggedInUser(t *testing.T) {
 	})
 	t.Run("someone logged in", func(t *testing.T) {
 		testUser := &v2LoggedInUser{
-			Email:    "john.doe@test.com",
-			Username: "john.doe",
-			Issuer:   "test",
+			Email:  "john.doe@test.com",
+			Issuer: "test",
 		}
 
 		uut := NewV2Client(nil)

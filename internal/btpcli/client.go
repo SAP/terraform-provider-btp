@@ -206,9 +206,8 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.IdentityProvider,
 		LoggedInUser: &v2LoggedInUser{
-			Username: loginResponse.Username,
-			Email:    loginResponse.Email,
-			Issuer:   loginResponse.Issuer,
+			Email:  loginResponse.Email,
+			Issuer: loginResponse.Issuer,
 		},
 		SessionId: res.Header.Get(HeaderCLISessionId),
 	}
@@ -243,9 +242,8 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginResponse.Issuer,
 		LoggedInUser: &v2LoggedInUser{
-			Username: loginResponse.Username,
-			Email:    loginResponse.Email,
-			Issuer:   loginResponse.Issuer,
+			Email:  loginResponse.Email,
+			Issuer: loginResponse.Issuer,
 		},
 		SessionId: res.Header.Get(HeaderCLISessionId),
 	}
@@ -315,11 +313,10 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.CustomIdp,
 		LoggedInUser: &v2LoggedInUser{
-			Username: browserLoginPostResponse.Username,
-			Email:    browserLoginPostResponse.Email,
-			Issuer:   browserLoginPostResponse.Issuer,
+			Email:  browserLoginPostResponse.Email,
+			Issuer: browserLoginPostResponse.Issuer,
 		},
-		SessionId: browserLoginPostResponse.RefreshToken,
+		SessionId: res.Header.Get(HeaderCLISessionId),
 	}
 
 	return &browserLoginPostResponse, nil

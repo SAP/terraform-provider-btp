@@ -73,7 +73,7 @@ func (gen *whoamiDataSource) Read(ctx context.Context, req datasource.ReadReques
 		return
 	}
 
-	data.ID = types.StringValue(user.Username)
+	data.ID = types.StringValue(user.Email)
 	data.Email = types.StringValue(user.Email)
 	data.Issuer = types.StringValue(user.Issuer)
 
