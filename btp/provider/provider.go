@@ -78,7 +78,7 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				},
 			},
 			"assertion": schema.StringAttribute{
-				MarkdownDescription: "A valid assertion JWT token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_ASSERTION` environment variable.",
+				MarkdownDescription: "A valid assertion JWT token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_ASSERTION` environment variable. This authentication method is only supported when using a custom Identity Provider (IdP).",
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
@@ -290,6 +290,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	case assertionFlow:
 		if _, err = client.Login(ctx, btpcli.NewLoginRequestWithAssertion(idp, config.GlobalAccount.ValueString(), assertion)); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
+			return
 		}
 
 	case idTokenFlow:
