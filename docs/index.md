@@ -35,7 +35,7 @@ provider "btp" {
 
 ### Optional
 
-- `assertion` (String, Sensitive) A valid assertion JWT token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_ASSERTION` environment variable.**Note:** This authentication method is only supported when using a custom Identity Provider (IdP).
+- `assertion` (String, Sensitive) A valid assertion JWT token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_ASSERTION` environment variable. This authentication method is only supported when using a custom Identity Provider (IdP).
 - `cli_server_url` (String) The URL of the BTP CLI server (e.g. `https://cli.btp.cloud.sap`).
 - `idp` (String) The identity provider to be used for authentication (only required for custom idp).
 - `idtoken` (String, Sensitive) A valid id token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_IDTOKEN` environment variable. (SAP-internal usage only)
