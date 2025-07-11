@@ -5,9 +5,8 @@ import (
 )
 
 type v2LoggedInUser struct {
-	Username string
-	Email    string
-	Issuer   string
+	Email  string
+	Issuer string
 }
 
 type Session struct {

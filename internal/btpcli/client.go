@@ -206,9 +206,8 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.IdentityProvider,
 		LoggedInUser: &v2LoggedInUser{
-			Username: loginResponse.Username,
-			Email:    loginResponse.Email,
-			Issuer:   loginResponse.Issuer,
+			Email:  loginResponse.Email,
+			Issuer: loginResponse.Issuer,
 		},
 		SessionId: res.Header.Get(HeaderCLISessionId),
 	}
@@ -243,9 +242,8 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginResponse.Issuer,
 		LoggedInUser: &v2LoggedInUser{
-			Username: loginResponse.Username,
-			Email:    loginResponse.Email,
-			Issuer:   loginResponse.Issuer,
+			Email:  loginResponse.Email,
+			Issuer: loginResponse.Issuer,
 		},
 		SessionId: res.Header.Get(HeaderCLISessionId),
 	}
@@ -254,7 +252,7 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 }
 
 // BrowserLogin authenticates user using SSO
-func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequest) (*BrowserLoginPostResponse, error) {
+func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequest) (*LoginResponse, error) {
 	ctx = v2.initTrace(ctx)
 
 	// TODO: After the switch to client protocol v2.49.0 the terraform provider is still providing
@@ -299,7 +297,7 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 		return nil, err
 	}
 
-	var browserLoginPostResponse BrowserLoginPostResponse
+	var browserLoginPostResponse LoginResponse
 	err = v2.parseResponse(ctx, res, &browserLoginPostResponse, http.StatusOK, map[int]string{
 		http.StatusUnauthorized:       "Login failed. Check your credentials.",
 		http.StatusForbidden:          fmt.Sprintf("You cannot access global account '%s'. Make sure you have at least read access to the global account, a directory, or a subaccount.", loginReq.GlobalAccountSubdomain),
@@ -315,11 +313,10 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.CustomIdp,
 		LoggedInUser: &v2LoggedInUser{
-			Username: browserLoginPostResponse.Username,
-			Email:    browserLoginPostResponse.Email,
-			Issuer:   browserLoginPostResponse.Issuer,
+			Email:  browserLoginPostResponse.Email,
+			Issuer: browserLoginPostResponse.Issuer,
 		},
-		SessionId: browserLoginPostResponse.RefreshToken,
+		SessionId: res.Header.Get(HeaderCLISessionId),
 	}
 
 	return &browserLoginPostResponse, nil
