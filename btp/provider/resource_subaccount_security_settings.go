@@ -103,6 +103,7 @@ __Further documentation:__
 				Default:             int64default.StaticInt64(int64(-1)),
 			},
 			"iframe_domains": schema.StringAttribute{
+				DeprecationMessage:  "Use the `iframe_domains_list` attribute instead",
 				MarkdownDescription: "The new domains of the iframe. Enter as string. To provide multiple domains, separate them by spaces.",
 				Optional:            true,
 				Computed:            true,
@@ -147,7 +148,17 @@ func (rs *subaccountSecuritySettingsResource) Read(ctx context.Context, req reso
 		return
 	}
 
-	updatedState, diags := subaccountSecuritySettingsValueFrom(ctx, cliRes)
+	var transferIframeString bool
+	if isIFrameDomainsSet(state.IframeDomains) {
+		transferIframeString = true
+	} else {
+		// During IMPORT we must make sure that only one iframe attribute is filled.
+		// Precedence is given to the list attribute, so we clear the computed iframe string attribute
+		// This causes errors when the configuration contains the deprecated value for the iframe string attribute which is intended.
+		transferIframeString = false
+	}
+
+	updatedState, diags := subaccountSecuritySettingsValueFrom(ctx, cliRes, transferIframeString)
 	updatedState.SubaccountId = state.SubaccountId
 
 	if state.Id.IsNull() || state.Id.IsUnknown() {
@@ -200,7 +211,15 @@ func (rs *subaccountSecuritySettingsResource) Create(ctx context.Context, req re
 		return
 	}
 
-	state, diags := subaccountSecuritySettingsValueFrom(ctx, res)
+	var transferIframeString bool
+	if isIFrameDomainsSet(plan.IframeDomains) {
+		// the plan contains a value for the iframe string attribute, so we must transfer it
+		transferIframeString = true
+	} else {
+		transferIframeString = false
+	}
+
+	state, diags := subaccountSecuritySettingsValueFrom(ctx, res, transferIframeString)
 	state.SubaccountId = plan.SubaccountId
 	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
 	state.Id = plan.SubaccountId
@@ -271,7 +290,16 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 		return
 	}
 
-	state, diags = subaccountSecuritySettingsValueFrom(ctx, res)
+	var transferIframeString bool
+	if isIFrameDomainsSet(plan.IframeDomains) || isIFrameDomainsSet(state.IframeDomains) {
+		// a value for the iframe string attribute is present in either plan or state, so we transfer it
+		transferIframeString = true
+	} else {
+		// default is that we do not transfer the iframe string attribute
+		transferIframeString = false
+	}
+
+	state, diags = subaccountSecuritySettingsValueFrom(ctx, res, transferIframeString)
 	state.SubaccountId = plan.SubaccountId
 	state.Id = plan.SubaccountId
 	resp.Diagnostics.Append(diags...)
