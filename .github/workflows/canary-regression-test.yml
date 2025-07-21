@@ -74,6 +74,27 @@ jobs:
       shell: bash
       run: |
         rm -rf .terraform && rm -rf .terraform.lock.hcl && cp ${{ env.DEV_OVERRIDE }} ~/.terraformrc
+    
+    - name: Update Terraform scripts before apply
+      shell: bash
+      run: |
+        VARS_FILE="${{ env.PATH_TO_TFSCRIPT }}/variables.tf"
+        MAIN_FILE="${{ env.PATH_TO_TFSCRIPT }}/main.tf"
+
+        # Perform replacements in variables.tf
+        sed -i 's|https://cli.btp.cloud.sap|https://canary.cli.btp.int.sap|g' "$VARS_FILE"
+        sed -i 's|\bus10\b|eu12|g' "$VARS_FILE"
+        sed -i 's|terraformeds2.accounts.ondemand.com|iasprovidertestblr.accounts400.ondemand.com|g' "$VARS_FILE"
+
+        # Perform replacement in main.tf
+        sed -i 's|cis-central!b14|cis-central!b13|g' "$MAIN_FILE"
+
+        # Show the updated files
+        echo "Updated variables.tf:"
+        cat "$VARS_FILE"
+        echo ""
+        echo "Updated main.tf:"
+        cat "$MAIN_FILE"
 
     - name: Terraform Apply with local provider
       id: terraform_apply_local
