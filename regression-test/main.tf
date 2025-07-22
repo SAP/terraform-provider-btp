@@ -187,7 +187,12 @@ resource "btp_subaccount" "sa_services_static" {
   description = "Subaccount to test:\n- Environment Instance\n- Service Instances\n- Service Bindings\n- App Subscriptions"
 }
 
+resource "time_sleep" "pause_before_subaccount" {
+  create_duration = "20s"
+}
+
 resource "btp_subaccount" "sa_security_settings" {
+  depends_on = [ time_sleep.pause_before_subaccount ]
   name      = local.integration_test_security_settings
   subdomain = local.integration_test_security_settings_extended
   region    = var.region
