@@ -26,6 +26,10 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
+const updateSubscriptionResource = "UpdateResource"
+const updateTimeoutOnly = "UpdateTimeoutOnly"
+const invalidUpdateRequest = "InvalidUpdateRequest"
+
 func newSubaccountSubscriptionResource() resource.Resource {
 	return &subaccountSubscriptionResource{}
 }
@@ -355,7 +359,13 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 		return
 	}
 
-	if plan.PlanName.ValueString() != state.PlanName.ValueString() || plan.Parameters.ValueString() != state.Parameters.ValueString() || !plan.Timeouts.Equal(state.Timeouts) {
+	updateType := checkForChanges(plan, state)
+
+	switch updateType {
+	case invalidUpdateRequest:
+		// The update tries to access fields, which are not supposed to be updated
+		resp.Diagnostics.AddError("API Error Updating Subscription (Subaccount)", "This provided parameters are not supposed to be updated")
+	case updateSubscriptionResource:
 		_, _, err := rs.cli.Accounts.Subscription.Update(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString(), plan.Parameters.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Updating Resource Subscription (Subaccount)", fmt.Sprintf("%s", err))
@@ -381,9 +391,14 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 
 		diags = resp.State.Set(ctx, &updatedPlan)
 		resp.Diagnostics.Append(diags...)
-	} else {
-		// The update tries to access fields, which are not supposed to be updated
-		resp.Diagnostics.AddError("API Error Updating Subscription (Subaccount)", "This provided parameters are not supposed to be updated")
+
+	case updateTimeoutOnly:
+		// The update only tries to access the timeouts, so we do not need to call the API, we just set the state values back into the state and update the timeouts only
+		// Reason: The API implementations are not all idempotent which could lead to errors if we call the API for an UPDATe even if no fields were changed
+		updatedPlan := state
+		updatedPlan.Timeouts = plan.Timeouts
+		diags = resp.State.Set(ctx, &updatedPlan)
+		resp.Diagnostics.Append(diags...)
 	}
 
 	if resp.Diagnostics.HasError() {
@@ -603,4 +618,18 @@ func (rs *subaccountSubscriptionResource) determineAppNames(ctx context.Context,
 	// We did not find the app name in the list of applications, default to the one handed over by the user for the technical app name
 	// The API will return an error if the app name is not valid
 	return planAppName, "", nil
+}
+
+func checkForChanges(plan subaccountSubscriptionType, state subaccountSubscriptionType) string {
+	// We check what king of update is requested to dinstuigish if an API call is necessary or not
+	if plan.PlanName.ValueString() != state.PlanName.ValueString() || plan.Parameters.ValueString() != state.Parameters.ValueString() {
+		return updateSubscriptionResource
+	}
+
+	if !plan.Timeouts.Equal(state.Timeouts) {
+		//An update of the timeouts can especially happen during import of the resource
+		return updateTimeoutOnly
+	}
+
+	return invalidUpdateRequest
 }
