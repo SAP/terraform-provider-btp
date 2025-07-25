@@ -627,7 +627,7 @@ func checkForChanges(plan subaccountSubscriptionType, state subaccountSubscripti
 	}
 
 	if !plan.Timeouts.Equal(state.Timeouts) {
-		//An update of the timeouts can especially happen during import of the resource
+		// An update of the timeouts can especially happen during import of the resource
 		return updateTimeoutOnly
 	}
 
