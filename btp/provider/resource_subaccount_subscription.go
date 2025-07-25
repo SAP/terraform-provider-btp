@@ -621,7 +621,7 @@ func (rs *subaccountSubscriptionResource) determineAppNames(ctx context.Context,
 }
 
 func checkForChanges(plan subaccountSubscriptionType, state subaccountSubscriptionType) string {
-	// We check what king of update is requested to dinstuigish if an API call is necessary or not
+	// We check what kind of update is requested to distinguish if an API call is necessary or not
 	if plan.PlanName.ValueString() != state.PlanName.ValueString() || plan.Parameters.ValueString() != state.Parameters.ValueString() {
 		return updateSubscriptionResource
 	}
