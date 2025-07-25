@@ -99,7 +99,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "auditlog-viewer", "free"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "auditlog-viewer", "free", "25m"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
@@ -264,23 +264,59 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "SAPLaunchpadSMS", "free"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "SAPLaunchpadSMS", "free", "25m"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpadSMS"),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.create", "25m"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.delete", "15m"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "SAPLaunchpadSMS", "standard"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "SAPLaunchpadSMS", "standard", "25m"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpadSMS"),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "standard"),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.create", "25m"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.delete", "15m"),
+					),
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - update subscription timeouts only", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_update_timeouts")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "SAPLaunchpadSMS", "free", "25m"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpadSMS"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.create", "25m"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.delete", "15m"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "SAPLaunchpadSMS", "free", "35m"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpadSMS"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.create", "35m"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "timeouts.delete", "15m"),
 					),
 				},
 			},
@@ -296,7 +332,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "auditlog-viewer", "free"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "auditlog-viewer", "free", "25m"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
@@ -305,7 +341,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 					),
 				},
 				{
-					Config:      hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "auditlog-viewer", "default"),
+					Config:      hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccountWithTimeout("uut", "integration-test-services-static", "auditlog-viewer", "default", "25m"),
 					ExpectError: regexp.MustCompile(`Plan name is not supposed to be updated for this resource`),
 				},
 			},
@@ -324,7 +360,7 @@ func hclResourceSubaccountSubscriptionBySubaccount(resourceName string, subaccou
 		}`, resourceName, subaccountName, appName, planName)
 }
 
-func hclResourceSubaccountSubscriptionBySubaccountWithTimeout(resourceName string, subaccountName string, appName string, planName string) string {
+func hclResourceSubaccountSubscriptionBySubaccountWithTimeout(resourceName string, subaccountName string, appName string, planName string, createTimeout string) string {
 	return fmt.Sprintf(`
 		data "btp_subaccounts" "all" {}
 		resource "btp_subaccount_subscription" "%s"{
@@ -332,10 +368,10 @@ func hclResourceSubaccountSubscriptionBySubaccountWithTimeout(resourceName strin
 			app_name         = "%s"
 			plan_name        = "%s"
 			timeouts = {
-				create = "25m"
+				create = "%s"
 				delete = "15m"
 			  }
-		}`, resourceName, subaccountName, appName, planName)
+		}`, resourceName, subaccountName, appName, planName, createTimeout)
 }
 
 func hclResourceSubaccountSubscriptionNoSubaccountId(resourceName string, appName string, planName string) string {
