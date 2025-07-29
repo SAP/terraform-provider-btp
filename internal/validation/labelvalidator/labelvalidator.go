@@ -31,7 +31,7 @@ func (v labelsValidator) ValidateMap(ctx context.Context, request validator.MapR
 		return
 	}
 
-	// Check the number of keys. Must nit exceed 10
+	// Check the number of keys. Must not exceed 10
 	if len(labels) > 10 {
 		response.Diagnostics.AddAttributeError(
 			request.Path,
