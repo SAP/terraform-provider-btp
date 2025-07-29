@@ -100,8 +100,8 @@ import {
 to = btp_subaccount_entitlement.<resource_name>
 identity = {
   subaccount_id = "<subaccount_id>"
-  service_name = "<service_name>"
-  plan_name = "<plan_name>"
+  service_name  = "<service_name>"
+  plan_name     = "<plan_name>"
   }
 }
 ```

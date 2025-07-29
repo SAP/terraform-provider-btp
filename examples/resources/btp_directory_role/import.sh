@@ -14,9 +14,9 @@ import {
 import {
 to = btp_directory_role.<resource_name>
 identity = {
-  directory_id = "<directory_id>"
-  name = "<name>"
+  directory_id       = "<directory_id>"
+  name               = "<name>"
   role_template_name = "<role_template_name>"
-  app_id = "<app_id>"
+  app_id             = "<app_id>"
   }
 }

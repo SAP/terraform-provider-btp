@@ -67,9 +67,9 @@ import {
 import {
 to =  btp_globalaccount_role.<resource_name>
 identity = {
-  name = "<name>"
+  name               = "<name>"
   role_template_name = "<role_template_name>"
-  app_id = "<app_id>"
+  app_id             = "<app_id>"
   }
 }
 ```
