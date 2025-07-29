@@ -14,7 +14,7 @@ func (v labelsValidator) Description(ctx context.Context) string {
 }
 
 func (v labelsValidator) MarkdownDescription(ctx context.Context) string {
-	return "labels must have at most 10 keys and each value is no more than 63 characters."
+	return "labels must have at most 10 keys and each value must be at most 63 characters."
 }
 
 func (v labelsValidator) ValidateMap(ctx context.Context, request validator.MapRequest, response *validator.MapResponse) {
