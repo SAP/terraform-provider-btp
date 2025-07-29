@@ -21,6 +21,7 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
+	"github.com/SAP/terraform-provider-btp/internal/validation/labelvalidator"
 )
 
 func newSubaccountResource() resource.Resource {
@@ -104,6 +105,9 @@ __Further documentation:__
 				},
 				MarkdownDescription: "The set of words or phrases assigned to the subaccount.",
 				Optional:            true,
+				Validators: []validator.Map{
+					labelvalidator.ValidLabels(),
+				},
 			},
 			"beta_enabled": schema.BoolAttribute{
 				MarkdownDescription: "Shows whether the subaccount can use beta services and applications.",
