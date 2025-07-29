@@ -15,7 +15,7 @@ import {
 to = btp_subaccount_subscription.<resource_name>
 identity = {
   subaccount_id = "<subaccount_id>"
-  app_name = "<app_name>"
-  plan_name = "<plan_name>"
+  app_name      = "<app_name>"
+  plan_name     = "<plan_name>"
   }
 }

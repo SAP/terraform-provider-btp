@@ -85,7 +85,7 @@ import {
 to = btp_directory_role_collection.<resource_name>
 identity = {
   directory_id = "<directory_id>"
-  name = "<name>"
+  name         = "<name>"
   }
 }
 ```

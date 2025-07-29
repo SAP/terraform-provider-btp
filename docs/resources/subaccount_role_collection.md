@@ -85,7 +85,7 @@ import {
 to = btp_subaccount_role_collection.<resource_name>
 identity = {
   subaccount_id = "<subaccount_id>"
-  name = "<name>"
+  name          = "<name>"
   }
 }
 ```

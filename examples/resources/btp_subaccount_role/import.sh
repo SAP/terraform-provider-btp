@@ -14,9 +14,9 @@ import {
 import {
 to = btp_subaccount_role.<resource_name>
 identity = {
-  subaccount_id = "<subaccount_id>"
-  name = "<name>"
+  subaccount_id      = "<subaccount_id>"
+  name               = "<name>"
   role_template_name = "<role_template_name>"
-  app_id = "<app_id>"
+  app_id             = "<app_id>"
   }
 }
