@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4 # v4.0.0
+      - uses: actions/checkout@v5 # v4.0.0
       - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
         with:
           go-version-file: 'go.mod'
@@ -55,7 +55,7 @@ jobs:
     name: Docu Generation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # v4.0.0
+      - uses: actions/checkout@v5 # v4.0.0
       - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
         with:
           go-version-file: 'go.mod'
@@ -71,7 +71,7 @@ jobs:
     name: Fixture Drift Detection
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # v4.0.0
+      - uses: actions/checkout@v5 # v4.0.0
         with:
           fetch-depth: 0
       - run: .github/scripts/fixtureDriftDetect.sh btp/provider/fixtures/
@@ -98,7 +98,7 @@ jobs:
           - '1.11.*'
           - '1.12.*'
     steps:
-      - uses: actions/checkout@v4 # v4.0.0
+      - uses: actions/checkout@v5 # v4.0.0
       - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
         with:
           go-version-file: 'go.mod'
@@ -136,7 +136,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - uses: actions/download-artifact@v5
