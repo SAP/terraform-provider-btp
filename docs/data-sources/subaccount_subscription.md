@@ -2,14 +2,14 @@
 page_title: "btp_subaccount_subscription Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets details of a specific multitenant application to which a subaccount is entitled to subscribe. If this application is in a different global account than the current one, you need to specify its plan with '--plan'.
+  Gets details of a specific multitenant application to which a subaccount is entitled to subscribe.
   Tip:
   You must be assigned to the admin or viewer role of the subaccount.
 ---
 
 # btp_subaccount_subscription (Data Source)
 
-Gets details of a specific multitenant application to which a subaccount is entitled to subscribe. If this application is in a different global account than the current one, you need to specify its plan with '--plan'.
+Gets details of a specific multitenant application to which a subaccount is entitled to subscribe.
 
 __Tip:__
 You must be assigned to the admin or viewer role of the subaccount.

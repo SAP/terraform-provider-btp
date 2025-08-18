@@ -36,7 +36,7 @@ func (ds *subaccountSubscriptionDataSource) Configure(_ context.Context, req dat
 
 func (ds *subaccountSubscriptionDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets details of a specific multitenant application to which a subaccount is entitled to subscribe. If this application is in a different global account than the current one, you need to specify its plan with '--plan'.
+		MarkdownDescription: `Gets details of a specific multitenant application to which a subaccount is entitled to subscribe.
 
 __Tip:__
 You must be assigned to the admin or viewer role of the subaccount.`,
