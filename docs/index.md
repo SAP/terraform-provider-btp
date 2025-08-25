@@ -61,6 +61,8 @@ For the best experience using the SAP BTP provider, we recommend applying the co
 
 The SAP BTP provider offers the authentication via `username` and `password`. Be aware that this authentication is not compatible with the SAP Universal ID. For details on how to resolve this please see SAP Note [3085908 - Getting an error (e.g. invalid credentials) in certain applications (e.g. SAP Download Manager) when using S-user ID or SAP Universal ID](https://me.sap.com/notes/3085908).
 
+If you have multiple user accounts with the same email address, log on with your user ID (S-user or P-user) instead of your email address.
+
 ### Authentication Independent Parameters
 
 Some parameters offered by the provider configuration are not depending on the login flow. They must be set depending on your SAP BTP landscape and your overall authentication setup. These parameters are:
