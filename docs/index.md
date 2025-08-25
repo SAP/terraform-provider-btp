@@ -137,7 +137,7 @@ An example for a provider configuration looks like this:
 provider "btp" {
   globalaccount = "my-global-account-subdomain"
   idp           = "customerTenant.accounts.ondemand.com"
-  assertioan    = "yourJWTtoken"
+  assertion    = "yourJWTtoken"
  }
 
 ```
