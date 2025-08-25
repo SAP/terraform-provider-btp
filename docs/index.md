@@ -61,6 +61,8 @@ For the best experience using the SAP BTP provider, we recommend applying the co
 
 The SAP BTP provider offers the authentication via `username` and `password`. Be aware that this authentication is not compatible with the SAP Universal ID. For details on how to resolve this please see SAP Note [3085908 - Getting an error (e.g. invalid credentials) in certain applications (e.g. SAP Download Manager) when using S-user ID or SAP Universal ID](https://me.sap.com/notes/3085908).
 
+If you have multiple user accounts with the same email address, log on with your user ID (S-user or P-user) instead of your email address.
+
 ### Authentication Independent Parameters
 
 Some parameters offered by the provider configuration are not depending on the login flow. They must be set depending on your SAP BTP landscape and your overall authentication setup. These parameters are:
@@ -124,6 +126,25 @@ provider "btp" {
 ```
 
 We used the Terraform [file function](https://developer.hashicorp.com/terraform/language/functions/file) to provide the content for the parameters `tls_client_certificate` and `tls_client_key` as a string. You can also directly provide the string to these parameters
+
+### Authentication to SAP BTP using JWT Bearer Assertion flow
+
+A supported authentication flow is the *JWT Bearer Assertion flow*. This flow requires a custom identity provider.
+
+An example for a provider configuration looks like this:
+
+```terraform
+provider "btp" {
+  globalaccount = "my-global-account-subdomain"
+  idp           = "customerTenant.accounts.ondemand.com"
+  assertion    = "yourJWTtoken"
+ }
+
+```
+
+Be aware that the JWT token can be sourced via the environment variable `BTP_ASSERTION`.
+
+For details on the configuration we refer to the following blog post [Bye-Bye Credentials! Automate BTP & Cloud Foundry Setup with Terraform using Github Actions and Github OIDC](https://dev.to/vipinvkmenon/bye-bye-credentials-automate-btp-cloud-foundry-setup-with-terraform-using-github-actions-and-3m07).
 
 ### SAP Internal Authentication Parameters
 
