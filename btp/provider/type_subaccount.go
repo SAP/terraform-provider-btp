@@ -17,20 +17,21 @@ const AuthorizationFeature = "AUTHORIZATIONS"
 var subdomainRegex = regexp.MustCompile("^[a-z0-9](?:[a-z0-9|-]{0,61}[a-z0-9])?$")
 
 type subaccountType struct {
-	ID             types.String `tfsdk:"id"`
-	BetaEnabled    types.Bool   `tfsdk:"beta_enabled"`
-	CreatedBy      types.String `tfsdk:"created_by"`
-	CreatedDate    types.String `tfsdk:"created_date"`
-	Description    types.String `tfsdk:"description"`
-	Labels         types.Map    `tfsdk:"labels"`
-	LastModified   types.String `tfsdk:"last_modified"`
-	Name           types.String `tfsdk:"name"`
-	ParentID       types.String `tfsdk:"parent_id"`
-	ParentFeatures types.Set    `tfsdk:"parent_features"`
-	Region         types.String `tfsdk:"region"`
-	State          types.String `tfsdk:"state"`
-	Subdomain      types.String `tfsdk:"subdomain"`
-	Usage          types.String `tfsdk:"usage"`
+	ID                  types.String `tfsdk:"id"`
+	BetaEnabled         types.Bool   `tfsdk:"beta_enabled"`
+	CreatedBy           types.String `tfsdk:"created_by"`
+	CreatedDate         types.String `tfsdk:"created_date"`
+	Description         types.String `tfsdk:"description"`
+	Labels              types.Map    `tfsdk:"labels"`
+	LastModified        types.String `tfsdk:"last_modified"`
+	Name                types.String `tfsdk:"name"`
+	ParentID            types.String `tfsdk:"parent_id"`
+	ParentFeatures      types.Set    `tfsdk:"parent_features"`
+	Region              types.String `tfsdk:"region"`
+	SkipAutoEntitlement types.Bool   `tfsdk:"skip_auto_entitlement"`
+	State               types.String `tfsdk:"state"`
+	Subdomain           types.String `tfsdk:"subdomain"`
+	Usage               types.String `tfsdk:"usage"`
 }
 
 func subaccountValueFrom(ctx context.Context, value cis.SubaccountResponseObject) (subaccountType, diag.Diagnostics) {
