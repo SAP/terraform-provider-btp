@@ -32,6 +32,12 @@ We recommend that the subdomain should only contain letters (a-z), digits (0-9),
 
 ## Restriction
 
+### Move of Subaccounts
+
 The resource does not support the move of the subaccount to a new parent account (directory or global account). An update of the `parent_id` attribute will cause a deletion and recreation of the resource including the resources that depend on it.
 
 For further details please refer to [Limitation - Move of Subaccounts](https://github.com/SAP/terraform-provider-btp/blob/main/guides/MOVESUBACCOUNT.md).
+
+### Import of Subaccounts
+
+In general, the resource supports import of existing subaccounts. However, there is one restriction that applies to the import of a subaccount i.e., the attribute `skip_auto_entitlement`. This attribute cannot be imported as this information is not available on the subaccount. Hence, every import will set this attribute to `null`. There is also no option to update the attribute as the API does not support an update of the attribute.
