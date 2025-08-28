@@ -120,6 +120,9 @@ __Further documentation:__
 			"skip_auto_entitlement": schema.BoolAttribute{
 				MarkdownDescription: "Specifies if the subaccount creation excludes the auto-assignment of base entitlements, allowing quicker setup with potentially reduced resource consumption. When not set or set to 'false' the standard auto-assigned plans are included.",
 				Optional:            true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
