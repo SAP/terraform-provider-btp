@@ -152,7 +152,7 @@ You must be assigned to the admin or viewer role of the global account, director
 }
 
 func (ds *subaccountDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data subaccountType
+	var data subaccountDataSourceType
 
 	diags := req.Config.Get(ctx, &data)
 
@@ -184,8 +184,8 @@ func (ds *subaccountDataSource) Read(ctx context.Context, req datasource.ReadReq
 	}
 }
 
-func (ds *subaccountDataSource) getSubaccountById(ctx context.Context, subaccountId string, resp *datasource.ReadResponse) (subaccountType, diag.Diagnostics) {
-	var data subaccountType
+func (ds *subaccountDataSource) getSubaccountById(ctx context.Context, subaccountId string, resp *datasource.ReadResponse) (subaccountDataSourceType, diag.Diagnostics) {
+	var data subaccountDataSourceType
 	var diags diag.Diagnostics
 
 	cliRes, _, err := ds.cli.Accounts.Subaccount.Get(ctx, subaccountId)
@@ -194,14 +194,14 @@ func (ds *subaccountDataSource) getSubaccountById(ctx context.Context, subaccoun
 		return data, diags
 	}
 
-	data, diags = subaccountValueFrom(ctx, cliRes)
+	data, diags = subaccountDataSourceValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
 	return data, diags
 }
 
-func (ds *subaccountDataSource) getSubbacountByRegionSubdomain(ctx context.Context, region string, subdomain string, resp *datasource.ReadResponse) (subaccountType, bool, diag.Diagnostics) {
-	var data subaccountType
+func (ds *subaccountDataSource) getSubbacountByRegionSubdomain(ctx context.Context, region string, subdomain string, resp *datasource.ReadResponse) (subaccountDataSourceType, bool, diag.Diagnostics) {
+	var data subaccountDataSourceType
 	var diags diag.Diagnostics
 	var accountFound bool
 

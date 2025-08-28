@@ -26,7 +26,7 @@ permissions:
 
 # Define the latest Terraform version to use for upload of coverage report
 env:
-  LATEST_TF_VERSION: 1.12.*
+  LATEST_TF_VERSION: 1.13.*
 
 jobs:
   # Ensure project builds before running testing matrix
@@ -115,7 +115,6 @@ jobs:
         if: ${{ matrix.terraform != env.LATEST_TF_VERSION}}
         env:
           TF_ACC: "1"
-        timeout-minutes: 20
       # For the latest version we also run coverage and use a dedicated action for a visual display of the test results
       - uses: robherley/go-test-action@v0
         if: ${{ matrix.terraform == env.LATEST_TF_VERSION}}

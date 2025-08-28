@@ -208,10 +208,10 @@ func (ds *subaccountsDataSource) Read(ctx context.Context, req datasource.ReadRe
 		return
 	}
 
-	subaccountConfigs := []subaccountType{}
+	subaccountConfigs := []subaccountDataSourceType{}
 
 	for _, subaccountRes := range cliRes.Value {
-		c := subaccountType{
+		c := subaccountDataSourceType{
 			ID:           types.StringValue(subaccountRes.Guid),
 			BetaEnabled:  types.BoolValue(subaccountRes.BetaEnabled),
 			CreatedBy:    types.StringValue(subaccountRes.CreatedBy),
