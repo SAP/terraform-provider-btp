@@ -284,7 +284,8 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	if !plan.SkipAutoEntitlement.IsUnknown() {
-		args.SkipAutoEntitlement = plan.SkipAutoEntitlement.ValueBool()
+		skipAutoEntitlement := plan.SkipAutoEntitlement.ValueBool()
+		args.SkipAutoEntitlement = skipAutoEntitlement
 	}
 
 	var labels map[string][]string
