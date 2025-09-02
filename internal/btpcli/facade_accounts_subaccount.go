@@ -41,18 +41,18 @@ func (f *accountsSubaccountFacade) Get(ctx context.Context, subaccountId string)
 	}))
 }
 
-type SubaccountCreateInput struct { // TODO support all options
-	BetaEnabled       bool                `btpcli:"betaEnabled"`
-	Description       string              `btpcli:"description"`
-	Directory         string              `btpcli:"directoryID"`
-	DisplayName       string              `btpcli:"displayName"`
-	Labels            map[string][]string `btpcli:"labels"`
-	Region            string              `btpcli:"region"`
-	Subdomain         string              `btpcli:"subdomain"`
-	UsedForProduction string              `btpcli:"usedForProduction"`
-	Globalaccount     string              `btpcli:"globalAccount"`
-	AdminDirectoryId  string              `btpcli:"adminDirectory"`
-	//SubaccountAdmins  string `json:"subaccountAdmins"`
+type SubaccountCreateInput struct {
+	BetaEnabled         bool                `btpcli:"betaEnabled"`
+	Description         string              `btpcli:"description"`
+	Directory           string              `btpcli:"directoryID"`
+	DisplayName         string              `btpcli:"displayName"`
+	Labels              map[string][]string `btpcli:"labels"`
+	Region              string              `btpcli:"region"`
+	Subdomain           string              `btpcli:"subdomain"`
+	UsedForProduction   string              `btpcli:"usedForProduction"`
+	Globalaccount       string              `btpcli:"globalAccount"`
+	AdminDirectoryId    string              `btpcli:"adminDirectory"`
+	SkipAutoEntitlement bool                `btpcli:"skipAutoAssignPlans"`
 }
 
 type SubaccountUpdateInput struct {

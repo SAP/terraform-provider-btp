@@ -117,6 +117,13 @@ __Further documentation:__
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"skip_auto_entitlement": schema.BoolAttribute{
+				MarkdownDescription: "Specifies if the subaccount creation excludes the auto-assignment of base entitlements, allowing quicker setup with potentially reduced resource consumption. When not set or set to 'false' the standard auto-assigned plans are included.",
+				Optional:            true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
+			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Computed:            true,
@@ -199,6 +206,9 @@ func (rs *subaccountResource) Read(ctx context.Context, req resource.ReadRequest
 
 	diags := req.State.Get(ctx, &data)
 
+	// As we manipulate the state afterwards we make a copy for later use
+	originalState := data
+
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -213,6 +223,11 @@ func (rs *subaccountResource) Read(ctx context.Context, req resource.ReadRequest
 	data, diags = subaccountValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
+	if !originalState.SkipAutoEntitlement.IsUnknown() {
+		// The value was explicitly set in the state and is not returned via the READ API call, so we keep it
+		data.SkipAutoEntitlement = originalState.SkipAutoEntitlement
+	}
+
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 }
@@ -224,6 +239,9 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	// As we manipulate the plan afterwards we make a copy for later use
+	originalPlan := plan
 
 	// We check the subdomain value against the recommended format of the API and the BTP Administrator's guide
 	// However we cannot enforce it via the schema as the cockpit allows also deviating formats
@@ -263,6 +281,11 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	if !plan.BetaEnabled.IsUnknown() {
 		betaEnabled := plan.BetaEnabled.ValueBool()
 		args.BetaEnabled = betaEnabled
+	}
+
+	if !plan.SkipAutoEntitlement.IsUnknown() {
+		skipAutoEntitlement := plan.SkipAutoEntitlement.ValueBool()
+		args.SkipAutoEntitlement = skipAutoEntitlement
 	}
 
 	var labels map[string][]string
@@ -307,6 +330,12 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	plan, diags = subaccountValueFrom(ctx, updatedRes.(cis.SubaccountResponseObject))
+
+	if !originalPlan.SkipAutoEntitlement.IsUnknown() {
+		// The value was explicitly set in the plan, so we keep it
+		plan.SkipAutoEntitlement = originalPlan.SkipAutoEntitlement
+	}
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &plan)
@@ -315,8 +344,16 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 
 func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan subaccountType
+	var state subaccountType
 
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 
 	if resp.Diagnostics.HasError() {
@@ -370,6 +407,12 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 	}
 
 	plan, diags = subaccountValueFrom(ctx, updatedRes.(cis.SubaccountResponseObject))
+
+	if !state.SkipAutoEntitlement.IsUnknown() {
+		// The value was explicitly set in the state, so we keep it
+		plan.SkipAutoEntitlement = state.SkipAutoEntitlement
+	}
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, plan)

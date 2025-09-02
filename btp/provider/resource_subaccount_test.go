@@ -258,6 +258,50 @@ func TestResourceSubaccount(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path with skipped entitlement provisioning", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount.skip_entitlements")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountWithSkippedEntitlements("uut", "integration-test-acc-dyn", "eu12", "integration-test-acc-dyn"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "integration-test-acc-dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "UNSET"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "skip_auto_entitlement", "true"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountWithSkippedEntitlements("uut", "Integration Test Acc Dyn", "eu12", "integration-test-acc-dyn"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "Integration Test Acc Dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "UNSET"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "skip_auto_entitlement", "true"),
+					),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - name must not contain slashes", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -344,4 +388,16 @@ resource "btp_subaccount" "%s" {
 }`
 
 	return fmt.Sprintf(template, resourceName, displayName, region, subdomain, parentId)
+}
+
+func hclResourceSubaccountWithSkippedEntitlements(resourceName string, displayName string, region string, subdomain string) string {
+	template := `
+resource "btp_subaccount" "%s" {
+    name      = "%s"
+    region    = "%s"
+    subdomain = "%s"
+	  skip_auto_entitlement = true
+}`
+
+	return fmt.Sprintf(template, resourceName, displayName, region, subdomain)
 }
