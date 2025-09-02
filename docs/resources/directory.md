@@ -110,3 +110,25 @@ import {
   id = "<directory_id>"
 }
 ```
+
+## Drift Detection Limitation for `feature` Attribute
+
+For **unmanaged** directories, the `features` attribute is not included in drift detection. This means that if the value of features is changed outside of Terraform (e.g., via the SAP BTP Cockpit), Terraform will not detect this drift during operations like `terraform plan`.
+
+This limitation does not apply to **managed** directories — drift detection for the attribute `features` works as expected in those cases.
+
+### Recommended Workaround
+
+To avoid issues with drift detection in unmanaged directories, we recommend always explicitly specifying the `features` attribute in your Terraform configuration.
+
+Example configuration for an unmanaged directory:
+
+```terraform
+resource "btp_directory" "unmanaged_dir" {
+  name        = "my-feat-directory"
+  description = "This is a directory with features."
+  features    = ["DEFAULT"]
+}
+```
+
+You can safely add the line `features = ["DEFAULT"]` to an existing unmanaged directory configuration **without impacting** the provisioned directory.
