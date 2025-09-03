@@ -22,7 +22,7 @@ The following overview list des resources and their support for drift detection 
 
 | Resource                                     | Drift Detection Support | Comments                                                                                                                                  |
 |---                                           |---                      |---                                                                                                                                        |
-| btp_directory                                | Yes                     |                                                                                                                                           |
+| btp_directory                                | Yes                     | -                                                                                                                                         |
 | btp_directory_api_credential                 | No                      | -                                                                                                                                         |
 | btp_directory_entitlement                    | Yes                     | -                                                                                                                                         |
 | btp_directory_role                           | Yes                     | -                                                                                                                                         |
