@@ -165,9 +165,9 @@ By default, the underlying BTP client used by the Terraform BTP Provider creates
 
 ## Drift Detection
 
-The mechanism to detect drifts in your infrastructure is provided by the `terraform plan` command that compares the current state of the infrastructure with the Terraform state. You find the details of the `terraform plan` command in the [official Terraform documentation](https://developer.hashicorp.com/terraform/cli/commands/plan). Be aware to use the `-refresh-only` flag when executing the `terraform plan` command to ensure that all planned changes to the state get displayed.
+The mechanism to detect drifts in your infrastructure is provided by the `terraform plan` command that compares the current state of the infrastructure with the Terraform state. You can find the details of the `terraform plan` command in the [official Terraform documentation](https://developer.hashicorp.com/terraform/cli/commands/plan). Be aware to use the `-refresh-only` flag when executing the `terraform plan` command to ensure that all planned changes to the state get displayed.
 
-You find further information on drift detection and limitations in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/blob/main/guides/DRIFTDETECTION.md).
+You can find further information on drift detection and limitations in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/blob/main/guides/DRIFTDETECTION.md).
 
 ## Import
 
