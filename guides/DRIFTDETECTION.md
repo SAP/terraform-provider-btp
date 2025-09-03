@@ -4,7 +4,7 @@
 
 In general, Terraform enables you to provision and manage your Infrastructure as Code. The management part also comprises the ability to detect and reconcile configuration drifts in your infrastructure.
 
-The mechanism to detect drifts in your infrastructure is provided by the `terraform plan` command that compares the current state of the infrastructure with the Terraform state. You find the details of the `terraform plan` command in the [official Terraform documentation](https://developer.hashicorp.com/terraform/cli/commands/plan). Technically you check for a configuration drift by executing the `terraform plan` with the option `-detailed-exitcode`. This will return an exit code of `2` if there are changes to be applied, `1` if there is an error, and `0` if the infrastructure matches the Terraform state.
+The mechanism to detect drifts in your infrastructure is provided by the `terraform plan` command that compares the current state of the infrastructure with the Terraform state. You find the details of the `terraform plan` command in the [official Terraform documentation](https://developer.hashicorp.com/terraform/cli/commands/plan). Be aware to use the `-refresh-only` flag when executing the `terraform plan` command to ensure that all planned changes to the state get displayed. Technically you check for a configuration drift by executing the `terraform plan` with the option `-detailed-exitcode`. This will return an exit code of `2` if there are changes to be applied, `1` if there is an error, and `0` if the infrastructure matches the Terraform state.
 
 In this document we discuss the drift detection for the Terraform provider for SAP BTP and what needs to be considered.
 
@@ -22,7 +22,7 @@ The following overview list des resources and their support for drift detection 
 
 | Resource                                     | Drift Detection Support | Comments                                                                                                                                  |
 |---                                           |---                      |---                                                                                                                                        |
-| btp_directory                                | Yes                     | Be aware that you must specify the attribute `features` also for **unmanaged** directories to ensure drift detection                      |
+| btp_directory                                | Yes                     |                                                                                                                                           |
 | btp_directory_api_credential                 | No                      | -                                                                                                                                         |
 | btp_directory_entitlement                    | Yes                     | -                                                                                                                                         |
 | btp_directory_role                           | Yes                     | -                                                                                                                                         |
