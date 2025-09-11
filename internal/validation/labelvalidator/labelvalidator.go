@@ -68,6 +68,12 @@ func (v labelsValidator) ValidateMap(ctx context.Context, request validator.MapR
 							fmt.Sprintf("The value for key '%s' exceeds the maximum length of 63 characters.", key),
 						)
 					}
+				} else {
+					response.Diagnostics.AddAttributeError(
+						request.Path,
+						v.Description(ctx),
+						fmt.Sprintf("Unexpected element type for key '%s'.", key),
+					)
 				}
 			}
 		default:
