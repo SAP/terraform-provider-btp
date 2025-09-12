@@ -24,6 +24,18 @@ func TestLabelValidator(t *testing.T) {
 
 	validLabelsTypesMap, _ := types.MapValueFrom(context.TODO(), types.SetType{ElemType: types.StringType}, validlabels)
 
+	var invalidLabels = map[string][]int{
+		"costcenter":  {12345},
+	}
+
+	invalidLabelsTypesMap, _ := types.MapValueFrom(context.TODO(), types.SetType{ElemType: types.Int32Type}, invalidLabels)
+
+	var invalidLabels_LabelType = map[string]string{
+		"costcenter":  "12345",
+	}
+
+	invalidLabels_LabelTypeTypesMap, _ := types.MapValueFrom(context.TODO(), types.StringType, invalidLabels_LabelType)
+
 	var invalidLabelsLength = map[string][]string{
 		"costcenter":  {"12345"},
 		"environment": {"production"},
@@ -56,6 +68,14 @@ func TestLabelValidator(t *testing.T) {
 		"valid-labels": {
 			in:        validLabelsTypesMap,
 			expErrors: 0,
+		},
+		"invalid-labels": {
+			in: 	  invalidLabelsTypesMap,
+			expErrors: 1,
+		},
+		"invalid-labels-lableType": {
+			in: 	  invalidLabels_LabelTypeTypesMap,
+			expErrors: 1,
 		},
 		"too-many-labels": {
 			in:        invalidLabelsNumberTypesMap,

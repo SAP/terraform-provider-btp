@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 type labelsValidator struct{}
@@ -24,13 +25,15 @@ func (v labelsValidator) ValidateMap(ctx context.Context, request validator.MapR
 		return
 	}
 
-	var labels map[string][]string
+	labels := request.ConfigValue.Elements()
+
+	/*var labels map[string][]string
 	diags := request.ConfigValue.ElementsAs(ctx, &labels, false)
 	if diags.HasError() {
 		response.Diagnostics.Append(diags...)
 		return
 	}
-
+	*/
 	// Check the number of keys. Must not exceed 10
 	if len(labels) > 10 {
 		response.Diagnostics.AddAttributeError(
@@ -42,14 +45,44 @@ func (v labelsValidator) ValidateMap(ctx context.Context, request validator.MapR
 
 	// Check the length of each value string, must not exceed 63 characters
 	for key, values := range labels {
-		for _, value := range values {
-			if len(value) > 63 {
-				response.Diagnostics.AddAttributeError(
-					request.Path,
-					v.Description(ctx),
-					fmt.Sprintf("The value for key '%s' exceeds the maximum length of 63 characters.", key),
-				)
+
+		if values.IsUnknown() {
+			continue
+		}
+
+		switch listValue := values.(type) {
+		case basetypes.SetValue:
+			if listValue.IsUnknown() {
+				continue
 			}
+			setElements := listValue.Elements()
+			for _, setElement := range setElements {
+				if stringValue, ok := setElement.(basetypes.StringValue); ok {
+					if stringValue.IsUnknown() {
+						continue
+					}
+					if len(stringValue.ValueString()) > 63 {
+						response.Diagnostics.AddAttributeError(
+							request.Path,
+							v.Description(ctx),
+							fmt.Sprintf("The value for key '%s' exceeds the maximum length of 63 characters.", key),
+						)
+					}
+				} else {
+					response.Diagnostics.AddAttributeError(
+						request.Path,
+						v.Description(ctx),
+						fmt.Sprintf("Unexpected element type for key '%s'.", key),
+					)
+				}
+			}
+		default:
+			// Handle other types or add error
+			response.Diagnostics.AddAttributeError(
+				request.Path,
+				v.Description(ctx),
+				fmt.Sprintf("Unexpected element type for key '%s'", key),
+			)
 		}
 	}
 }
