@@ -12,4 +12,5 @@ resource "btp_subaccount_trust_configuration" "fully_customized" {
   identity_provider = "terraformint.accounts400.ondemand.com"
   name              = "my-name"
   description       = "my-description"
+  origin            = "my-origin-key"
 }

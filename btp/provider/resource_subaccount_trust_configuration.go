@@ -131,6 +131,7 @@ __Further documentation:__
 			},
 			"origin": schema.StringAttribute{
 				MarkdownDescription: "The origin of the identity provider.",
+				Optional:            true,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -228,6 +229,11 @@ func (rs *subaccountTrustConfigurationResource) Create(ctx context.Context, req 
 		cliCreateReq.Domain = &domain
 	}
 
+	if !plan.Origin.IsUnknown() && plan.Origin.ValueString() != "" {
+		origin := plan.Origin.ValueString()
+		cliCreateReq.Origin = &origin
+	}
+
 	createRes, _, err := rs.cli.Security.Trust.CreateBySubaccount(ctx, plan.SubaccountId.ValueString(), cliCreateReq)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Trust Configuration (Subaccount)", fmt.Sprintf("%s", err))
@@ -286,12 +292,17 @@ func (rs *subaccountTrustConfigurationResource) Update(ctx context.Context, req 
 		return
 	}
 
+	if plan.Origin.ValueString() != state.Origin.ValueString() {
+		resp.Diagnostics.AddAttributeError(path.Root("origin"), "Immutable Attribute", "The origin of a trust configuration cannot be changed")
+		return
+	}
+
 	idp := plan.IdentityProvider.ValueString()
 	availableForUserLogon := plan.AvailableForUserLogon.ValueBool()
 	autoCreateShadowUsers := plan.AutoCreateShadowUsers.ValueBool()
 	status := plan.Status.ValueString()
 	cliUpdateReq := btpcli.TrustConfigurationUpdateInput{
-		OriginKey:             plan.Origin.ValueString(),
+		OriginKey:             state.Origin.ValueString(),
 		IdentityProvider:      &idp,
 		AvailableForUserLogon: &availableForUserLogon,
 		AutoCreateShadowUsers: &autoCreateShadowUsers,

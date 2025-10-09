@@ -36,6 +36,7 @@ resource "btp_subaccount_trust_configuration" "fully_customized" {
   identity_provider = "terraformint.accounts400.ondemand.com"
   name              = "my-name"
   description       = "my-description"
+  origin            = "my-origin-key"
 }
 ```
 
@@ -55,12 +56,12 @@ resource "btp_subaccount_trust_configuration" "fully_customized" {
 - `domain` (String) The tenant's domain which should be used for user logon.
 - `link_text` (String) Short string that helps users to identify the link for login.
 - `name` (String) The display name of the trust configuration.
+- `origin` (String) The origin of the identity provider.
 - `status` (String) Determines whether the identity provider is currently 'active' or 'inactive'.
 
 ### Read-Only
 
 - `id` (String, Deprecated) The origin of the identity provider.
-- `origin` (String) The origin of the identity provider.
 - `protocol` (String) The protocol used to establish trust with the identity provider.
 - `read_only` (Boolean) Shows whether the trust configuration can be modified.
 - `type` (String) The trust type.
