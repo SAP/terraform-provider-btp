@@ -9,6 +9,9 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 )
 
+const subaccountEntitlementCategoryElasticService = "ELASTIC_SERVICE"
+const subaccountEntitlementCategoryApplication = "APPLICATION"
+
 type subaccountEntitlementType struct {
 	SubaccountId         types.String `tfsdk:"subaccount_id"`
 	Id                   types.String `tfsdk:"id"`
@@ -24,17 +27,23 @@ type subaccountEntitlementType struct {
 }
 
 func subaccountEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedAssignment) (subaccountEntitlementType, diag.Diagnostics) {
-	return subaccountEntitlementType{
-		SubaccountId:         types.StringValue(value.Assignment.EntityId),
-		Id:                   types.StringValue(value.Plan.UniqueIdentifier),
-		ServiceName:          types.StringValue(value.Service.Name),
-		PlanName:             types.StringValue(value.Plan.Name),
-		Category:             types.StringValue(value.Plan.Category),
-		PlanId:               types.StringValue(value.Plan.UniqueIdentifier),
-		PlanUniqueIdentifier: types.StringValue(value.Plan.UniqueIdentifier),
-		Amount:               types.Int64Value(int64(value.Assignment.Amount)),
-		State:                types.StringValue(value.Assignment.EntityState),
-		LastModified:         timeToValue(value.Assignment.ModifiedDate.Time()),
-		CreatedDate:          timeToValue(value.Assignment.CreatedDate.Time()),
-	}, diag.Diagnostics{}
+	var subaccountEntitlement subaccountEntitlementType
+
+	subaccountEntitlement.SubaccountId = types.StringValue(value.Assignment.EntityId)
+	subaccountEntitlement.Id = types.StringValue(value.Plan.UniqueIdentifier)
+	subaccountEntitlement.ServiceName = types.StringValue(value.Service.Name)
+	subaccountEntitlement.PlanName = types.StringValue(value.Plan.Name)
+	subaccountEntitlement.Category = types.StringValue(value.Plan.Category)
+	subaccountEntitlement.PlanId = types.StringValue(value.Plan.UniqueIdentifier)
+	subaccountEntitlement.PlanUniqueIdentifier = types.StringValue(value.Plan.UniqueIdentifier)
+
+	if subaccountEntitlement.Category != types.StringValue(subaccountEntitlementCategoryElasticService) && subaccountEntitlement.Category != types.StringValue(subaccountEntitlementCategoryApplication) {
+		// Transfer Amount only if the entitlement has a numeric quota
+		subaccountEntitlement.Amount = types.Int64Value(int64(value.Assignment.Amount))
+	}
+	subaccountEntitlement.State = types.StringValue(value.Assignment.EntityState)
+	subaccountEntitlement.LastModified = timeToValue(value.Assignment.ModifiedDate.Time())
+	subaccountEntitlement.CreatedDate = timeToValue(value.Assignment.CreatedDate.Time())
+
+	return subaccountEntitlement, diag.Diagnostics{}
 }
