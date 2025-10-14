@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -129,6 +130,12 @@ func determineParentIdByFeature(cli *btpcli.ClientFacade, ctx context.Context, p
 		if hasFeature(parentFeatures, featureType) {
 			return parentId, false, nil
 		}
+
+		if parentIdNew == "" {
+			// An invalid parentIdToVerify was provided - add error with message that the parentIdToVerify was not found in the hierarchy
+			return "", false, fmt.Errorf("the ID %s not found in the global account hierarchy", parentIdToVerify)
+		}
+
 		parentId = parentIdNew
 	}
 
