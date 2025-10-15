@@ -54,6 +54,24 @@ func TestDataSourceDirectory(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - invalid directory ID", func(t *testing.T) {
+		// See: https://github.com/SAP/terraform-provider-btp/issues/1210
+		rec, user := setupVCR(t, "fixtures/datasource_directory.invalid_id")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{ // normal directory
+					Config:      hclProviderFor(user) + hclDatasourceDirectoryById("uut", "00000000-0000-0000-0000-000000000000"),
+					ExpectError: regexp.MustCompile(`Error: API Error determining parent features for authorization`),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
