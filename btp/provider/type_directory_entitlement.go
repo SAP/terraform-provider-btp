@@ -9,9 +9,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 )
 
-const directoryEntitlementCategoryElasticService = "ELASTIC_SERVICE"
-const directoryEntitlementCategoryApplication = "APPLICATION"
-
 type directoryEntitlementType struct {
 	DirectoryId          types.String `tfsdk:"directory_id"`
 	Id                   types.String `tfsdk:"id"`
@@ -37,8 +34,7 @@ func directoryEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedEnt
 	directoryEntitlement.PlanId = types.StringValue(value.Plan.UniqueIdentifier)
 	directoryEntitlement.PlanUniqueIdentifier = types.StringValue(value.Plan.UniqueIdentifier)
 
-	if directoryEntitlement.Category != types.StringValue(directoryEntitlementCategoryElasticService) && directoryEntitlement.Category != types.StringValue(directoryEntitlementCategoryApplication) {
-		// Transfer Amount only if the entitlement has a numeric quota
+	if isTransferAmountRequired(directoryEntitlement.Category.ValueString()) {
 		directoryEntitlement.Amount = types.Int64Value(int64(value.Plan.Amount))
 	}
 

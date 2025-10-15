@@ -9,8 +9,9 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 )
 
-const subaccountEntitlementCategoryElasticService = "ELASTIC_SERVICE"
-const subaccountEntitlementCategoryApplication = "APPLICATION"
+// Only the category SERVICE and QUOTA_BASED_APPLICATION have a numeric quota (amount)
+const entitlementCategoryService = "SERVICE"
+const entitlementCategoryQuotaBasedApplication = "QUOTA_BASED_APPLICATION"
 
 type subaccountEntitlementType struct {
 	SubaccountId         types.String `tfsdk:"subaccount_id"`
@@ -37,13 +38,18 @@ func subaccountEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedAs
 	subaccountEntitlement.PlanId = types.StringValue(value.Plan.UniqueIdentifier)
 	subaccountEntitlement.PlanUniqueIdentifier = types.StringValue(value.Plan.UniqueIdentifier)
 
-	if subaccountEntitlement.Category != types.StringValue(subaccountEntitlementCategoryElasticService) && subaccountEntitlement.Category != types.StringValue(subaccountEntitlementCategoryApplication) {
-		// Transfer Amount only if the entitlement has a numeric quota
+	if isTransferAmountRequired(subaccountEntitlement.Category.ValueString()) {
 		subaccountEntitlement.Amount = types.Int64Value(int64(value.Assignment.Amount))
 	}
+
 	subaccountEntitlement.State = types.StringValue(value.Assignment.EntityState)
 	subaccountEntitlement.LastModified = timeToValue(value.Assignment.ModifiedDate.Time())
 	subaccountEntitlement.CreatedDate = timeToValue(value.Assignment.CreatedDate.Time())
 
 	return subaccountEntitlement, diag.Diagnostics{}
+}
+
+func isTransferAmountRequired(category string) bool {
+	// Check if Amount needs to be mapped - only true if the entitlement has a numeric quota
+	return category == entitlementCategoryService || category == entitlementCategoryQuotaBasedApplication
 }

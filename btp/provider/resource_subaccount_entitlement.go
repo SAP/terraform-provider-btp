@@ -648,7 +648,7 @@ func (rs *subaccountEntitlementResource) UpgradeState(ctx context.Context) map[i
 					LastModified:         priorStateData.LastModified,
 				}
 
-				if priorStateData.Category != types.StringValue(subaccountEntitlementCategoryElasticService) && priorStateData.Category != types.StringValue(subaccountEntitlementCategoryApplication) {
+				if isTransferAmountRequired(priorStateData.Category.ValueString()) {
 					// Transfer Amount only if the entitlement has a numeric quota
 					upgradedStateData.Amount = priorStateData.Amount
 				} else {

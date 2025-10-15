@@ -551,7 +551,7 @@ func (rs *directoryEntitlementResource) UpgradeState(ctx context.Context) map[in
 					Distribute:           priorStateData.Distribute,
 				}
 
-				if priorStateData.Category != types.StringValue(directoryEntitlementCategoryElasticService) && priorStateData.Category != types.StringValue(directoryEntitlementCategoryApplication) {
+				if isTransferAmountRequired(priorStateData.Category.ValueString()) {
 					// Transfer Amount only if the entitlement has a numeric quota
 					upgradedStateData.Amount = priorStateData.Amount
 				} else {
