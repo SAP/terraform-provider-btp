@@ -24,17 +24,23 @@ type directoryEntitlementType struct {
 }
 
 func directoryEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedEntitlement, directoryId string, distribute bool) (directoryEntitlementType, diag.Diagnostics) {
-	return directoryEntitlementType{
-		DirectoryId:          types.StringValue(directoryId),
-		Id:                   types.StringValue(value.Plan.UniqueIdentifier),
-		ServiceName:          types.StringValue(value.Service.Name),
-		PlanName:             types.StringValue(value.Plan.Name),
-		Category:             types.StringValue(value.Plan.Category),
-		PlanId:               types.StringValue(value.Plan.UniqueIdentifier),
-		PlanUniqueIdentifier: types.StringValue(value.Plan.UniqueIdentifier),
-		Amount:               types.Int64Value(int64(value.Plan.Amount)),
-		AutoAssign:           types.BoolValue(value.Plan.AutoAssign),
-		AutoDistributeAmount: types.Int64Value(int64(value.Plan.AutoDistributeAmount)),
-		Distribute:           types.BoolValue(distribute),
-	}, diag.Diagnostics{}
+	var directoryEntitlement directoryEntitlementType
+
+	directoryEntitlement.DirectoryId = types.StringValue(directoryId)
+	directoryEntitlement.Id = types.StringValue(value.Plan.UniqueIdentifier)
+	directoryEntitlement.ServiceName = types.StringValue(value.Service.Name)
+	directoryEntitlement.PlanName = types.StringValue(value.Plan.Name)
+	directoryEntitlement.Category = types.StringValue(value.Plan.Category)
+	directoryEntitlement.PlanId = types.StringValue(value.Plan.UniqueIdentifier)
+	directoryEntitlement.PlanUniqueIdentifier = types.StringValue(value.Plan.UniqueIdentifier)
+
+	if isTransferAmountRequired(directoryEntitlement.Category.ValueString()) {
+		directoryEntitlement.Amount = types.Int64Value(int64(value.Plan.Amount))
+	}
+
+	directoryEntitlement.AutoAssign = types.BoolValue(value.Plan.AutoAssign)
+	directoryEntitlement.AutoDistributeAmount = types.Int64Value(int64(value.Plan.AutoDistributeAmount))
+	directoryEntitlement.Distribute = types.BoolValue(distribute)
+
+	return directoryEntitlement, diag.Diagnostics{}
 }

@@ -153,6 +153,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 		},
+		Version: 1,
 	}
 }
 
@@ -443,4 +444,124 @@ func checkForTargetStateReached(ctx context.Context, entitlement btpcli.Unfolded
 		return false
 	}
 
+}
+
+func (rs *directoryEntitlementResource) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
+	return map[int64]resource.StateUpgrader{
+		// State upgrade implementation from 0 (prior state version) to 1 (Schema.Version)
+		0: {
+			PriorSchema: &schema.Schema{
+				Attributes: map[string]schema.Attribute{
+					"directory_id": schema.StringAttribute{
+						Required: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+						Validators: []validator.String{
+							uuidvalidator.ValidUUID(),
+						},
+					},
+					"id": schema.StringAttribute{
+						Computed: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.UseStateForUnknown(),
+						},
+					},
+					"service_name": schema.StringAttribute{
+						Required: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"plan_name": schema.StringAttribute{
+						Required: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"plan_unique_identifier": schema.StringAttribute{
+						Optional: true,
+						Computed: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.UseStateForUnknown(),
+						},
+					},
+					"amount": schema.Int64Attribute{
+						Optional: true,
+						Computed: true,
+						Validators: []validator.Int64{
+							int64validator.Between(1, 2000000000),
+						},
+						PlanModifiers: []planmodifier.Int64{
+							int64planmodifier.UseStateForUnknown(),
+						},
+					},
+					"auto_assign": schema.BoolAttribute{
+						Optional: true,
+						Computed: true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifier.UseStateForUnknown(),
+						},
+					},
+					"auto_distribute_amount": schema.Int64Attribute{
+						Optional: true,
+						Computed: true,
+						PlanModifiers: []planmodifier.Int64{
+							int64planmodifier.UseStateForUnknown(),
+						},
+					},
+					"distribute": schema.BoolAttribute{
+						Optional: true,
+						Computed: true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifier.UseStateForUnknown(),
+						},
+					},
+					"category": schema.StringAttribute{
+						Computed: true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.UseStateForUnknown(),
+						},
+					},
+					"plan_id": schema.StringAttribute{
+						Computed: true,
+					},
+				},
+			},
+
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				var priorStateData directoryEntitlementType
+
+				resp.Diagnostics.Append(req.State.Get(ctx, &priorStateData)...)
+
+				if resp.Diagnostics.HasError() {
+					return
+				}
+
+				upgradedStateData := directoryEntitlementType{
+					DirectoryId:          priorStateData.DirectoryId,
+					Id:                   priorStateData.PlanUniqueIdentifier,
+					ServiceName:          priorStateData.ServiceName,
+					PlanName:             priorStateData.PlanName,
+					Category:             priorStateData.Category,
+					PlanId:               priorStateData.PlanUniqueIdentifier,
+					PlanUniqueIdentifier: priorStateData.PlanUniqueIdentifier,
+					AutoAssign:           priorStateData.AutoAssign,
+					AutoDistributeAmount: priorStateData.AutoDistributeAmount,
+					Distribute:           priorStateData.Distribute,
+				}
+
+				if isTransferAmountRequired(priorStateData.Category.ValueString()) {
+					// Transfer Amount only if the entitlement has a numeric quota
+					upgradedStateData.Amount = priorStateData.Amount
+				} else {
+					// Set value explicitly to null if not applicable to ensure that the value is not unkown.
+					// See https://developer.hashicorp.com/terraform/plugin/framework/resources/state-upgrade#caveats
+					upgradedStateData.Amount = types.Int64Null()
+				}
+
+				resp.Diagnostics.Append(resp.State.Set(ctx, upgradedStateData)...)
+			},
+		},
+	}
 }
