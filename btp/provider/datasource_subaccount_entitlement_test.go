@@ -73,14 +73,41 @@ func TestDataSourceSubaccountEntitlement(t *testing.T) {
 			},
 		})
 	})
+	t.Run("error path - invalid subaccount ID", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_entitlement.subacount_id_invalid")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclProviderFor(user) + hclDatasourceSubaccountEntitlementById("uut", "00000000-0000-0000-0000-000000000001", "invalid-service", "invalid-plan"),
+					ExpectError: regexp.MustCompile(`Error: Failed to get subaccount`),
+				},
+			},
+		})
+	})
 }
 
-func hclDatasourceSubaccountEntitlement(resourceName, subaccountId, serviceName, planName string) string {
+func hclDatasourceSubaccountEntitlement(resourceName, subaccountName, serviceName, planName string) string {
 	return fmt.Sprintf(`
 	data "btp_subaccounts" "all" {}
 
 	data "btp_subaccount_entitlement" "%s" {
 	  subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+	  service_name  = "%s"
+	  plan_name     = "%s"
+	}
+	`, resourceName, subaccountName, serviceName, planName)
+}
+
+func hclDatasourceSubaccountEntitlementById(resourceName, subaccountId, serviceName, planName string) string {
+	return fmt.Sprintf(`
+	data "btp_subaccounts" "all" {}
+
+	data "btp_subaccount_entitlement" "%s" {
+	  subaccount_id = "%s"
 	  service_name  = "%s"
 	  plan_name     = "%s"
 	}
