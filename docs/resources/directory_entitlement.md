@@ -62,7 +62,7 @@ resource "btp_directory_entitlement" "uas_reporting" {
 - `auto_assign` (Boolean) Determines whether the plans of entitlements that have a numeric quota with the amount specified in `auto_distribute_amount` are automatically allocated to any new subaccount that is added to the directory in the future. For entitlements without a numeric quota, it shows if the plan are assigned to any new subaccount that is added to the directory in the future (`auto_distribute_amount` is not needed). If the `distribute` parameter is set, the same assignment is also made to all subaccounts currently in the directory. Entitlements are subject to available quota in the directory.
 - `auto_distribute_amount` (Number) The quota of the specified plan automatically allocated to any new subaccount that is created in the future in the directory. When applying this option, `auto_assign` and/or `distribute` must also be set. Applies only to entitlements that have a numeric quota.
 - `distribute` (Boolean) Defines the assignment of the plan with the quota specified in `auto_distribute_amount` to subaccounts currently located in the specified directory. For entitlements without a numeric quota, the plan is assigned to the subaccounts currently located in the directory (`auto_distribute_amount` is not needed). When applying this option, `auto_assign` must also be set.
-- `plan_unique_identifier` (String) The unique identifier of the service plan.
+- `plan_unique_identifier` (String) The unique identifier of the service plan. The unique identifier for service plans is required only if you need to differentiate between identical plans that have different pricing.
 
 ### Read-Only
 

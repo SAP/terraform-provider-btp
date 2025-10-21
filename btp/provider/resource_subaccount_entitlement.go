@@ -94,7 +94,7 @@ __Further documentation:__
 				},
 			},
 			"plan_unique_identifier": schema.StringAttribute{
-				MarkdownDescription: "The unique identifier of the service plan.",
+				MarkdownDescription: "The unique identifier of the service plan. The unique identifier for service plans is required only if you need to differentiate between identical plans that have different pricing.",
 				Optional:            true,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
