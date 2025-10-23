@@ -161,7 +161,7 @@ func (rs *subaccountSecuritySettingsResource) Read(ctx context.Context, req reso
 	updatedState, diags := subaccountSecuritySettingsValueFrom(ctx, cliRes, transferIframeString)
 	updatedState.SubaccountId = state.SubaccountId
 
-	if state.Id.IsNull() || state.Id.IsUnknown() {
+	if updatedState.Id.IsNull() || updatedState.Id.IsUnknown() {
 		// Setting ID of state - required by hashicorps terraform plugin testing framework for Import . See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
 		updatedState.Id = state.SubaccountId
 	}
