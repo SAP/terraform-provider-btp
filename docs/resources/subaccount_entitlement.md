@@ -50,7 +50,7 @@ resource "btp_subaccount_entitlement" "uas_reporting" {
 ### Optional
 
 - `amount` (Number) The quota assigned to the subaccount.
-- `plan_unique_identifier` (String) The unique identifier of the service plan.
+- `plan_unique_identifier` (String) The unique identifier of the service plan. The unique identifier for service plans is required only if you need to differentiate between identical plans that have different pricing.
 
 ### Read-Only
 
