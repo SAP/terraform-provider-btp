@@ -124,7 +124,7 @@ jobs:
           testArguments: -v -cover -coverprofile=cover.out -timeout=1800s -parallel=4 ./...
 
       # Upload coverage report for latest Terraform version only to avoid nameing issues in upload (see also https://github.com/actions/upload-artifact/tree/v4/?tab=readme-ov-file#breaking-changes)
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ matrix.terraform == env.LATEST_TF_VERSION}}
         with:
           name: coverage-report
