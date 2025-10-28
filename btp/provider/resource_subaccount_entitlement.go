@@ -25,7 +25,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis_entitlements"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 const entitlementCallRetrySucceeded = "retryCallSucceeded"
@@ -67,9 +66,6 @@ __Further documentation:__
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-				},
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
 				},
 			},
 			"id": schema.StringAttribute{
@@ -565,9 +561,6 @@ func (rs *subaccountEntitlementResource) UpgradeState(ctx context.Context) map[i
 						Required: true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
-						},
-						Validators: []validator.String{
-							uuidvalidator.ValidUUID(),
 						},
 					},
 					"id": schema.StringAttribute{

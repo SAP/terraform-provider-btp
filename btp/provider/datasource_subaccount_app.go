@@ -11,7 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 func newSubaccountAppDataSource() datasource.DataSource {
@@ -57,16 +56,13 @@ func (ds *subaccountAppDataSource) Configure(_ context.Context, req datasource.C
 func (ds *subaccountAppDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Gets details about a specific app.
-		
+
 __Tip:__
 You must be assigned to the admin or viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				Required:            true,
 				MarkdownDescription: "The ID of the subaccount.",
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
-				},
 			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The application ID is the xsappname plus the identifier, which consists of an exclamation mark (!), an identifier for the plan under which the application is deployed, and an index number.",

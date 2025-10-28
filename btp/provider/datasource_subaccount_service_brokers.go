@@ -11,7 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 func newSubaccountServiceBrokersDataSource() datasource.DataSource {
@@ -64,9 +63,6 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
-				},
 			},
 			"fields_filter": schema.StringAttribute{
 				MarkdownDescription: "Filters the service brokers based on their fields. For example, to display a service broker with the name 'my-service-broker2', use \"name eq 'my-service-broker2'\".",

@@ -309,19 +309,6 @@ func TestResourceSubaccountRoleCollection(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - subaccount_id not a valid UUID", func(t *testing.T) {
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclResourceSubAccountRoleCollectionBySubaccountId("uut", "this-is-not-a-uuid", "My new role collection", "Description of my new role collection"),
-					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
-				},
-			},
-		})
-	})
-
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -343,16 +330,6 @@ func getEmptyRolesOrDefault(roles []subaccountRoleCollectionRoleRefTestType) str
 	}
 	rolesJson, _ := json.Marshal(roles)
 	return string(rolesJson)
-}
-
-func hclResourceSubAccountRoleCollectionBySubaccountId(resourceName string, subaccountId string, displayName string, description string, roles ...subaccountRoleCollectionRoleRefTestType) string {
-	return fmt.Sprintf(`
-	resource "btp_subaccount_role_collection" "%s" {
-        subaccount_id       = "%s"
-		name      			= "%s"
-        description      	= "%s"
-		roles               = %v
-    }`, resourceName, subaccountId, displayName, description, getEmptyRolesOrDefault(roles))
 }
 
 func hclResourceSubAccountRoleCollectionBySubaccount(resourceName string, subaccountName string, displayName string, description string, roles ...subaccountRoleCollectionRoleRefTestType) string {

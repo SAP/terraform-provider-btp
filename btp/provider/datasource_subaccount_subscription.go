@@ -11,7 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 func newSubaccountSubscriptionDataSource() datasource.DataSource {
@@ -44,9 +43,6 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
-				},
 			},
 			"app_name": schema.StringAttribute{
 				MarkdownDescription: "The unique registration name of the deployed multitenant application as defined by the app developer.",

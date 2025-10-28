@@ -47,7 +47,7 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 			},
 		})
 	})
-	t.Run("error path - subaccount_id not a valid UUID", func(t *testing.T) {
+	t.Run("error path - subaccount_id is required", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -60,26 +60,6 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - subaccount_id not a valid UUID", func(t *testing.T) {
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclDatasourceSubaccountAppByAppIdBySubaccountId("uut", "this-is-not-a-uuid", "cas-ui-xsuaa-prod!t216"),
-					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
-				},
-			},
-		})
-	})
-}
-
-func hclDatasourceSubaccountAppByAppIdBySubaccountId(resourceName string, subaccountId string, appId string) string {
-	template := `data "btp_subaccount_app" "%s" {
-	subaccount_id = "%s"
-	id 	          = "%s"
-}`
-	return fmt.Sprintf(template, resourceName, subaccountId, appId)
 }
 
 func hclDatasourceSubaccountAppByAppId(resourceName string, subaccountName string, appId string) string {

@@ -38,18 +38,7 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 			},
 		})
 	})
-	t.Run("error path - subaccount_id not a valid UUID", func(t *testing.T) {
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclDatasourceSubaccountUserWithCustomIdpBySubaccountId("uut", "this-is-not-a-uuid", "jenny.doe@test.com", "sap.default"),
-					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
-				},
-			},
-		})
-	})
+
 	t.Run("error path - subaccount_id, user_name and origin are mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -107,16 +96,6 @@ func TestDataSourceSubaccountUser(t *testing.T) {
 			},
 		})
 	})
-}
-
-func hclDatasourceSubaccountUserWithCustomIdpBySubaccountId(resourceName string, subaccountId string, userName string, origin string) string {
-	template := `
-data "btp_subaccount_user" "%s" {
-	subaccount_id = "%s"
-	user_name 	 = "%s"
-  	origin    	 = "%s"
-}`
-	return fmt.Sprintf(template, resourceName, subaccountId, userName, origin)
 }
 
 func hclDatasourceSubaccountUserWithCustomIdp(resourceName string, subaccountName string, userName string, origin string) string {
