@@ -147,18 +147,6 @@ func TestResourceSubAccountRole(t *testing.T) {
 			},
 		})
 	})
-	t.Run("error path - subaccount_id not a valid UUID", func(t *testing.T) {
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclResourceSubaccountRoleBySubaccountId("uut", "this-is-not-a-uuid", "a", "b", "c"),
-					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
-				},
-			},
-		})
-	})
 
 	t.Run("error path - name must not be empty", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
@@ -231,18 +219,6 @@ func hclResourceSubaccountRole(resourceName string, subaccountName string, name 
 		role_template_name  = "%s"
 		app_id              = "%s"
     }`, resourceName, subaccountName, name, roleTemplateName, appId)
-}
-
-func hclResourceSubaccountRoleBySubaccountId(resourceName string, subaccountId string, name string, roleTemplateName string, appId string) string {
-	template := `
-resource "btp_subaccount_role" "%s" {
-    subaccount_id       = "%s"
-    name                = "%s"
-    role_template_name  = "%s"
-    app_id              = "%s"
-}`
-
-	return fmt.Sprintf(template, resourceName, subaccountId, name, roleTemplateName, appId)
 }
 
 func hclResourceSubaccountRoleWithAttributes(resourceName string, subaccountName string, name string, roleTemplateName string, appId string, attributeName string, attributeValueOrigin string, attributeValues string) string {

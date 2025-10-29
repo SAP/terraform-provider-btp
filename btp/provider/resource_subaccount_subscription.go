@@ -23,7 +23,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/saas_manager_service"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 const updateSubscriptionResource = "UpdateResource"
@@ -63,9 +62,6 @@ You must be assigned to the admin role of the subaccount.`,
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-				},
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
 				},
 			},
 			"app_name": schema.StringAttribute{

@@ -11,7 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 func newSubaccountServicePlatformsDataSource() datasource.DataSource {
@@ -64,9 +63,6 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
-				},
 			},
 			"fields_filter": schema.StringAttribute{
 				MarkdownDescription: "Filters the platforms based on their fields. For example, to display all 'kubernetes' platforms, use \"type eq 'kubernetes'\".",

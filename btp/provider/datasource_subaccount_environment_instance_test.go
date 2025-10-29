@@ -60,18 +60,6 @@ func TestDataSourceSubaccountEnvironmentInstance(t *testing.T) {
 			},
 		})
 	})
-	t.Run("error path - subaccount_id not a valid UUID", func(t *testing.T) {
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclDatasourceSubaccountEnvironmentInstanceBySubaccountId("uut", "this-is-not-a-uuid", "DA2883C7-0FAF-4D4A-80BB-A0B54AC9743D"),
-					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
-				},
-			},
-		})
-	})
 
 	t.Run("error path - id not a valid UUID", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
@@ -85,14 +73,6 @@ func TestDataSourceSubaccountEnvironmentInstance(t *testing.T) {
 			},
 		})
 	})
-}
-
-func hclDatasourceSubaccountEnvironmentInstanceBySubaccountId(resourceName string, subaccountId string, instanceId string) string {
-	return fmt.Sprintf(`
-	data "btp_subaccount_environment_instance" "%s" { 
-	subaccount_id = "%s" 
-	id = "%s"
-	}`, resourceName, subaccountId, instanceId)
 }
 
 func hclDatasourceSubaccountEnvironmentInstanceByInstanceId(resourceName string, subaccountName string, instanceId string) string {

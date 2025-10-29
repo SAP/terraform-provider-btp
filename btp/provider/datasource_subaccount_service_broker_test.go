@@ -62,18 +62,6 @@ func TestDataSourceSubaccountServiceBroker(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - subaccount_id not a valid UUID", func(t *testing.T) {
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclDatasourceSubaccountServiceBrokerByNameBySubaccountIdByBrokerName("uut", "this-is-not-a-uuid", "any-sb-name"),
-					ExpectError: regexp.MustCompile(`Attribute subaccount_id value must be a valid UUID, got: this-is-not-a-uuid`),
-				},
-			},
-		})
-	})
 }
 
 func hclDatasourceSubaccountServiceBrokerBySubaccountNameByBrokerName(resourceName string, subaccountName string, brokerName string) string {
@@ -87,14 +75,6 @@ data "btp_subaccount_service_broker" "%[1]s" {
 	id            = [for sb in data.btp_subaccount_service_brokers.allsbs.values : sb.id if startswith(sb.name, "%[3]s")][0]
 }`
 	return fmt.Sprintf(template, resourceName, subaccountName, brokerName)
-}
-
-func hclDatasourceSubaccountServiceBrokerByNameBySubaccountIdByBrokerName(resourceName string, subaccountId string, brokerName string) string {
-	template := `data "btp_subaccount_service_broker" "%s" {
-	subaccount_id = "%s"
-	name          = "%s"
-}`
-	return fmt.Sprintf(template, resourceName, subaccountId, brokerName)
 }
 
 func hclDatasourceSubaccountServiceBrokerNoSubaccount(resourceName string, brokerName string) string {

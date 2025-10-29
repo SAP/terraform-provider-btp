@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 func newSubaccountDataSource() datasource.DataSource {
@@ -48,7 +47,6 @@ You must be assigned to the admin or viewer role of the global account, director
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
 					stringvalidator.ConflictsWith(path.MatchRoot("region"), path.MatchRoot("subdomain")),
 					stringvalidator.AtLeastOneOf(path.MatchRoot("id"), path.MatchRoot("subdomain")),
 				},

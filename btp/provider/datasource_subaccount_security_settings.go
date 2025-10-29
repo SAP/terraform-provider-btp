@@ -6,11 +6,9 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 func newSubaccountSecuritySettingsDataSource() datasource.DataSource {
@@ -47,9 +45,6 @@ __Further documentation:__
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
-				},
 			},
 			"custom_email_domains": schema.SetAttribute{
 				ElementType:         types.StringType,

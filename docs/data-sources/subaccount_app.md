@@ -10,7 +10,7 @@ description: |-
 # btp_subaccount_app (Data Source)
 
 Gets details about a specific app.
-		
+
 __Tip:__
 You must be assigned to the admin or viewer role of the subaccount.
 

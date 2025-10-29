@@ -43,9 +43,6 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
-				},
 			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the environment instance.",

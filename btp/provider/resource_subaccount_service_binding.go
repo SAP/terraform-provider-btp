@@ -22,7 +22,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/servicemanager"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
-	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
 func newSubaccountServiceBindingResource() resource.Resource {
@@ -55,9 +54,6 @@ You must be assigned to the admin or the service administrator role of the subac
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
-				Validators: []validator.String{
-					uuidvalidator.ValidUUID(),
-				},
 			},
 			"service_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service instance associated with the binding.",
