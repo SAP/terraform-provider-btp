@@ -51,16 +51,15 @@ func subaccountEnvironmentInstanceValueFrom(ctx context.Context, value provision
 		LastModified:    timeToValue(value.ModifiedDate.Time()),
 		Name:            types.StringValue(value.Name),
 		Operation:       types.StringValue(value.Operation),
-		//Parameters:      types.StringValue(value.Parameters),
-		PlanId:       types.StringValue(value.PlanId),
-		PlanName:     types.StringValue(value.PlanName),
-		PlatformId:   types.StringValue(value.PlatformId),
-		ServiceId:    types.StringValue(value.ServiceId),
-		ServiceName:  types.StringValue(value.ServiceName),
-		SubaccountId: types.StringValue(value.SubaccountGUID),
-		State:        types.StringValue(value.State),
-		TenantId:     types.StringValue(value.TenantId),
-		Type_:        types.StringValue(value.Type_),
+		PlanId:          types.StringValue(value.PlanId),
+		PlanName:        types.StringValue(value.PlanName),
+		PlatformId:      types.StringValue(value.PlatformId),
+		ServiceId:       types.StringValue(value.ServiceId),
+		ServiceName:     types.StringValue(value.ServiceName),
+		SubaccountId:    types.StringValue(value.SubaccountGUID),
+		State:           types.StringValue(value.State),
+		TenantId:        types.StringValue(value.TenantId),
+		Type_:           types.StringValue(value.Type_),
 	}
 
 	var diags, diagnostics diag.Diagnostics
@@ -139,17 +138,3 @@ func subaccountEnvironmentInstanceDataSourceValueFrom(ctx context.Context, value
 
 	return environmentInstanceDataSource, diagnostics
 }
-
-// func normalizeJSON(raw string) (string, error) {
-// 	var tmp interface{}
-// 	if err := json.Unmarshal([]byte(raw), &tmp); err != nil {
-// 		return "", err
-// 	}
-
-// 	normalized, err := json.Marshal(tmp)
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	return string(normalized), nil
-// }
