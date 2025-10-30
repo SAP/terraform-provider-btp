@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -11,19 +12,19 @@ import (
 )
 
 type subaccountServiceBindingType struct {
-	SubaccountId      types.String `tfsdk:"subaccount_id"`
-	ServiceInstanceId types.String `tfsdk:"service_instance_id"`
-	Name              types.String `tfsdk:"name"`
-	Parameters        types.String `tfsdk:"parameters"`
-	Id                types.String `tfsdk:"id"`
-	Ready             types.Bool   `tfsdk:"ready"`
-	Context           types.String `tfsdk:"context"`
-	BindResource      types.Map    `tfsdk:"bind_resource"`
-	Credentials       types.String `tfsdk:"credentials"`
-	State             types.String `tfsdk:"state"`
-	CreatedDate       types.String `tfsdk:"created_date"`
-	LastModified      types.String `tfsdk:"last_modified"`
-	Labels            types.Map    `tfsdk:"labels"`
+	SubaccountId      types.String         `tfsdk:"subaccount_id"`
+	ServiceInstanceId types.String         `tfsdk:"service_instance_id"`
+	Name              types.String         `tfsdk:"name"`
+	Parameters        jsontypes.Normalized `tfsdk:"parameters"`
+	Id                types.String         `tfsdk:"id"`
+	Ready             types.Bool           `tfsdk:"ready"`
+	Context           types.String         `tfsdk:"context"`
+	BindResource      types.Map            `tfsdk:"bind_resource"`
+	Credentials       types.String         `tfsdk:"credentials"`
+	State             types.String         `tfsdk:"state"`
+	CreatedDate       types.String         `tfsdk:"created_date"`
+	LastModified      types.String         `tfsdk:"last_modified"`
+	Labels            types.Map            `tfsdk:"labels"`
 }
 
 func subaccountServiceBindingValueFrom(ctx context.Context, value servicemanager.ServiceBindingResponseObject) (subaccountServiceBindingType, diag.Diagnostics) {

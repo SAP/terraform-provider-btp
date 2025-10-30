@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -94,6 +95,7 @@ You must be assigned to the admin or the service administrator role of the subac
 				MarkdownDescription: "The configuration parameters for the service instance.",
 				Optional:            true,
 				Sensitive:           true,
+				CustomType:          jsontypes.NormalizedType{},
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
 				},
@@ -179,7 +181,7 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 
 	// Handle resource import
 	if cliRes.Parameters != "" && state.Parameters.ValueString() == "" {
-		newState.Parameters = types.StringValue(cliRes.Parameters)
+		newState.Parameters = jsontypes.NewNormalizedValue(cliRes.Parameters)
 	} else {
 		newState.Parameters = state.Parameters
 	}

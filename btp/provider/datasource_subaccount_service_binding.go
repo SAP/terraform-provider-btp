@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -92,6 +93,7 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 			"parameters": schema.StringAttribute{
 				MarkdownDescription: "The parameters of the service binding as a valid JSON object.",
 				Computed:            true,
+				CustomType:          jsontypes.NormalizedType{},
 			},
 			"state": schema.StringAttribute{
 				MarkdownDescription: "The current state of the service binding. Possible values are: \n" +
@@ -148,7 +150,7 @@ func (ds *subaccountServiceBindingDataSource) Read(ctx context.Context, req data
 	}
 
 	data, diags = subaccountServiceBindingValueFrom(ctx, cliRes)
-	data.Parameters = types.StringNull() // the API doesn't return parameters for already created instances
+	data.Parameters = jsontypes.NewNormalizedNull() // the API doesn't return parameters for already created instances
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &data)

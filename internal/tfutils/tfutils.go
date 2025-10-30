@@ -240,3 +240,18 @@ func (je *jsonEncoder) Encode(_ reflect.Type, field reflect.Value) (string, erro
 
 	return string(arr), err
 }
+
+// normalizeJSON takes a raw JSON string, unmarshals it, and re-marshals it to produce a normalized JSON string.
+func NormalizeJSON(raw string) (string, error) {
+	var tmp interface{}
+	if err := json.Unmarshal([]byte(raw), &tmp); err != nil {
+		return "", err
+	}
+
+	normalized, err := json.Marshal(tmp)
+	if err != nil {
+		return "", err
+	}
+
+	return string(normalized), nil
+}
