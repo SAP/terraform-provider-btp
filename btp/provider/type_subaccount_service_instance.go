@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -12,23 +13,23 @@ import (
 )
 
 type subaccountServiceInstanceType struct {
-	SubaccountId         types.String   `tfsdk:"subaccount_id"`
-	Id                   types.String   `tfsdk:"id"`
-	Name                 types.String   `tfsdk:"name"`
-	Parameters           types.String   `tfsdk:"parameters"`
-	Ready                types.Bool     `tfsdk:"ready"`
-	ServicePlanId        types.String   `tfsdk:"serviceplan_id"`
-	PlatformId           types.String   `tfsdk:"platform_id"`
-	ReferencedInstanceId types.String   `tfsdk:"referenced_instance_id"`
-	Shared               types.Bool     `tfsdk:"shared"`
-	Context              types.String   `tfsdk:"context"`
-	Usable               types.Bool     `tfsdk:"usable"`
-	State                types.String   `tfsdk:"state"`
-	CreatedDate          types.String   `tfsdk:"created_date"`
-	LastModified         types.String   `tfsdk:"last_modified"`
-	Labels               types.Map      `tfsdk:"labels"`
-	Timeouts             timeouts.Value `tfsdk:"timeouts"`
-	DashboardUrl         types.String   `tfsdk:"dashboard_url"`
+	SubaccountId         types.String         `tfsdk:"subaccount_id"`
+	Id                   types.String         `tfsdk:"id"`
+	Name                 types.String         `tfsdk:"name"`
+	Parameters           jsontypes.Normalized `tfsdk:"parameters"`
+	Ready                types.Bool           `tfsdk:"ready"`
+	ServicePlanId        types.String         `tfsdk:"serviceplan_id"`
+	PlatformId           types.String         `tfsdk:"platform_id"`
+	ReferencedInstanceId types.String         `tfsdk:"referenced_instance_id"`
+	Shared               types.Bool           `tfsdk:"shared"`
+	Context              types.String         `tfsdk:"context"`
+	Usable               types.Bool           `tfsdk:"usable"`
+	State                types.String         `tfsdk:"state"`
+	CreatedDate          types.String         `tfsdk:"created_date"`
+	LastModified         types.String         `tfsdk:"last_modified"`
+	Labels               types.Map            `tfsdk:"labels"`
+	Timeouts             timeouts.Value       `tfsdk:"timeouts"`
+	DashboardUrl         types.String         `tfsdk:"dashboard_url"`
 }
 
 func subaccountServiceInstanceValueFrom(ctx context.Context, value servicemanager.ServiceInstanceResponseObject) (subaccountServiceInstanceType, diag.Diagnostics) {

@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -88,6 +89,7 @@ __Further documentation:__
 			"parameters": schema.StringAttribute{
 				MarkdownDescription: "The configuration parameters for the environment instance.",
 				Required:            true,
+				CustomType:          jsontypes.NormalizedType{},
 			},
 			"landscape_label": schema.StringAttribute{
 				MarkdownDescription: "The name of the landscape within the logged in region on which the environment instance is created.",
@@ -217,7 +219,7 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 		//The "parameter" string contains a status field that needs to be omitted as it is not a parameter that can be defined by the caller
 		// This way we stay consistent between CREATE and IMPORT of environment instances via Terraform
 		reStatus := regexp.MustCompile(`,"status":"(.*?)"`)
-		updatedState.Parameters = types.StringValue(reStatus.ReplaceAllString(updatedState.Parameters.ValueString(), ""))
+		updatedState.Parameters = jsontypes.NewNormalizedValue(reStatus.ReplaceAllString(updatedState.Parameters.ValueString(), ""))
 	}
 
 	resp.Diagnostics.Append(diags...)
@@ -252,7 +254,7 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 
 	timeoutsLocal := plan.Timeouts
 	plan, diags = subaccountEnvironmentInstanceValueFrom(ctx, cliRes)
-	plan.Parameters = types.StringValue(parameters)
+	plan.Parameters = jsontypes.NewNormalizedValue(parameters)
 	resp.Diagnostics.Append(diags...)
 
 	createTimeout, diags := timeoutsLocal.Create(ctx, tfutils.DefaultTimeout)
@@ -287,7 +289,7 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	}
 
 	plan, diags = subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
-	plan.Parameters = types.StringValue(parameters)
+	plan.Parameters = jsontypes.NewNormalizedValue(parameters)
 	plan.Timeouts = timeoutsLocal
 	resp.Diagnostics.Append(diags...)
 
