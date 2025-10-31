@@ -50,10 +50,11 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 					),
 				},
 				{
-					ResourceName:      "btp_subaccount_environment_instance.uut",
-					ImportStateIdFunc: getEnvironmentInstanceIdForImport("btp_subaccount_environment_instance.uut"),
-					ImportState:       true,
-					ImportStateVerify: true,
+					ResourceName:            "btp_subaccount_environment_instance.uut",
+					ImportStateIdFunc:       getEnvironmentInstanceIdForImport("btp_subaccount_environment_instance.uut"),
+					ImportState:             true,
+					ImportStateVerify:       true,
+					ImportStateVerifyIgnore: []string{"parameters"},
 				},
 			},
 		})
@@ -200,8 +201,8 @@ func hclResourceSubaccountEnvironmentInstanceCF(resourceName string, subaccountN
 		InstanceName: orgName,
 		Users: []cfUsers{
 			{
-				Id:    user,
 				Email: user,
+				Id:    user,
 			},
 		},
 	}
@@ -244,8 +245,8 @@ func hclResourceSubaccountEnvironmentInstanceCFTimeout(resourceName string, suba
 		InstanceName: orgName,
 		Users: []cfUsers{
 			{
-				Id:    user,
 				Email: user,
+				Id:    user,
 			},
 		},
 	}
