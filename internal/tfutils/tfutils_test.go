@@ -164,3 +164,56 @@ func TestToBTPCLIParamsMap(t *testing.T) {
 		})
 	}
 }
+
+func TestNormalizeJSON(t *testing.T) {
+	tests := []struct {
+		name        string
+		input       string
+		expected    string
+		expectError bool
+	}{
+		{
+			name:        "Valid JSON with reordered keys",
+			input:       `{"id":1,"email":"test@sap.com"}`,
+			expected:    `{"email":"test@sap.com","id":1}`,
+			expectError: false,
+		},
+		{
+			name:        "Valid JSON with nested structure",
+			input:       `{"instance_name":"test","cf_users":[{"email":"test@sap.com","id":3}]}`,
+			expected:    `{"cf_users":[{"email":"test@sap.com","id":3}],"instance_name":"test"}`,
+			expectError: false,
+		},
+		{
+			name:        "Empty JSON object",
+			input:       `{}`,
+			expected:    `{}`,
+			expectError: false,
+		},
+		{
+			name:        "Invalid JSON",
+			input:       `{"a":1,}`,
+			expected:    "",
+			expectError: true,
+		},
+		{
+			name:        "Valid JSON array",
+			input:       `[{"b":2,"a":1},{"d":4,"c":3}]`,
+			expected:    `[{"a":1,"b":2},{"c":3,"d":4}]`,
+			expectError: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := NormalizeJSON(tt.input)
+
+			if tt.expectError {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.JSONEq(t, tt.expected, result)
+			}
+		})
+	}
+}
