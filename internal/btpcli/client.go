@@ -42,7 +42,7 @@ type SmBrokerError struct {
 	ResponseError string `json:"ResponseError"`
 }
 
-type ResponseBody struct {
+type ErrorResponseBody struct {
 	Error *ResponseBodyError `json:"error"`
 }
 
@@ -204,28 +204,27 @@ func (v2 *v2Client) checkResponseForErrors(ctx context.Context, res *http.Respon
 func (v2 *v2Client) parseResponseError(ctx context.Context, res *http.Response) error {
 	_ = ctx
 	if res.StatusCode == 429 {
-		var body ResponseBody
+		var errorBody ErrorResponseBody
 		// Decode error body JSON
-		if err := json.NewDecoder(res.Body).Decode(&body); err != nil {
+		if err := json.NewDecoder(res.Body).Decode(&errorBody); err != nil {
 			return fmt.Errorf("rate limit exceeded (HTTP 429). Failed to parse error details: %v", err)
 		}
 
-		if body.Error.Code == 11006 {
-			// Build detailed message including limit details if present
-			var detailMsgs []string
-			for _, d := range body.Error.Details {
-				detailMsgs = append(detailMsgs, d.Message)
+		if errorBody.Error.Code == 11006 {
+			var detail []string
+			for _, d := range errorBody.Error.Details {
+				detail = append(detail, d.Message)
 			}
-			details := strings.Join(detailMsgs, "; ")
+			details := strings.Join(detail, "; ")
 			if details != "" {
 				details = ": " + details
 			}
 
-			return fmt.Errorf("rate limit exceeded (HTTP 429) for target '%s': %s%s", body.Error.Target, body.Error.Message, details)
+			return fmt.Errorf("rate limit exceeded (HTTP 429) for target '%s': %s%s", errorBody.Error.Target, errorBody.Error.Message, details)
 		}
 
 		// If code not 11006, fallback message
-		return fmt.Errorf("received HTTP 429 but unexpected error code %d: %s", body.Error.Code, body.Error.Message)
+		return fmt.Errorf("received HTTP 429 but unexpected error code %d: %s", errorBody.Error.Code, errorBody.Error.Message)
 	}
 
 	if res.StatusCode == 504 {
