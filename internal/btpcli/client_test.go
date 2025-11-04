@@ -730,10 +730,10 @@ func TestV2Client_RetryLogic(t *testing.T) {
 	}))
 	defer server.Close()
 
-	srvUrl, _ := url.Parse(server.URL)
-	uut := NewV2ClientWithHttpClient(server.Client(), srvUrl)
-	uut.UserAgent = "TestAgent"
-	uut.newCorrelationID = func() string { return "test-cid" }
+	serverUrl, _ := url.Parse(server.URL)
+	testClient := NewV2ClientWithHttpClient(server.Client(), serverUrl)
+	testClient.UserAgent = "TestAgent"
+	testClient.newCorrelationID = func() string { return "test-cid" }
 
 	// Minimal LoginRequest for trigger
 	loginReq := &LoginRequest{
@@ -743,7 +743,7 @@ func TestV2Client_RetryLogic(t *testing.T) {
 	}
 
 	start := time.Now()
-	resp, err := uut.Login(context.TODO(), loginReq)
+	resp, err := testClient.Login(context.TODO(), loginReq)
 	elapsed := time.Since(start)
 
 	assert.NoError(t, err)
