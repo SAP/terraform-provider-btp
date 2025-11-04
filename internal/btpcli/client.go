@@ -13,8 +13,10 @@ import (
 	"path"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/hashicorp/go-retryablehttp"
 	uuid "github.com/hashicorp/go-uuid"
 )
 
@@ -40,13 +42,40 @@ type SmBrokerError struct {
 	ResponseError string `json:"ResponseError"`
 }
 
+type ResponseBody struct {
+	Error *ResponseBodyError `json:"error"`
+}
+
+type ResponseBodyError struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Target  string `json:"target"`
+	Details []struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	} `json:"details"`
+}
+
 func NewV2Client(serverURL *url.URL) *v2Client {
 	return NewV2ClientWithHttpClient(http.DefaultClient, serverURL)
 }
 
+func NewRetryableHttpClient() *retryablehttp.Client {
+	retryClient := retryablehttp.NewClient()
+	retryClient.RetryMax = 3
+	retryClient.RetryWaitMin = 1 * time.Second
+	retryClient.RetryWaitMax = 10 * time.Second
+	retryClient.Logger = nil
+
+	retryClient.CheckRetry = retryablehttp.ErrorPropagatedRetryPolicy
+	return retryClient
+}
+
 func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL) *v2Client {
+	retryClient := NewRetryableHttpClient()
+	retryClient.HTTPClient = client
 	return &v2Client{
-		httpClient: injectBTPCLITransport(client),
+		httpClient: injectBTPCLITransport(retryClient.StandardClient()),
 		serverURL:  serverURL,
 		newCorrelationID: func() string {
 			val, err := uuid.GenerateUUID()
@@ -173,7 +202,37 @@ func (v2 *v2Client) checkResponseForErrors(ctx context.Context, res *http.Respon
 }
 
 func (v2 *v2Client) parseResponseError(ctx context.Context, res *http.Response) error {
-	return fmt.Errorf("received response with unexpected status")
+	_ = ctx
+	if res.StatusCode == 429 {
+		var body ResponseBody
+		// Decode error body JSON
+		if err := json.NewDecoder(res.Body).Decode(&body); err != nil {
+			return fmt.Errorf("rate limit exceeded (HTTP 429). Failed to parse error details: %v", err)
+		}
+
+		if body.Error.Code == 11006 {
+			// Build detailed message including limit details if present
+			var detailMsgs []string
+			for _, d := range body.Error.Details {
+				detailMsgs = append(detailMsgs, d.Message)
+			}
+			details := strings.Join(detailMsgs, "; ")
+			if details != "" {
+				details = ": " + details
+			}
+
+			return fmt.Errorf("rate limit exceeded (HTTP 429) for target '%s': %s%s", body.Error.Target, body.Error.Message, details)
+		}
+
+		// If code not 11006, fallback message
+		return fmt.Errorf("received HTTP 429 but unexpected error code %d: %s", body.Error.Code, body.Error.Message)
+	}
+
+	if res.StatusCode == 504 {
+		return fmt.Errorf("gateway timeout (HTTP 504). The request may still be completing on the server side")
+	}
+
+	return fmt.Errorf("received response with unexpected status: %d", res.StatusCode)
 }
 
 // Login authenticates a user using username + password

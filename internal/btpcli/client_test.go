@@ -711,3 +711,45 @@ func pemEncodeKeyPair(key *rsa.PrivateKey, cert *x509.Certificate) (pemEncodedKe
 
 	return
 }
+
+func TestV2Client_RetryLogic(t *testing.T) {
+	attemptCount := 0
+	retryStatus := 429
+
+	// Simulate two rate limit failures, then allow success
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		attemptCount++
+		if attemptCount <= 2 {
+			w.Header().Set("Retry-After", "1")
+			w.WriteHeader(retryStatus)
+			_, _ = w.Write([]byte(`rate limit`))
+		} else {
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte(`{"issuer": "accounts.sap.com","user":"john.doe","mail":"john.doe@test.com"}`))
+		}
+	}))
+	defer server.Close()
+
+	srvUrl, _ := url.Parse(server.URL)
+	uut := NewV2ClientWithHttpClient(server.Client(), srvUrl)
+	uut.UserAgent = "TestAgent"
+	uut.newCorrelationID = func() string { return "test-cid" }
+
+	// Minimal LoginRequest for trigger
+	loginReq := &LoginRequest{
+		GlobalAccountSubdomain: "subdomain",
+		Username:               "john.doe",
+		Password:               "pass",
+	}
+
+	start := time.Now()
+	resp, err := uut.Login(context.TODO(), loginReq)
+	elapsed := time.Since(start)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
+	// There should have been 3 attempts: 2 failures + 1 success
+	assert.Equal(t, 3, attemptCount)
+	// The time elapsed should be at least 2 seconds due to Retry-After header
+	assert.GreaterOrEqual(t, int(elapsed.Seconds()), 2)
+}
