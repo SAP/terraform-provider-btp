@@ -159,7 +159,7 @@ func TestV2Client_Login(t *testing.T) {
 			loginRequest: NewLoginRequest("subdomain", "john.doe", "pass"),
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusTeapot,
-				expectErrorMsg:  "received response with unexpected status [Status: 418; Correlation ID: fake-correlation-id]",
+				expectErrorMsg:  "received response with unexpected status: 418 [Status: 418; Correlation ID: fake-correlation-id]",
 			},
 		},
 	}
@@ -255,7 +255,7 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 			loginRequest: NewIdTokenLoginRequest("subdomain", "idToken"),
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusTeapot,
-				expectErrorMsg:  "received response with unexpected status [Status: 418; Correlation ID: fake-correlation-id]",
+				expectErrorMsg:  "received response with unexpected status: 418 [Status: 418; Correlation ID: fake-correlation-id]",
 			},
 		},
 	}

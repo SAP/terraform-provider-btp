@@ -67,7 +67,27 @@ func NewRetryableHttpClient() *retryablehttp.Client {
 	retryClient.RetryWaitMax = 10 * time.Second
 	retryClient.Logger = nil
 
-	retryClient.CheckRetry = retryablehttp.ErrorPropagatedRetryPolicy
+	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
+		// Retry only on transient network errors
+		if err != nil {
+			return true, nil
+		}
+		if resp == nil {
+			return false, nil
+		}
+
+		switch resp.StatusCode {
+		case http.StatusTooManyRequests, // 429
+			http.StatusInternalServerError, // 500
+			http.StatusBadGateway,          // 502
+			http.StatusServiceUnavailable:  // 503
+			// retry only these
+			return true, nil
+		default:
+			// no retry on 504 or user errors
+			return false, nil
+		}
+	}
 	return retryClient
 }
 
@@ -241,7 +261,7 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 	// TODO: After the switch to client protocol v2.49.0 the terraform provider is still providing
 	//       the globalaccount subdomain during login. However, this relies on a special handling
 	//       for older clients that might be removed from the server in the future.
-	res, err := v2.doLoginRequestWithRetry(ctx, path.Join("login", cliTargetProtocolVersion), loginReq)
+	res, err := v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion), loginReq)
 
 	if err != nil {
 		return nil, err
@@ -277,7 +297,7 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequest) (*LoginResponse, error) {
 	ctx = v2.initTrace(ctx)
 
-	res, err := v2.doLoginRequestWithRetry(ctx, path.Join("login", cliTargetProtocolVersion, "idtoken"), loginReq)
+	res, err := v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion, "idtoken"), loginReq)
 
 	if err != nil {
 		return nil, err
@@ -543,20 +563,4 @@ func (v2 *v2Client) GetLoggedInUser() *v2LoggedInUser {
 	}
 
 	return v2.session.LoggedInUser
-}
-
-func (v2 *v2Client) doLoginRequestWithRetry(ctx context.Context, endpoint string, body any) (*http.Response, error) {
-	var res *http.Response
-	var err error
-
-	for i := range 3 {
-		res, err = v2.doPostRequest(ctx, endpoint, body)
-		if err == nil && (res.StatusCode != http.StatusInternalServerError && res.StatusCode != http.StatusGatewayTimeout) {
-			return res, nil
-		}
-
-		time.Sleep(time.Duration(i+1) * time.Second)
-	}
-
-	return res, err
 }
