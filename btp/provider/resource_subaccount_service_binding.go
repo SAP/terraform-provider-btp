@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -68,6 +69,7 @@ You must be assigned to the admin or the service administrator role of the subac
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString(`{}`),
+				CustomType:          jsontypes.NormalizedType{},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 					stringplanmodifier.UseStateForUnknown(),
@@ -156,7 +158,7 @@ func (rs *subaccountServiceBindingResource) Read(ctx context.Context, req resour
 		updatedState.Parameters = state.Parameters
 	} else if updatedState.Parameters.IsNull() && state.Parameters.IsNull() {
 		// During the import of the resource both values might be empty, so we need to apply the default value form the schema if not existing
-		updatedState.Parameters = types.StringValue("{}")
+		updatedState.Parameters = jsontypes.NewNormalizedValue("{}")
 	}
 
 	resp.Diagnostics.Append(diags...)

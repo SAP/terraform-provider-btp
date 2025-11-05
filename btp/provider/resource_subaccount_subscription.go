@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -80,6 +81,7 @@ You must be assigned to the admin role of the subaccount.`,
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString(`{}`),
+				CustomType:          jsontypes.NormalizedType{},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -254,7 +256,7 @@ func (rs *subaccountSubscriptionResource) Read(ctx context.Context, req resource
 		newState.Parameters = state.Parameters
 	} else if newState.Parameters.IsNull() && state.Parameters.IsNull() {
 		// During the import of the resource both values might be empty, so we need to apply the default value form the schema if not existing
-		newState.Parameters = types.StringValue("{}")
+		newState.Parameters = jsontypes.NewNormalizedValue("{}")
 	}
 
 	resp.Diagnostics.Append(diags...)
