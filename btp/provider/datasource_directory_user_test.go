@@ -127,7 +127,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceDirectoryUserDefaultIdpByDirectoryId("uut", "05368777-4934-41e8-9f3c-6ec5f4d564b9", "jenny.doe@test.com"),
-					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`received response with unexpected status: 404 \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})

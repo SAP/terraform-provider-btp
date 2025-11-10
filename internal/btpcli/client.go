@@ -62,9 +62,9 @@ func NewV2Client(serverURL *url.URL) *v2Client {
 
 func NewRetryableHttpClient() *retryablehttp.Client {
 	retryClient := retryablehttp.NewClient()
-	retryClient.RetryMax = 3
+	retryClient.RetryMax = 6
 	retryClient.RetryWaitMin = 1 * time.Second
-	retryClient.RetryWaitMax = 10 * time.Second
+	retryClient.RetryWaitMax = 900 * time.Second
 	retryClient.Logger = nil
 
 	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
@@ -245,10 +245,6 @@ func (v2 *v2Client) parseResponseError(ctx context.Context, res *http.Response) 
 
 		// If code not 11006, fallback message
 		return fmt.Errorf("received HTTP 429 but unexpected error code %d: %s", errorBody.Error.Code, errorBody.Error.Message)
-	}
-
-	if res.StatusCode == 504 {
-		return fmt.Errorf("gateway timeout (HTTP 504). The request may still be completing on the server side")
 	}
 
 	return fmt.Errorf("received response with unexpected status: %d", res.StatusCode)
