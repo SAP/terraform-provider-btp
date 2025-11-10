@@ -60,7 +60,7 @@ func TestDataSourceSubaccountEnvironmentInstances(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceSubaccountEnvironmentInstancesBySubaccountId("uut", "00000000-0000-0000-0000-000000000000"),
-					ExpectError: regexp.MustCompile(`received response with unexpected status \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
+					ExpectError: regexp.MustCompile(`received response with unexpected status: 404 \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
 		})

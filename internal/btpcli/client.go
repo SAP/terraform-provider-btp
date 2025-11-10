@@ -13,8 +13,10 @@ import (
 	"path"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/hashicorp/go-retryablehttp"
 	uuid "github.com/hashicorp/go-uuid"
 )
 
@@ -40,13 +42,87 @@ type SmBrokerError struct {
 	ResponseError string `json:"ResponseError"`
 }
 
-func NewV2Client(serverURL *url.URL) *v2Client {
-	return NewV2ClientWithHttpClient(http.DefaultClient, serverURL)
+type ErrorResponseBody struct {
+	Error *ResponseBodyError `json:"error"`
 }
 
-func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL) *v2Client {
+type ResponseBodyError struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Target  string `json:"target"`
+	Details []struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	} `json:"details"`
+}
+
+type RetryConfig struct {
+    Enabled      bool
+    RetryMax     int
+    RetryWaitMin time.Duration
+    RetryWaitMax time.Duration
+}
+
+func NewV2Client(serverURL *url.URL) *v2Client {
+	return NewV2ClientWithHttpClient(http.DefaultClient, serverURL, nil)
+}
+
+func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
+	retryClient := retryablehttp.NewClient()
+
+	if cfg == nil{
+		cfg = &RetryConfig{
+			Enabled: true,
+			RetryMax: 6,
+			RetryWaitMin: 1 * time.Second,
+			RetryWaitMax: 120 * time.Second,
+		}
+	}
+	retryClient.RetryMax = cfg.RetryMax
+	retryClient.RetryWaitMin = cfg.RetryWaitMin
+	retryClient.RetryWaitMax = cfg.RetryWaitMax
+	retryClient.Logger = nil
+
+	if !cfg.Enabled {
+		retryClient.RetryMax = 0
+		retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
+			return false, nil
+		}
+		retryClient.Backoff = func(min, max time.Duration, attemptNum int, resp *http.Response) time.Duration {
+			return 0
+		}
+		return retryClient
+	}
+
+	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
+		// Retry on transient network errors and specific HTTP status codes (429, 500, 502, 503)
+		if err != nil {
+			return true, nil
+		}
+		if resp == nil {
+			return false, nil
+		}
+
+		switch resp.StatusCode {
+		case http.StatusTooManyRequests, // 429
+			http.StatusInternalServerError, // 500
+			http.StatusBadGateway,          // 502
+			http.StatusServiceUnavailable:  // 503
+			// retry only these
+			return true, nil
+		default:
+			// do not retry on 504, 4xx client errors, or other 5xx errors
+			return false, nil
+		}
+	}
+	return retryClient
+}
+
+func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg *RetryConfig) *v2Client {
+	retryClient := NewRetryableHttpClient(retryCfg)
+	retryClient.HTTPClient = client
 	return &v2Client{
-		httpClient: injectBTPCLITransport(client),
+		httpClient: injectBTPCLITransport(retryClient.StandardClient()),
 		serverURL:  serverURL,
 		newCorrelationID: func() string {
 			val, err := uuid.GenerateUUID()
@@ -166,14 +242,42 @@ func (v2 *v2Client) checkResponseForErrors(ctx context.Context, res *http.Respon
 	if errorMsg, known := knownErrorStates[res.StatusCode]; known {
 		err = fmt.Errorf("%s", errorMsg)
 	} else {
-		err = v2.parseResponseError(ctx, res)
+		err = v2.parseResponseError(res)
 	}
 
 	return fmt.Errorf("%w [Status: %d; Correlation ID: %s]", err, res.StatusCode, ctx.Value(v2ContextKey(HeaderCorrelationID)))
 }
 
-func (v2 *v2Client) parseResponseError(ctx context.Context, res *http.Response) error {
-	return fmt.Errorf("received response with unexpected status")
+func (v2 *v2Client) parseResponseError(res *http.Response) error {
+	if res.StatusCode == 429 {
+		var errorBody ErrorResponseBody
+		// Decode error body JSON
+		if err := json.NewDecoder(res.Body).Decode(&errorBody); err != nil {
+			return fmt.Errorf("rate limit exceeded (HTTP 429). Failed to parse error details: %v", err)
+		}
+
+		if errorBody.Error == nil {
+			return fmt.Errorf("rate limit exceeded (HTTP 429). Response body missing 'error' field")
+		}
+
+		if errorBody.Error.Code == 11006 {
+			var detail []string
+			for _, d := range errorBody.Error.Details {
+				detail = append(detail, d.Message)
+			}
+			details := strings.Join(detail, "; ")
+			if details != "" {
+				details = ": " + details
+			}
+
+			return fmt.Errorf("rate limit exceeded (HTTP 429) for target '%s': %s%s", errorBody.Error.Target, errorBody.Error.Message, details)
+		}
+
+		// If code not 11006, fallback message
+		return fmt.Errorf("received HTTP 429 but unexpected error code %d: %s", errorBody.Error.Code, errorBody.Error.Message)
+	}
+
+	return fmt.Errorf("received response with unexpected status: %d", res.StatusCode)
 }
 
 // Login authenticates a user using username + password
@@ -183,7 +287,7 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 	// TODO: After the switch to client protocol v2.49.0 the terraform provider is still providing
 	//       the globalaccount subdomain during login. However, this relies on a special handling
 	//       for older clients that might be removed from the server in the future.
-	res, err := v2.doLoginRequestWithRetry(ctx, path.Join("login", cliTargetProtocolVersion), loginReq)
+	res, err := v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion), loginReq)
 
 	if err != nil {
 		return nil, err
@@ -219,7 +323,7 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequest) (*LoginResponse, error) {
 	ctx = v2.initTrace(ctx)
 
-	res, err := v2.doLoginRequestWithRetry(ctx, path.Join("login", cliTargetProtocolVersion, "idtoken"), loginReq)
+	res, err := v2.doPostRequest(ctx, path.Join("login", cliTargetProtocolVersion, "idtoken"), loginReq)
 
 	if err != nil {
 		return nil, err
@@ -485,20 +589,4 @@ func (v2 *v2Client) GetLoggedInUser() *v2LoggedInUser {
 	}
 
 	return v2.session.LoggedInUser
-}
-
-func (v2 *v2Client) doLoginRequestWithRetry(ctx context.Context, endpoint string, body any) (*http.Response, error) {
-	var res *http.Response
-	var err error
-
-	for i := range 3 {
-		res, err = v2.doPostRequest(ctx, endpoint, body)
-		if err == nil && (res.StatusCode != http.StatusInternalServerError && res.StatusCode != http.StatusGatewayTimeout) {
-			return res, nil
-		}
-
-		time.Sleep(time.Duration(i+1) * time.Second)
-	}
-
-	return res, err
 }

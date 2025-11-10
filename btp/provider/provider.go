@@ -161,7 +161,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	client := btpcli.NewClientFacade(btpcli.NewV2ClientWithHttpClient(p.httpClient, u))
+	client := btpcli.NewClientFacade(btpcli.NewV2ClientWithHttpClient(p.httpClient, u, nil))
 	btpUserAgent := os.Getenv("BTP_APPEND_USER_AGENT")
 
 	if len(strings.TrimSpace(btpUserAgent)) == 0 {
