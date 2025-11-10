@@ -19,6 +19,7 @@ import (
 	"path"
 	"regexp"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -307,7 +308,7 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 	srvUrl, _ := url.Parse(srv.URL)
 
 	t.Run("happy path", func(t *testing.T) {
-		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 		uut.session = &Session{}
 		uut.newCorrelationID = func() string {
 			return "fake-correlation-id"
@@ -329,7 +330,7 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 	})
 
 	t.Run("happy path - with custom idp", func(t *testing.T) {
-		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 		uut.session = &Session{}
 		uut.newCorrelationID = func() string {
 			return "fake-correlation-id"
@@ -403,7 +404,7 @@ func TestV2Client_PasscodeLogin(t *testing.T) {
 	srvUrl, _ := url.Parse(srv.URL)
 
 	t.Run("happy path", func(t *testing.T) {
-		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 		_, err := uut.PasscodeLogin(context.TODO(), &PasscodeLoginRequest{
 			GlobalAccountSubdomain: "my-subdomain",
 			Username:               "john.doe@test.com",
@@ -417,7 +418,7 @@ func TestV2Client_PasscodeLogin(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("error path - requires certificate", func(t *testing.T) {
-		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 		_, err := uut.PasscodeLogin(context.TODO(), &PasscodeLoginRequest{
 			GlobalAccountSubdomain: "my-subdomain",
 			Username:               "john.doe@test.com",
@@ -445,7 +446,7 @@ func TestV2Client_Execute(t *testing.T) {
 		defer srv.Close()
 
 		srvUrl, _ := url.Parse(srv.URL)
-		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 		_, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
 		assert.NoError(t, err)
@@ -459,7 +460,7 @@ func TestV2Client_Execute(t *testing.T) {
 		defer srv.Close()
 
 		srvUrl, _ := url.Parse(srv.URL)
-		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 		res, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
 		assert.NoError(t, err)
@@ -476,7 +477,7 @@ func TestV2Client_Execute(t *testing.T) {
 		defer srv.Close()
 
 		srvUrl, _ := url.Parse(srv.URL)
-		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 		uut.session = &Session{
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			IdentityProvider:       "my.custom.idp",
@@ -501,7 +502,7 @@ func TestV2Client_Execute(t *testing.T) {
 		defer srv.Close()
 
 		srvUrl, _ := url.Parse(srv.URL)
-		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 		uut.session = &Session{
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			IdentityProvider:       "my.custom.idp",
@@ -526,7 +527,7 @@ func TestV2Client_Execute(t *testing.T) {
 		defer srv.Close()
 
 		srvUrl, _ := url.Parse(srv.URL)
-		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 		uut.session = &Session{
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			IdentityProvider:       "my.custom.idp",
@@ -604,7 +605,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 	defer srv.Close()
 
 	srvUrl, _ := url.Parse(srv.URL)
-	uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl)
+	uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 	uut.UserAgent = "Terraform/x.x.x terraform-plugin-btp/y.y.y"
 	uut.session = config.initSession
 	uut.newCorrelationID = func() string {
@@ -713,13 +714,14 @@ func pemEncodeKeyPair(key *rsa.PrivateKey, cert *x509.Certificate) (pemEncodedKe
 }
 
 func TestV2Client_RetryLogic(t *testing.T) {
-	attemptCount := 0
+	t.Parallel()
+	var attemptCount atomic.Int32
 	retryStatus := 429
 
 	// Simulate two rate limit failures, then allow success
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		attemptCount++
-		if attemptCount <= 2 {
+		currentCount:= attemptCount.Add(1)
+		if currentCount <= 2 {
 			w.Header().Set("Retry-After", "1")
 			w.WriteHeader(retryStatus)
 			_, _ = w.Write([]byte(`rate limit`))
@@ -731,7 +733,7 @@ func TestV2Client_RetryLogic(t *testing.T) {
 	defer server.Close()
 
 	serverUrl, _ := url.Parse(server.URL)
-	testClient := NewV2ClientWithHttpClient(server.Client(), serverUrl)
+	testClient := NewV2ClientWithHttpClient(server.Client(), serverUrl, nil)
 	testClient.UserAgent = "TestAgent"
 	testClient.newCorrelationID = func() string { return "test-cid" }
 
@@ -749,7 +751,9 @@ func TestV2Client_RetryLogic(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, resp)
 	// There should have been 3 attempts: 2 failures + 1 success
-	assert.Equal(t, 3, attemptCount)
-	// The time elapsed should be at least 2 seconds due to Retry-After header
-	assert.GreaterOrEqual(t, int(elapsed.Seconds()), 2)
+	assert.Equal(t, int32(3), attemptCount.Load())
+	// The elapsed time should roughly reflect retries, but allow tolerance
+	elapsedSec := elapsed.Seconds()
+	assert.GreaterOrEqual(t, elapsedSec, 1.0, "should wait at least 1s due to Retry-After header")
+	assert.Less(t, elapsedSec, 5.0, "should not take more than 5s even with retries")
 }

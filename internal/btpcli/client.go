@@ -56,19 +56,46 @@ type ResponseBodyError struct {
 	} `json:"details"`
 }
 
-func NewV2Client(serverURL *url.URL) *v2Client {
-	return NewV2ClientWithHttpClient(http.DefaultClient, serverURL)
+type RetryConfig struct {
+    Enabled      bool
+    RetryMax     int
+    RetryWaitMin time.Duration
+    RetryWaitMax time.Duration
 }
 
-func NewRetryableHttpClient() *retryablehttp.Client {
+func NewV2Client(serverURL *url.URL) *v2Client {
+	return NewV2ClientWithHttpClient(http.DefaultClient, serverURL, nil)
+}
+
+func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
 	retryClient := retryablehttp.NewClient()
-	retryClient.RetryMax = 6
-	retryClient.RetryWaitMin = 1 * time.Second
-	retryClient.RetryWaitMax = 900 * time.Second
+
+	if cfg == nil{
+		cfg = &RetryConfig{
+			Enabled: true,
+			RetryMax: 6,
+			RetryWaitMin: 1 * time.Second,
+			RetryWaitMax: 120 * time.Second,
+		}
+	}
+	retryClient.RetryMax = cfg.RetryMax
+	retryClient.RetryWaitMin = cfg.RetryWaitMin
+	retryClient.RetryWaitMax = cfg.RetryWaitMax
 	retryClient.Logger = nil
 
+	if !cfg.Enabled {
+		retryClient.RetryMax = 0
+		retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
+			return false, nil
+		}
+		retryClient.Backoff = func(min, max time.Duration, attemptNum int, resp *http.Response) time.Duration {
+			return 0
+		}
+		return retryClient
+	}
+
 	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
-		// Retry only on transient network errors
+		// Retry on transient network errors and specific HTTP status codes (429, 500, 502, 503)
 		if err != nil {
 			return true, nil
 		}
@@ -84,15 +111,15 @@ func NewRetryableHttpClient() *retryablehttp.Client {
 			// retry only these
 			return true, nil
 		default:
-			// no retry on 504 or user errors
+			// do not retry on 504, 4xx client errors, or other 5xx errors
 			return false, nil
 		}
 	}
 	return retryClient
 }
 
-func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL) *v2Client {
-	retryClient := NewRetryableHttpClient()
+func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg *RetryConfig) *v2Client {
+	retryClient := NewRetryableHttpClient(retryCfg)
 	retryClient.HTTPClient = client
 	return &v2Client{
 		httpClient: injectBTPCLITransport(retryClient.StandardClient()),
@@ -215,19 +242,22 @@ func (v2 *v2Client) checkResponseForErrors(ctx context.Context, res *http.Respon
 	if errorMsg, known := knownErrorStates[res.StatusCode]; known {
 		err = fmt.Errorf("%s", errorMsg)
 	} else {
-		err = v2.parseResponseError(ctx, res)
+		err = v2.parseResponseError(res)
 	}
 
 	return fmt.Errorf("%w [Status: %d; Correlation ID: %s]", err, res.StatusCode, ctx.Value(v2ContextKey(HeaderCorrelationID)))
 }
 
-func (v2 *v2Client) parseResponseError(ctx context.Context, res *http.Response) error {
-	_ = ctx
+func (v2 *v2Client) parseResponseError(res *http.Response) error {
 	if res.StatusCode == 429 {
 		var errorBody ErrorResponseBody
 		// Decode error body JSON
 		if err := json.NewDecoder(res.Body).Decode(&errorBody); err != nil {
 			return fmt.Errorf("rate limit exceeded (HTTP 429). Failed to parse error details: %v", err)
+		}
+
+		if errorBody.Error == nil {
+			return fmt.Errorf("rate limit exceeded (HTTP 429). Response body missing 'error' field")
 		}
 
 		if errorBody.Error.Code == 11006 {
