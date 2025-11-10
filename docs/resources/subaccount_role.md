@@ -76,7 +76,7 @@ Required:
 
 Optional:
 
-- `value_required` (Boolean) Shows whether the value is required.
+- `value_required` (Boolean, Deprecated) Do not use this attribute as it is defined is defined in the security descriptor (see <https://help.sap.com/docs/btp/sap-business-technology-platform/application-security-descriptor-configuration-syntax?#loio517895a9612241259d6941dbf9ad81cb__section_pv5_5qr_xs>).
 
 ## Import
 
