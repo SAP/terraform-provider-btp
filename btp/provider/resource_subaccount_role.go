@@ -120,7 +120,8 @@ __Further documentation:__
 							},
 						},
 						"value_required": schema.BoolAttribute{
-							MarkdownDescription: "Shows whether the value is required.",
+							MarkdownDescription: "Do not use this attribute as it is defined is defined in the security descriptor (see <https://help.sap.com/docs/btp/sap-business-technology-platform/application-security-descriptor-configuration-syntax?#loio517895a9612241259d6941dbf9ad81cb__section_pv5_5qr_xs>).",
+							DeprecationMessage:  "Remove this attribute's configuration as it is not relevant for role creation. The attribute is defined in the security descriptor (see <https://help.sap.com/docs/btp/sap-business-technology-platform/application-security-descriptor-configuration-syntax?#loio517895a9612241259d6941dbf9ad81cb__section_pv5_5qr_xs>) and not relevant for role creation.",
 							Optional:            true,
 							Computed:            true,
 						},
