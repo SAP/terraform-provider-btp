@@ -7,6 +7,7 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os/exec"
@@ -57,10 +58,10 @@ type ResponseBodyError struct {
 }
 
 type RetryConfig struct {
-    Enabled      bool
-    RetryMax     int
-    RetryWaitMin time.Duration
-    RetryWaitMax time.Duration
+	Enabled      bool
+	RetryMax     int
+	RetryWaitMin time.Duration
+	RetryWaitMax time.Duration
 }
 
 func NewV2Client(serverURL *url.URL) *v2Client {
@@ -69,11 +70,10 @@ func NewV2Client(serverURL *url.URL) *v2Client {
 
 func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
 	retryClient := retryablehttp.NewClient()
-
-	if cfg == nil{
+	if cfg == nil {
 		cfg = &RetryConfig{
-			Enabled: true,
-			RetryMax: 6,
+			Enabled:      true,
+			RetryMax:     6,
 			RetryWaitMin: 1 * time.Second,
 			RetryWaitMax: 120 * time.Second,
 		}
@@ -95,7 +95,7 @@ func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
 	}
 
 	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
-		// Retry on transient network errors and specific HTTP status codes (429, 500, 502, 503)
+		// Retry on transient network errors and specific HTTP status codes (429, 500, 502, 503, 504)
 		if err != nil {
 			return true, nil
 		}
@@ -107,11 +107,22 @@ func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
 		case http.StatusTooManyRequests, // 429
 			http.StatusInternalServerError, // 500
 			http.StatusBadGateway,          // 502
-			http.StatusServiceUnavailable:  // 503
+			http.StatusServiceUnavailable,  // 503
+			http.StatusGatewayTimeout:      // 504
 			// retry only these
 			return true, nil
+
+		case http.StatusBadRequest: // 400
+			bodyBytes, _ := io.ReadAll(resp.Body)
+			bodyString := string(bodyBytes)
+			resp.Body = io.NopCloser(strings.NewReader(bodyString)) // Reconstruct body for further use
+
+			if strings.Contains(bodyString, "[Error: 30004/400]") {
+				return true, nil // for locking scenario API call must be retried
+			}
+			return false, nil
 		default:
-			// do not retry on 504, 4xx client errors, or other 5xx errors
+			// do not retry on 4xx client errors, or other 5xx errors
 			return false, nil
 		}
 	}
