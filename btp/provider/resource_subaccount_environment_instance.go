@@ -261,6 +261,9 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	resp.Diagnostics.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(createTimeout)
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateCreating},
 		Target:  []string{provisioning.StateOK, provisioning.StateCreationFailed},
@@ -321,6 +324,9 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	resp.Diagnostics.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(updateTimeout)
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateUpdating},
 		Target:  []string{provisioning.StateOK, provisioning.StateUpdateFailed},
@@ -376,6 +382,9 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 	resp.Diagnostics.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateDeleting},
 		Target:  []string{"DELETED", provisioning.StateDeletionFailed},

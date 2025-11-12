@@ -305,6 +305,9 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	plan, diags = subaccountValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateCreating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateCreationFailed, cis.StateCanceled},
@@ -384,6 +387,9 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 	plan, diags = subaccountValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateUpdating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
@@ -446,6 +452,9 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateDeleting, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateDeletionFailed, cis.StateCanceled, "DELETED"},

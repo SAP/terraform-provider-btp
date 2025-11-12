@@ -389,6 +389,9 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 	resp.Diagnostics.Append(diags...)
 	delay, minTimeout := tfutils.CalculateDelayAndMinTimeOut(deleteTimeout)
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{"DELETED"},
