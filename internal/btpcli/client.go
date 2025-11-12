@@ -95,7 +95,7 @@ func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
 	}
 
 	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
-		// Retry on transient network errors and specific HTTP status codes (429, 500, 502, 503, 504)
+		// Retry on transient network errors and specific HTTP status codes (429, 500, 502, 503)
 		if err != nil {
 			return true, nil
 		}
@@ -107,8 +107,7 @@ func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
 		case http.StatusTooManyRequests, // 429
 			http.StatusInternalServerError, // 500
 			http.StatusBadGateway,          // 502
-			http.StatusServiceUnavailable,  // 503
-			http.StatusGatewayTimeout:      // 504
+			http.StatusServiceUnavailable:  // 503
 			// retry only these
 			return true, nil
 
