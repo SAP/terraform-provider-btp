@@ -7,6 +7,7 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os/exec"
@@ -57,10 +58,10 @@ type ResponseBodyError struct {
 }
 
 type RetryConfig struct {
-    Enabled      bool
-    RetryMax     int
-    RetryWaitMin time.Duration
-    RetryWaitMax time.Duration
+	Enabled      bool
+	RetryMax     int
+	RetryWaitMin time.Duration
+	RetryWaitMax time.Duration
 }
 
 func NewV2Client(serverURL *url.URL) *v2Client {
@@ -69,11 +70,10 @@ func NewV2Client(serverURL *url.URL) *v2Client {
 
 func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
 	retryClient := retryablehttp.NewClient()
-
-	if cfg == nil{
+	if cfg == nil {
 		cfg = &RetryConfig{
-			Enabled: true,
-			RetryMax: 6,
+			Enabled:      true,
+			RetryMax:     6,
 			RetryWaitMin: 1 * time.Second,
 			RetryWaitMax: 120 * time.Second,
 		}
@@ -110,8 +110,22 @@ func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
 			http.StatusServiceUnavailable:  // 503
 			// retry only these
 			return true, nil
+
+		case http.StatusBadRequest: // 400
+			// Peek into the body to check for specific error codes/messages
+			const maxBodyPeek = 4096
+			var buf bytes.Buffer
+			tee := io.TeeReader(io.LimitReader(resp.Body, maxBodyPeek), &buf)
+			peekBytes, _ := io.ReadAll(tee)
+
+			resp.Body = io.NopCloser(io.MultiReader(bytes.NewReader(buf.Bytes()), resp.Body))
+
+			if strings.Contains(string(peekBytes), "[Error: 30004/400]") {
+				return true, nil // for locking scenario API call must be retried
+			}
+			return false, nil
 		default:
-			// do not retry on 504, 4xx client errors, or other 5xx errors
+			// do not retry on 4xx client errors, or other 5xx errors
 			return false, nil
 		}
 	}

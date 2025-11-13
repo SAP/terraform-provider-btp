@@ -198,6 +198,9 @@ func (rs *subaccountServiceBindingResource) Create(ctx context.Context, req reso
 	updatedPlan, diags := subaccountServiceBindingValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{servicemanager.StateSucceeded},
@@ -261,6 +264,9 @@ func (rs *subaccountServiceBindingResource) Delete(ctx context.Context, req reso
 		return
 	}
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{"DELETED"},

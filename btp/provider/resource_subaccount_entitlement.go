@@ -27,10 +27,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 )
 
-const entitlementCallRetrySucceeded = "retryCallSucceeded"
-const entitlementCallRetryPending = "retryCallPending"
-const entitlementCallRetryFailed = "retryCallFailed"
-
 func newSubaccountEntitlementResource() resource.Resource {
 	return &subaccountEntitlementResource{}
 }
@@ -193,6 +189,9 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 		return
 	}
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	readStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK, cis_entitlements.StateProcessingFailed},
@@ -289,41 +288,11 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		directoryId = parentId
 	}
 
-	// We call the API in a retry mode as the API may return a locking error
-	RetryApiCallConf := &tfutils.StateChangeConf{
-		Pending: []string{entitlementCallRetryPending},
-		Target:  []string{entitlementCallRetryFailed, entitlementCallRetrySucceeded},
-		Refresh: func() (interface{}, string, error) {
-
-			var callResult btpcli.CommandResponse
-			var err error
-
-			if !hasPlanQuota(plan) {
-				callResult, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.PlanUniqueIdentifier.ValueString())
-			} else {
-				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.PlanUniqueIdentifier.ValueString(), int(plan.Amount.ValueInt64()))
-			}
-
-			if err == nil {
-				return callResult, entitlementCallRetrySucceeded, nil
-			}
-
-			if tfutils.IsRetriableErrorForEntitlement(err) {
-				return callResult, entitlementCallRetryPending, nil
-			}
-
-			if err != nil {
-				return callResult, entitlementCallRetryFailed, err
-			}
-
-			return callResult, entitlementCallRetryPending, err
-		},
-		Timeout:    10 * time.Minute,
-		Delay:      10 * time.Second,
-		MinTimeout: 10 * time.Second,
+	if !hasPlanQuota(plan) {
+		_, err = rs.cli.Accounts.Entitlement.EnableInSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.PlanUniqueIdentifier.ValueString())
+	} else {
+		_, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.PlanUniqueIdentifier.ValueString(), int(plan.Amount.ValueInt64()))
 	}
-
-	_, err = RetryApiCallConf.WaitForStateContext(ctx)
 
 	if err != nil {
 		responseDiagnostics.AddError(fmt.Sprintf("API Error %s Resource Entitlement (Subaccount)", action), fmt.Sprintf("%s", err))
@@ -337,7 +306,9 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		return
 	}
 
-	// wait for the entitlement to become effective
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK},
@@ -414,40 +385,11 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 		directoryId = parentId
 	}
 
-	// We call the API in a retry mode as the API may return a locking error
-	RetryApiCallConf := &tfutils.StateChangeConf{
-		Pending: []string{entitlementCallRetryPending},
-		Target:  []string{entitlementCallRetryFailed, entitlementCallRetrySucceeded},
-		Refresh: func() (interface{}, string, error) {
-			var callResult btpcli.CommandResponse
-			var err error
-
-			if !hasPlanQuota(state) {
-				callResult, err = rs.cli.Accounts.Entitlement.DisableInSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
-			} else {
-				callResult, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.PlanUniqueIdentifier.ValueString(), 0)
-			}
-
-			if err == nil {
-				return callResult, entitlementCallRetrySucceeded, nil
-			}
-
-			if tfutils.IsRetriableErrorForEntitlement(err) {
-				return callResult, entitlementCallRetryPending, nil
-			}
-
-			if err != nil {
-				return callResult, entitlementCallRetryFailed, err
-			}
-
-			return callResult, entitlementCallRetryPending, err
-		},
-		Timeout:    10 * time.Minute,
-		Delay:      10 * time.Second,
-		MinTimeout: 10 * time.Second,
+	if !hasPlanQuota(state) {
+		_, err = rs.cli.Accounts.Entitlement.DisableInSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+	} else {
+		_, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.PlanUniqueIdentifier.ValueString(), 0)
 	}
-
-	_, err = RetryApiCallConf.WaitForStateContext(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Entitlement (Subaccount)", fmt.Sprintf("%s", err))
@@ -461,6 +403,9 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 		return
 	}
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{"DELETED"},

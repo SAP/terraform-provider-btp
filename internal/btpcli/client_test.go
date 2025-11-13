@@ -720,7 +720,7 @@ func TestV2Client_RetryLogic(t *testing.T) {
 
 	// Simulate two rate limit failures, then allow success
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		currentCount:= attemptCount.Add(1)
+		currentCount := attemptCount.Add(1)
 		if currentCount <= 2 {
 			w.Header().Set("Retry-After", "1")
 			w.WriteHeader(retryStatus)

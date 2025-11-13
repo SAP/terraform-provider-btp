@@ -266,6 +266,9 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 	plan, diags = directoryValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateCreating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateCreationFailed, cis.StateCanceled},
@@ -370,6 +373,9 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateDeleting, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateDeletionFailed, cis.StateCanceled, "DELETED"},
@@ -453,6 +459,9 @@ func (rs *directoryResource) enableDirectory(ctx context.Context, plan directory
 	plan, diags := directoryValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	enableStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateUpdating, cis.StateStarted, cis.StateDeleting, cis.StateCreating},
 		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
@@ -518,6 +527,9 @@ func (rs *directoryResource) updateDirectory(ctx context.Context, plan directory
 	plan, diags := directoryValueFrom(ctx, cliRes)
 	resp.Diagnostics.Append(diags...)
 
+	// The retryable HTTP client already handles transient network and HTTP errors.
+	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
+	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
 	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateUpdating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
