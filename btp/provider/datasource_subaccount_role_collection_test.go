@@ -28,7 +28,34 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "name", "Subaccount Viewer"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "description", "Read-only access to the subaccount"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "read_only", "true"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "roles.#", "5"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "roles.#", "6"),
+					),
+				},
+			},
+		})
+	})
+	t.Run("happy path", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_role_collection_with_attribute_mappings")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclDatasourceSubaccountRoleCollectionWithAttributeMappings("uut", "integration-test-acc-static", "Subaccount Viewer"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("data.btp_subaccount_role_collection.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "name", "Subaccount Viewer"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "description", "Read-only access to the subaccount"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "read_only", "true"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "roles.#", "6"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "show_attribute_mappings", "true"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "attribute_mappings.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "attribute_mappings.0.attribute", "Groups"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "attribute_mappings.0.identity_provider", "terraformint-platform"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "attribute_mappings.0.operator", "equals"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "attribute_mappings.0.value", "CI/CD"),
 					),
 				},
 			},
@@ -97,6 +124,17 @@ data "btp_subaccounts" "all" {}
 data "btp_subaccount_role_collection" "%s" {
     subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
     name          = "%s"
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName, name)
+}
+
+func hclDatasourceSubaccountRoleCollectionWithAttributeMappings(resourceName string, subaccountName string, name string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_role_collection" "%s" {
+    subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+    name          = "%s"
+	show_attribute_mappings = true
 }`
 	return fmt.Sprintf(template, resourceName, subaccountName, name)
 }

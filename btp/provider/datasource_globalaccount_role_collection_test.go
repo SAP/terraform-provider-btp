@@ -32,6 +32,31 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 			},
 		})
 	})
+	t.Run("happy path", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_exists_with_attribute_mappings")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountRoleCollectionWithAttributeMappings("uut", "Global Account Administrator"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", ""),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "read_only", "true"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "show_attribute_mappings", "true"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "attribute_mappings.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "attribute_mappings.0.attribute", "Groups"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "attribute_mappings.0.identity_provider", "iasprovidertestblr.accounts400.ondemand.com (platform users)"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "attribute_mappings.0.operator", "equals"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "attribute_mappings.0.value", "CI/CD"),
+					),
+				},
+			},
+		})
+	})
 
 	t.Run("error path - role collection not available", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_not_available")
@@ -86,6 +111,15 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 
 func hclDatasourceGlobalaccountRoleCollection(resourceName string, name string) string {
 	template := `data "btp_globalaccount_role_collection" "%s" { name = "%s" }`
+
+	return fmt.Sprintf(template, resourceName, name)
+}
+
+func hclDatasourceGlobalaccountRoleCollectionWithAttributeMappings(resourceName string, name string) string {
+	template := `data "btp_globalaccount_role_collection" "%s" { 
+	name = "%s" 
+	show_attribute_mappings = true
+	}`
 
 	return fmt.Sprintf(template, resourceName, name)
 }

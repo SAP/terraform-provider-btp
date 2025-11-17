@@ -31,6 +31,14 @@ func (f *securityRoleCollectionFacade) GetByGlobalAccount(ctx context.Context, r
 	}))
 }
 
+func (f *securityRoleCollectionFacade) GetByGlobalAccountWithAttributeMapings(ctx context.Context, roleCollectionName string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
+	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+		"globalAccount":         f.cliClient.GetGlobalAccountSubdomain(),
+		"roleCollectionName":    roleCollectionName,
+		"showAttributeMappings": "true",
+	}))
+}
+
 func (f *securityRoleCollectionFacade) CreateByGlobalAccount(ctx context.Context, roleCollectionName string, description string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
 	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewCreateRequest(f.getCommand(), map[string]string{
 		"globalAccount":      f.cliClient.GetGlobalAccountSubdomain(),
@@ -67,6 +75,14 @@ func (f *securityRoleCollectionFacade) GetBySubaccount(ctx context.Context, suba
 	}))
 }
 
+func (f *securityRoleCollectionFacade) GetBySubaccountWithAttributeMappings(ctx context.Context, subaccountId string, roleCollectionName string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
+	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+		"subaccount":            subaccountId,
+		"roleCollectionName":    roleCollectionName,
+		"showAttributeMappings": "true",
+	}))
+}
+
 func (f *securityRoleCollectionFacade) CreateBySubaccount(ctx context.Context, subaccountId string, roleCollectionName string, description string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
 	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewCreateRequest(f.getCommand(), map[string]string{
 		"subaccount":         subaccountId,
@@ -100,6 +116,14 @@ func (f *securityRoleCollectionFacade) GetByDirectory(ctx context.Context, direc
 	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"directory":          directoryId,
 		"roleCollectionName": roleCollectionName,
+	}))
+}
+
+func (f *securityRoleCollectionFacade) GetByDirectoryWithAttributeMappings(ctx context.Context, directoryId string, roleCollectionName string) (xsuaa_authz.RoleCollection, CommandResponse, error) {
+	return doExecute[xsuaa_authz.RoleCollection](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+		"directory":             directoryId,
+		"roleCollectionName":    roleCollectionName,
+		"showAttributeMappings": "true",
 	}))
 }
 

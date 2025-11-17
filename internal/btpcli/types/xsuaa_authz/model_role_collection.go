@@ -12,10 +12,10 @@ type RoleCollection struct {
 	// The name has a maximum length of 64 characters.
 	Name string `json:"name,omitempty"`
 	// The description has a maximum length of 1000 characters.
-	Description        string               `json:"description,omitempty"`
-	GroupReferences    []GroupReference     `json:"groupReferences,omitempty"`
-	RoleReferences     []RoleReference      `json:"roleReferences,omitempty"`
-	UserReferences     []UserReference      `json:"userReferences,omitempty"`
-	SamlAttrAssignment []SamlAttrAssignment `json:"samlAttrAssignment,omitempty"`
-	IsReadOnly         bool                 `json:"isReadOnly,omitempty"`
+	Description             string               `json:"description,omitempty"`
+	GroupReferences         []GroupReference     `json:"groupReferences,omitempty"`
+	RoleReferences          []RoleReference      `json:"roleReferences,omitempty"`
+	UserReferences          []UserReference      `json:"userReferences,omitempty"`
+	SamlAttributeAssignment []SamlAttrAssignment `json:"samlAttributeAssignment,omitempty"`
+	IsReadOnly              bool                 `json:"isReadOnly,omitempty"`
 }

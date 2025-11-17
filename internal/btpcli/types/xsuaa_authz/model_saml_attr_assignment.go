@@ -22,4 +22,5 @@ type SamlAttrAssignment struct {
 	// The operator value that matches the attribute name to its value.
 	ComparisonOperator string `json:"comparisonOperator,omitempty"`
 	SamlEntityId       string `json:"samlEntityId,omitempty"`
+	IdentityProvider   string `json:"idpDisplayName,omitempty"`
 }
