@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_authz"
 )
 
 func newGlobalaccountRoleCollectionDataSource() datasource.DataSource {
@@ -24,14 +25,24 @@ type globalaccountRoleCollectionRoleType struct {
 	Name              types.String `tfsdk:"name"`
 }
 
+type globalaccountRoleCollectionAttributeMappingsType struct {
+	/* OUTPUT */
+	IdentityProvider types.String `tfsdk:"identity_provider"`
+	Attribute        types.String `tfsdk:"attribute"`
+	Operator         types.String `tfsdk:"operator"`
+	Value            types.String `tfsdk:"value"`
+}
+
 type globalaccountRoleCollectionDataSourceConfig struct {
 	Id types.String `tfsdk:"id"`
 
 	/* OUTPUT */
-	Name        types.String                          `tfsdk:"name"`
-	IsReadOnly  types.Bool                            `tfsdk:"read_only"`
-	Description types.String                          `tfsdk:"description"`
-	Roles       []globalaccountRoleCollectionRoleType `tfsdk:"roles"`
+	Name                  types.String                                       `tfsdk:"name"`
+	IsReadOnly            types.Bool                                         `tfsdk:"read_only"`
+	Description           types.String                                       `tfsdk:"description"`
+	Roles                 []globalaccountRoleCollectionRoleType              `tfsdk:"roles"`
+	ShowAttributeMappings types.Bool                                         `tfsdk:"show_attribute_mappings"`
+	AttributeMappings     []globalaccountRoleCollectionAttributeMappingsType `tfsdk:"attribute_mappings"`
 }
 
 type globalaccountRoleCollectionDataSource struct {
@@ -100,13 +111,44 @@ You must be assigned to the admin or viewer role of the global account.`,
 				},
 				Computed: true,
 			},
+			"show_attribute_mappings": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the data source will also return which user attributes and user groups provided by an identity provider effectively grant this role collection.",
+				Optional:            true,
+			},
+			"attribute_mappings": schema.SetNestedAttribute{
+				MarkdownDescription: "List of user attributes and user groups from identity providers that effectively grant this role collection.",
+				Computed:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"identity_provider": schema.StringAttribute{
+							MarkdownDescription: "The display name of the identity provider from which the attribute or group mapping originates.",
+							Computed:            true,
+						},
+						"attribute": schema.StringAttribute{
+							MarkdownDescription: "The user attribute or group name used in the mapping.",
+							Computed:            true,
+						},
+						"operator": schema.StringAttribute{
+							MarkdownDescription: "The operator applied in the attribute mapping. Only `equals` is currently supported.",
+							Computed:            true,
+							Validators: []validator.String{
+								stringvalidator.OneOf("EQUALS, equals"),
+							},
+						},
+						"value": schema.StringAttribute{
+							MarkdownDescription: "The value of the user attribute or group that grants the role collection.",
+							Computed:            true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
 
 func (ds *globalaccountRoleCollectionDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data globalaccountRoleCollectionDataSourceConfig
-
+	var roleCollectionDetails, roleCollectionAttributeMappings xsuaa_authz.RoleCollection
 	diags := req.Config.Get(ctx, &data)
 
 	resp.Diagnostics.Append(diags...)
@@ -114,25 +156,45 @@ func (ds *globalaccountRoleCollectionDataSource) Read(ctx context.Context, req d
 		return
 	}
 
-	cliRes, _, err := ds.cli.Security.RoleCollection.GetByGlobalAccount(ctx, data.Name.ValueString())
+	roleCollectionDetails, _, err := ds.cli.Security.RoleCollection.GetByGlobalAccount(ctx, data.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Role Collection (Global Account)", fmt.Sprintf("%s", err))
 		return
 	}
 
+	if data.ShowAttributeMappings.ValueBool() {
+		roleCollectionAttributeMappings, _, err = ds.cli.Security.RoleCollection.GetByGlobalAccountWithAttributeMapings(ctx, data.Name.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Role Collection (Global Account) Attribute Mappings", fmt.Sprintf("%s", err))
+			return
+		}
+	}
+
 	data.Id = types.StringValue(ds.cli.GetGlobalAccountSubdomain())
-	data.Name = types.StringValue(cliRes.Name)
-	data.Description = types.StringValue(cliRes.Description)
-	data.IsReadOnly = types.BoolValue(cliRes.IsReadOnly)
+	data.Name = types.StringValue(roleCollectionDetails.Name)
+	data.Description = types.StringValue(roleCollectionDetails.Description)
+	data.IsReadOnly = types.BoolValue(roleCollectionDetails.IsReadOnly)
 
 	data.Roles = []globalaccountRoleCollectionRoleType{}
-	for _, ref := range cliRes.RoleReferences {
+	for _, ref := range roleCollectionDetails.RoleReferences {
 		data.Roles = append(data.Roles, globalaccountRoleCollectionRoleType{
 			RoleTemplateName:  types.StringValue(ref.RoleTemplateName),
 			RoleTemplateAppId: types.StringValue(ref.RoleTemplateAppId),
 			Description:       types.StringValue(ref.Description),
 			Name:              types.StringValue(ref.Name),
 		})
+	}
+
+	if data.ShowAttributeMappings.ValueBool() {
+		// Attribute mappings
+		for _, am := range roleCollectionAttributeMappings.SamlAttributeAssignment {
+			data.AttributeMappings = append(data.AttributeMappings, globalaccountRoleCollectionAttributeMappingsType{
+				IdentityProvider: types.StringValue(am.IdentityProvider),
+				Attribute:        types.StringValue(am.AttributeName),
+				Operator:         types.StringValue(am.ComparisonOperator),
+				Value:            types.StringValue(am.SamlAttributeValue),
+			})
+		}
 	}
 
 	diags = resp.State.Set(ctx, &data)
