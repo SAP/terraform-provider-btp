@@ -22,9 +22,9 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountDestinationTrust("test", "integration-test-acc-static", true),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountDestinationTrust("test", "integration-test-acc-static", "ACTIVE"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_destination_trust.test", "active", "true"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_trust.test", "trust_type", "ACTIVE"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_trust.test", "base_url", "cfapps.eu12.hana.ondemand.com"),
 						resource.TestCheckResourceAttrSet("data.btp_subaccount_destination_trust.test", "expiration"),
 						resource.TestCheckResourceAttrSet("data.btp_subaccount_destination_trust.test", "generated_on"),
@@ -49,9 +49,9 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountDestinationTrust("test", "integration-test-acc-static", false),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountDestinationTrust("test", "integration-test-acc-static", "PASSIVE"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_destination_trust.test", "active", "false"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_trust.test", "trust_type", "PASSIVE"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_trust.test", "base_url", "cfapps.eu12.hana.ondemand.com"),
 						resource.TestCheckResourceAttrSet("data.btp_subaccount_destination_trust.test", "expiration"),
 						resource.TestCheckResourceAttrSet("data.btp_subaccount_destination_trust.test", "generated_on"),
@@ -93,7 +93,7 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclDatasourceSubaccountDestinationTrust("test", "integration-test-services-static", false),
+					Config:      hclProviderFor(user) + hclDatasourceSubaccountDestinationTrust("test", "integration-test-services-static", "PASSIVE"),
 					ExpectError: regexp.MustCompile(`There is no such key pair for this account`), // TODO improve error text
 				},
 			},
@@ -102,12 +102,12 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 
 }
 
-func hclDatasourceSubaccountDestinationTrust(resourceName string, Name string, active bool) string {
+func hclDatasourceSubaccountDestinationTrust(resourceName string, Name string, TrustType string) string {
 	template := `
 data "btp_subaccounts" "all" {}
 data "btp_subaccount_destination_trust" "%s" {	
 subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
-active = "%t"
+trust_type = "%s"
 }`
-	return fmt.Sprintf(template, resourceName, Name, active)
+	return fmt.Sprintf(template, resourceName, Name, TrustType)
 }
