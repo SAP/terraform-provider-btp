@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
@@ -36,6 +37,14 @@ func New() provider.Provider {
 }
 
 func NewWithClient(httpClient *http.Client) provider.Provider {
+	return &btpcliProvider{httpClient: httpClient}
+}
+
+func NewWithFunctions() provider.ProviderWithFunctions {
+	return NewWithFunctionsAndClient(http.DefaultClient)
+}
+
+func NewWithFunctionsAndClient(httpClient *http.Client) provider.ProviderWithFunctions {
 	return &btpcliProvider{httpClient: httpClient}
 }
 
@@ -432,6 +441,12 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newSubaccountDestinationFragmentDataSource,
 		newSubaccountDestinationFragmentsDataSource,
 	}, betaDataSources...)
+}
+
+func (p *btpcliProvider) Functions(_ context.Context) []func() function.Function {
+	return []func() function.Function{
+		NewExtractCfApiUrlFunction,
+	}
 }
 
 func determineAuthFlow(config providerData, idToken string, ssoLogin bool, assertion string) string {

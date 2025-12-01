@@ -13,6 +13,7 @@ import (
 	"unicode"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
@@ -519,7 +520,7 @@ provider "btp" {
 	globalaccount  = "ga"
 	assertion     = "assertion"
 	idtoken        = "idtoken"
-	
+
 }
 data "btp_whoami" "me" {}`,
 					ExpectError: regexp.MustCompile(`Attribute "idtoken" cannot be specified when "assertion" is specified`),
@@ -691,4 +692,22 @@ func TestProvider_HasDatasources(t *testing.T) {
 	}
 
 	assert.ElementsMatch(t, expectedDataSources, registeredDataSources)
+}
+
+func TestProvider_HasFunctions(t *testing.T) {
+	expectedFunctions := []string{
+		"extract_cf_api_url",
+	}
+
+	ctx := context.Background()
+	registeredFunctions := []string{}
+
+	for _, functionEntry := range NewWithFunctions().Functions(ctx) {
+		var resp function.MetadataResponse
+
+		functionEntry().Metadata(ctx, function.MetadataRequest{}, &resp)
+		registeredFunctions = append(registeredFunctions, resp.Name)
+	}
+
+	assert.ElementsMatch(t, expectedFunctions, registeredFunctions)
 }
