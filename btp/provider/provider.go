@@ -428,6 +428,7 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newSubaccountUsersDataSource,
 		newSubaccountsDataSource,
 		newWhoamiDataSource,
+		newSubaccountDestinationTrustDataSource,
 	}, betaDataSources...)
 }
 
