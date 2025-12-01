@@ -42,8 +42,7 @@ data "btp_subaccount_destination_trust" "subaccount_dt_active" {
 - `id` (String, Deprecated) The ID of the subaccount.
 - `name` (String) The name of the destination trust.
 - `owner` (Attributes) The owner of the destination trust. (see [below for nested schema](#nestedatt--owner))
-- `public_key_base64` (String) The public key in base64 format of the destination trust.
-- `x509_public_key_base64` (String) The x509 public key in base64 format of the destination trust.
+- `x509_public_key_base64` (String) The base64 encoded public certificate, enabling the establishment of trust at the target system for SAML flows.
 
 <a id="nestedatt--owner"></a>
 ### Nested Schema for `owner`

@@ -7,7 +7,6 @@ type DestinationTrust struct {
 	Expiration          int64                  `json:"expirationTimestamp,omitempty"`
 	Owner               *DestinationTrustOwner `json:"Owner,omitempty"`
 	GeneratedOn         string                 `json:"generatedOn,omitempty"`
-	PublicKeyBase64     string                 `json:"PublicKeyBase64,omitempty"`
 	X509PublicKeyBase64 string                 `json:"x509PublicKeyBase64,omitempty"`
 }
 

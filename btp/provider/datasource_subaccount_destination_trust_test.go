@@ -9,7 +9,6 @@ import (
 )
 
 func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
-	var regexpBase64 = regexp.MustCompile(`^[A-Za-z0-9+/=\s]+$`)
 	var regexpX509 = regexp.MustCompile(`-----BEGIN CERTIFICATE-----[\s\S]+-----END CERTIFICATE-----`)
 
 	t.Parallel()
@@ -32,7 +31,6 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_trust.test", "name", "keypair"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination_trust.test", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination_trust.test", "owner.subaccount_id", regexpValidUUID),
-						resource.TestMatchResourceAttr("data.btp_subaccount_destination_trust.test", "public_key_base64", regexpBase64),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination_trust.test", "x509_public_key_base64", regexpX509),
 					),
 				},
@@ -59,7 +57,6 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_trust.test", "name", "keypair"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination_trust.test", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination_trust.test", "owner.subaccount_id", regexpValidUUID),
-						resource.TestMatchResourceAttr("data.btp_subaccount_destination_trust.test", "public_key_base64", regexpBase64),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination_trust.test", "x509_public_key_base64", regexpX509),
 					),
 				},

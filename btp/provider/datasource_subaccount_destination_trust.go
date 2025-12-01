@@ -30,7 +30,6 @@ type subaccountDestinationTrustType struct {
 	Expiration          types.String `tfsdk:"expiration"`
 	Owner               types.Object `tfsdk:"owner"`
 	GeneratedOn         types.String `tfsdk:"generated_on"`
-	PublicKeyBase64     types.String `tfsdk:"public_key_base64"`
 	X509PublicKeyBase64 types.String `tfsdk:"x509_public_key_base64"`
 }
 
@@ -114,12 +113,8 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 				MarkdownDescription: "The generation timestamp of the destination trust.",
 				Computed:            true,
 			},
-			"public_key_base64": schema.StringAttribute{
-				MarkdownDescription: "The public key in base64 format of the destination trust.",
-				Computed:            true,
-			},
 			"x509_public_key_base64": schema.StringAttribute{
-				MarkdownDescription: "The x509 public key in base64 format of the destination trust.",
+				MarkdownDescription: "The base64 encoded public certificate, enabling the establishment of trust at the target system for SAML flows.",
 				Computed:            true,
 			},
 		},
@@ -153,7 +148,6 @@ func (ds *subaccountDestinationTrustDataSource) Read(ctx context.Context, req da
 	data.Name = types.StringValue(destinationTrustDetails.Name)
 	data.BaseURL = types.StringValue(destinationTrustDetails.BaseURL)
 	data.GeneratedOn = types.StringValue(destinationTrustDetails.GeneratedOn)
-	data.PublicKeyBase64 = types.StringValue(destinationTrustDetails.PublicKeyBase64)
 	data.X509PublicKeyBase64 = types.StringValue(destinationTrustDetails.X509PublicKeyBase64)
 
 	if destinationTrustDetails.Active {
