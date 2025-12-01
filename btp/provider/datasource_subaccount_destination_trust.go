@@ -22,7 +22,7 @@ func newSubaccountDestinationTrustDataSource() datasource.DataSource {
 type subaccountDestinationTrustType struct {
 	/* INPUT */
 	SubaccountID types.String `tfsdk:"subaccount_id"`
-	Active       types.Bool   `tfsdk:"active"`
+	TrustType    types.String `tfsdk:"trust_type"`
 	/* OUTPUT */
 	ID                  types.String `tfsdk:"id"`
 	Name                types.String `tfsdk:"name"`
@@ -84,10 +84,13 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 				MarkdownDescription: "The base URL of the destination trust.",
 				Computed:            true,
 			},
-			"active": schema.BoolAttribute{
+			"trust_type": schema.StringAttribute{
 				MarkdownDescription: "Shows whether the destination trust is active or passive.",
 				Optional:            true,
 				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("ACTIVE", "PASSIVE"),
+				},
 			},
 			"expiration": schema.StringAttribute{
 				MarkdownDescription: "The expiration timestamp of the destination trust.",
@@ -133,8 +136,11 @@ func (ds *subaccountDestinationTrustDataSource) Read(ctx context.Context, req da
 	}
 
 	active := true // if not provided, default to active destination trust certificate
-	if !data.Active.IsNull() && !data.Active.IsUnknown() {
-		active = data.Active.ValueBool()
+	if !data.TrustType.IsNull() && !data.TrustType.IsUnknown() {
+		trustTypeValue := data.TrustType.ValueString()
+		if trustTypeValue == "PASSIVE" {
+			active = false
+		}
 	}
 
 	destinationTrustDetails, _, err := ds.cli.Connectivity.DestinationTrust.GetBySubaccount(ctx, data.SubaccountID.ValueString(), active)
@@ -149,7 +155,12 @@ func (ds *subaccountDestinationTrustDataSource) Read(ctx context.Context, req da
 	data.GeneratedOn = types.StringValue(destinationTrustDetails.GeneratedOn)
 	data.PublicKeyBase64 = types.StringValue(destinationTrustDetails.PublicKeyBase64)
 	data.X509PublicKeyBase64 = types.StringValue(destinationTrustDetails.X509PublicKeyBase64)
-	data.Active = types.BoolValue(active)
+
+	if destinationTrustDetails.Active {
+		data.TrustType = types.StringValue("ACTIVE")
+	} else {
+		data.TrustType = types.StringValue("PASSIVE")
+	}
 
 	// Owner
 	expTime := time.UnixMilli(destinationTrustDetails.Expiration).UTC().Format(time.RFC3339Nano)

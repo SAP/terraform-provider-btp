@@ -19,7 +19,7 @@ You must be assigned to the admin or viewer role of the subaccount.
 ```terraform
 data "btp_subaccount_destination_trust" "subaccount_dt_active" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  active        = true // to fetch active destination trust
+  trust_type    = "ACTIVE" // to fetch active destination trust
 }
 ```
 
@@ -32,7 +32,7 @@ data "btp_subaccount_destination_trust" "subaccount_dt_active" {
 
 ### Optional
 
-- `active` (Boolean) Shows whether the destination trust is active or passive.
+- `trust_type` (String) Shows whether the destination trust is active or passive.
 
 ### Read-Only
 
