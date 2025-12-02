@@ -141,6 +141,9 @@ __Further documentation:__
 			"labels": schema.StringAttribute{
 				MarkdownDescription: "The Broker-specified key-value pairs that specify attributes of an environment instance.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"last_modified": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
@@ -157,6 +160,9 @@ __Further documentation:__
 			"platform_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the platform for the environment instance in the corresponding service broker's catalog.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"service_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service for the environment instance in the corresponding service broker's catalog.",
