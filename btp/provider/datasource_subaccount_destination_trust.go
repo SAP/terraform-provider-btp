@@ -84,7 +84,7 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 				Computed:            true,
 			},
 			"trust_type": schema.StringAttribute{
-				MarkdownDescription: "Shows whether the destination trust is active or passive.",
+				MarkdownDescription: "Shows whether the destination trust is active or passive. If not provided, defaults to ACTIVE.",
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{

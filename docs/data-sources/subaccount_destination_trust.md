@@ -32,7 +32,7 @@ data "btp_subaccount_destination_trust" "subaccount_dt_active" {
 
 ### Optional
 
-- `trust_type` (String) Shows whether the destination trust is active or passive.
+- `trust_type` (String) Shows whether the destination trust is active or passive. If not provided, defaults to ACTIVE.
 
 ### Read-Only
 
