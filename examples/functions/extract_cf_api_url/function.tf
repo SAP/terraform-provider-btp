@@ -6,5 +6,5 @@
 # This will return the value "https://api.cf.example.com"
 output "cf_api_url" {
   description = "API URL of the Cloud Foundry environment instance"
-  value = provider::btp::extract_cf_api_url(btp_subaccount_environment_instance.cf_instance.labels)
+  value       = provider::btp::extract_cf_api_url(btp_subaccount_environment_instance.cf_instance.labels)
 }

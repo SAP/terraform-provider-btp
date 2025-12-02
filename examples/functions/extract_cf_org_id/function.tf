@@ -6,5 +6,5 @@
 # This will return the value "8d818824-394a-abcd-0815-7a3c8ce93e57"
 output "cf_org_id" {
   description = "Org ID of the Cloud Foundry environment instance"
-  value = provider::btp::extract_cf_org_id(btp_subaccount_environment_instance.cf_instance.labels)
+  value       = provider::btp::extract_cf_org_id(btp_subaccount_environment_instance.cf_instance.labels)
 }

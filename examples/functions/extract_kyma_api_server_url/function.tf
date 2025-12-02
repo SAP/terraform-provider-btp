@@ -6,5 +6,5 @@
 # This will return the value "https://api.kyma.example.com"
 output "kyma_api_server_url" {
   description = "API Server URL of the Kyma environment instance"
-  value = provider::btp::extract_kyma_api_server_url(btp_subaccount_environment_instance.kyma_instance.labels)
+  value       = provider::btp::extract_kyma_api_server_url(btp_subaccount_environment_instance.kyma_instance.labels)
 }
