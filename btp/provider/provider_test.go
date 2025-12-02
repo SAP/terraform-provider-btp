@@ -698,6 +698,7 @@ func TestProvider_HasFunctions(t *testing.T) {
 	expectedFunctions := []string{
 		"extract_cf_api_url",
 		"extract_cf_org_id",
+		"extract_kyma_api_server_url",
 	}
 
 	ctx := context.Background()

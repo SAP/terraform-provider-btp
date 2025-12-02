@@ -10,7 +10,7 @@ type ExtractCfOrgIdFunction struct{}
 
 var _ function.Function = &ExtractCfOrgIdFunction{}
 
-func NewEExtractCfOrgIdFunction() function.Function {
+func NewExtractCfOrgIdFunction() function.Function {
 	return &ExtractCfOrgIdFunction{}
 }
 

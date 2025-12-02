@@ -446,7 +446,8 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 func (p *btpcliProvider) Functions(_ context.Context) []func() function.Function {
 	return []func() function.Function{
 		NewExtractCfApiUrlFunction,
-		NewEExtractCfOrgIdFunction,
+		NewExtractCfOrgIdFunction,
+		NewExtractKymaApiServerUrlFunction,
 	}
 }
 
