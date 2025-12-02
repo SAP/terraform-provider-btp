@@ -74,7 +74,7 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + `
 						data "btp_subaccount_destination_trust" "test" {
-						  active = false
+						  trust_type = "PASSIVE"
 						  }`,
 					ExpectError: regexp.MustCompile(`The argument \"subaccount_id\" is required`),
 				},

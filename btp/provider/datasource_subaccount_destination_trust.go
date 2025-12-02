@@ -156,21 +156,25 @@ func (ds *subaccountDestinationTrustDataSource) Read(ctx context.Context, req da
 		data.TrustType = types.StringValue("PASSIVE")
 	}
 
-	// Owner
 	expTime := time.UnixMilli(destinationTrustDetails.Expiration).UTC().Format(time.RFC3339Nano)
 	data.Expiration = types.StringValue(expTime)
 
+	// Owner
 	if destinationTrustDetails.Owner != nil {
 		ownerAttrs := map[string]attr.Value{
 			"instance_id":   types.StringValue(destinationTrustDetails.Owner.InstanceID),
 			"subaccount_id": types.StringValue(destinationTrustDetails.Owner.SubaccountID),
 		}
-		data.Owner, _ = types.ObjectValue(destinationTrustDatasourceOwnerObjectType(), ownerAttrs)
+		ownerObj, diags := types.ObjectValue(destinationTrustDatasourceOwnerObjectType(), ownerAttrs)
+		resp.Diagnostics.Append(diags...)
+		data.Owner = ownerObj
 	} else {
-		data.Owner, _ = types.ObjectValue(destinationTrustDatasourceOwnerObjectType(), map[string]attr.Value{
+		ownerObj, diags := types.ObjectValue(destinationTrustDatasourceOwnerObjectType(), map[string]attr.Value{
 			"instance_id":   types.StringNull(),
 			"subaccount_id": types.StringNull(),
 		})
+		resp.Diagnostics.Append(diags...)
+		data.Owner = ownerObj
 	}
 
 	diags = resp.State.Set(ctx, &data)
