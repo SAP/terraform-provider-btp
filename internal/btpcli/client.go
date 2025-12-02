@@ -25,10 +25,12 @@ const DefaultServerURL string = "https://cli.btp.cloud.sap"
 
 // We define an Uber Error type that is used to handle errors from the BTP CLI client.
 // The error structure comprises the possible JSON structure of the error responses
+// Some services return "error", others return "ErrorMessage". Both are mapped here for consistent handling.
 type BtpClientError struct {
-	Message     string         `json:"error"` // This should always be available
-	Description string         `json:"description"`
-	BrokerError *SmBrokerError `json:"broker_error"` // Service Broker/Service Manager specific
+	Message      string         `json:"error"` // This should always be available
+	Description  string         `json:"description"`
+	BrokerError  *SmBrokerError `json:"broker_error"` // Service Broker/Service Manager specific
+	ErrorMessage string         `json:"ErrorMessage"` // Alternate error field used by some services
 }
 
 // The service broker error
@@ -562,7 +564,17 @@ func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options
 		var backendError BtpClientError
 
 		if err = json.NewDecoder(res.Body).Decode(&backendError); err == nil {
-			err = fmt.Errorf("%s", backendError.Message)
+			msg := backendError.Message
+			if msg == "" && backendError.ErrorMessage != "" {
+				msg = backendError.ErrorMessage
+			}
+			if msg == "" && backendError.Description != "" {
+				msg = backendError.Description
+			}
+			if msg == "" {
+				msg = "unknown backend error"
+			}
+			err = fmt.Errorf("%s", msg)
 			// Handle scenarios where more error context can potentially be provided
 			err = handleSpecialErrors(backendError, err)
 		} else if res.Header.Get(HeaderCLIServerMessage) != "" {
