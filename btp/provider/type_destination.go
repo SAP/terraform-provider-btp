@@ -26,24 +26,12 @@ type subaccountDestinationTypeOut struct {
 	AdditionalConfiguration jsontypes.Normalized `tfsdk:"additional_configuration"`
 }
 
-type subaccountDestinationTypeInput struct {
-	SubaccountID            types.String         `tfsdk:"subaccount_id"`
-	CreationTime            types.String         `tfsdk:"creation_time"`
-	Etag                    types.String         `tfsdk:"etag"`
-	ModificationTime        types.String         `tfsdk:"modification_time"`
-	Name                    types.String         `tfsdk:"name"`
-	Type                    types.String         `tfsdk:"type"`
-	ProxyType               types.String         `tfsdk:"proxy_type"`
-	URL                     types.String         `tfsdk:"url"`
-	Authentication          types.String         `tfsdk:"authentication"`
-	Description             types.String         `tfsdk:"description"`
-	ServiceInstanceID       types.String         `tfsdk:"service_instance_id"`
-	NamesOnly               types.Bool           `tfsdk:"names_only"`
-	AdditionalConfiguration jsontypes.Normalized `tfsdk:"additional_configuration"`
-}
-
 type subaccountDestinationNames struct {
 	Name types.String `tfsdk:"name"`
+}
+
+type namesOutputArr struct {
+	Name []subaccountDestinationNames `tfsdk:"names"`
 }
 
 func BuildDestinationConfigurationJSON(destination subaccountDestinationTypeOut) (string, error) {
@@ -122,7 +110,7 @@ func destinationValueFrom(value connectivity.DestinationResponse, subaccountID t
 		destination.ServiceInstanceID = serviceInstanceID
 	}
 
-	if tmp == nil || len(tmp) == 0 {
+	if len(tmp) == 0 {
 		destination.AdditionalConfiguration = jsontypes.NewNormalizedNull()
 	} else {
 		additionalJSON, _ := json.Marshal(tmp)

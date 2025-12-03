@@ -3,7 +3,6 @@ package provider
 import (
 	"fmt"
 	"regexp"
-	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -20,9 +19,9 @@ func TestDataSourceDestination(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDestination("uut", "destination-resource", "ba268910-81e6-4ac1-9016-cae7ed196889", ""),
+					Config: hclProviderFor(user) + hclDatasourceDestination("uut", "destination-resource", "integration-test-destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "subaccount_id", "ba268910-81e6-4ac1-9016-cae7ed196889"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_destination.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "authentication", "NoAuthentication"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination.uut", "creation_time", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "description", "testing resource for destination update"),
@@ -45,16 +44,16 @@ func TestDataSourceDestination(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDestination("uut", "destination-resource-with-service-instance", "ba268910-81e6-4ac1-9016-cae7ed196889", "499614ab-4e09-4836-9cf8-889f0a39b4b3"),
+					Config: hclProviderFor(user) + hclDatasourceDestinationSI("uut", "destination-resource-with-service-instance", "integration-test-destination", "servtest"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "subaccount_id", "ba268910-81e6-4ac1-9016-cae7ed196889"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_destination.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "authentication", "OAuth2ClientCredentials"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination.uut", "creation_time", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "description", "testing resource for destination update"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination.uut", "modification_time", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "name", "destination-resource-with-service-instance"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "proxy_type", "Internet"),
-						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "service_instance_id", "499614ab-4e09-4836-9cf8-889f0a39b4b3"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_destination.uut", "service_instance_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "type", "HTTP"),
 					),
 				},
@@ -67,7 +66,7 @@ func TestDataSourceDestination(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      `data "btp_subaccount_destination" "test" {subaccount_id = "ba268910-81e6-4ac1-9016-cae7ed196889"}`,
+					Config:      `data "btp_subaccount_destination" "test" {subaccount_id = "integration-test-destination"}`,
 					ExpectError: regexp.MustCompile(`The argument "name" is required, but no definition was found.`),
 				},
 			},
@@ -94,7 +93,7 @@ func TestDataSourceDestination(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclDatasourceDestination("uut", "invalid_destination", "ba268910-81e6-4ac1-9016-cae7ed196889", "499614ab-4e09-4836-9cf8-889f0a39b4b3"),
+					Config:      hclProviderFor(user) + hclDatasourceDestination("uut", "invalid_destination", "integration-test-destination"),
 					ExpectError: regexp.MustCompile(`Configuration with the specified name was not found`),
 				},
 			},
@@ -102,15 +101,27 @@ func TestDataSourceDestination(t *testing.T) {
 	})
 }
 
-func hclDatasourceDestination(datasourceName string, name string, subaccount string, serviceInstance string) string {
-	var serviceInstanceLine string
-	if strings.TrimSpace(serviceInstance) != "" {
-		serviceInstanceLine = fmt.Sprintf(`service_instance_id = "%s"`, serviceInstance)
-	}
-	template := `data "btp_subaccount_destination" "%s" {
+func hclDatasourceDestination(datasourceName string, name string, subaccount string) string {
+	template := `
+	data "btp_subaccounts" "all" {}
+	data "btp_subaccount_destination" "%s" {
 	name = "%s"
-	subaccount_id = "%s"
-	%s
+	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	}`
-	return fmt.Sprintf(template, datasourceName, name, subaccount, serviceInstanceLine)
+	return fmt.Sprintf(template, datasourceName, name, subaccount)
+}
+
+func hclDatasourceDestinationSI(datasourceName string, name string, subaccountName string, serviceInstanceName string) string {
+	template := `
+	data "btp_subaccounts" "all" {}
+	data "btp_subaccount_service_instance" "dest" {
+  		subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+  		name          = "%s"
+	}
+	data "btp_subaccount_destination" "%s" {
+	name = "%s"
+	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+	service_instance_id = data.btp_subaccount_service_instance.dest.id
+	}`
+	return fmt.Sprintf(template, subaccountName, serviceInstanceName, datasourceName, name, subaccountName)
 }
