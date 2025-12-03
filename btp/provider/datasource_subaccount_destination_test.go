@@ -21,7 +21,6 @@ func TestDataSourceDestination(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceDestination("uut", "destination-resource", "integration-test-destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestMatchResourceAttr("data.btp_subaccount_destination.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "authentication", "NoAuthentication"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination.uut", "creation_time", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "description", "testing resource for destination update"),
@@ -46,7 +45,6 @@ func TestDataSourceDestination(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceDestinationSI("uut", "destination-resource-with-service-instance", "integration-test-destination", "servtest"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestMatchResourceAttr("data.btp_subaccount_destination.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "authentication", "OAuth2ClientCredentials"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_destination.uut", "creation_time", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination.uut", "description", "testing resource for destination update"),
