@@ -72,6 +72,7 @@ func TestExtractLabelValue_Error_NoJSON(t *testing.T) {
 		t.Fatalf("expected error for invalid JSON, got nil")
 	}
 }
+
 func TestExtractLabelValue_Error_MissingKey(t *testing.T) {
 	label := `{"Org Name":"example"}`
 	_, err := ExtractLabelValue(label, EnvironmentLabelKeyCfApiUrl)

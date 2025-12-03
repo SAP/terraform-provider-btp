@@ -30,6 +30,7 @@ func isValidEnvironmentLabelKey(k EnvironmentLabelKey) bool {
 	}
 }
 
+// ExtractLabelValue parses a label string and extracts the value for the specified key.
 func ExtractLabelValue(label string, key EnvironmentLabelKey) (string, error) {
 
 	var baseErrorMsg = fmt.Sprintf("error: failed to extract label value for key %s. Reason: ", key.String())
