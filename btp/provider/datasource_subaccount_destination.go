@@ -96,7 +96,7 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 }
 
 func (ds *subaccountDestinationDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data subaccountDestinationTypeOut
+	var data subaccountDestinationType
 	diags := req.Config.Get(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
