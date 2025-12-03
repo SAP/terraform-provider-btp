@@ -41,7 +41,7 @@ func (f *ExtractCfOrgIdFunction) Run(ctx context.Context, req function.RunReques
 	resp.Error = function.ConcatFuncErrors(resp.Error, req.Arguments.Get(ctx, &label))
 
 	if resp.Error != nil {
-		resp.Error = function.ConcatFuncErrors(resp.Error, function.NewFuncError("Error reading input: "+resp.Error.Error()))
+		resp.Error = function.ConcatFuncErrors(resp.Error, function.NewFuncError("error reading input: "+resp.Error.Error()))
 		return
 	}
 
