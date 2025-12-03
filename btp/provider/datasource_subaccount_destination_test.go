@@ -8,10 +8,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestDataSourceDestination(t *testing.T) {
+func TestDataSourceSubaccountDestination(t *testing.T) {
 	t.Parallel()
-	t.Run("happy path with and without service instance", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination")
+	t.Run("happy path without service instance", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_without_service_instance")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -34,8 +34,8 @@ func TestDataSourceDestination(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path with and without service instance", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination")
+	t.Run("happy path with service instance", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_with_service_instance")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -83,7 +83,7 @@ func TestDataSourceDestination(t *testing.T) {
 		})
 	})
 	t.Run("error path - destination not found", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_not_found")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
