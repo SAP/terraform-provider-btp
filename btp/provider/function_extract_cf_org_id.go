@@ -41,16 +41,15 @@ func (f *ExtractCfOrgIdFunction) Run(ctx context.Context, req function.RunReques
 	resp.Error = function.ConcatFuncErrors(resp.Error, req.Arguments.Get(ctx, &label))
 
 	if resp.Error != nil {
-		resp.Error = function.ConcatFuncErrors(resp.Error, function.NewFuncError("error reading input: "+resp.Error.Error()))
 		return
 	}
 
-	org_id, err := ExtractLabelValue(label, EnvironmentLabelKeyCfOrgId)
+	orgId, err := ExtractLabelValue(label, EnvironmentLabelKeyCfOrgId)
 
 	if err != nil {
 		resp.Error = function.ConcatFuncErrors(resp.Error, function.NewFuncError(err.Error()))
 		return
 	}
 
-	resp.Error = function.ConcatFuncErrors(resp.Error, resp.Result.Set(ctx, org_id))
+	resp.Error = function.ConcatFuncErrors(resp.Error, resp.Result.Set(ctx, orgId))
 }

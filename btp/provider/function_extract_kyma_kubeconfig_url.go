@@ -41,16 +41,15 @@ func (f *ExtractKymaKubeconfigUrlFunction) Run(ctx context.Context, req function
 	resp.Error = function.ConcatFuncErrors(resp.Error, req.Arguments.Get(ctx, &label))
 
 	if resp.Error != nil {
-		resp.Error = function.ConcatFuncErrors(resp.Error, function.NewFuncError("Error reading input: "+resp.Error.Error()))
 		return
 	}
 
-	org_id, err := ExtractLabelValue(label, EnvironmentLabelKeyKymaKubeconfigUrl)
+	kubeconfigUrl, err := ExtractLabelValue(label, EnvironmentLabelKeyKymaKubeconfigUrl)
 
 	if err != nil {
 		resp.Error = function.ConcatFuncErrors(resp.Error, function.NewFuncError(err.Error()))
 		return
 	}
 
-	resp.Error = function.ConcatFuncErrors(resp.Error, resp.Result.Set(ctx, org_id))
+	resp.Error = function.ConcatFuncErrors(resp.Error, resp.Result.Set(ctx, kubeconfigUrl))
 }

@@ -41,7 +41,6 @@ func (f *ExtractCfApiUrlFunction) Run(ctx context.Context, req function.RunReque
 	resp.Error = function.ConcatFuncErrors(resp.Error, req.Arguments.Get(ctx, &label))
 
 	if resp.Error != nil {
-		resp.Error = function.ConcatFuncErrors(resp.Error, function.NewFuncError("error reading input: "+resp.Error.Error()))
 		return
 	}
 
