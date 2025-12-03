@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type subaccountDestinationTypeOut struct {
+type subaccountDestinationType struct {
 	SubaccountID            types.String         `tfsdk:"subaccount_id"`
 	CreationTime            types.String         `tfsdk:"creation_time"`
 	Etag                    types.String         `tfsdk:"etag"`
@@ -26,52 +26,24 @@ type subaccountDestinationTypeOut struct {
 	AdditionalConfiguration jsontypes.Normalized `tfsdk:"additional_configuration"`
 }
 
-func BuildDestinationConfigurationJSON(destination subaccountDestinationTypeOut) (string, error) {
-	config := map[string]any{}
-
-	if !destination.Name.IsNull() {
-		config["Name"] = destination.Name.ValueString()
-	}
-	if !destination.Type.IsNull() {
-		config["Type"] = destination.Type.ValueString()
-	}
-	if !destination.ProxyType.IsNull() {
-		config["ProxyType"] = destination.ProxyType.ValueString()
-	}
-	if !destination.URL.IsNull() {
-		config["URL"] = destination.URL.ValueString()
-	}
-	if !destination.Authentication.IsNull() {
-		config["Authentication"] = destination.Authentication.ValueString()
-	}
-	if !destination.Description.IsNull() {
-		config["Description"] = destination.Description.ValueString()
-	}
-
-	if !destination.AdditionalConfiguration.IsNull() {
-		var extra map[string]any
-		err := json.Unmarshal([]byte(destination.AdditionalConfiguration.ValueString()), &extra)
-		if err != nil {
-			return "", err
-		}
-		for k, v := range extra {
-			config[k] = v
-		}
-	}
-
-	jsonBytes, err := json.Marshal(config)
+func destinationValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationType, diag.Diagnostics) {
+	cts, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
 	if err != nil {
-		return "", err
+		diagnostics := diag.Diagnostics{
+			diag.NewErrorDiagnostic("failed to convert creation time", err.Error()),
+		}
+		return subaccountDestinationType{}, diagnostics
 	}
-	return string(jsonBytes), nil
-}
-
-func destinationValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationTypeOut, diag.Diagnostics) {
-	cts, _ := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
 	creatTime := time.UnixMilli(cts).UTC().Format(time.RFC3339)
-	mts, _ := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
+	mts, err := strconv.ParseInt(value.SystemMetadata.ModificationTime, 10, 64)
+	if err != nil {
+		diagnostics := diag.Diagnostics{
+			diag.NewErrorDiagnostic("failed to convert modification time", err.Error()),
+		}
+		return subaccountDestinationType{}, diagnostics
+	}
 	modifyTime := time.UnixMilli(mts).UTC().Format(time.RFC3339)
-	destination := subaccountDestinationTypeOut{
+	destination := subaccountDestinationType{
 		Etag:         types.StringValue(value.SystemMetadata.Etag),
 		SubaccountID: subaccountID,
 	}
@@ -105,7 +77,13 @@ func destinationValueFrom(value connectivity.DestinationResponse, subaccountID t
 	if len(tmp) == 0 {
 		destination.AdditionalConfiguration = jsontypes.NewNormalizedNull()
 	} else {
-		additionalJSON, _ := json.Marshal(tmp)
+		additionalJSON, err := json.Marshal(tmp)
+		if err != nil {
+			diagnostics := diag.Diagnostics{
+				diag.NewErrorDiagnostic("failed to marshal additional configuration", err.Error()),
+			}
+			return subaccountDestinationType{}, diagnostics
+		}
 		destination.AdditionalConfiguration = jsontypes.NewNormalizedValue(string(additionalJSON))
 	}
 	var diagnostics diag.Diagnostics
