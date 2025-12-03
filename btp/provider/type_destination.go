@@ -26,14 +26,6 @@ type subaccountDestinationTypeOut struct {
 	AdditionalConfiguration jsontypes.Normalized `tfsdk:"additional_configuration"`
 }
 
-type subaccountDestinationNames struct {
-	Name types.String `tfsdk:"name"`
-}
-
-type namesOutputArr struct {
-	Name []subaccountDestinationNames `tfsdk:"names"`
-}
-
 func BuildDestinationConfigurationJSON(destination subaccountDestinationTypeOut) (string, error) {
 	config := map[string]any{}
 
