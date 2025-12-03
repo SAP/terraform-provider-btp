@@ -2,17 +2,28 @@
 page_title: "btp_subaccount_destination_fragments Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets details about a specific subaccount destination fragment.
+  Gets details about a list of subaccount destination fragments.
   Tip:
-  You must be assigned to the admin or viewer role of the subaccount.
+  You must be assigned admin role of the subaccount and destination service.
+  Scope:
+  Subaccount-level fragments: Specify only the 'subaccount_id' and 'name' attribute.Service instance-level fragments: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
+  Notes:
+  'service_instance_id' is optional. When omitted, the fragments is searched at the subaccount level.
 ---
 
 # btp_subaccount_destination_fragments (Data Source)
 
-Gets details about a specific subaccount destination fragment.
+Gets details about a list of subaccount destination fragments.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the subaccount.
+You must be assigned admin role of the subaccount and destination service.
+
+__Scope:__
+- **Subaccount-level fragments**: Specify only the 'subaccount_id' and 'name' attribute.
+- **Service instance-level fragments**: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
+
+__Notes:__
+- 'service_instance_id' is optional. When omitted, the fragments is searched at the subaccount level.
 
 
 
