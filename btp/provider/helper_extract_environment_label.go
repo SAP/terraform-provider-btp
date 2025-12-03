@@ -3,6 +3,7 @@ package provider
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 type EnvironmentLabelKey string
@@ -31,8 +32,10 @@ func isValidEnvironmentLabelKey(k EnvironmentLabelKey) bool {
 
 func ExtractLabelValue(label string, key EnvironmentLabelKey) (string, error) {
 
+	var baseErrorMsg = fmt.Sprintf("error: failed to extract label value for key %s. Reason: ", key.String())
+
 	if label == "" {
-		return "", errors.New("label is empty")
+		return "", errors.New(baseErrorMsg + "label is empty")
 	}
 
 	if key.String() == "" {
@@ -40,22 +43,22 @@ func ExtractLabelValue(label string, key EnvironmentLabelKey) (string, error) {
 	}
 
 	if !isValidEnvironmentLabelKey(key) {
-		return "", errors.New("unsupported key: '" + key.String() + "'")
+		return "", errors.New(baseErrorMsg + "unsupported key: '" + key.String() + "'")
 	}
 
 	var data map[string]any
 	if err := json.Unmarshal([]byte(label), &data); err != nil {
-		return "", errors.New("failed to parse label JSON: " + err.Error())
+		return "", errors.New(baseErrorMsg + "failed to parse label JSON: " + err.Error())
 	}
 
 	val, ok := data[key.String()]
 	if !ok {
-		return "", errors.New("label does not contain '" + key.String() + "'")
+		return "", errors.New(baseErrorMsg + "label does not contain '" + key.String() + "'")
 	}
 
 	strVal, ok := val.(string)
 	if !ok || strVal == "" {
-		return "", errors.New("the value for '" + key.String() + "' is missing or not a string")
+		return "", errors.New(baseErrorMsg + "the value for '" + key.String() + "' is missing or not a string")
 	}
 
 	return strVal, nil
