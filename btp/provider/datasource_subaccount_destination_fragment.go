@@ -50,7 +50,11 @@ func (ds *subaccountDestinationFragmentDataSource) Schema(_ context.Context, _ d
 		MarkdownDescription: `Gets details about a specific subaccount destination fragment.
 
 __Tip:__
-You must be assigned admin role of the subaccount and destination service.
+You must have the appropriate connectivity and destination permissions, such as:
+- Subaccount Administrator  
+- Destination Administrator  
+- Destination Viewer  
+- Connectivity and Destination Administrator
 
 __Scope:__
 - **Subaccount-level fragment**: Specify only the 'subaccount_id' and 'name' attribute.

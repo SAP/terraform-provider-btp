@@ -12,6 +12,8 @@ type connectivityDestinationFragmentFacade struct {
 	cliClient *v2Client
 }
 
+const errMarshalFragmentContent = "failed to marshal destination fragment content: %w"
+
 func newConnectivityDestinationFragmentFacade(cliClient *v2Client) connectivityDestinationFragmentFacade {
 	return connectivityDestinationFragmentFacade{cliClient: cliClient}
 }
@@ -51,7 +53,7 @@ func (f *connectivityDestinationFragmentFacade) ListByServiceInstance(ctx contex
 func (f *connectivityDestinationFragmentFacade) CreateBySubaccount(ctx context.Context, subaccountID string, content map[string]string) (connectivity.DestinationFragment, CommandResponse, error) {
 	jsonBytes, err := json.Marshal(content)
 	if err != nil {
-		return connectivity.DestinationFragment{}, CommandResponse{}, fmt.Errorf("failed to marshal destination fragment content: %w", err)
+		return connectivity.DestinationFragment{}, CommandResponse{}, fmt.Errorf(errMarshalFragmentContent, err)
 	}
 
 	params := map[string]string{
@@ -65,7 +67,7 @@ func (f *connectivityDestinationFragmentFacade) CreateBySubaccount(ctx context.C
 func (f *connectivityDestinationFragmentFacade) CreateByServiceInstance(ctx context.Context, subaccountID string, serviceInstanceID string, content map[string]string) (connectivity.DestinationFragment, CommandResponse, error) {
 	jsonBytes, err := json.Marshal(content)
 	if err != nil {
-		return connectivity.DestinationFragment{}, CommandResponse{}, fmt.Errorf("failed to marshal destination fragment content: %w", err)
+		return connectivity.DestinationFragment{}, CommandResponse{}, fmt.Errorf(errMarshalFragmentContent, err)
 	}
 
 	params := map[string]string{
@@ -80,7 +82,7 @@ func (f *connectivityDestinationFragmentFacade) CreateByServiceInstance(ctx cont
 func (f *connectivityDestinationFragmentFacade) UpdateBySubaccount(ctx context.Context, subaccountID string, content map[string]string) (connectivity.DestinationFragment, CommandResponse, error) {
 	jsonBytes, err := json.Marshal(content)
 	if err != nil {
-		return connectivity.DestinationFragment{}, CommandResponse{}, fmt.Errorf("failed to marshal destination fragment content: %w", err)
+		return connectivity.DestinationFragment{}, CommandResponse{}, fmt.Errorf(errMarshalFragmentContent, err)
 	}
 
 	params := map[string]string{
@@ -94,7 +96,7 @@ func (f *connectivityDestinationFragmentFacade) UpdateBySubaccount(ctx context.C
 func (f *connectivityDestinationFragmentFacade) UpdateByServiceInstance(ctx context.Context, subaccountID string, serviceInstanceID string, content map[string]string) (connectivity.DestinationFragment, CommandResponse, error) {
 	jsonBytes, err := json.Marshal(content)
 	if err != nil {
-		return connectivity.DestinationFragment{}, CommandResponse{}, fmt.Errorf("failed to marshal destination fragment content: %w", err)
+		return connectivity.DestinationFragment{}, CommandResponse{}, fmt.Errorf(errMarshalFragmentContent, err)
 	}
 
 	params := map[string]string{

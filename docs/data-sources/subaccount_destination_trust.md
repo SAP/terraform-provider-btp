@@ -4,7 +4,8 @@ subcategory: ""
 description: |-
   Gets details about a specific subaccount destination trust.
   Tip:
-  You must be assigned to the admin or viewer role of the subaccount.
+  You must have the appropriate connectivity and destination permissions, such as:
+  Subaccount AdministratorDestination AdministratorDestination ViewerConnectivity and Destination Administrator
 ---
 
 # btp_subaccount_destination_trust (Data Source)
@@ -12,7 +13,11 @@ description: |-
 Gets details about a specific subaccount destination trust.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the subaccount.
+You must have the appropriate connectivity and destination permissions, such as:
+- Subaccount Administrator  
+- Destination Administrator  
+- Destination Viewer  
+- Connectivity and Destination Administrator
 
 ## Example Usage
 

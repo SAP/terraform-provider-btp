@@ -4,7 +4,8 @@ subcategory: ""
 description: |-
   Manages a destination fragment in a SAP BTP subaccount or in the scope of a specific service instance.
   Tip:
-  You must be assigned admin role of the subaccount and destination service.
+  You must have the appropriate connectivity and destination permissions, such as:
+  Subaccount AdministratorDestination AdministratorDestination ViewerConnectivity and Destination Administrator
   Scope:
   Subaccount-level fragment: Specify only the 'subaccount_id' and 'name' attribute.Service instance-level fragment: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
   Notes:
@@ -16,7 +17,11 @@ description: |-
 Manages a destination fragment in a SAP BTP subaccount or in the scope of a specific service instance.
 
 __Tip:__
-You must be assigned admin role of the subaccount and destination service.
+You must have the appropriate connectivity and destination permissions, such as:
+- Subaccount Administrator  
+- Destination Administrator  
+- Destination Viewer  
+- Connectivity and Destination Administrator
 
 __Scope:__
 - **Subaccount-level fragment**: Specify only the 'subaccount_id' and 'name' attribute.
@@ -59,7 +64,7 @@ Import is supported using the following syntax:
 # this resource supports import using identity attribute from Terraform version 1.12 or higher
 
 import {
-to =  btp_subaccount_destination_role.<resource_name>
+to =  btp_subaccount_destination_fragment.<resource_name>
 identity = {
   name  = "<name>"
   subaccount_id = "<subaccount_id>"

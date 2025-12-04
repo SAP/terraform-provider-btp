@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
@@ -57,7 +58,11 @@ func (rs *subaccountDestinationFragmentResource) Schema(_ context.Context, _ res
 		MarkdownDescription: `Manages a destination fragment in a SAP BTP subaccount or in the scope of a specific service instance.
 
 __Tip:__
-You must be assigned admin role of the subaccount and destination service.
+You must have the appropriate connectivity and destination permissions, such as:
+- Subaccount Administrator  
+- Destination Administrator  
+- Destination Viewer  
+- Connectivity and Destination Administrator
 
 __Scope:__
 - **Subaccount-level fragment**: Specify only the 'subaccount_id' and 'name' attribute.
@@ -115,7 +120,6 @@ func (rs *subaccountDestinationFragmentResource) IdentitySchema(_ context.Contex
 
 func (rs *subaccountDestinationFragmentResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var data subaccountDestinationFragmentResourceConfig
-	var cliRes connectivity.DestinationFragment
 	diags := req.State.Get(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -123,20 +127,10 @@ func (rs *subaccountDestinationFragmentResource) Read(ctx context.Context, req r
 	}
 
 	hasServiceInstance := !data.ServiceInstanceID.IsNull() && !data.ServiceInstanceID.IsUnknown() && data.ServiceInstanceID.ValueString() != ""
-	var err error
 
-	if hasServiceInstance {
-		cliRes, _, err = rs.cli.Connectivity.DestinationFragment.GetByServiceInstance(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
-			return
-		}
-	} else {
-		cliRes, _, err = rs.cli.Connectivity.DestinationFragment.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Destination Fragment at Subaccount Level", fmt.Sprintf("%s", err))
-			return
-		}
+	cliRes, err := rs.readFragment(ctx, data, hasServiceInstance, resp.Diagnostics)
+	if err != nil {
+		return
 	}
 
 	delete(cliRes.Content, "FragmentName")
@@ -160,56 +154,30 @@ func (rs *subaccountDestinationFragmentResource) Read(ctx context.Context, req r
 
 func (rs *subaccountDestinationFragmentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan subaccountDestinationFragmentResourceConfig
-	var destinationFragmentDetails connectivity.DestinationFragment
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	rawContent := map[string]string{}
-	if !plan.DestinationFragment.IsNull() && !plan.DestinationFragment.IsUnknown() {
-		diags = plan.DestinationFragment.ElementsAs(ctx, &rawContent, false)
-		resp.Diagnostics.Append(diags...)
-		if resp.Diagnostics.HasError() {
-			return
-		}
+	rawContent, diags := extractFragmentContent(plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	payload := map[string]string{
-		"FragmentName": plan.Name.ValueString(),
-	}
-
-	for k, v := range rawContent {
-		payload[k] = v
-	}
+	payload := buildPayload(plan.Name.ValueString(), rawContent)
 
 	hasServiceInstance := !plan.ServiceInstanceID.IsNull() && !plan.ServiceInstanceID.IsUnknown() && plan.ServiceInstanceID.ValueString() != ""
 
-	if hasServiceInstance {
-		_, _, err := rs.cli.Connectivity.DestinationFragment.CreateByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.ServiceInstanceID.ValueString(), payload)
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Creating Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
-			return
-		}
+	err := rs.createFragment(ctx, plan, payload, hasServiceInstance, resp.Diagnostics)
+	if err != nil {
+		return
+	}
 
-		destinationFragmentDetails, _, err = rs.cli.Connectivity.DestinationFragment.GetByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
-			return
-		}
-	} else {
-		_, _, err := rs.cli.Connectivity.DestinationFragment.CreateBySubaccount(ctx, plan.SubaccountID.ValueString(), payload)
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Creating Destination Fragment at Subaccount Level", fmt.Sprintf("%s", err))
-			return
-		}
-
-		destinationFragmentDetails, _, err = rs.cli.Connectivity.DestinationFragment.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Destination Fragment at Subaccount Level", fmt.Sprintf("%s", err))
-			return
-		}
+	destinationFragmentDetails, err := rs.readFragment(ctx, plan, hasServiceInstance, resp.Diagnostics)
+	if err != nil {
+		return
 	}
 
 	delete(destinationFragmentDetails.Content, "FragmentName")
@@ -234,57 +202,30 @@ func (rs *subaccountDestinationFragmentResource) Create(ctx context.Context, req
 
 func (rs *subaccountDestinationFragmentResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan subaccountDestinationFragmentResourceConfig
-	var destinationFragmentDetails connectivity.DestinationFragment
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	rawContent := map[string]string{}
-	if !plan.DestinationFragment.IsNull() && !plan.DestinationFragment.IsUnknown() {
-		diags = plan.DestinationFragment.ElementsAs(ctx, &rawContent, false)
-		resp.Diagnostics.Append(diags...)
-		if resp.Diagnostics.HasError() {
-			return
-		}
+	rawContent, diags := extractFragmentContent(plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
-	payload := map[string]string{
-		"FragmentName": plan.Name.ValueString(),
-	}
-
-	for k, v := range rawContent {
-		payload[k] = v
-	}
+	payload := buildPayload(plan.Name.ValueString(), rawContent)
 
 	hasServiceInstance := !plan.ServiceInstanceID.IsNull() && !plan.ServiceInstanceID.IsUnknown() && plan.ServiceInstanceID.ValueString() != ""
-	var err error
 
-	if hasServiceInstance {
-		_, _, err = rs.cli.Connectivity.DestinationFragment.UpdateByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.ServiceInstanceID.ValueString(), payload)
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Updating Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
-			return
-		}
+	err := rs.updateFragment(ctx, plan, payload, hasServiceInstance, resp.Diagnostics)
+	if err != nil {
+		return
+	}
 
-		destinationFragmentDetails, _, err = rs.cli.Connectivity.DestinationFragment.GetByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
-			return
-		}
-	} else {
-		_, _, err = rs.cli.Connectivity.DestinationFragment.UpdateBySubaccount(ctx, plan.SubaccountID.ValueString(), payload)
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Updating Destination Fragment at Subaccount Level", fmt.Sprintf("%s", err))
-			return
-		}
-
-		destinationFragmentDetails, _, err = rs.cli.Connectivity.DestinationFragment.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Destination Fragment at Subaccount Level", fmt.Sprintf("%s", err))
-			return
-		}
+	destinationFragmentDetails, err := rs.readFragment(ctx, plan, hasServiceInstance, resp.Diagnostics)
+	if err != nil {
+		return
 	}
 
 	delete(destinationFragmentDetails.Content, "FragmentName")
@@ -343,4 +284,78 @@ func (rs *subaccountDestinationFragmentResource) ImportState(ctx context.Context
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), identity.SubaccountID)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), identity.Name)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), identity.ServiceInstanceID)...)
+}
+
+func extractFragmentContent(plan subaccountDestinationFragmentResourceConfig) (map[string]string, diag.Diagnostics) {
+	rawContent := map[string]string{}
+	if !plan.DestinationFragment.IsNull() && !plan.DestinationFragment.IsUnknown() {
+		diags := plan.DestinationFragment.ElementsAs(context.Background(), &rawContent, false)
+		if diags.HasError() {
+			return nil, diags
+		}
+	}
+	return rawContent, diag.Diagnostics{}
+}
+
+func buildPayload(name string, rawContent map[string]string) map[string]string {
+	payload := map[string]string{
+		"FragmentName": name,
+	}
+
+	for k, v := range rawContent {
+		payload[k] = v
+	}
+	return payload
+}
+
+func (rs *subaccountDestinationFragmentResource) createFragment(ctx context.Context, plan subaccountDestinationFragmentResourceConfig, payload map[string]string, hasServiceInstance bool, respDiags diag.Diagnostics) error {
+	if hasServiceInstance {
+		_, _, err := rs.cli.Connectivity.DestinationFragment.CreateByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.ServiceInstanceID.ValueString(), payload)
+		if err != nil {
+			respDiags.AddError("API Error Creating Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
+		}
+		return err
+	}
+
+	_, _, err := rs.cli.Connectivity.DestinationFragment.CreateBySubaccount(ctx, plan.SubaccountID.ValueString(), payload)
+	if err != nil {
+		respDiags.AddError("API Error Creating Destination Fragment at Subaccount Level", fmt.Sprintf("%s", err))
+
+	}
+	return err
+}
+
+func (rs *subaccountDestinationFragmentResource) updateFragment(ctx context.Context, plan subaccountDestinationFragmentResourceConfig, payload map[string]string, hasServiceInstance bool, respDiags diag.Diagnostics) error {
+	if hasServiceInstance {
+		_, _, err := rs.cli.Connectivity.DestinationFragment.UpdateByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.ServiceInstanceID.ValueString(), payload)
+		if err != nil {
+			respDiags.AddError("API Error Updating Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
+		}
+		return err
+	}
+
+	_, _, err := rs.cli.Connectivity.DestinationFragment.UpdateBySubaccount(ctx, plan.SubaccountID.ValueString(), payload)
+	if err != nil {
+		respDiags.AddError("API Error Updating Destination Fragment at Subaccount Level", fmt.Sprintf("%s", err))
+
+	}
+	return err
+}
+
+func (rs *subaccountDestinationFragmentResource) readFragment(ctx context.Context, plan subaccountDestinationFragmentResourceConfig, hasServiceInstance bool, respDiags diag.Diagnostics) (connectivity.DestinationFragment, error) {
+	if hasServiceInstance {
+		destinationFragmentDetails, _, err := rs.cli.Connectivity.DestinationFragment.GetByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString())
+		if err != nil {
+			respDiags.AddError("API Error Reading Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
+			return connectivity.DestinationFragment{}, err
+		}
+		return destinationFragmentDetails, nil
+	}
+
+	destinationFragmentDetails, _, err := rs.cli.Connectivity.DestinationFragment.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString())
+	if err != nil {
+		respDiags.AddError("API Error Reading Destination Fragment at Subaccount Level", fmt.Sprintf("%s", err))
+		return connectivity.DestinationFragment{}, err
+	}
+	return destinationFragmentDetails, nil
 }

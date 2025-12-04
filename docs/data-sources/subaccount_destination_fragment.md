@@ -4,7 +4,8 @@ subcategory: ""
 description: |-
   Gets details about a specific subaccount destination fragment.
   Tip:
-  You must be assigned admin role of the subaccount and destination service.
+  You must have the appropriate connectivity and destination permissions, such as:
+  Subaccount AdministratorDestination AdministratorDestination ViewerConnectivity and Destination Administrator
   Scope:
   Subaccount-level fragment: Specify only the 'subaccount_id' and 'name' attribute.Service instance-level fragment: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
   Notes:
@@ -16,7 +17,11 @@ description: |-
 Gets details about a specific subaccount destination fragment.
 
 __Tip:__
-You must be assigned admin role of the subaccount and destination service.
+You must have the appropriate connectivity and destination permissions, such as:
+- Subaccount Administrator  
+- Destination Administrator  
+- Destination Viewer  
+- Connectivity and Destination Administrator
 
 __Scope:__
 - **Subaccount-level fragment**: Specify only the 'subaccount_id' and 'name' attribute.

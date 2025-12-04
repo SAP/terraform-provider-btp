@@ -50,14 +50,18 @@ func (ds *subaccountDestinationFragmentsDataSource) Schema(_ context.Context, _ 
 		MarkdownDescription: `Gets details about a list of subaccount destination fragments.
 
 __Tip:__
-You must be assigned admin role of the subaccount and destination service.
+You must have the appropriate connectivity and destination permissions, such as:
+- Subaccount Administrator  
+- Destination Administrator  
+- Destination Viewer  
+- Connectivity and Destination Administrator
 
 __Scope:__
 - **Subaccount-level fragments**: Specify only the 'subaccount_id' and 'name' attribute.
 - **Service instance-level fragments**: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
 
 __Notes:__
-- 'service_instance_id' is optional. When omitted, the fragments is searched at the subaccount level.`,
+- 'service_instance_id' is optional. When omitted, the fragments are searched at the subaccount level.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
