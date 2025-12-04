@@ -120,7 +120,7 @@ func hclResourceDirectoryApiCredentialWithCertificate(resourceName string, apiCr
 
 	var directoryCertificate string
 	if recording {
-		directoryCertificate, _ = tfutils.ReadCertificate()
+		directoryCertificate, _ = tfutils.ReadPEMCertificate()
 	} else {
 		directoryCertificate = "redacted"
 	}

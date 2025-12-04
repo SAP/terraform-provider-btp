@@ -121,7 +121,7 @@ func hclResourceSubaccountApiCredentialWithCertificate(resourceName string, apiC
 	var subaccountCertificate string
 
 	if recording {
-		subaccountCertificate, _ = tfutils.ReadCertificate()
+		subaccountCertificate, _ = tfutils.ReadPEMCertificate()
 	} else {
 		subaccountCertificate = "redacted"
 	}

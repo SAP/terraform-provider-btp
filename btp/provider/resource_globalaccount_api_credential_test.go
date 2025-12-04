@@ -105,7 +105,7 @@ func hclResourceGlobalaccountApiCredentialWithCertificate(resourceName string, a
 
 	var globalaccountCertificate string
 	if recording {
-		globalaccountCertificate, _ = tfutils.ReadCertificate()
+		globalaccountCertificate, _ = tfutils.ReadPEMCertificate()
 	} else {
 		globalaccountCertificate = "redacted"
 	}
