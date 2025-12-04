@@ -37,14 +37,14 @@ func (ds *subaccountDestinationDataSource) Schema(_ context.Context, _ datasourc
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Gets details about a specific subaccount destination.
 __Tip:__
-You must be assigned to the admin or viewer role of the subaccount.`,
+You must be assigned to the admin or Destination Viewer role of the subaccount.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "A name of the destination for subaccount",
+				MarkdownDescription: "The name of the destination for subaccount",
 				Required:            true,
 			},
 			"service_instance_id": schema.StringAttribute{
@@ -52,15 +52,15 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 				Optional:            true,
 			},
 			"creation_time": schema.StringAttribute{
-				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was created.",
 				Computed:            true,
 			},
 			"etag": schema.StringAttribute{
-				MarkdownDescription: "etag for the destination resource",
+				MarkdownDescription: "The etag for the destination resource",
 				Computed:            true,
 			},
 			"modification_time": schema.StringAttribute{
-				MarkdownDescription: "The date and time when the resource was modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+				MarkdownDescription: "The date and time when the resource was modified.",
 				Computed:            true,
 			},
 			"type": schema.StringAttribute{
@@ -103,7 +103,7 @@ func (ds *subaccountDestinationDataSource) Read(ctx context.Context, req datasou
 		return
 	}
 
-	cliRes, _, err := ds.cli.Connectivity.Destination.Get(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
+	cliRes, _, err := ds.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading destination", fmt.Sprintf("%s", err))
 		return

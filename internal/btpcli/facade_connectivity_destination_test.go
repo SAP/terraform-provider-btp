@@ -27,7 +27,7 @@ func TestConnectivityDestinationFacade_Get(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.Get(context.TODO(), subaccountId, name, "")
+		_, res, err := uut.Connectivity.Destination.GetBySubaccount(context.TODO(), subaccountId, name, "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -50,7 +50,7 @@ func TestConnectivityDestinationFacade_Get(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.Get(context.TODO(), subaccountId, name, serviceInstance)
+		_, res, err := uut.Connectivity.Destination.GetBySubaccount(context.TODO(), subaccountId, name, serviceInstance)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)

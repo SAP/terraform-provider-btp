@@ -99,14 +99,14 @@ func TestDataSourceSubaccountDestination(t *testing.T) {
 	})
 }
 
-func hclDatasourceDestination(datasourceName string, name string, subaccount string) string {
+func hclDatasourceDestination(datasourceName string, name string, subaccountName string) string {
 	template := `
 	data "btp_subaccounts" "all" {}
 	data "btp_subaccount_destination" "%s" {
 	name = "%s"
 	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	}`
-	return fmt.Sprintf(template, datasourceName, name, subaccount)
+	return fmt.Sprintf(template, datasourceName, name, subaccountName)
 }
 
 func hclDatasourceDestinationSI(datasourceName string, name string, subaccountName string, serviceInstanceName string) string {

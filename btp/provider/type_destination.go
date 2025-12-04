@@ -27,22 +27,22 @@ type subaccountDestinationType struct {
 }
 
 func destinationValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationType, diag.Diagnostics) {
-	cts, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
+	creationTimeString, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
 	if err != nil {
 		diagnostics := diag.Diagnostics{
 			diag.NewErrorDiagnostic("failed to convert creation time", err.Error()),
 		}
 		return subaccountDestinationType{}, diagnostics
 	}
-	creatTime := time.UnixMilli(cts).UTC().Format(time.RFC3339)
-	mts, err := strconv.ParseInt(value.SystemMetadata.ModificationTime, 10, 64)
+	creationTime := time.UnixMilli(creationTimeString).UTC().Format(time.RFC3339)
+	modificationTimeString, err := strconv.ParseInt(value.SystemMetadata.ModificationTime, 10, 64)
 	if err != nil {
 		diagnostics := diag.Diagnostics{
 			diag.NewErrorDiagnostic("failed to convert modification time", err.Error()),
 		}
 		return subaccountDestinationType{}, diagnostics
 	}
-	modifyTime := time.UnixMilli(mts).UTC().Format(time.RFC3339)
+	modifyTime := time.UnixMilli(modificationTimeString).UTC().Format(time.RFC3339)
 	destination := subaccountDestinationType{
 		Etag:         types.StringValue(value.SystemMetadata.Etag),
 		SubaccountID: subaccountID,
@@ -60,7 +60,7 @@ func destinationValueFrom(value connectivity.DestinationResponse, subaccountID t
 		}
 		return ""
 	}
-	destination.CreationTime = types.StringValue(creatTime)
+	destination.CreationTime = types.StringValue(creationTime)
 	destination.ModificationTime = types.StringValue(modifyTime)
 	destination.Name = types.StringValue(extract("Name"))
 	destination.Type = types.StringValue(extract("Type"))

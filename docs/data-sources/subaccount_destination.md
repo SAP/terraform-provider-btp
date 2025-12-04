@@ -4,14 +4,14 @@ subcategory: ""
 description: |-
   Gets details about a specific subaccount destination.
   Tip:
-  You must be assigned to the admin or viewer role of the subaccount.
+  You must be assigned to the admin or Destination Viewer role of the subaccount.
 ---
 
 # btp_subaccount_destination (Data Source)
 
 Gets details about a specific subaccount destination.
 __Tip:__
-You must be assigned to the admin or viewer role of the subaccount.
+You must be assigned to the admin or Destination Viewer role of the subaccount.
 
 ## Example Usage
 
@@ -28,7 +28,7 @@ data "btp_subaccount_destination" "testSI" {
 
 ### Required
 
-- `name` (String) A name of the destination for subaccount
+- `name` (String) The name of the destination for subaccount
 - `subaccount_id` (String) The ID of the subaccount.
 
 ### Optional
@@ -39,10 +39,10 @@ data "btp_subaccount_destination" "testSI" {
 
 - `additional_configuration` (String) The additional configuration parameters for the destination.
 - `authentication` (String) The authentication of the destination.
-- `creation_time` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `creation_time` (String) The date and time when the resource was created.
 - `description` (String) The description of the destination.
-- `etag` (String) etag for the destination resource
-- `modification_time` (String) The date and time when the resource was modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
+- `etag` (String) The etag for the destination resource
+- `modification_time` (String) The date and time when the resource was modified.
 - `proxy_type` (String) The proxytype of the destination.
 - `type` (String) The type of request from destination.
 - `url` (String) The url of the destination.

@@ -18,14 +18,14 @@ func (f *connectivityDestinationFacade) getCommand() string {
 	return "connectivity/destination"
 }
 
-func (f *connectivityDestinationFacade) Get(ctx context.Context, subaccountId string, name string, serviceInstance string) (connectivity.DestinationResponse, CommandResponse, error) {
+func (f *connectivityDestinationFacade) GetBySubaccount(ctx context.Context, subaccountId string, name string, serviceInstance string) (connectivity.DestinationResponse, CommandResponse, error) {
 	args := map[string]string{
 		"name":       name,
 		"subaccount": subaccountId,
 	}
 
 	if len(serviceInstance) > 0 {
-		args["service-instance"] = serviceInstance
+		args["serviceInstance"] = serviceInstance
 	}
 	return doExecute[connectivity.DestinationResponse](f.cliClient, ctx, NewGetRequest(f.getCommand(), args))
 }
