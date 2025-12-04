@@ -2,7 +2,6 @@ package btpcli
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/destinations"
 )
@@ -19,12 +18,6 @@ func (f *connectivityDestinationCertificatesFacade) getCommand() string {
 	return "connectivity/destination-certificate"
 }
 
-type DestinationCertificateCreateInput struct {
-	SubaccountId      string    `btpcli:"subaccount"`
-	ServiceInstanceId string    `btpcli:"serviceInstance,omitempty"`
-	Certificate       FileInput `btpcli:"file"`
-}
-
 type FileInput struct {
 	Filename           string `btpcli:"filename"`
 	CertificateContent string `btpcli:"value"`
@@ -34,40 +27,6 @@ type DestinationCertificateGetInput struct {
 	SubaccountId      string `btpcli:"subaccount"`
 	ServiceInstanceId string `btpcli:"serviceInstance,omitempty"`
 	CertificateName   string `btpcli:"certName"`
-}
-
-func (f *connectivityDestinationCertificatesFacade) Create(ctx context.Context, args *DestinationCertificateCreateInput) (destinations.DestinationCertificateResponseObject, CommandResponse, error) {
-
-	fileParams := map[string]string{
-		"filename": args.Certificate.Filename,
-		"value":    args.Certificate.CertificateContent,
-	}
-
-	fileVal, err := json.Marshal(fileParams)
-	if err != nil {
-		return destinations.DestinationCertificateResponseObject{}, CommandResponse{}, err
-	}
-
-	params := map[string]string{
-		"subaccount": args.SubaccountId,
-		"file":       string(fileVal),
-	}
-
-	if len(args.ServiceInstanceId) > 0 {
-		params["serviceInstance"] = args.ServiceInstanceId
-	}
-
-	_, res, err := doExecute[interface{}](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
-
-	if err != nil {
-		return destinations.DestinationCertificateResponseObject{}, res, err
-	}
-
-	return f.Get(ctx, &DestinationCertificateGetInput{
-		SubaccountId:      args.SubaccountId,
-		ServiceInstanceId: args.ServiceInstanceId,
-		CertificateName:   args.Certificate.Filename,
-	})
 }
 
 func (f *connectivityDestinationCertificatesFacade) Get(ctx context.Context, args *DestinationCertificateGetInput) (destinations.DestinationCertificateResponseObject, CommandResponse, error) {
