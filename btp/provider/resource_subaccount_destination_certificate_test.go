@@ -210,7 +210,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config: hclResourceSubaccountDestinationCertificateWithoutSubaccountId("uut", "cert.pem", certContent),
+					Config:      hclResourceSubaccountDestinationCertificateWithoutSubaccountId("uut", "cert.pem", certContent),
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found.`),
 				},
 			},
@@ -224,7 +224,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config: hclResourceSubaccountDestinationCertificateWithoutCertificateName("uut", "integration-test", certContent),
+					Config:      hclResourceSubaccountDestinationCertificateWithoutCertificateName("uut", "integration-test", certContent),
 					ExpectError: regexp.MustCompile(`The argument "certificate_name" is required, but no definition was found.`),
 				},
 			},
@@ -237,7 +237,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config: hclResourceSubaccountDestinationCertificateWithoutCertificateContent("uut", "integration-test", "test.pem"),
+					Config:      hclResourceSubaccountDestinationCertificateWithoutCertificateContent("uut", "integration-test", "test.pem"),
 					ExpectError: regexp.MustCompile(`The argument "certificate_content" is required, but no definition was found.`),
 				},
 			},
