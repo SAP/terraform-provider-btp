@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
@@ -32,6 +33,12 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 						resource.TestCheckNoResourceAttr("btp_subaccount_destination_fragment.test", "service_instance_id"),
 						resource.TestCheckNoResourceAttr("btp_subaccount_destination_fragment.test", "fragment_content"),
 					),
+				},
+				{
+					ResourceName:      "btp_subaccount_destination_fragment.test",
+					ImportStateIdFunc: getIdForSubaccounDestinationFragmentImportId("btp_subaccount_destination_fragment.test", "integration-test-fragment"),
+					ImportState:       true,
+					ImportStateVerify: true,
 				},
 			},
 		})
@@ -191,4 +198,15 @@ name = "%s"
 service_instance_id = data.btp_subaccount_service_instance.fragment_instance.id
 }`
 	return fmt.Sprintf(template, subaccountName, serviceInstanceName, resourceName, subaccountName, fragmentName)
+}
+
+func getIdForSubaccounDestinationFragmentImportId(resourceName, fragmentName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+
+		return fmt.Sprintf("%s,%s", rs.Primary.Attributes["subaccount_id"], fragmentName), nil
+	}
 }

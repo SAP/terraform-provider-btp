@@ -59,6 +59,10 @@ resource "btp_subaccount_destination_fragment" "sdf" {
 - `fragment_content` (Map of String) The content of the destination fragment.
 - `service_instance_id` (String) The ID of the service instance.
 
+### Read-Only
+
+- `id` (String, Deprecated) The ID of the destination fragment used for import operations.
+
 ## Import
 
 Import is supported using the following syntax:

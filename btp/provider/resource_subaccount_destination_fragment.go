@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -10,6 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -28,7 +31,8 @@ type subaccountDestinationFragmentResourceConfig struct {
 	Name              types.String `tfsdk:"name"`
 	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
 	// OUTPUT
-	DestinationFragment types.Map `tfsdk:"fragment_content"`
+	ID                  types.String `tfsdk:"id"` // required by hashicorps terraform plugin testing framework for imports
+	DestinationFragment types.Map    `tfsdk:"fragment_content"`
 }
 
 type subaccountDestinationFragmentIdentityModel struct {
@@ -79,6 +83,14 @@ __Notes:__
 				Required:            true,
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
+				},
+			},
+			"id": schema.StringAttribute{ // required by hashicorps terraform plugin testing framework for imports
+				DeprecationMessage:  "Use the `subaccount_id,name,service_instance_id` attribute instead",
+				MarkdownDescription: "The ID of the destination fragment used for import operations.",
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"name": schema.StringAttribute{
@@ -142,6 +154,9 @@ func (rs *subaccountDestinationFragmentResource) Read(ctx context.Context, req r
 		resp.Diagnostics.Append(diags...)
 	}
 
+	id := data.SubaccountID.ValueString() + "," + data.Name.ValueString() + "," + data.ServiceInstanceID.ValueString()
+	data.ID = types.StringValue(id)
+
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 
@@ -183,6 +198,9 @@ func (rs *subaccountDestinationFragmentResource) Create(ctx context.Context, req
 	}
 
 	delete(destinationFragmentDetails.Content, "FragmentName")
+
+	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
+	plan.ID = types.StringValue(id)
 
 	if !plan.DestinationFragment.IsNull() {
 		plan.DestinationFragment, diags = types.MapValueFrom(ctx, types.StringType, destinationFragmentDetails.Content)
@@ -237,6 +255,9 @@ func (rs *subaccountDestinationFragmentResource) Update(ctx context.Context, req
 		resp.Diagnostics.Append(diags...)
 	}
 
+	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
+	plan.ID = types.StringValue(id)
+
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 
@@ -276,6 +297,53 @@ func (rs *subaccountDestinationFragmentResource) Delete(ctx context.Context, req
 }
 
 func (rs *subaccountDestinationFragmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	if req.ID != "" {
+
+		idParts := strings.Split(req.ID, ",")
+
+		switch len(idParts) {
+		case 2:
+			if idParts[0] == "" || idParts[1] == "" {
+				resp.Diagnostics.AddError(
+					"Unexpected Import Identifier",
+					fmt.Sprintf("Expected import identifier with format: subaccount_id, name. Got: %q", req.ID),
+				)
+				return
+			}
+
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), types.StringNull())...)
+
+			return
+
+		case 3:
+			if idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
+				resp.Diagnostics.AddError(
+					"Unexpected Import Identifier",
+					fmt.Sprintf("Expected import identifier with format: subaccount_id, name, service_instance_id. Got: %q", req.ID),
+				)
+				return
+			}
+
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), idParts[2])...)
+
+			return
+
+		default:
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf(
+					"Expected one of:\n  - subaccount_id,name\n  - subaccount_id,name,service_instance_id\nGot: %q",
+					req.ID,
+				),
+			)
+			return
+		}
+	}
+
 	var identity subaccountDestinationFragmentIdentityModel
 	diags := resp.Identity.Get(ctx, &identity)
 	resp.Diagnostics.Append(diags...)
