@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
@@ -201,6 +202,47 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		certContent := "redacted"
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config: hclResourceSubaccountDestinationCertificateWithoutSubaccountId("uut", "cert.pem", certContent),
+					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found.`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - certificate_name mandatory", func(t *testing.T) {
+		certContent := "redacted"
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config: hclResourceSubaccountDestinationCertificateWithoutCertificateName("uut", "integration-test", certContent),
+					ExpectError: regexp.MustCompile(`The argument "certificate_name" is required, but no definition was found.`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - certificate_content mandatory", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config: hclResourceSubaccountDestinationCertificateWithoutCertificateContent("uut", "integration-test", "test.pem"),
+					ExpectError: regexp.MustCompile(`The argument "certificate_content" is required, but no definition was found.`),
+				},
+			},
+		})
+	})
 }
 
 func hclResourceSubaccountDestinationCertificate(resourceName, subaccountId, certificateName, certificateContent string) string {
@@ -214,7 +256,7 @@ func hclResourceSubaccountDestinationCertificate(resourceName, subaccountId, cer
 		`, resourceName, subaccountId, certificateName, certificateContent)
 }
 
-func hclResourceSubaccountDestinationCertificateFromServiceInstance(resourceName, subaccountId, serviceInstanceId string, certificateName, certificateContent string) string {
+func hclResourceSubaccountDestinationCertificateFromServiceInstance(resourceName, subaccountId, serviceInstanceId, certificateName, certificateContent string) string {
 	return fmt.Sprintf(`
 	    data "btp_subaccounts" "all" {}
 		data "btp_subaccount_service_instances" "all" {
@@ -227,4 +269,31 @@ func hclResourceSubaccountDestinationCertificateFromServiceInstance(resourceName
 			certificate_content  = "%[5]s"
 		}
 		`, resourceName, subaccountId, serviceInstanceId, certificateName, certificateContent)
+}
+
+func hclResourceSubaccountDestinationCertificateWithoutSubaccountId(resourceName, certificateName, certificateContent string) string {
+	return fmt.Sprintf(`
+		resource "btp_subaccount_destination_certificate" "%s" {
+			certificate_name     = "%s"
+			certificate_content  = "%s"
+		}
+		`, resourceName, certificateName, certificateContent)
+}
+
+func hclResourceSubaccountDestinationCertificateWithoutCertificateName(resourceName, subaccountId, certificateContent string) string {
+	return fmt.Sprintf(`
+		resource "btp_subaccount_destination_certificate" "%s" {
+			subaccount_id = "%s"
+			certificate_content  = "%s"
+		}
+		`, resourceName, subaccountId, certificateContent)
+}
+
+func hclResourceSubaccountDestinationCertificateWithoutCertificateContent(resourceName, subaccountId, certificateName string) string {
+	return fmt.Sprintf(`
+		resource "btp_subaccount_destination_certificate" "%s" {
+			subaccount_id = "%s"
+			certificate_name  = "%s"
+		}
+		`, resourceName, subaccountId, certificateName)
 }
