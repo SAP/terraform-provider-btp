@@ -6,6 +6,7 @@ description: |-
   Tip:
   You must have the appropriate connectivity and destination permissions, such as:
   Subaccount AdministratorDestination AdministratorDestination ViewerConnectivity and Destination Administrator
+  To learn more about these roles, see the SAP Help documentation:https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/user-roles?q=role+collection
   Scope:
   Subaccount-level fragment: Specify only the 'subaccount_id' and 'name' attribute.Service instance-level fragment: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
   Notes:
@@ -22,6 +23,9 @@ You must have the appropriate connectivity and destination permissions, such as:
 - Destination Administrator  
 - Destination Viewer  
 - Connectivity and Destination Administrator
+
+To learn more about these roles, see the SAP Help documentation:  
+https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/user-roles?q=role+collection
 
 __Scope:__
 - **Subaccount-level fragment**: Specify only the 'subaccount_id' and 'name' attribute.
