@@ -1,0 +1,29 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{tffile .ExampleFile}}
+{{- end }}
+
+## Signature
+
+{{ .FunctionSignatureMarkdown | trimspace }}
+
+## Arguments
+
+{{ .FunctionArgumentsMarkdown | trimspace }}
+
+{{ if .HasVariadic -}}
+## Variadic Arguments
+
+{{ .FunctionVariadicArgumentMarkdown | trimspace }}
+{{- end }}
