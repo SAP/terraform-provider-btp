@@ -666,6 +666,7 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_destination_trust",
 		"btp_subaccount_destination_fragment",
 		"btp_subaccount_destination_fragments",
+		"btp_subaccount_destination",
 		"btp_subaccount_entitlement",
 		"btp_subaccount_entitlements",
 		"btp_subaccount_environment_instance",
