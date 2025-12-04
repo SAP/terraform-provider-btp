@@ -6,18 +6,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	// "log"
+
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-var command = "connectivity/destination-certificate"
-var subaccountId = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-var instanceId = "bc8a216f-1184-49dc-b4b4-17cfe2828965"
-var fileName = "test.p12"
-var fileContent = "test-content"
+var (
+	command      = "connectivity/destination-certificate"
+	subaccountId = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	instanceId   = "bc8a216f-1184-49dc-b4b4-17cfe2828965"
+	fileName     = "test.p12"
+	fileContent  = "test-content"
+)
 
 func TestConnectivityDestinationCertificateFacade_Create(t *testing.T) {
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {

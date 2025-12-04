@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -139,6 +140,34 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - destination certificate - subaccount_id mandatory", func(t *testing.T) {
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclDataSourceSubaccountDestinationCertificateWithoutSubaccountId("uut", "terraform.pfx"),
+					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found.`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - destination certificate - certificate name mandatory", func(t *testing.T) {
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclDataSourceSubaccountDestinationCertificateWithoutCertificateName("uut", "integration-test"),
+					ExpectError: regexp.MustCompile(`The argument "certificate_name" is required, but no definition was found.`),
+				},
+			},
+		})
+	})
 }
 
 func hclDataSourceSubaccountDestinationCertificate(resourceName string, subaccountName string, certificateName string) string {
@@ -163,4 +192,20 @@ func hclDataSourceSubaccountDestinationCertificateFromServiceInstance(resourceNa
 			certificate_name = "%[4]s" 
 		}
 	`, resourceName, subaccountName, serviceInstanceName, certificateName)
+}
+
+func hclDataSourceSubaccountDestinationCertificateWithoutSubaccountId(resourceName string, certificateName string) string {
+	return fmt.Sprintf(`
+		data "btp_subaccount_destination_certificate" "%s" {
+			certificate_name = "%s" 
+		}
+	`, resourceName, certificateName)
+}
+
+func hclDataSourceSubaccountDestinationCertificateWithoutCertificateName(resourceName string, subaccountId string) string {
+	return fmt.Sprintf(`
+		data "btp_subaccount_destination_certificate" "%s" {
+			subaccount_id = "%s" 
+		}
+	`, resourceName, subaccountId)
 }
