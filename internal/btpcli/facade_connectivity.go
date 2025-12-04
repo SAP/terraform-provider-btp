@@ -5,7 +5,7 @@ func newConnectivityFacade(cliClient *v2Client) connectivityFacade {
 		DestinationCertificate: newConnectivityDestinationCertificatesFacade(cliClient),
 		DestinationTrust:       newConnectivityDestinationTrustFacade(cliClient),
 		DestinationFragment:    newConnectivityDestinationFragmentFacade(cliClient),
-		Destination:         newConnectivityDestinationFacade(cliClient),
+		Destination:            newConnectivityDestinationFacade(cliClient),
 	}
 }
 
@@ -13,5 +13,5 @@ type connectivityFacade struct {
 	DestinationCertificate connectivityDestinationCertificatesFacade
 	DestinationTrust       connectivityDestinationTrustFacade
 	DestinationFragment    connectivityDestinationFragmentFacade
-	Destination         connectivityDestinationFacade
+	Destination            connectivityDestinationFacade
 }
