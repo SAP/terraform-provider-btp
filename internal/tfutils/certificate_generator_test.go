@@ -4,50 +4,40 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGenerateCertificate(t *testing.T) {
+	t.Run("Generate PEM Certificate - Should Create PEM Certificate File and Key", func(t *testing.T) {
 
-	t.Run("Generate Certificate - Should Create Certificate File", func(t *testing.T) {
+		err := GeneratePEMCertificate()
 
-		err := GenerateCertificate()
-		if err != nil {
-			t.Fatalf("Generate Certificate failed: %v", err)
-		}
-
-		if _, err := os.Stat(file); os.IsNotExist(err) {
-			t.Fatalf("Certificate file %s not created", file)
-		}
+		assert.NoError(t, err)
+		assert.FileExists(t, pemFile)
 
 		// Clean up the file after test
-		err = os.Remove(file)
+		err = os.Remove(pemFile)
 		if err != nil {
 			t.Fatalf("Failed to remove certificate file after test: %v", err)
+		}
+
+		err = os.Remove(keyFile)
+		if err != nil {
+			t.Fatalf("Failed to remove key file after test: %v", err)
 		}
 	})
 }
 
 func TestReadCertificate(t *testing.T) {
-	t.Run("Read Certificate - Should Return Valid Pem String", func(t *testing.T) {
+	t.Run("Read PEM Certificate - Should Return Valid Pem String", func(t *testing.T) {
 
-		pemString, err := ReadCertificate()
-		if err != nil {
-			t.Fatalf("Read Certificate failed: %v", err)
-		}
+		pemString, err := ReadPEMCertificate()
 
-		// Check if the pemString is not empty
-		if pemString == "" {
-			t.Fatalf("Read Certificate returned an empty PEM string")
-		}
+		assert.NoError(t, err)
+		assert.NotEqual(t, len(pemString), 0)
+		assert.Equal(t, strings.HasPrefix(pemString, "-----BEGIN CERTIFICATE-----"), true)
+		assert.Equal(t, strings.HasSuffix(pemString, "-----END CERTIFICATE-----\\n"), true)
 
-		// Check if the string starts with the PEM certificate header
-		if !strings.HasPrefix(pemString, "-----BEGIN CERTIFICATE-----") {
-			t.Fatalf("PEM string does not have the correct header")
-		}
-
-		// Check if the string ends with the PEM certificate footer
-		if !strings.HasSuffix(pemString, "-----END CERTIFICATE-----\\n") {
-			t.Fatalf("PEM string does not have the correct footer")
-		}
 	})
 }

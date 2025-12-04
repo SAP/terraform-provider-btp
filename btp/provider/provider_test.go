@@ -178,7 +178,7 @@ func hookRedactIntegrationUserCredentials(user TestUser) func(i *cassette.Intera
 			i.Request.Headers.Set(btpcli.HeaderCLICustomIDP, redactedTestUser.Idp)
 		}
 
-		reUserSAP := regexp.MustCompile(`[a-zA-Z0-9.!#$%&'*+/=?^_ \x60{|}~-]+@sap\.com`)
+		reUserSAP := regexp.MustCompile(`[a-zA-Z0-9.!#$%&'*+/=?^_ \x60{|}~-]+@(?:sap\.com|global\.corp\.sap)`)
 		i.Request.Body = reUserSAP.ReplaceAllString(i.Request.Body, redactedTestUser.Username)
 		i.Response.Body = strings.ReplaceAll(i.Response.Body, user.Username, redactedTestUser.Username)
 		// to support responses containing sets of email addresses, we need to replace with unique values
@@ -246,6 +246,11 @@ func hookRedactIntegrationUserCredentials(user TestUser) func(i *cassette.Intera
 			i.Request.Body = reBindingSecret.ReplaceAllString(i.Request.Body, `"certificate":"redacted"`)
 		}
 
+		if strings.Contains(i.Request.Body, `\"value\"`) {
+			reBindingSecret := regexp.MustCompile(`\\"value\\":\\"[^\\"]*\\"`)
+			i.Request.Body = reBindingSecret.ReplaceAllString(i.Request.Body, `\"value\":\"redacted\"`)
+		}
+
 		return nil
 	}
 }
@@ -282,8 +287,23 @@ func stopQuietly(rec *recorder.Recorder) {
 
 func getNameFromEmail(email string) (firstName, lastName string) {
 	emailAt := strings.Index(email, "@")
-	emailFirstName := strings.Split(email[:emailAt], ".")[0]
-	emailLastName := strings.Split(email[:emailAt], ".")[1]
+	names := strings.Split(email[:emailAt], ".")
+
+	emailFirstName := " "
+	emailLastName := " "
+
+	for i, name := range names {
+		if i > 1 {
+			break
+		}
+
+		switch i {
+		case 0:
+			emailFirstName = name
+		case 1:
+			emailLastName = name
+		}
+	}
 
 	firstName = convertFirstLetterToUpperCase(emailFirstName)
 	lastName = convertFirstLetterToUpperCase(emailLastName)
@@ -677,6 +697,8 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_user",
 		"btp_subaccount_users",
 		"btp_subaccounts",
+		"btp_subaccount_destination_certificate",
+		"btp_subaccount_destination_certificates",
 		"btp_whoami",
 	}
 
