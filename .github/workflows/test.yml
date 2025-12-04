@@ -26,7 +26,7 @@ permissions:
 
 # Define the latest Terraform version to use for upload of coverage report
 env:
-  LATEST_TF_VERSION: 1.13.*
+  LATEST_TF_VERSION: 1.14.*
 
 jobs:
   # Ensure project builds before running testing matrix
@@ -35,8 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v5 # v4.0.0
-      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
+      - uses: actions/checkout@v6 # v4.0.0
+      - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
         with:
           go-version-file: 'go.mod'
           cache: false
@@ -55,8 +55,8 @@ jobs:
     name: Docu Generation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5 # v4.0.0
-      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
+      - uses: actions/checkout@v6 # v4.0.0
+      - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
         with:
           go-version-file: 'go.mod'
           cache: false
@@ -71,7 +71,7 @@ jobs:
     name: Fixture Drift Detection
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5 # v4.0.0
+      - uses: actions/checkout@v6 # v4.0.0
         with:
           fetch-depth: 0
       - run: .github/scripts/fixtureDriftDetect.sh btp/provider/fixtures/
@@ -98,9 +98,10 @@ jobs:
         terraform:
           - '1.12.*'
           - '1.13.*'
+          - '1.14.*'
     steps:
-      - uses: actions/checkout@v5 # v4.0.0
-      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
+      - uses: actions/checkout@v6 # v4.0.0
+      - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
         with:
           go-version-file: 'go.mod'
           cache: false
@@ -136,7 +137,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - uses: actions/download-artifact@v6

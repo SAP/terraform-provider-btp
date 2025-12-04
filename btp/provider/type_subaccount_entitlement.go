@@ -12,6 +12,7 @@ import (
 // Only the category SERVICE and QUOTA_BASED_APPLICATION have a numeric quota (amount)
 const entitlementCategoryService = "SERVICE"
 const entitlementCategoryQuotaBasedApplication = "QUOTA_BASED_APPLICATION"
+const entitlementCategoryPlatformBasedApplication = "PLATFORM"
 
 type subaccountEntitlementType struct {
 	SubaccountId         types.String `tfsdk:"subaccount_id"`
@@ -51,5 +52,5 @@ func subaccountEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedAs
 
 func isTransferAmountRequired(category string) bool {
 	// Check if Amount needs to be mapped - only true if the entitlement has a numeric quota
-	return category == entitlementCategoryService || category == entitlementCategoryQuotaBasedApplication
+	return category == entitlementCategoryService || category == entitlementCategoryQuotaBasedApplication || category == entitlementCategoryPlatformBasedApplication
 }

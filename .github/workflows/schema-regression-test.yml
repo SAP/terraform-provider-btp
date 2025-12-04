@@ -28,7 +28,7 @@ jobs:
     steps:
     - name: Check out Git repository
       id: checkout_repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Setup Terraform
       id : setup_terraform
@@ -53,7 +53,7 @@ jobs:
         terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -auto-approve -no-color
 
     - name: Setup Go
-      uses: actions/setup-go@v6
+      uses: actions/setup-go@v6.1.0
       with:
         go-version-file: 'go.mod'
         cache: false

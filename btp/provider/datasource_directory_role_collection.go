@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_authz"
 	"github.com/SAP/terraform-provider-btp/internal/validation/uuidvalidator"
 )
 
@@ -26,15 +27,25 @@ type directoryRoleCollectionRoleType struct {
 	Name              types.String `tfsdk:"name"`
 }
 
+type directoryRoleCollectionAttributeMappingsType struct {
+	/* OUTPUT */
+	IdentityProvider types.String `tfsdk:"identity_provider"`
+	Attribute        types.String `tfsdk:"attribute"`
+	Operator         types.String `tfsdk:"operator"`
+	Value            types.String `tfsdk:"value"`
+}
+
 type directoryRoleCollectionDataSourceConfig struct {
 	/* INPUT */
 	DirectoryId types.String `tfsdk:"directory_id"`
 	Id          types.String `tfsdk:"id"`
 	Name        types.String `tfsdk:"name"`
 	/* OUTPUT */
-	IsReadOnly  types.Bool                        `tfsdk:"read_only"`
-	Description types.String                      `tfsdk:"description"`
-	Roles       []directoryRoleCollectionRoleType `tfsdk:"roles"`
+	IsReadOnly            types.Bool                                     `tfsdk:"read_only"`
+	Description           types.String                                   `tfsdk:"description"`
+	Roles                 []directoryRoleCollectionRoleType              `tfsdk:"roles"`
+	ShowAttributeMappings types.Bool                                     `tfsdk:"show_attribute_mappings"`
+	AttributeMappings     []directoryRoleCollectionAttributeMappingsType `tfsdk:"attribute_mappings"`
 }
 
 type directoryRoleCollectionDataSource struct {
@@ -110,13 +121,44 @@ You must be assigned to the admin or viewer role of the global account, director
 				},
 				Computed: true,
 			},
+			"show_attribute_mappings": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the data source will also return which user attributes and user groups provided by an identity provider effectively grant this role collection.",
+				Optional:            true,
+			},
+			"attribute_mappings": schema.SetNestedAttribute{
+				MarkdownDescription: "List of user attributes and user groups from identity providers that effectively grant this role collection.",
+				Computed:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"identity_provider": schema.StringAttribute{
+							MarkdownDescription: "The display name of the identity provider from which the attribute or group mapping originates.",
+							Computed:            true,
+						},
+						"attribute": schema.StringAttribute{
+							MarkdownDescription: "The user attribute or group name used in the mapping.",
+							Computed:            true,
+						},
+						"operator": schema.StringAttribute{
+							MarkdownDescription: "The operator applied in the attribute mapping. Only `equals` is currently supported.",
+							Computed:            true,
+							Validators: []validator.String{
+								stringvalidator.OneOf("EQUALS, equals"),
+							},
+						},
+						"value": schema.StringAttribute{
+							MarkdownDescription: "The value of the user attribute or group that grants the role collection.",
+							Computed:            true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
 
 func (ds *directoryRoleCollectionDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data directoryRoleCollectionDataSourceConfig
-
+	var roleCollectionDetails, roleCollectionAttributeMappings xsuaa_authz.RoleCollection
 	diags := req.Config.Get(ctx, &data)
 
 	resp.Diagnostics.Append(diags...)
@@ -124,25 +166,45 @@ func (ds *directoryRoleCollectionDataSource) Read(ctx context.Context, req datas
 		return
 	}
 
-	cliRes, _, err := ds.cli.Security.RoleCollection.GetByDirectory(ctx, data.DirectoryId.ValueString(), data.Name.ValueString())
+	roleCollectionDetails, _, err := ds.cli.Security.RoleCollection.GetByDirectory(ctx, data.DirectoryId.ValueString(), data.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Role Collection (Directory)", fmt.Sprintf("%s", err))
 		return
 	}
 
+	if data.ShowAttributeMappings.ValueBool() {
+		roleCollectionAttributeMappings, _, err = ds.cli.Security.RoleCollection.GetByDirectoryWithAttributeMappings(ctx, data.DirectoryId.ValueString(), data.Name.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Role Collection (Directory) Attribute Mappings", fmt.Sprintf("%s", err))
+			return
+		}
+	}
+
 	data.Id = data.DirectoryId
-	data.Name = types.StringValue(cliRes.Name)
-	data.Description = types.StringValue(cliRes.Description)
-	data.IsReadOnly = types.BoolValue(cliRes.IsReadOnly)
+	data.Name = types.StringValue(roleCollectionDetails.Name)
+	data.Description = types.StringValue(roleCollectionDetails.Description)
+	data.IsReadOnly = types.BoolValue(roleCollectionDetails.IsReadOnly)
 
 	data.Roles = []directoryRoleCollectionRoleType{}
-	for _, ref := range cliRes.RoleReferences {
+	for _, ref := range roleCollectionDetails.RoleReferences {
 		data.Roles = append(data.Roles, directoryRoleCollectionRoleType{
 			RoleTemplateName:  types.StringValue(ref.RoleTemplateName),
 			RoleTemplateAppId: types.StringValue(ref.RoleTemplateAppId),
 			Description:       types.StringValue(ref.Description),
 			Name:              types.StringValue(ref.Name),
 		})
+	}
+
+	if data.ShowAttributeMappings.ValueBool() {
+		// Attribute mappings
+		for _, am := range roleCollectionAttributeMappings.SamlAttributeAssignment {
+			data.AttributeMappings = append(data.AttributeMappings, directoryRoleCollectionAttributeMappingsType{
+				IdentityProvider: types.StringValue(am.IdentityProvider),
+				Attribute:        types.StringValue(am.AttributeName),
+				Operator:         types.StringValue(am.ComparisonOperator),
+				Value:            types.StringValue(am.SamlAttributeValue),
+			})
+		}
 	}
 
 	diags = resp.State.Set(ctx, &data)

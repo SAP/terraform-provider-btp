@@ -29,12 +29,28 @@ data "btp_globalaccount_role_collection" "globalaccount_admin" {
 
 - `name` (String) The name of the role collection.
 
+### Optional
+
+- `show_attribute_mappings` (Boolean) If set to true, the data source will also return which user attributes and user groups provided by an identity provider effectively grant this role collection.
+
 ### Read-Only
 
+- `attribute_mappings` (Attributes Set) List of user attributes and user groups from identity providers that effectively grant this role collection. (see [below for nested schema](#nestedatt--attribute_mappings))
 - `description` (String) The description of the role collection.
 - `id` (String, Deprecated) The ID of the global account.
 - `read_only` (Boolean) Shows whether the role collection is read-only.
 - `roles` (Attributes Set) (see [below for nested schema](#nestedatt--roles))
+
+<a id="nestedatt--attribute_mappings"></a>
+### Nested Schema for `attribute_mappings`
+
+Read-Only:
+
+- `attribute` (String) The user attribute or group name used in the mapping.
+- `identity_provider` (String) The display name of the identity provider from which the attribute or group mapping originates.
+- `operator` (String) The operator applied in the attribute mapping. Only `equals` is currently supported.
+- `value` (String) The value of the user attribute or group that grants the role collection.
+
 
 <a id="nestedatt--roles"></a>
 ### Nested Schema for `roles`
