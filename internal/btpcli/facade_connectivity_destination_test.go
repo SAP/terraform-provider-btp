@@ -43,9 +43,9 @@ func TestConnectivityDestinationFacade_Get(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionGet, map[string]string{
-				"name":             name,
-				"subaccount":       subaccountId,
-				"service-instance": serviceInstance,
+				"name":            name,
+				"subaccount":      subaccountId,
+				"serviceInstance": serviceInstance,
 			})
 		}))
 		defer srv.Close()

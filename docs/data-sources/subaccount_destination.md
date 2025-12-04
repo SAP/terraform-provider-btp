@@ -4,14 +4,23 @@ subcategory: ""
 description: |-
   Gets details about a specific subaccount destination.
   Tip:
-  You must be assigned to the admin or Destination Viewer role of the subaccount.
+  You must have the appropriate connectivity and destination permissions, such as:
+  Subaccount Administrator
+  Destination Administrator
+  Destination Viewer
+  Connectivity and Destination Administrator
 ---
 
 # btp_subaccount_destination (Data Source)
 
 Gets details about a specific subaccount destination.
 __Tip:__
-You must be assigned to the admin or Destination Viewer role of the subaccount.
+You must have the appropriate connectivity and destination permissions, such as:
+
+Subaccount Administrator
+Destination Administrator
+Destination Viewer
+Connectivity and Destination Administrator
 
 ## Example Usage
 
