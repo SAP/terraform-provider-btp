@@ -47,10 +47,24 @@ func (ds *subaccountDestinationFragmentsDataSource) Configure(_ context.Context,
 
 func (ds *subaccountDestinationFragmentsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets details about a specific subaccount destination fragment.
+		MarkdownDescription: `Gets details about a list of subaccount destination fragments.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the subaccount.`,
+You must have the appropriate connectivity and destination permissions, such as:
+- Subaccount Administrator  
+- Destination Administrator  
+- Destination Viewer  
+- Connectivity and Destination Administrator
+
+To learn more about these roles, see the SAP Help documentation:  
+https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/user-roles?q=role+collection
+
+__Scope:__
+- **Subaccount-level fragments**: Specify only the 'subaccount_id' and 'name' attribute.
+- **Service instance-level fragments**: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
+
+__Notes:__
+- 'service_instance_id' is optional. When omitted, the fragments are searched at the subaccount level.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

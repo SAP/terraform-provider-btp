@@ -344,6 +344,7 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newGlobalaccountSecuritySettingsResource,
 		newGlobalaccountTrustConfigurationResource,
 		newSubaccountApiCredentialResource,
+		newSubaccountDestinationFragmentResource,
 		newSubaccountEntitlementResource,
 		newSubaccountEnvironmentInstanceResource,
 		newSubaccountResource,

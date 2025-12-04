@@ -61,7 +61,11 @@ func (ds *subaccountDestinationTrustDataSource) Schema(_ context.Context, _ data
 		MarkdownDescription: `Gets details about a specific subaccount destination trust.
 
 __Tip:__
-You must be assigned to the admin or viewer role of the subaccount.`,
+You must have the appropriate connectivity and destination permissions, such as:
+- Subaccount Administrator  
+- Destination Administrator  
+- Destination Viewer  
+- Connectivity and Destination Administrator`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
