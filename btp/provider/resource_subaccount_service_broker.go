@@ -211,13 +211,13 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 
 	registrationRes, _, err := rs.cli.Services.Broker.Register(ctx, cliReq)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount1)", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
 
 	readyStateRes, err := rs.createStateChange(ctx, registrationRes, plan, "creation").WaitForStateContext(ctx)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount2)", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
 
