@@ -112,13 +112,13 @@ You must be assigned to the admin role of the subaccount.`,
 				},
 			},
 			"mtls": schema.BoolAttribute{
-				MarkdownDescription: "If true, use Service-Manager-provided mTLS credentials for the broker. When true, certificate and key must NOT be supplied.",
+				MarkdownDescription: "If true, use Service-Manager-provided mTLS credentials for the broker. When true, cert and key must NOT be supplied.",
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
 			},
 			"cert": schema.StringAttribute{
-				MarkdownDescription: "PEM-encoded client certificate to use for mTLS when mtls is false. certificate and key must be supplied together.",
+				MarkdownDescription: "PEM-encoded client certificate to use for mTLS when mtls is false. cert and key must be supplied together.",
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
@@ -127,7 +127,7 @@ You must be assigned to the admin role of the subaccount.`,
 				},
 			},
 			"key": schema.StringAttribute{
-				MarkdownDescription: "PEM-encoded private key matching the client certificate. certificate and private_key must be supplied together.",
+				MarkdownDescription: "PEM-encoded private key matching the client certificate. cert and key must be supplied together.",
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
@@ -193,7 +193,7 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 	if !plan.MTLS.ValueBool() && (plan.Username.IsNull() && plan.Key.IsNull()) {
 		resp.Diagnostics.AddError(
 			"Invalid Configuration",
-			"When `mtls` is not set, either `username+password` or `cert+key` should be provided.",
+			"When `mtls` is false, either `username+password` or `cert+key` should be provided.",
 		)
 		return
 	}
@@ -255,7 +255,7 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 	if !plan.MTLS.ValueBool() && (plan.Username.IsNull() && plan.Key.IsNull()) {
 		resp.Diagnostics.AddError(
 			"Invalid Configuration",
-			"When `mtls` is not set, either `username+password` or `cert+key` should be provided.",
+			"When `mtls` is false, either `username+password` or `cert+key` should be provided.",
 		)
 		return
 	}
