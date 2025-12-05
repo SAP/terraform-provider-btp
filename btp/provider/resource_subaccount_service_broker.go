@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -18,6 +19,7 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/servicemanager"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
+	"github.com/SAP/terraform-provider-btp/internal/validation/conflictwithmtlsvalidator"
 )
 
 func newSubaccountServiceBrokerResource() resource.Resource {
@@ -34,6 +36,9 @@ type subaccountServiceBrokerResourceType struct {
 	Username     types.String `tfsdk:"username"`
 	Password     types.String `tfsdk:"password"`
 	//Labels		 types.Map `tfsdk:"labels"` // not implemented because of NGPBUG-397042
+	MTLS types.Bool   `tfsdk:"mtls"`
+	Cert types.String `tfsdk:"cert"`
+	Key  types.String `tfsdk:"key"`
 
 	/* OUTPUT */
 	Ready        types.Bool   `tfsdk:"ready"`
@@ -93,12 +98,42 @@ You must be assigned to the admin role of the subaccount.`,
 			},
 			"username": schema.StringAttribute{
 				MarkdownDescription: "The username for basic authentication against the service broker.",
-				Required:            true,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("password")),
+				},
 			},
 			"password": schema.StringAttribute{
 				MarkdownDescription: "The password for basic authentication against the service broker.",
-				Required:            true,
+				Optional:            true,
 				Sensitive:           true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("username")),
+				},
+			},
+			"mtls": schema.BoolAttribute{
+				MarkdownDescription: "If true, use Service-Manager-provided mTLS credentials for the broker. When true, certificate and key must NOT be supplied.",
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
+			"cert": schema.StringAttribute{
+				MarkdownDescription: "PEM-encoded client certificate to use for mTLS when mtls is false. certificate and key must be supplied together.",
+				Optional:            true,
+				Sensitive:           true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("key")),
+					conflictwithmtlsvalidator.ConflictsWithMTLSValidator{},
+				},
+			},
+			"key": schema.StringAttribute{
+				MarkdownDescription: "PEM-encoded private key matching the client certificate. certificate and private_key must be supplied together.",
+				Optional:            true,
+				Sensitive:           true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("cert")),
+					conflictwithmtlsvalidator.ConflictsWithMTLSValidator{},
+				},
 			},
 			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
@@ -139,6 +174,9 @@ func (rs *subaccountServiceBrokerResource) Read(ctx context.Context, req resourc
 	newState.Name = state.Name
 	newState.Username = state.Username
 	newState.Password = state.Password
+	newState.MTLS = state.MTLS
+	newState.Cert = state.Cert
+	newState.Key = state.Key
 
 	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
@@ -152,6 +190,13 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 		return
 	}
 
+	if !plan.MTLS.ValueBool() && (plan.Username.IsNull() && plan.Key.IsNull()) {
+		resp.Diagnostics.AddError(
+			"Invalid Configuration",
+			"When `mtls` is not set, either `username+password` or `cert+key` should be provided.",
+		)
+		return
+	}
 	cliReq := btpcli.SubaccountServiceBrokerRegisterInput{
 		Subaccount:  plan.SubaccountId.ValueString(),
 		Name:        plan.Name.ValueString(),
@@ -159,17 +204,20 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 		URL:         plan.Url.ValueString(),
 		User:        plan.Username.ValueString(),
 		Password:    plan.Password.ValueString(),
+		MTLS:        plan.MTLS.ValueBool(),
+		Cert:        plan.Cert.ValueString(),
+		Key:         plan.Key.ValueString(),
 	}
 
 	registrationRes, _, err := rs.cli.Services.Broker.Register(ctx, cliReq)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount)", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount1)", fmt.Sprintf("%s", err))
 		return
 	}
 
 	readyStateRes, err := rs.createStateChange(ctx, registrationRes, plan, "creation").WaitForStateContext(ctx)
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount)", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("API Error Creating Resource Service Broker (Subaccount2)", fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -180,6 +228,9 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 	state.Name = plan.Name
 	state.Username = plan.Username
 	state.Password = plan.Password
+	state.MTLS = plan.MTLS
+	state.Cert = plan.Cert
+	state.Key = plan.Key
 
 	resp.Diagnostics.Append(diags...)
 
@@ -201,6 +252,14 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 		return
 	}
 
+	if !plan.MTLS.ValueBool() && (plan.Username.IsNull() && plan.Key.IsNull()) {
+		resp.Diagnostics.AddError(
+			"Invalid Configuration",
+			"When `mtls` is not set, either `username+password` or `cert+key` should be provided.",
+		)
+		return
+	}
+
 	cliReq := btpcli.SubaccountServiceBrokerUpdateInput{
 		Subaccount:  plan.SubaccountId.ValueString(),
 		Id:          plan.Id.ValueString(),
@@ -209,6 +268,9 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 		URL:         plan.Url.ValueString(),
 		User:        plan.Username.ValueString(),
 		Password:    plan.Password.ValueString(),
+		MTLS:        plan.MTLS.ValueBool(),
+		Cert:        plan.Cert.ValueString(),
+		Key:         plan.Key.ValueString(),
 	}
 
 	updateRes, _, err := rs.cli.Services.Broker.Update(ctx, cliReq)
@@ -230,6 +292,9 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 	newState.Name = plan.Name
 	newState.Username = plan.Username
 	newState.Password = plan.Password
+	newState.MTLS = plan.MTLS
+	newState.Cert = plan.Cert
+	newState.Key = plan.Key
 
 	resp.Diagnostics.Append(diags...)
 
@@ -273,6 +338,9 @@ func (rs *subaccountServiceBrokerResource) createStateChange(ctx context.Context
 	state.Name = plan.Name
 	state.Username = plan.Username
 	state.Password = plan.Password
+	state.MTLS = plan.MTLS
+	state.Cert = plan.Cert
+	state.Key = plan.Key
 
 	return &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
