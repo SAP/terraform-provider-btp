@@ -159,7 +159,7 @@ func (ds *subaccountDestinationCertificatesDataSource) Schema(_ context.Context,
 		MarkdownDescription: `Gets all the destination certificates in a subaccount.
 		
 		__Tip:__
-		You must be assigned the Destination Admin role in the subaccount.
+		You must be assigned the Destination Admin or Destination Certificate Administrator role in the subaccount.
 
 		__Further Information:__
 		<https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/use-destination-certificates>`,

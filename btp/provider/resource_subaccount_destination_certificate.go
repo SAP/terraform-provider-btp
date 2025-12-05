@@ -40,7 +40,7 @@ func (rs *subaccountDestinationCertificateResource) Schema(_ context.Context, _ 
 		MarkdownDescription: `Creates a destination certificate in a subaccount.
 		
 		__Tip:__
-		You must be assigned the Destination Admin role in the subaccount.
+		You must be assigned the Destination Admin or the Destination Certificate Administrator role in the subaccount.
 
 		__Further Information:__
 		<https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/use-destination-certificates>`,
@@ -48,19 +48,31 @@ func (rs *subaccountDestinationCertificateResource) Schema(_ context.Context, _ 
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount which contains the certificate.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"certificate_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the certificate with a valid certificate extension. Supported certificate types include .pem, .p12, .jks and .pfx",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"certificate_content": schema.StringAttribute{
 				MarkdownDescription: "The content of the certificate in base64 format.",
 				Required:            true,
 				Sensitive:           true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"service_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service instance associated with this certificate.",
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"certificate_nodes": schema.ListNestedAttribute{
 				MarkdownDescription: "List of certificate nodes containing details about the certificate and private key components.",
