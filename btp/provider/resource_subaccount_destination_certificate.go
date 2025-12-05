@@ -286,7 +286,7 @@ func (rs *subaccountDestinationCertificateResource) Create(ctx context.Context, 
 
 func (rs *subaccountDestinationCertificateResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
-	resp.Diagnostics.AddError("Resource Destination Certificate does not support updates", "Destroy and recreate the resource")
+	resp.Diagnostics.AddError("Resource Destination Certificate does not support updates", "Terraform will destroy and recreate the resource if any of the user configurable parameters are modified")
 }
 
 func (rs *subaccountDestinationCertificateResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
