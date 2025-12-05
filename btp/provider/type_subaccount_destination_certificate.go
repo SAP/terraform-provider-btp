@@ -2,10 +2,12 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/destinations"
 )
@@ -24,7 +26,7 @@ type subaccountDestinationCertificatesDataSourceType struct {
 	Creation        types.Object `tfsdk:"certification_creation_details"`
 }
 
-// Used for the certificate resource
+// Used for the certificate data source
 type subaccountDestinationCertificateDataSourceType struct {
 	SubaccountId      types.String `tfsdk:"subaccount_id"`
 	ServiceInstanceId types.String `tfsdk:"service_instance_id"`
@@ -33,6 +35,7 @@ type subaccountDestinationCertificateDataSourceType struct {
 	Creation          types.Object `tfsdk:"certification_creation_details"`
 }
 
+// Used for the certificate resource
 type subaccountDestinationCertificateResourceType struct {
 	SubaccountId       types.String `tfsdk:"subaccount_id"`
 	ServiceInstanceId  types.String `tfsdk:"service_instance_id"`
@@ -55,6 +58,15 @@ type DestinationCertificateNodeType struct {
 	Certificate types.String `tfsdk:"certificate"`
 }
 
+type DestinationCertificateCreationType struct {
+	GenerationMethod  types.String `tfsdk:"generation_method"`
+	CommonName        types.String `tfsdk:"common_name"`
+	HasPassword       types.Bool   `tfsdk:"has_password"`
+	AutoRenew         types.Bool   `tfsdk:"auto_renew"`
+	ValiditDuration   types.String `tfsdk:"validity_duration"`
+	ValidityTimeUnits types.String `tfsdk:"validity_time_units"`
+}
+
 func subaccountDestinationCertificateValueFrom(ctx context.Context, value destinations.DestinationCertificateResponseObject) (subaccountDestinationCertificateResourceType, diag.Diagnostics) {
 
 	var diagnostics diag.Diagnostics
@@ -64,6 +76,8 @@ func subaccountDestinationCertificateValueFrom(ctx context.Context, value destin
 	}
 
 	if len(value.Nodes) > 0 {
+
+		// map response body to terraform list value
 		nodes, diags := types.ListValueFrom(ctx, certificateNodeObjType, value.Nodes)
 		diagnostics.Append(diags...)
 
@@ -71,6 +85,7 @@ func subaccountDestinationCertificateValueFrom(ctx context.Context, value destin
 			return destinationCertificate, diagnostics
 		}
 
+		// convert terraform list value to an iterable list
 		nodesVal := []DestinationCertificateNodeType{}
 		diags = nodes.ElementsAs(ctx, &nodesVal, true)
 		diagnostics.Append(diags...)
@@ -79,8 +94,18 @@ func subaccountDestinationCertificateValueFrom(ctx context.Context, value destin
 			return destinationCertificate, diagnostics
 		}
 
-		// replaces all empty strings in each node with null
-		nodes, diags = convertEmptyStringToNull(ctx, nodesVal)
+		// iterate and replace all empty strings in each node with null
+		for i, node := range nodesVal {
+			nodeObj, diags := convertEmptyStringToNull[DestinationCertificateNodeType](reflect.ValueOf(&node).Elem())
+			diagnostics.Append(diags...)
+
+			if !diagnostics.HasError() {
+				nodesVal[i] = nodeObj
+			}
+		}
+
+		// convert back to terraform list value
+		nodes, diags = types.ListValueFrom(ctx, certificateNodeObjType, nodesVal)
 		diagnostics.Append(diags...)
 
 		if diagnostics.HasError() {
@@ -90,6 +115,7 @@ func subaccountDestinationCertificateValueFrom(ctx context.Context, value destin
 		destinationCertificate.Nodes = nodes
 	}
 
+	// map response body to terraform object value
 	creationData, diags := types.ObjectValueFrom(ctx, creationDataObjType.AttrTypes, value.Creation)
 	diagnostics.Append(diags...)
 
@@ -97,8 +123,31 @@ func subaccountDestinationCertificateValueFrom(ctx context.Context, value destin
 		return destinationCertificate, diagnostics
 	}
 
-	destinationCertificate.Creation = creationData
+	// convert terraform object into a golang object
+	creationVal := DestinationCertificateCreationType{}
+	diags = creationData.As(ctx, &creationVal, basetypes.ObjectAsOptions{
+		UnhandledNullAsEmpty:    true,
+		UnhandledUnknownAsEmpty: true,
+	})
+	diagnostics.Append(diags...)
 
+	if diagnostics.HasError() {
+		return destinationCertificate, diagnostics
+	}
+
+	// replaces all empty strings with null
+	creationObj, diags := convertEmptyStringToNull[DestinationCertificateCreationType](reflect.ValueOf(&creationVal).Elem())
+	diagnostics.Append(diags...)
+
+	// convert back to terraform object value
+	creationData, diags = types.ObjectValueFrom(ctx, creationDataObjType.AttrTypes, creationObj)
+	diagnostics.Append(diags...)
+
+	if diagnostics.HasError() {
+		return destinationCertificate, diagnostics
+	}
+
+	destinationCertificate.Creation = creationData
 	return destinationCertificate, diagnostics
 }
 
@@ -154,27 +203,26 @@ func subaccountDestinationCertificatesValueFrom(ctx context.Context, values map[
 	return allDestinationCertificates, diagnostics
 }
 
-func convertEmptyStringToNull(ctx context.Context, nodes []DestinationCertificateNodeType) (types.List, diag.Diagnostics) {
+func convertEmptyStringToNull[I any](v reflect.Value) (I, diag.Diagnostics) {
 
 	var diags diag.Diagnostics
 
-	for i, node := range nodes {
-
-		v := reflect.ValueOf(&node).Elem()
-		for i := 0; i < v.NumField(); i++ {
-			field := v.Field(i)
-			if field.Type() == reflect.TypeOf(types.String{}) {
-				strVal := field.Interface().(types.String)
-				if strVal.ValueString() == "" {
-					field.Set(reflect.ValueOf(types.StringNull()))
-				}
+	for i := 0; i < v.NumField(); i++ {
+		field := v.Field(i)
+		if field.Type() == reflect.TypeOf(types.String{}) {
+			strVal := field.Interface().(types.String)
+			if strVal.ValueString() == "" {
+				field.Set(reflect.ValueOf(types.StringNull()))
 			}
 		}
-
-		nodes[i] = node
 	}
 
-	nodesList, diags := types.ListValueFrom(ctx, certificateNodeObjType, nodes)
+	if obj, ok := v.Interface().(I); !ok {
+		var emptyObj I
+		diags.AddError(fmt.Sprintf("error while mapping mapping back to type %T", emptyObj), "state file might contain empty strings")
+		return emptyObj, diags
+	} else {
+		return obj, diags
+	}
 
-	return nodesList, diags
 }
