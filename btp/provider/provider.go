@@ -359,6 +359,7 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newDirectoryRoleResource,
 		newGlobalaccountRoleResource,
 		newSubaccountRoleResource,
+		newSubaccountDestinationCertificateResource,
 	}, betaResources...)
 }
 

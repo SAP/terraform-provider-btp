@@ -1,8 +1,8 @@
 ---
-page_title: "btp_subaccount_destination_certificate Data Source - terraform-provider-btp"
+page_title: "btp_subaccount_destination_certificate Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets the destination certificate in a subaccount.
+  Creates a destination certificate in a subaccount.
   	__Tip:__
   	You must be assigned the Destination Admin or the Destination Certificate Administrator role in the subaccount.
   
@@ -10,9 +10,9 @@ description: |-
   	<https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/use-destination-certificates>
 ---
 
-# btp_subaccount_destination_certificate (Data Source)
+# btp_subaccount_destination_certificate (Resource)
 
-Gets the destination certificate in a subaccount.
+Creates a destination certificate in a subaccount.
 		
 		__Tip:__
 		You must be assigned the Destination Admin or the Destination Certificate Administrator role in the subaccount.
@@ -23,17 +23,19 @@ Gets the destination certificate in a subaccount.
 ## Example Usage
 
 ```terraform
-# Subaccount specific Destination Certificates
-data "btp_subaccount_destination_certificate" "dest_cert" {
+# Subaccount specific Destination Certificate
+resource "btp_subaccount_destination_certificate" "dest_cert" {
     subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-    certificate_name = "test.pem"               
+    certificate_name = "test.pem"                               // Ensure to include a certificate file extension, refer documentation for the valid extensions
+    certificate_content = filebase64("path_to_file")
 }
 
-# Service Instance specific Destination Certificates
-data "btp_subaccount_destination_certificate" "dest_cert" {
+# Service Instance specific Destination Certificate
+resource "btp_subaccount_destination_certificate" "dest_cert" {
     subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
     service_instance_id = "bc8a216f-1184-49dc-b4b4-17cfe2828965"
-    certificate_name = "test.pem"               
+    certificate_name = "test.pem"                               // Ensure to include a certificate file extension, refer documentation for the valid extensions
+    certificate_content = filebase64("path_to_file")
 }
 ```
 
@@ -42,6 +44,7 @@ data "btp_subaccount_destination_certificate" "dest_cert" {
 
 ### Required
 
+- `certificate_content` (String, Sensitive) The content of the certificate in base64 format.
 - `certificate_name` (String) The name of the certificate with a valid certificate extension. Supported certificate types include .pem, .p12, .jks and .pfx
 - `subaccount_id` (String) The ID of the subaccount which contains the certificate.
 
@@ -82,3 +85,5 @@ Read-Only:
 - `has_password` (Boolean) Indicates whether the certificate is protected with a password.
 - `validity_duration` (String) The numeric duration for which the certificate is valid.
 - `validity_time_units` (String) The time unit associated with the validity duration, such as `DAYS`, `MONTHS`, or `YEARS`.
+
+

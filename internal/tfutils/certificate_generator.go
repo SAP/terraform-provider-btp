@@ -5,10 +5,12 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/base64"
 	"encoding/pem"
 	"fmt"
 	"math/big"
 	"os"
+	"software.sslmate.com/src/go-pkcs12"
 
 	"strings"
 	"time"
@@ -17,6 +19,7 @@ import (
 var (
 	pemFile = "cert.pem"
 	keyFile = "key.pem"
+	p12File = "cert.p12"
 )
 
 func GeneratePEMCertificate() error {
@@ -111,4 +114,108 @@ func ReadPEMCertificate() (string, error) {
 	}
 
 	return pemString, nil
+}
+
+func GenerateP12FromPEM(password string) error {
+	// Read certificate PEM file
+	certPEMData, err := os.ReadFile(pemFile)
+	if err != nil {
+		return fmt.Errorf("unable to read certificate file: %v", err)
+	}
+
+	// Read private key PEM file
+	keyPEMData, err := os.ReadFile(keyFile)
+	if err != nil {
+		return fmt.Errorf("unable to read key file: %v", err)
+	}
+
+	// Decode certificate PEM
+	certBlock, _ := pem.Decode(certPEMData)
+	if certBlock == nil {
+		return fmt.Errorf("unable to decode certificate PEM")
+	}
+
+	cert, err := x509.ParseCertificate(certBlock.Bytes)
+	if err != nil {
+		return fmt.Errorf("unable to parse certificate: %v", err)
+	}
+
+	// Decode private key PEM
+	keyBlock, _ := pem.Decode(keyPEMData)
+	if keyBlock == nil {
+		return fmt.Errorf("unable to decode private key PEM")
+	}
+
+	privateKey, err := x509.ParsePKCS1PrivateKey(keyBlock.Bytes)
+	if err != nil {
+		return fmt.Errorf("unable to parse private key: %v", err)
+	}
+
+	// Encode to P12 format
+	p12Data, err := pkcs12.LegacyRC2.Encode(privateKey, cert, nil, password)
+	if err != nil {
+		return fmt.Errorf("unable to encode P12: %v", err)
+	}
+
+	// Write P12 file
+	if err = os.WriteFile(p12File, p12Data, 0600); err != nil {
+		return fmt.Errorf("unable to write P12 file: %v", err)
+	}
+
+	return nil
+}
+
+func GetBase64EncodedCertificate(certType string) (string, error) {
+
+	var files []string
+
+	if err := GeneratePEMCertificate(); err != nil {
+		return "", err
+	}
+
+	switch certType {
+
+	case "pem":
+		files = []string{pemFile, keyFile}
+
+	case "pfx":
+		fallthrough
+	case "p12":
+		p12Password := ""
+
+		if err := GenerateP12FromPEM(p12Password); err != nil {
+			return "", fmt.Errorf("unable to generate p12 file from pem certificate : %v", err)
+		}
+
+		files = []string{p12File, pemFile, keyFile}
+
+	default:
+
+		certTypeErr := fmt.Errorf("unsupported certificate type: %s", certType)
+
+		if err := os.Remove(pemFile); err != nil {
+			return "", fmt.Errorf("%v\n unable to delete file : %s : %v", certTypeErr, pemFile, err)
+		}
+
+		if err := os.Remove(keyFile); err != nil {
+			return "", fmt.Errorf("%v\n unable to delete file : %s : %v", certTypeErr, keyFile, err)
+		}
+
+		return "", certTypeErr
+	}
+
+	data, err := os.ReadFile(files[0])
+	if err != nil {
+		return "", err
+	}
+
+	encoded := base64.StdEncoding.EncodeToString([]byte(string(data)))
+
+	for _, file := range files {
+		if err := os.Remove(file); err != nil {
+			return encoded, fmt.Errorf("unable to delete file : %s : %v", file, err)
+		}
+	}
+
+	return encoded, nil
 }

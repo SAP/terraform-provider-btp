@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
+
 	"net/http"
 	"testing"
 
@@ -16,7 +18,49 @@ var (
 	subaccountId = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	instanceId   = "bc8a216f-1184-49dc-b4b4-17cfe2828965"
 	fileName     = "test.p12"
+	fileContent  = "test-content"
 )
+
+func TestConnectivityDestinationCertificateFacade_Create(t *testing.T) {
+	t.Run("constructs the CLI params correctly", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			if r.URL.RawQuery == "create" {
+				assertCall(t, r, command, ActionCreate, map[string]string{
+					"subaccount":      subaccountId,
+					"serviceInstance": instanceId,
+					"file":            fmt.Sprintf("{\"filename\":\"%s\",\"value\":\"%s\"}", fileName, fileContent),
+				})
+			}
+
+			if r.URL.RawQuery == "get" {
+				assertCall(t, r, command, ActionGet, map[string]string{
+					"subaccount":      subaccountId,
+					"serviceInstance": instanceId,
+					"certName":        fileName,
+				})
+			}
+
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.DestinationCertificate.Create(context.TODO(), &DestinationCertificateCreateInput{
+			SubaccountId:      subaccountId,
+			ServiceInstanceId: instanceId,
+			Certificate: FileInput{
+				Filename:           fileName,
+				CertificateContent: fileContent,
+			},
+		})
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
 
 func TestConnectivityDestinationCertificateFacade_Get(t *testing.T) {
 	t.Run("constructs the CLI params correctly", func(t *testing.T) {
