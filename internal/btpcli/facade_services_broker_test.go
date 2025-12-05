@@ -171,6 +171,7 @@ func TestServicesBrokerFacade_Register(t *testing.T) {
 				"url":         url,
 				"user":        user,
 				"password":    password,
+				"mtls":        "false",
 				"labels":      `{"a":["b"]}`,
 			})
 		}))
@@ -220,6 +221,7 @@ func TestServicesBrokerFacade_Update(t *testing.T) {
 				"url":         url,
 				"user":        user,
 				"password":    password,
+				"mtls":        "false",
 				"labels":      `{"a":["b"]}`,
 			})
 		}))
