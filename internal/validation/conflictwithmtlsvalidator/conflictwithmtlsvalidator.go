@@ -42,7 +42,7 @@ func (v conflictsWithMTLSValidator) ValidateString(ctx context.Context, req vali
 	}
 }
 
-// VValidMTLSParameters checks that the cert and key are not provided when mtls is true
+// ValidMtlsParameters checks that the cert and key are not provided when mtls is true
 func ValidMtlsParameters() validator.String {
 	return conflictsWithMTLSValidator{}
 }
