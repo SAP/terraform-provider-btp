@@ -1,0 +1,32 @@
+name: Terraform Format Check
+
+on:
+    pull_request:
+      types:
+        - opened
+        - reopened
+        - synchronize
+        - ready_for_review
+    workflow_dispatch:
+
+jobs:
+    terraform-fmt:
+      name: Validate Format of Terraform Files
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v6
+
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v3
+          with:
+            terraform_wrapper: false
+
+        - name: Validate Terraform format
+          shell: bash
+          run: |
+              EXIT_CODE=0
+              echo "Checking format of $file with terraform fmt"
+              terraform -chdir='./examples' fmt -check -recursive -no-color || EXIT_CODE=$?
+              echo "Result is $EXIT_CODE"
+              exit $EXIT_CODE
