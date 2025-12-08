@@ -25,10 +25,18 @@ Connectivity and Destination Administrator
 ## Example Usage
 
 ```terraform
-data "btp_subaccount_destination" "testSI" {
-  name       = "my-destination"
-  subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  service_instance_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+# Read a destination by name for a subaccount
+data "btp_subaccount_destination" "test_subaccount" {
+  name                = "my-destination"
+  subaccount_id       = "6aa64c2f-38c1-12345-a1b2-cf9fea769b7f"
+  service_instance_id = "6aa64c2f-38c1-12345-a1b2-cf9fea769b7f"
+}
+
+# Read a destination by name for a subaccount and service instance
+data "btp_subaccount_destination" "test_service_instance" {
+  name                = "my-destination"
+  subaccount_id       = "6aa64c2f-38c1-12345-a1b2-cf9fea769b7f"
+  service_instance_id = "6aa64c2f-38c1-12345-a1b2-cf9fea769b7f"
 }
 ```
 
