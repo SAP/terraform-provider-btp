@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -19,7 +20,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/servicemanager"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
-	"github.com/SAP/terraform-provider-btp/internal/validation/conflictwithmtlsvalidator"
 )
 
 func newSubaccountServiceBrokerResource() resource.Resource {
@@ -101,6 +101,8 @@ You must be assigned to the admin role of the subaccount.`,
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("password")),
+					stringvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
+					stringvalidator.AtLeastOneOf(path.MatchRoot("password"), path.MatchRoot("cert"), path.MatchRoot("key"), path.MatchRoot("mtls")),
 				},
 			},
 			"password": schema.StringAttribute{
@@ -109,6 +111,7 @@ You must be assigned to the admin role of the subaccount.`,
 				Sensitive:           true,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("username")),
+					stringvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
 				},
 			},
 			"mtls": schema.BoolAttribute{
@@ -116,6 +119,9 @@ You must be assigned to the admin role of the subaccount.`,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
+				Validators: []validator.Bool{
+					boolvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("key"), path.MatchRoot("cert")),
+				},
 			},
 			"cert": schema.StringAttribute{
 				MarkdownDescription: "PEM-encoded client certificate to use for mTLS when mtls is false. cert and key must be supplied together.",
@@ -123,7 +129,7 @@ You must be assigned to the admin role of the subaccount.`,
 				Sensitive:           true,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("key")),
-					conflictwithmtlsvalidator.ValidMtlsParameters(),
+					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password")),
 				},
 			},
 			"key": schema.StringAttribute{
@@ -132,7 +138,7 @@ You must be assigned to the admin role of the subaccount.`,
 				Sensitive:           true,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("cert")),
-					conflictwithmtlsvalidator.ValidMtlsParameters(),
+					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password")),
 				},
 			},
 			"created_date": schema.StringAttribute{
@@ -190,15 +196,6 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 		return
 	}
 
-	if !plan.MTLS.ValueBool() &&
-		!((!plan.Username.IsNull() && !plan.Password.IsNull()) ||
-			(!plan.Cert.IsNull() && !plan.Key.IsNull())) {
-		resp.Diagnostics.AddError(
-			"Invalid Configuration",
-			"When `mtls` is false, either `username+password` or `cert+key` should be provided.",
-		)
-		return
-	}
 	cliReq := btpcli.SubaccountServiceBrokerRegisterInput{
 		Subaccount:  plan.SubaccountId.ValueString(),
 		Name:        plan.Name.ValueString(),
@@ -251,16 +248,6 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	if !plan.MTLS.ValueBool() &&
-		!((!plan.Username.IsNull() && !plan.Password.IsNull()) ||
-			(!plan.Cert.IsNull() && !plan.Key.IsNull())) {
-		resp.Diagnostics.AddError(
-			"Invalid Configuration",
-			"When `mtls` is false, either `username+password` or `cert+key` should be provided.",
-		)
 		return
 	}
 

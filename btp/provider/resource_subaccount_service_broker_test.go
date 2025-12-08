@@ -64,24 +64,35 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountServiceBrokerWithMTLS("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-broker", "a description", "https://my-broker-bogus-ratel-yb.cfapps.eu12.hana.ondemand.com", true, "dummy-cert", "dummy-key"),
-					ExpectError: regexp.MustCompile("When `mtls` is true, `cert` and `key` must NOT be provided."),
+					Config:      hclResourceSubaccountServiceBrokerWithMTLSCertKey("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-broker", "a description", "https://my-broker-bogus-ratel-yb.cfapps.eu12.hana.ondemand.com", true, "dummy-cert", "dummy-key"),
+					ExpectError: regexp.MustCompile("Invalid Attribute Combination"),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - mtls true with username and password provided", func(t *testing.T) {
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclResourceSubaccountServiceBrokerWithMTLSUserPwd("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-broker", "a description", "https://my-broker-bogus-ratel-yb.cfapps.eu12.hana.ondemand.com", true, "user", "password"),
+					ExpectError: regexp.MustCompile("Invalid Attribute Combination"),
 				},
 			},
 		})
 	})
 
 	t.Run("error path - mtls set to false without basic auth", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_broker_error")
-		defer stopQuietly(rec)
-
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithoutBasicAuth("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-broker", "a description", "https://my-broker-bogus-ratel-yb.cfapps.eu12.hana.ondemand.com"),
-					ExpectError: regexp.MustCompile("Invalid Configuration"),
+					Config:      hclResourceSubaccountServiceBrokerWithoutBasicAuth("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-broker", "a description", "https://my-broker-bogus-ratel-yb.cfapps.eu12.hana.ondemand.com"),
+					ExpectError: regexp.MustCompile("Invalid Attribute Combination"),
 				},
 			},
 		})
@@ -103,11 +114,10 @@ func hclResourceSubaccountServiceBroker(resourceName string, subaccountId string
 	return fmt.Sprintf(`
 		resource "btp_subaccount_service_broker" "%s" {
 			subaccount_id = "%s"
-			name		  = "%s"
+			name		      = "%s"
 			description   = "%s"
-
-			url			  = "%s"
-			username	  = "%s"
+			url			      = "%s"
+			username	    = "%s"
 			password      = "%s"
 		}
 	`, resourceName, subaccountId, name, description, url, username, password)
@@ -117,25 +127,37 @@ func hclResourceSubaccountServiceBrokerWithoutBasicAuth(resourceName string, sub
 	return fmt.Sprintf(`
 		resource "btp_subaccount_service_broker" "%s" {
 			subaccount_id = "%s"
-			name		  = "%s"
+			name		      = "%s"
 			description   = "%s"
-
-			url			  = "%s"
+			url			      = "%s"
 		}
 	`, resourceName, subaccountId, name, description, url)
 }
 
-func hclResourceSubaccountServiceBrokerWithMTLS(resourceName string, subaccountId string, name string, description string, url string, mtls bool, cert string, key string) string {
+func hclResourceSubaccountServiceBrokerWithMTLSCertKey(resourceName string, subaccountId string, name string, description string, url string, mtls bool, cert string, key string) string {
 	return fmt.Sprintf(`
 		resource "btp_subaccount_service_broker" "%s" {
 			subaccount_id = "%s"
 			name          = "%s"
 			description   = "%s"
-
 			url           = "%s"
 			mtls          = %t
 			cert          = "%s"
 			key           = "%s"
 		}
 	`, resourceName, subaccountId, name, description, url, mtls, cert, key)
+}
+
+func hclResourceSubaccountServiceBrokerWithMTLSUserPwd(resourceName string, subaccountId string, name string, description string, url string, mtls bool, username string, password string) string {
+	return fmt.Sprintf(`
+		resource "btp_subaccount_service_broker" "%s" {
+			subaccount_id = "%s"
+			name          = "%s"
+			description   = "%s"
+			url           = "%s"
+			mtls          = %t
+			username      = "%s"
+			password      = "%s"
+		}
+	`, resourceName, subaccountId, name, description, url, mtls, username, password)
 }
