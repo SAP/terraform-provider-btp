@@ -57,3 +57,99 @@ func TestConnectivityDestinationFacade_Get(t *testing.T) {
 		}
 	})
 }
+
+func TestConnectivityDestinationFacade_List(t *testing.T) {
+	command := "connectivity/destination"
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+
+	t.Run("constructs params correctly without serviceInstance", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCallAnyMap(t, r, command, ActionList, map[string]any{
+				"namesOnly":  false,
+				"subaccount": subaccountId,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.Destination.ListBySubaccount(context.TODO(), subaccountId, "")
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs params correctly with serviceInstance, namesOnly", func(t *testing.T) {
+		var srvCalled bool
+
+		serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCallAnyMap(t, r, command, ActionList, map[string]any{
+				"namesOnly":       false,
+				"subaccount":      subaccountId,
+				"serviceInstance": serviceInstance,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.Destination.ListBySubaccount(context.TODO(), subaccountId, serviceInstance)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestConnectivityDestinationFacade_ListNames(t *testing.T) {
+	command := "connectivity/destination"
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+
+	t.Run("constructs params correctly without serviceInstance", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCallAnyMap(t, r, command, ActionList, map[string]any{
+				"namesOnly":  true,
+				"subaccount": subaccountId,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.Destination.ListNamesBySubaccount(context.TODO(), subaccountId, "")
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs params correctly with serviceInstance, namesOnly", func(t *testing.T) {
+		var srvCalled bool
+
+		serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCallAnyMap(t, r, command, ActionList, map[string]any{
+				"namesOnly":       true,
+				"subaccount":      subaccountId,
+				"serviceInstance": serviceInstance,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.Destination.ListNamesBySubaccount(context.TODO(), subaccountId, serviceInstance)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}

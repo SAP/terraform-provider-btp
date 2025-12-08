@@ -26,6 +26,10 @@ type subaccountDestinationType struct {
 	AdditionalConfiguration jsontypes.Normalized `tfsdk:"additional_configuration"`
 }
 
+type subaccountDestinationName struct {
+	Name types.String `tfsdk:"name"`
+}
+
 func destinationValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationType, diag.Diagnostics) {
 	creationTimeString, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
 	if err != nil {
