@@ -64,7 +64,7 @@ Connectivity and Destination Administrator`,
 				Optional:            true,
 			},
 			"names_only": schema.BoolAttribute{
-				MarkdownDescription: "The Bool value for getting names only.",
+				MarkdownDescription: "The Bool value for getting names only. Default value is false.",
 				Optional:            true,
 			},
 			"destination_names": schema.ListNestedAttribute{

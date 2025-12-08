@@ -41,7 +41,7 @@ data "btp_subaccount_destinations" "testSI" {
 
 ### Optional
 
-- `names_only` (Boolean) The Bool value for getting names only.
+- `names_only` (Boolean) The Bool value for getting names only. Default value is false.
 - `service_instance_id` (String) The service instance that becomes part of the path used to access the destination of the subaccount.
 
 ### Read-Only

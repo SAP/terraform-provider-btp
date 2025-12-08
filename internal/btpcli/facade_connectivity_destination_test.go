@@ -82,7 +82,7 @@ func TestConnectivityDestinationFacade_List(t *testing.T) {
 		}
 	})
 
-	t.Run("constructs params correctly with serviceInstance", func(t *testing.T) {
+	t.Run("constructs params correctly with serviceInstance, namesOnly", func(t *testing.T) {
 		var srvCalled bool
 
 		serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
@@ -130,7 +130,7 @@ func TestConnectivityDestinationFacade_ListNames(t *testing.T) {
 		}
 	})
 
-	t.Run("constructs params correctly with serviceInstance", func(t *testing.T) {
+	t.Run("constructs params correctly with serviceInstance, namesOnly", func(t *testing.T) {
 		var srvCalled bool
 
 		serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
