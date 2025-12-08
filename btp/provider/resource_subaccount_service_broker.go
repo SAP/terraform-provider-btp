@@ -123,7 +123,7 @@ You must be assigned to the admin role of the subaccount.`,
 				Sensitive:           true,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("key")),
-					conflictwithmtlsvalidator.ConflictsWithMTLSValidator{},
+					conflictwithmtlsvalidator.ValidMtlsParameters(),
 				},
 			},
 			"key": schema.StringAttribute{
@@ -132,7 +132,7 @@ You must be assigned to the admin role of the subaccount.`,
 				Sensitive:           true,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("cert")),
-					conflictwithmtlsvalidator.ConflictsWithMTLSValidator{},
+					conflictwithmtlsvalidator.ValidMtlsParameters(),
 				},
 			},
 			"created_date": schema.StringAttribute{

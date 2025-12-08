@@ -10,17 +10,17 @@ import (
 )
 
 // custom validator to ensure cert and key are not provided when mtls is set
-type ConflictsWithMTLSValidator struct{}
+type conflictsWithMTLSValidator struct{}
 
-func (v ConflictsWithMTLSValidator) Description(_ context.Context) string {
+func (v conflictsWithMTLSValidator) Description(_ context.Context) string {
 	return "Cannot be provided when mtls is true."
 }
 
-func (v ConflictsWithMTLSValidator) MarkdownDescription(_ context.Context) string {
+func (v conflictsWithMTLSValidator) MarkdownDescription(_ context.Context) string {
 	return "Cannot be provided when `mtls` is `true`."
 }
 
-func (v ConflictsWithMTLSValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+func (v conflictsWithMTLSValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
 	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
@@ -40,4 +40,9 @@ func (v ConflictsWithMTLSValidator) ValidateString(ctx context.Context, req vali
 			"When `mtls` is true, `cert` and `key` must NOT be provided.",
 		)
 	}
+}
+
+// VValidMTLSParameters checks that the cert and key are not provided when mtls is true
+func ValidMtlsParameters() validator.String {
+	return conflictsWithMTLSValidator{}
 }
