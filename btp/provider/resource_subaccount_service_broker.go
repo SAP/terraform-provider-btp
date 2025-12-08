@@ -190,7 +190,9 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 		return
 	}
 
-	if !plan.MTLS.ValueBool() && (plan.Username.IsNull() && plan.Key.IsNull()) {
+	if !plan.MTLS.ValueBool() &&
+		!((!plan.Username.IsNull() && !plan.Password.IsNull()) ||
+			(!plan.Cert.IsNull() && !plan.Key.IsNull())) {
 		resp.Diagnostics.AddError(
 			"Invalid Configuration",
 			"When `mtls` is false, either `username+password` or `cert+key` should be provided.",
@@ -252,7 +254,9 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	if !plan.MTLS.ValueBool() && (plan.Username.IsNull() && plan.Key.IsNull()) {
+	if !plan.MTLS.ValueBool() &&
+		!((!plan.Username.IsNull() && !plan.Password.IsNull()) ||
+			(!plan.Cert.IsNull() && !plan.Key.IsNull())) {
 		resp.Diagnostics.AddError(
 			"Invalid Configuration",
 			"When `mtls` is false, either `username+password` or `cert+key` should be provided.",
