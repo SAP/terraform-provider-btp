@@ -39,3 +39,19 @@ func assertCall(t *testing.T, r *http.Request, expectedCommand string, expectedA
 		assert.Equal(t, expectedParams, payload.ParamValues)
 	}
 }
+
+func assertCallAnyMap(t *testing.T, r *http.Request, expectedCommand string, expectedAction Action, expectedParams map[string]any) {
+	t.Helper()
+
+	var payload struct {
+		ParamValues map[string]any `json:"paramValues"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&payload); assert.NoError(t, err) {
+		expectedEndpoint := fmt.Sprintf("/command/%s/%s", cliTargetProtocolVersion, expectedCommand)
+
+		assert.Equal(t, expectedEndpoint, r.URL.Path)
+		assert.Equal(t, string(expectedAction), r.URL.RawQuery)
+		assert.Equal(t, expectedParams, payload.ParamValues)
+	}
+}

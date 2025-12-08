@@ -29,3 +29,27 @@ func (f *connectivityDestinationFacade) GetBySubaccount(ctx context.Context, sub
 	}
 	return doExecute[connectivity.DestinationResponse](f.cliClient, ctx, NewGetRequest(f.getCommand(), args))
 }
+
+func (f *connectivityDestinationFacade) ListBySubaccount(ctx context.Context, subaccountId string, serviceInstance string) ([]connectivity.DestinationResponse, CommandResponse, error) {
+	args := map[string]any{
+		"subaccount": subaccountId,
+		"namesOnly":  false,
+	}
+
+	if len(serviceInstance) > 0 {
+		args["serviceInstance"] = serviceInstance
+	}
+	return doExecute[[]connectivity.DestinationResponse](f.cliClient, ctx, NewListRequest(f.getCommand(), args))
+}
+
+func (f *connectivityDestinationFacade) ListNamesBySubaccount(ctx context.Context, subaccountId string, serviceInstance string) ([]map[string]string, CommandResponse, error) {
+	args := map[string]any{
+		"subaccount": subaccountId,
+		"namesOnly":  true,
+	}
+
+	if len(serviceInstance) > 0 {
+		args["serviceInstance"] = serviceInstance
+	}
+	return doExecute[[]map[string]string](f.cliClient, ctx, NewListRequest(f.getCommand(), args))
+}

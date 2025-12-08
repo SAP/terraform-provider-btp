@@ -12,15 +12,3 @@ type SystemMetadata struct {
 	UserAgent        string `json:"userAgent"`
 	ModificationTime string `json:"modification_time"`
 }
-
-type DestinationName struct {
-	Name string `json:"Name"`
-}
-
-type DestinationNamesList struct {
-	Names []DestinationName `json:"Names"`
-}
-
-type DestinationsList struct {
-	Destination []DestinationResponse `json:"destination"`
-}
