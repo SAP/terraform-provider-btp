@@ -102,7 +102,6 @@ You must be assigned to the admin role of the subaccount.`,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("password")),
 					stringvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
-					stringvalidator.AtLeastOneOf(path.MatchRoot("password"), path.MatchRoot("cert"), path.MatchRoot("key"), path.MatchRoot("mtls")),
 				},
 			},
 			"password": schema.StringAttribute{
@@ -120,7 +119,7 @@ You must be assigned to the admin role of the subaccount.`,
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
 				Validators: []validator.Bool{
-					boolvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("key"), path.MatchRoot("cert")),
+					boolvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
 				},
 			},
 			"cert": schema.StringAttribute{
