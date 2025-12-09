@@ -11,7 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -102,7 +101,7 @@ You must be assigned to the admin role of the subaccount.`,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("password")),
 					stringvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
-					stringvalidator.AtLeastOneOf(path.MatchRoot("password"), path.MatchRoot("cert"), path.MatchRoot("key"), path.MatchRoot("mtls")),
+					stringvalidator.AtLeastOneOf(path.MatchRoot("cert"), path.MatchRoot("mtls")),
 				},
 			},
 			"password": schema.StringAttribute{
@@ -115,16 +114,15 @@ You must be assigned to the admin role of the subaccount.`,
 				},
 			},
 			"mtls": schema.BoolAttribute{
-				MarkdownDescription: "If true, use Service-Manager-provided mTLS credentials for the broker. When true, cert and key must NOT be supplied.",
+				MarkdownDescription: "Use Service-Manager-provided mTLS credentials for the broker. When set to true, cert and key must NOT be supplied.",
 				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(false),
 				Validators: []validator.Bool{
-					boolvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password"), path.MatchRoot("key"), path.MatchRoot("cert")),
+					boolvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
+					boolvalidator.Equals(true),
 				},
 			},
 			"cert": schema.StringAttribute{
-				MarkdownDescription: "PEM-encoded client certificate to use for mTLS when mtls is false. cert and key must be supplied together.",
+				MarkdownDescription: "PEM-encoded client certificate. cert and key must be supplied together.",
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
