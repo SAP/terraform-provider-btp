@@ -90,7 +90,7 @@ resource "btp_directory" "dir_entitlements_stacked" {
 
 resource "btp_directory" "dir_static" {
   name        = local.integration_test_dir_static
-  features = ["DEFAULT", "ENTITLEMENTS", "AUTHORIZATIONS"]
+  features    = ["DEFAULT", "ENTITLEMENTS", "AUTHORIZATIONS"]
   description = local.disclaimer_description
 }
 
@@ -269,7 +269,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   environment_type = "cloudfoundry"
   service_name     = "cloudfoundry"
   plan_name        = "standard"
-  landscape_label = "cf-${var.region}"
+  landscape_label  = "cf-${var.region}"
   parameters = jsonencode({
     instance_name = "cf-integration-test"
   })

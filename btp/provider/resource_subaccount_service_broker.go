@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -34,6 +35,9 @@ type subaccountServiceBrokerResourceType struct {
 	Username     types.String `tfsdk:"username"`
 	Password     types.String `tfsdk:"password"`
 	//Labels		 types.Map `tfsdk:"labels"` // not implemented because of NGPBUG-397042
+	MTLS types.Bool   `tfsdk:"mtls"`
+	Cert types.String `tfsdk:"cert"`
+	Key  types.String `tfsdk:"key"`
 
 	/* OUTPUT */
 	Ready        types.Bool   `tfsdk:"ready"`
@@ -93,12 +97,47 @@ You must be assigned to the admin role of the subaccount.`,
 			},
 			"username": schema.StringAttribute{
 				MarkdownDescription: "The username for basic authentication against the service broker.",
-				Required:            true,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("password")),
+					stringvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
+					stringvalidator.AtLeastOneOf(path.MatchRoot("cert"), path.MatchRoot("mtls")),
+				},
 			},
 			"password": schema.StringAttribute{
 				MarkdownDescription: "The password for basic authentication against the service broker.",
-				Required:            true,
+				Optional:            true,
 				Sensitive:           true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("username")),
+					stringvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
+				},
+			},
+			"mtls": schema.BoolAttribute{
+				MarkdownDescription: "Use Service-Manager-provided mTLS credentials for the broker. When set to true, cert and key must NOT be supplied.",
+				Optional:            true,
+				Validators: []validator.Bool{
+					boolvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
+					boolvalidator.Equals(true),
+				},
+			},
+			"cert": schema.StringAttribute{
+				MarkdownDescription: "PEM-encoded client certificate. cert and key must be supplied together.",
+				Optional:            true,
+				Sensitive:           true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("key")),
+					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password")),
+				},
+			},
+			"key": schema.StringAttribute{
+				MarkdownDescription: "PEM-encoded private key matching the client certificate. cert and key must be supplied together.",
+				Optional:            true,
+				Sensitive:           true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("cert")),
+					stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password")),
+				},
 			},
 			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
@@ -139,6 +178,9 @@ func (rs *subaccountServiceBrokerResource) Read(ctx context.Context, req resourc
 	newState.Name = state.Name
 	newState.Username = state.Username
 	newState.Password = state.Password
+	newState.MTLS = state.MTLS
+	newState.Cert = state.Cert
+	newState.Key = state.Key
 
 	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
@@ -159,6 +201,9 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 		URL:         plan.Url.ValueString(),
 		User:        plan.Username.ValueString(),
 		Password:    plan.Password.ValueString(),
+		MTLS:        plan.MTLS.ValueBool(),
+		Cert:        plan.Cert.ValueString(),
+		Key:         plan.Key.ValueString(),
 	}
 
 	registrationRes, _, err := rs.cli.Services.Broker.Register(ctx, cliReq)
@@ -180,6 +225,9 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 	state.Name = plan.Name
 	state.Username = plan.Username
 	state.Password = plan.Password
+	state.MTLS = plan.MTLS
+	state.Cert = plan.Cert
+	state.Key = plan.Key
 
 	resp.Diagnostics.Append(diags...)
 
@@ -209,6 +257,9 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 		URL:         plan.Url.ValueString(),
 		User:        plan.Username.ValueString(),
 		Password:    plan.Password.ValueString(),
+		MTLS:        plan.MTLS.ValueBool(),
+		Cert:        plan.Cert.ValueString(),
+		Key:         plan.Key.ValueString(),
 	}
 
 	updateRes, _, err := rs.cli.Services.Broker.Update(ctx, cliReq)
@@ -230,6 +281,9 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 	newState.Name = plan.Name
 	newState.Username = plan.Username
 	newState.Password = plan.Password
+	newState.MTLS = plan.MTLS
+	newState.Cert = plan.Cert
+	newState.Key = plan.Key
 
 	resp.Diagnostics.Append(diags...)
 
@@ -273,6 +327,9 @@ func (rs *subaccountServiceBrokerResource) createStateChange(ctx context.Context
 	state.Name = plan.Name
 	state.Username = plan.Username
 	state.Password = plan.Password
+	state.MTLS = plan.MTLS
+	state.Cert = plan.Cert
+	state.Key = plan.Key
 
 	return &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},

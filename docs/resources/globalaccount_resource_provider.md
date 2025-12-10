@@ -35,7 +35,7 @@ resource "btp_globalaccount_resource_provider" "azure" {
   provider_type  = "AZURE"
   technical_name = "AZURE"
   description    = "My Azure Resource Provider"
-  configuration   = jsonencode({
+  configuration = jsonencode({
     region              = "westeurope"
     client_id           = "AZURECLIENTID"
     client_secret       = "AZURECLIENTSECRET"
@@ -51,7 +51,7 @@ resource "btp_globalaccount_resource_provider" "aws" {
   provider_type  = "AWS"
   technical_name = "AWS"
   description    = "My AWS Resource Provider"
-  configuration   = jsonencode({
+  configuration = jsonencode({
     access_key_id     = "AWSACCESSKEY"
     secret_access_key = "AWSSECRETKEY"
     vpc_id            = "vpc-test"
