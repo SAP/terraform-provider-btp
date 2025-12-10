@@ -607,6 +607,7 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_subaccount_trust_configuration",
 		"btp_subaccount_destination_certificate",
 		"btp_subaccount_destination_fragment",
+		"btp_subaccount_destination",
 	}
 
 	ctx := context.Background()

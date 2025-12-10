@@ -13,6 +13,7 @@ import (
 
 type subaccountDestinationType struct {
 	SubaccountID            types.String         `tfsdk:"subaccount_id"`
+	ID                      types.String         `tfsdk:"id"`
 	CreationTime            types.String         `tfsdk:"creation_time"`
 	Etag                    types.String         `tfsdk:"etag"`
 	ModificationTime        types.String         `tfsdk:"modification_time"`
@@ -28,6 +29,46 @@ type subaccountDestinationType struct {
 
 type subaccountDestinationName struct {
 	Name types.String `tfsdk:"name"`
+}
+
+func BuildDestinationConfigurationJSON(destination subaccountDestinationType) (string, error) {
+	config := map[string]any{}
+
+	if !destination.Name.IsNull() {
+		config["Name"] = destination.Name.ValueString()
+	}
+	if !destination.Type.IsNull() {
+		config["Type"] = destination.Type.ValueString()
+	}
+	if !destination.ProxyType.IsNull() {
+		config["ProxyType"] = destination.ProxyType.ValueString()
+	}
+	if !destination.URL.IsNull() {
+		config["URL"] = destination.URL.ValueString()
+	}
+	if !destination.Authentication.IsNull() {
+		config["Authentication"] = destination.Authentication.ValueString()
+	}
+	if !destination.Description.IsNull() {
+		config["Description"] = destination.Description.ValueString()
+	}
+
+	if !destination.AdditionalConfiguration.IsNull() {
+		var extra map[string]any
+		err := json.Unmarshal([]byte(destination.AdditionalConfiguration.ValueString()), &extra)
+		if err != nil {
+			return "", err
+		}
+		for k, v := range extra {
+			config[k] = v
+		}
+	}
+
+	jsonBytes, err := json.Marshal(config)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonBytes), nil
 }
 
 func destinationValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationType, diag.Diagnostics) {

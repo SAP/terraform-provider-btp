@@ -153,3 +153,149 @@ func TestConnectivityDestinationFacade_ListNames(t *testing.T) {
 		}
 	})
 }
+func TestConnectivityDestinationFacade_Create(t *testing.T) {
+	command := "connectivity/destination"
+
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	jsonarg := `{"Name":"destTest","Type":"HTTP","ProxyType":"Internet","URL":"https://myservice.example.com","Authentication":"NoAuthentication","Description":"Resource","Abc":"good"}`
+	serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+
+	t.Run("constructs params correctly without serviceInstance", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionCreate, map[string]string{
+				"destinationConfiguration": jsonarg,
+				"subaccount":               subaccountId,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.Destination.CreateBySubaccount(context.TODO(), subaccountId, jsonarg, "")
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs params correctly with serviceInstance", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionCreate, map[string]string{
+				"destinationConfiguration": jsonarg,
+				"subaccount":               subaccountId,
+				"serviceInstance":          serviceInstance,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.Destination.CreateBySubaccount(context.TODO(), subaccountId, jsonarg, serviceInstance)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestConnectivityDestinationFacade_Update(t *testing.T) {
+	command := "connectivity/destination"
+
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	jsonarg := `{"Name":"destTest","Type":"HTTP","ProxyType":"Internet","URL":"https://myservice.example.com","Authentication":"NoAuthentication","Description":"Resource update","Abc":"good"}`
+	serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+
+	t.Run("constructs params correctly without serviceInstance", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"destinationConfiguration": jsonarg,
+				"subaccount":               subaccountId,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.Destination.UpdateBySubaccount(context.TODO(), subaccountId, jsonarg, "")
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs params correctly with serviceInstance", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionUpdate, map[string]string{
+				"destinationConfiguration": jsonarg,
+				"subaccount":               subaccountId,
+				"serviceInstance":          serviceInstance,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.Destination.UpdateBySubaccount(context.TODO(), subaccountId, jsonarg, serviceInstance)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
+
+func TestConnectivityDestinationFacade_Delete(t *testing.T) {
+	command := "connectivity/destination"
+
+	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	name := "destTest"
+	serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+
+	t.Run("constructs params correctly without serviceInstance", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionDelete, map[string]string{
+				"name":       name,
+				"subaccount": subaccountId,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.Destination.DeleteBySubaccount(context.TODO(), subaccountId, name, "")
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+
+	t.Run("constructs params correctly with serviceInstance", func(t *testing.T) {
+		var srvCalled bool
+
+		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			srvCalled = true
+
+			assertCall(t, r, command, ActionDelete, map[string]string{
+				"name":            name,
+				"subaccount":      subaccountId,
+				"serviceInstance": serviceInstance,
+			})
+		}))
+		defer srv.Close()
+
+		_, res, err := uut.Connectivity.Destination.DeleteBySubaccount(context.TODO(), subaccountId, name, serviceInstance)
+
+		if assert.True(t, srvCalled) && assert.NoError(t, err) {
+			assert.Equal(t, 200, res.StatusCode)
+		}
+	})
+}
