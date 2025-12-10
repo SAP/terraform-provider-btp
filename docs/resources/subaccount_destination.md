@@ -34,7 +34,7 @@ __Notes:__
 ## Example Usage
 
 ```terraform
-#subaccount destination with service instance and labels (additional configuration) 
+#subaccount destination with service instance and labels (additional configuration).
 resource "btp_subaccount_destination" "destination" {
   name                = "destination"
   type                = "HTTP"
@@ -49,7 +49,7 @@ resource "btp_subaccount_destination" "destination" {
   })
 }
 
-#subaccount destination creation without service instance and labels (additional configuration) 
+#subaccount destination creation without service instance and labels (additional configuration). 
 resource "btp_subaccount_destination" "destination" {
   name           = "destination"
   type           = "HTTP"
@@ -63,7 +63,7 @@ resource "btp_subaccount_destination" "destination" {
   })
 }
 
-#subaccount destination creation without service instance and without labels (additional configuration) 
+#subaccount destination creation without service instance and without labels (additional configuration). 
 resource "btp_subaccount_destination" "destination" {
   name                = "destination"
   type                = "HTTP"
@@ -75,8 +75,8 @@ resource "btp_subaccount_destination" "destination" {
   service_instance_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 }
 
-#subaccount destination creation without service instance and and labels (additional configuration) 
-#Note: Auth prpoerties are part of additional configuration
+#subaccount destination creation without service instance and and labels (additional configuration). 
+#Note: Auth properties are part of additional configuration.
 resource "btp_subaccount_destination" "destination" {
   name           = "destination"
   type           = "HTTP"

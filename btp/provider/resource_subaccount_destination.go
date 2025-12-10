@@ -149,7 +149,7 @@ func (rs *subaccountDestinationResource) IdentitySchema(_ context.Context, _ res
 }
 
 func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data subaccountDestinationType
+	var data subaccountDestinationResourceType
 	diags := req.State.Get(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -162,7 +162,7 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 		return
 	}
 
-	data, diags = destinationValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID)
+	data, diags = destinationResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
 	id := data.SubaccountID.ValueString() + "," + data.Name.ValueString() + "," + data.ServiceInstanceID.ValueString()
 	data.ID = types.StringValue(id)
@@ -181,7 +181,7 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 }
 
 func (rs *subaccountDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan subaccountDestinationType
+	var plan subaccountDestinationResourceType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -206,7 +206,7 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 		return
 	}
 
-	plan, diags = destinationValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
+	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
 	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
 	plan.ID = types.StringValue(id)
@@ -226,7 +226,7 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 
 func (rs *subaccountDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
-	var plan subaccountDestinationType
+	var plan subaccountDestinationResourceType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -250,7 +250,7 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	plan, diags = destinationValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
+	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
 	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
 	plan.ID = types.StringValue(id)
@@ -270,7 +270,7 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 }
 
 func (rs *subaccountDestinationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state subaccountDestinationType
+	var state subaccountDestinationResourceType
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -279,7 +279,7 @@ func (rs *subaccountDestinationResource) Delete(ctx context.Context, req resourc
 
 	_, _, err := rs.cli.Connectivity.Destination.DeleteBySubaccount(ctx, state.SubaccountID.ValueString(), state.Name.ValueString(), state.ServiceInstanceID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Creating Resource Destination", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("API Error Deleting Resource Destination", fmt.Sprintf("%s", err))
 		return
 	}
 }

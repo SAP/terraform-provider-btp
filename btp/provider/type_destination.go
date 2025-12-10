@@ -11,9 +11,23 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type subaccountDestinationType struct {
+type subaccountDestinationResourceType struct {
 	SubaccountID            types.String         `tfsdk:"subaccount_id"`
 	ID                      types.String         `tfsdk:"id"`
+	CreationTime            types.String         `tfsdk:"creation_time"`
+	Etag                    types.String         `tfsdk:"etag"`
+	ModificationTime        types.String         `tfsdk:"modification_time"`
+	Name                    types.String         `tfsdk:"name"`
+	Type                    types.String         `tfsdk:"type"`
+	ProxyType               types.String         `tfsdk:"proxy_type"`
+	URL                     types.String         `tfsdk:"url"`
+	Authentication          types.String         `tfsdk:"authentication"`
+	Description             types.String         `tfsdk:"description"`
+	ServiceInstanceID       types.String         `tfsdk:"service_instance_id"`
+	AdditionalConfiguration jsontypes.Normalized `tfsdk:"additional_configuration"`
+}
+type subaccountDestinationType struct {
+	SubaccountID            types.String         `tfsdk:"subaccount_id"`
 	CreationTime            types.String         `tfsdk:"creation_time"`
 	Etag                    types.String         `tfsdk:"etag"`
 	ModificationTime        types.String         `tfsdk:"modification_time"`
@@ -31,7 +45,7 @@ type subaccountDestinationName struct {
 	Name types.String `tfsdk:"name"`
 }
 
-func BuildDestinationConfigurationJSON(destination subaccountDestinationType) (string, error) {
+func BuildDestinationConfigurationJSON(destination subaccountDestinationResourceType) (string, error) {
 	config := map[string]any{}
 
 	if !destination.Name.IsNull() {
@@ -128,6 +142,71 @@ func destinationValueFrom(value connectivity.DestinationResponse, subaccountID t
 				diag.NewErrorDiagnostic("failed to marshal additional configuration", err.Error()),
 			}
 			return subaccountDestinationType{}, diagnostics
+		}
+		destination.AdditionalConfiguration = jsontypes.NewNormalizedValue(string(additionalJSON))
+	}
+	var diagnostics diag.Diagnostics
+
+	return destination, diagnostics
+}
+
+func destinationResourceValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationResourceType, diag.Diagnostics) {
+	creationTimeString, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
+	if err != nil {
+		diagnostics := diag.Diagnostics{
+			diag.NewErrorDiagnostic("failed to convert creation time", err.Error()),
+		}
+		return subaccountDestinationResourceType{}, diagnostics
+	}
+	creationTime := time.UnixMilli(creationTimeString).UTC().Format(time.RFC3339)
+	modificationTimeString, err := strconv.ParseInt(value.SystemMetadata.ModificationTime, 10, 64)
+	if err != nil {
+		diagnostics := diag.Diagnostics{
+			diag.NewErrorDiagnostic("failed to convert modification time", err.Error()),
+		}
+		return subaccountDestinationResourceType{}, diagnostics
+	}
+	modifyTime := time.UnixMilli(modificationTimeString).UTC().Format(time.RFC3339)
+	destination := subaccountDestinationResourceType{
+		Etag:         types.StringValue(value.SystemMetadata.Etag),
+		SubaccountID: subaccountID,
+	}
+
+	tmp := make(map[string]string)
+	for k, v := range value.DestinationConfiguration {
+		tmp[k] = v
+	}
+
+	extract := func(key string) string {
+		if v, ok := tmp[key]; ok {
+			delete(tmp, key)
+			return v
+		}
+		return ""
+	}
+	destination.CreationTime = types.StringValue(creationTime)
+	destination.ModificationTime = types.StringValue(modifyTime)
+	destination.Name = types.StringValue(extract("Name"))
+	destination.Type = types.StringValue(extract("Type"))
+	destination.Description = types.StringValue(extract("Description"))
+	destination.URL = types.StringValue(extract("URL"))
+	destination.ProxyType = types.StringValue(extract("ProxyType"))
+	destination.Authentication = types.StringValue(extract("Authentication"))
+	if serviceInstanceID.ValueString() == "" {
+		destination.ServiceInstanceID = types.StringNull()
+	} else {
+		destination.ServiceInstanceID = serviceInstanceID
+	}
+
+	if len(tmp) == 0 {
+		destination.AdditionalConfiguration = jsontypes.NewNormalizedNull()
+	} else {
+		additionalJSON, err := json.Marshal(tmp)
+		if err != nil {
+			diagnostics := diag.Diagnostics{
+				diag.NewErrorDiagnostic("failed to marshal additional configuration", err.Error()),
+			}
+			return subaccountDestinationResourceType{}, diagnostics
 		}
 		destination.AdditionalConfiguration = jsontypes.NewNormalizedValue(string(additionalJSON))
 	}
