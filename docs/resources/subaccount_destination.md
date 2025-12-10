@@ -2,17 +2,21 @@
 page_title: "btp_subaccount_destination Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Creates a destination resource.
+  Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
   Tip:
   You must have the appropriate connectivity and destination permissions, such as:
   Subaccount Administrator
   Destination Administrator
   Connectivity and Destination Administrator
+  Scope:
+  Subaccount-level destination: Specify only the 'subaccount_id' and 'name' attribute.Service instance-level destination: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
+  Notes:
+  'service_instance_id' is optional. When omitted, the destination is created at the subaccount level.
 ---
 
 # btp_subaccount_destination (Resource)
 
-Creates a destination resource.
+Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
 		
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
@@ -20,6 +24,12 @@ You must have the appropriate connectivity and destination permissions, such as:
 Subaccount Administrator
 Destination Administrator
 Connectivity and Destination Administrator
+__Scope:__
+- **Subaccount-level destination**: Specify only the 'subaccount_id' and 'name' attribute.
+- **Service instance-level destination**: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
+
+__Notes:__
+- 'service_instance_id' is optional. When omitted, the destination is created at the subaccount level.
 
 ## Example Usage
 
@@ -106,6 +116,51 @@ resource "btp_subaccount_destination" "destination" {
 
 - `creation_time` (String) The date and time when the resource was created in
 - `etag` (String) The etag for the destination resource
+- `id` (String, Deprecated) The ID of the destination used for import operations.
 - `modification_time` (String) The date and time when the resource was modified
 
+## Import
 
+Import is supported using the following syntax:
+
+```terraform
+# To import destination on the subaccount level, use the following syntax:
+# terraform import btp_subaccount_destination.<resource_name> '<subaccount_id>,<name>'
+terraform import btp_subaccount_destination.abc '6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f,test'
+
+# To import destination on the service instance level, use the following syntax:
+# terraform import btp_subaccount_destination.<resource_name> '<subaccount_id>,<name>,<service_instance_id>'
+terraform import btp_subaccount_destination.abc '6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f,test,6a55f158-41b5-4e63-aa77-84089fa0ab98'
+
+#terraform import using id attribute in import block
+#On Subaccount Level
+import {
+  to = btp_subaccount_destination.<resource_name>
+  id = "<subaccount_id>,<name>"
+}
+#On Service Instance Level
+import {
+  to = btp_subaccount_destination.<resource_name>
+  id = "<subaccount_id>,<name>,<service_instance_id>"
+}
+
+# this resource supports import using identity attribute from Terraform version 1.12 or higher
+#On Subaccount Level
+import {
+to =  btp_subaccount_destination.<resource_name>
+identity = {
+  name  = "<name>"
+  subaccount_id = "<subaccount_id>"
+  }
+}
+
+#On Service Instance Level
+import {
+to =  btp_subaccount_destination.<resource_name>
+identity = {
+  name  = "<name>"
+  subaccount_id = "<subaccount_id>"
+  service_instance_id = "<service_instance_id>"
+  }
+}
+```
