@@ -114,7 +114,7 @@ func (ds *subaccountDestinationDataSource) Read(ctx context.Context, req datasou
 		return
 	}
 
-	data, diags = destinationValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID)
+	data, diags = destinationDatasourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &data)

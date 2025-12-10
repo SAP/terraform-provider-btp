@@ -110,6 +110,12 @@ func TestResourceSubaccountDestination(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_destination.res3", "type", "HTTP"),
 					),
 				},
+				{
+					ResourceName:      "btp_subaccount_destination.res3",
+					ImportStateIdFunc: getIdForSubaccounDestinationFragmentImportId("btp_subaccount_destination.res3", "res3"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
 			},
 		})
 	})

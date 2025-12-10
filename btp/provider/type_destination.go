@@ -85,7 +85,7 @@ func BuildDestinationConfigurationJSON(destination subaccountDestinationResource
 	return string(jsonBytes), nil
 }
 
-func destinationValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationType, diag.Diagnostics) {
+func destinationDatasourceValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationType, diag.Diagnostics) {
 	creationTimeString, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
 	if err != nil {
 		diagnostics := diag.Diagnostics{

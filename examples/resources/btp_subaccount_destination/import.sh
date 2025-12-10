@@ -23,7 +23,7 @@ import {
 import {
 to =  btp_subaccount_destination.<resource_name>
 identity = {
-  name  = "<name>"
+  name          = "<name>"
   subaccount_id = "<subaccount_id>"
   }
 }
@@ -32,8 +32,8 @@ identity = {
 import {
 to =  btp_subaccount_destination.<resource_name>
 identity = {
-  name  = "<name>"
-  subaccount_id = "<subaccount_id>"
+  name                = "<name>"
+  subaccount_id       = "<subaccount_id>"
   service_instance_id = "<service_instance_id>"
   }
 }

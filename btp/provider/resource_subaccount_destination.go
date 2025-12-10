@@ -21,6 +21,9 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
 )
 
+const ErrUnexpectedImportIdentifier = "Unexpected Import Identifier"
+const ErrApiReadingDestination = "API Error Reading destination"
+
 func newSubaccountDestinationResource() resource.Resource {
 	return &subaccountDestinationResource{}
 }
@@ -158,7 +161,7 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 
 	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading destination", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -202,7 +205,7 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 
 	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading destination", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -246,7 +249,7 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 
 	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("API Error Reading destination", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -293,7 +296,7 @@ func (rs *subaccountDestinationResource) ImportState(ctx context.Context, req re
 		case 2:
 			if idParts[0] == "" || idParts[1] == "" {
 				resp.Diagnostics.AddError(
-					"Unexpected Import Identifier",
+					ErrUnexpectedImportIdentifier,
 					fmt.Sprintf("Expected import identifier with format: subaccount_id, name. Got: %q", req.ID),
 				)
 				return
@@ -308,7 +311,7 @@ func (rs *subaccountDestinationResource) ImportState(ctx context.Context, req re
 		case 3:
 			if idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
 				resp.Diagnostics.AddError(
-					"Unexpected Import Identifier",
+					ErrUnexpectedImportIdentifier,
 					fmt.Sprintf("Expected import identifier with format: subaccount_id, name, service_instance_id. Got: %q", req.ID),
 				)
 				return
@@ -322,7 +325,7 @@ func (rs *subaccountDestinationResource) ImportState(ctx context.Context, req re
 
 		default:
 			resp.Diagnostics.AddError(
-				"Unexpected Import Identifier",
+				ErrUnexpectedImportIdentifier,
 				fmt.Sprintf(
 					"Expected one of:\n  - subaccount_id,name\n  - subaccount_id,name,service_instance_id\nGot: %q",
 					req.ID,
