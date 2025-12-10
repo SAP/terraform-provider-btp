@@ -172,7 +172,7 @@ func (ds *subaccountDestinationsDataSource) Read(ctx context.Context, req dataso
 			return
 		}
 		for _, destination := range cliRes {
-			result, diags := destinationValueFrom(destination, data.SubaccountID, data.ServiceInstanceID)
+			result, diags := destinationDatasourceValueFrom(destination, data.SubaccountID, data.ServiceInstanceID)
 			resp.Diagnostics.Append(diags...)
 
 			data.Values = append(data.Values, result)
