@@ -103,9 +103,8 @@ jobs:
       id: terraform_apply_local
       shell: bash
       run: |
-        export BTP_USERNAME=${{ secrets.USERNAME }}
-        export BTP_PASSWORD=${{ secrets.PASSWORD }}
-        export BTP_IDP=${{ secrets.IDP }}
+        export BTP_USERNAME=${{ secrets.CANARY_BTP_USERNAME }}
+        export BTP_PASSWORD=${{ secrets.CANARY_BTP_PASSWORD }}
         terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.CANARY_REGRESSION_GA }} -auto-approve -no-color
     
     - name: Terraform Destroy with local provider
@@ -113,7 +112,6 @@ jobs:
       id: terraform_destory
       shell: bash
       run: |
-        export BTP_USERNAME=${{ secrets.USERNAME }}
-        export BTP_PASSWORD=${{ secrets.PASSWORD }}
-        export BTP_IDP=${{ secrets.IDP }}
+        export BTP_USERNAME=${{ secrets.CANARY_BTP_USERNAME }}
+        export BTP_PASSWORD=${{ secrets.CANARY_BTP_PASSWORD }}
         terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.CANARY_REGRESSION_GA }}' -auto-approve -no-color
