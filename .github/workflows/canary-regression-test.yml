@@ -106,7 +106,7 @@ jobs:
         export BTP_USERNAME=${{ secrets.USERNAME }}
         export BTP_PASSWORD=${{ secrets.PASSWORD }}
         export BTP_IDP=${{ secrets.IDP }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GA_DEMO }} -auto-approve -no-color
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.CANARY_REGRESSION_GA }} -auto-approve -no-color
     
     - name: Terraform Destroy with local provider
       if: always()
@@ -116,4 +116,4 @@ jobs:
         export BTP_USERNAME=${{ secrets.USERNAME }}
         export BTP_PASSWORD=${{ secrets.PASSWORD }}
         export BTP_IDP=${{ secrets.IDP }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.GA_DEMO }}' -auto-approve -no-color
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.CANARY_REGRESSION_GA }}' -auto-approve -no-color
