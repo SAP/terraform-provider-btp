@@ -1,0 +1,30 @@
+# You created a environment instance for Kyma via the resource btp_subaccount_environment_instance
+# You fetched the  Download URL of the kubeconfig for the Kyma instance and want to download the kubeconfig content
+output "kyma_kubeconfig_value" {
+  description = "The value of the kubeconfig of the Kyma environment instance"
+  value       = provider::btp::download_kyma_kubeconfig("https://kyma.example.com/kubeconfig/ABC")
+}
+
+# You created a environment instance for Kyma via the resource btp_subaccount_environment_instance
+# As the URL is part of the environment labels you use the Teraform funcion extract_kyma_kubeconfig_url to fetch the URL
+# and pass it to the donwload function
+locals {
+  kyma_kubeconfig_url = provider::btp::extract_kyma_kubeconfig_url(btp_subaccount_environment_instance.kyma_instance.labels)
+}
+
+output "kyma_kubeconfig_value" {
+  description = "The value of the kubeconfig of the Kyma environment instance"
+  value       = provider::btp::download_kyma_kubeconfig(local.kyma_kubeconfig_url)
+}
+
+# You created a environment instance for Kyma via the resource btp_subaccount_environment_instance
+# As the URL is part of the environment labels you use the Teraform funcion extract_kyma_kubeconfig_url to fetch the URL
+# and store the kubeconfig locally via the local_file resource
+locals {
+  kyma_kubeconfig_url = provider::btp::extract_kyma_kubeconfig_url(btp_subaccount_environment_instance.kyma_instance.labels)
+}
+
+resource "local_file" "my_kubeconfig" {
+  content  = provider::btp::download_kyma_kubeconfig(local.kyma_kubeconfig_url)
+  filename = "my_kubeconfig.yaml"
+}

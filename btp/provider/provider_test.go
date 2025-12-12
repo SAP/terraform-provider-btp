@@ -727,6 +727,7 @@ func TestProvider_HasFunctions(t *testing.T) {
 		"extract_cf_org_id",
 		"extract_kyma_api_server_url",
 		"extract_kyma_kubeconfig_url",
+		"download_kyma_kubeconfig",
 	}
 
 	ctx := context.Background()

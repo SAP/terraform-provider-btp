@@ -456,6 +456,7 @@ func (p *btpcliProvider) Functions(_ context.Context) []func() function.Function
 		NewExtractCfOrgIdFunction,
 		NewExtractKymaApiServerUrlFunction,
 		NewExtractKymaKubeconfigUrlFunction,
+		NewDownloadKymaKubeconfigFunction,
 	}
 }
 
