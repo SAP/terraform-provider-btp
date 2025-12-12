@@ -84,11 +84,13 @@ jobs:
         # Perform replacements in variables.tf
         sed -i 's|https://cli.btp.cloud.sap|https://canary.cli.btp.int.sap|g' "$VARS_FILE"
         sed -i 's|\bus10\b|eu12|g' "$VARS_FILE"
-        sed -i 's|terraformeds2.accounts.ondemand.com|iasprovidertestblr.accounts400.ondemand.com|g' "$VARS_FILE"
+        sed -i 's|terraformeds2.accounts.ondemand.com|iasproviderdevblr.accounts400.ondemand.com|g' "$VARS_FILE"
+        sed -i 's|\bmain\b|canary-main|g' "$VARS_FILE"
 
         # Perform replacement in main.tf
         sed -i 's|cis-central!b14|cis-central!b13|g' "$MAIN_FILE"
         sed -i 's|cis-local!b4|cis-local!b2|g' "$MAIN_FILE"
+        sed -i 's|cf-integration-test|cf-integration-test-canary|g' "$MAIN_FILE"
 
         # Show the updated files
         echo "Updated variables.tf:"
@@ -101,17 +103,15 @@ jobs:
       id: terraform_apply_local
       shell: bash
       run: |
-        export BTP_USERNAME=${{ secrets.USERNAME }}
-        export BTP_PASSWORD=${{ secrets.PASSWORD }}
-        export BTP_IDP=${{ secrets.IDP }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GA_DEMO }} -auto-approve -no-color
+        export BTP_USERNAME=${{ secrets.CANARY_BTP_USERNAME }}
+        export BTP_PASSWORD=${{ secrets.CANARY_BTP_PASSWORD }}
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.CANARY_REGRESSION_GA }} -auto-approve -no-color
     
     - name: Terraform Destroy with local provider
       if: always()
       id: terraform_destory
       shell: bash
       run: |
-        export BTP_USERNAME=${{ secrets.USERNAME }}
-        export BTP_PASSWORD=${{ secrets.PASSWORD }}
-        export BTP_IDP=${{ secrets.IDP }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.GA_DEMO }}' -auto-approve -no-color
+        export BTP_USERNAME=${{ secrets.CANARY_BTP_USERNAME }}
+        export BTP_PASSWORD=${{ secrets.CANARY_BTP_PASSWORD }}
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.CANARY_REGRESSION_GA }}' -auto-approve -no-color
