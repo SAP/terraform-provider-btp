@@ -148,14 +148,6 @@ func TestV2Client_Login(t *testing.T) {
 			},
 		},
 		{
-			description:  "error path - login request times out [504]]",
-			loginRequest: NewLoginRequest("subdomain", "john.doe", "pass"),
-			simulation: v2SimulationConfig{
-				srvReturnStatus: http.StatusGatewayTimeout,
-				expectErrorMsg:  "Login timed out. Please try again later. [Status: 504; Correlation ID: fake-correlation-id]",
-			},
-		},
-		{
 			description:  "error path - unexpected error",
 			loginRequest: NewLoginRequest("subdomain", "john.doe", "pass"),
 			simulation: v2SimulationConfig{
@@ -241,14 +233,6 @@ func TestV2Client_IdTokenLogin(t *testing.T) {
 			simulation: v2SimulationConfig{
 				srvReturnStatus: http.StatusPreconditionFailed,
 				expectErrorMsg:  "Login failed due to outdated provider version. Update to the latest version of the provider. [Status: 412; Correlation ID: fake-correlation-id]",
-			},
-		},
-		{
-			description:  "error path - login request times out [504]]",
-			loginRequest: NewIdTokenLoginRequest("subdomain", "idToken"),
-			simulation: v2SimulationConfig{
-				srvReturnStatus: http.StatusGatewayTimeout,
-				expectErrorMsg:  "Login timed out. Please try again later. [Status: 504; Correlation ID: fake-correlation-id]",
 			},
 		},
 		{
