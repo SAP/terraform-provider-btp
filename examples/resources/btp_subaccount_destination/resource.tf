@@ -76,7 +76,7 @@ resource "btp_subaccount_destination" "rfc_dest" {
     "jco.destination.auth_type"             = "CONFIGURED_USER"
     "jco.destination.pool_check_connection" = "0"
     "jco.destination.proxy_type"            = "OnPremise"
-    "jco.destination.description"            = "RFC destination test"
+    "jco.destination.description"           = "RFC destination test"
   })
 }
 
@@ -104,12 +104,12 @@ resource "btp_subaccount_destination" "mail_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 
   additional_configuration = jsonencode({
-    "mail.smtp.host"     = "smtp.example.com"
-    "mail.smtp.port"     = "587"
-    "mail.smtp.auth"     = "true" 
-    "mail.description"   = "MAIL destination test"
-    "mail.user"          = "user@example.com"
-    "mail.password"      = "secret"
+    "mail.smtp.host"          = "smtp.example.com"
+    "mail.smtp.port"          = "587"
+    "mail.smtp.auth"          = "true"
+    "mail.description"        = "MAIL destination test"
+    "mail.user"               = "user@example.com"
+    "mail.password"           = "secret"
     "mail.transport.protocol" = "smtp"
   })
 }
@@ -119,9 +119,9 @@ resource "btp_subaccount_destination" "tcp_dest" {
   name          = "tcp_dest"
   type          = "TCP"
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  proxy_type     = "OnPremise"
+  proxy_type    = "OnPremise"
   description   = "TCP destination example"
   additional_configuration = jsonencode({
-    "Address"= "host:1234"
+    "Address" = "host:1234"
   })
 }
