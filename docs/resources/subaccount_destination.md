@@ -50,8 +50,8 @@ resource "btp_subaccount_destination" "destination" {
 }
 
 #subaccount destination creation without service instance and labels (additional configuration). 
-resource "btp_subaccount_destination" "destination" {
-  name           = "destination"
+resource "btp_subaccount_destination" "destination-without-service-instance" {
+  name           = "destination-without-service-instance"
   type           = "HTTP"
   proxy_type     = "Internet"
   url            = "https://myservice.example.com"
@@ -64,8 +64,8 @@ resource "btp_subaccount_destination" "destination" {
 }
 
 #subaccount destination creation without service instance and without labels (additional configuration). 
-resource "btp_subaccount_destination" "destination" {
-  name                = "destination"
+resource "btp_subaccount_destination" "destination-without-additional-configuration" {
+  name                = "destination-without-additional-configuration"
   type                = "HTTP"
   proxy_type          = "Internet"
   url                 = "https://myservice.example.com"
@@ -77,8 +77,8 @@ resource "btp_subaccount_destination" "destination" {
 
 #subaccount destination creation without service instance and and labels (additional configuration). 
 #Note: Auth properties are part of additional configuration.
-resource "btp_subaccount_destination" "destination" {
-  name           = "destination"
+resource "btp_subaccount_destination" "destination-with-additional-configuration" {
+  name           = "destination-with-additional-configuration"
   type           = "HTTP"
   proxy_type     = "Internet"
   url            = "https://myservice.example.com"
