@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 
@@ -105,15 +106,15 @@ __Notes:__
 			},
 			"proxy_type": schema.StringAttribute{
 				MarkdownDescription: "The proxytype of the destination.",
-				Required:            true,
+				Optional:            true,
 			},
 			"url": schema.StringAttribute{
 				MarkdownDescription: "The url of the destination.",
-				Required:            true,
+				Optional:            true,
 			},
 			"authentication": schema.StringAttribute{
 				MarkdownDescription: "The authentication of the destination.",
-				Required:            true,
+				Optional:            true,
 			},
 			"service_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The service instance that becomes part of the path used to access the destination of the subaccount.",
@@ -158,6 +159,7 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	oldAdditionalConfiguration := data.AdditionalConfiguration
 
 	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
 	if err != nil {
@@ -167,6 +169,12 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 
 	data, diags = destinationResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
+
+	data.AdditionalConfiguration, err = MergeAdditionalConfig(oldAdditionalConfiguration, data.AdditionalConfiguration)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	id := data.SubaccountID.ValueString() + "," + data.Name.ValueString() + "," + data.ServiceInstanceID.ValueString()
 	data.ID = types.StringValue(id)
 
@@ -190,6 +198,7 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	oldAdditionalConfiguration := plan.AdditionalConfiguration
 
 	destinationData, err := BuildDestinationConfigurationJSON(plan)
 	if err != nil {
@@ -211,6 +220,11 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 
 	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
+	plan.AdditionalConfiguration, err = MergeAdditionalConfig(oldAdditionalConfiguration, plan.AdditionalConfiguration)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
 	plan.ID = types.StringValue(id)
 
@@ -235,6 +249,7 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	oldAdditionalConfiguration := plan.AdditionalConfiguration
 	destinationData, err := BuildDestinationConfigurationJSON(plan)
 	if err != nil {
 		resp.Diagnostics.AddError("Error generating Resource Destination body", fmt.Sprintf("%s", err))
@@ -255,6 +270,11 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 
 	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
+	plan.AdditionalConfiguration, err = MergeAdditionalConfig(oldAdditionalConfiguration, plan.AdditionalConfiguration)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
 	plan.ID = types.StringValue(id)
 
