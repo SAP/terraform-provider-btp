@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"fmt"
-	"log"
 	"regexp"
 	"strings"
 
@@ -24,6 +23,7 @@ import (
 
 const ErrUnexpectedImportIdentifier = "Unexpected Import Identifier"
 const ErrApiReadingDestination = "API Error Reading destination"
+const ErrApiMergingDestination = "API Error Merging destination"
 
 func newSubaccountDestinationResource() resource.Resource {
 	return &subaccountDestinationResource{}
@@ -172,7 +172,8 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 
 	data.AdditionalConfiguration, err = MergeAdditionalConfig(oldAdditionalConfiguration, data.AdditionalConfiguration)
 	if err != nil {
-		log.Fatal(err)
+		resp.Diagnostics.AddError(ErrApiMergingDestination, fmt.Sprintf("%s", err))
+		return
 	}
 
 	id := data.SubaccountID.ValueString() + "," + data.Name.ValueString() + "," + data.ServiceInstanceID.ValueString()
@@ -222,7 +223,8 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 	resp.Diagnostics.Append(diags...)
 	plan.AdditionalConfiguration, err = MergeAdditionalConfig(oldAdditionalConfiguration, plan.AdditionalConfiguration)
 	if err != nil {
-		log.Fatal(err)
+		resp.Diagnostics.AddError(ErrApiMergingDestination, fmt.Sprintf("%s", err))
+		return
 	}
 
 	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
@@ -272,7 +274,8 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 	resp.Diagnostics.Append(diags...)
 	plan.AdditionalConfiguration, err = MergeAdditionalConfig(oldAdditionalConfiguration, plan.AdditionalConfiguration)
 	if err != nil {
-		log.Fatal(err)
+		resp.Diagnostics.AddError(ErrApiMergingDestination, fmt.Sprintf("%s", err))
+		return
 	}
 
 	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
