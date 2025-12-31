@@ -90,6 +90,35 @@ func TestResourceSubaccountDestination(t *testing.T) {
 			},
 		})
 	})
+	t.Run("happy path without serv instance with additional variables for import id", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_without_service_instance_with_additional_variables_for_import_id")
+		defer stopQuietly(rec)
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDestination("res3", "res3", "HTTP", "Internet", "https://myservice.example.com", "NoAuthentication", "testing resource for destination", "integration-test-destination", map[string]string{"Abc": "test"}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_destination.res3", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_destination.res3", "authentication", "NoAuthentication"),
+						resource.TestMatchResourceAttr("btp_subaccount_destination.res3", "creation_time", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_destination.res3", "description", "testing resource for destination"),
+						resource.TestMatchResourceAttr("btp_subaccount_destination.res3", "modification_time", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_destination.res3", "name", "res3"),
+						resource.TestCheckResourceAttr("btp_subaccount_destination.res3", "proxy_type", "Internet"),
+						resource.TestCheckResourceAttr("btp_subaccount_destination.res3", "type", "HTTP"),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_destination.res3",
+					ImportStateIdFunc: getIdForSubaccounDestinationFragmentImportId("btp_subaccount_destination.res3", "res3"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
 	t.Run("happy path TCP destination with additional variables", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_tcp_with_additional_variables")
 		defer stopQuietly(rec)
