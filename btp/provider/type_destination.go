@@ -230,30 +230,31 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 	return destination, diagnostics
 }
 
-func MergeAdditionalConfig(oldConfig jsontypes.Normalized, newConfig jsontypes.Normalized) (jsontypes.Normalized, error) {
-	oldMap := make(map[string]string)
-	newMap := make(map[string]string)
+// This function add the masked fields which are not fetched in read operation
+func MergeAdditionalConfig(plannedConfig jsontypes.Normalized, responseConfig jsontypes.Normalized) (jsontypes.Normalized, error) {
+	plannedMap := make(map[string]string)
+	responseMap := make(map[string]string)
 
-	if !oldConfig.IsNull() && !oldConfig.IsUnknown() {
-		if err := json.Unmarshal([]byte(oldConfig.ValueString()), &oldMap); err != nil {
+	if !plannedConfig.IsNull() && !plannedConfig.IsUnknown() {
+		if err := json.Unmarshal([]byte(plannedConfig.ValueString()), &plannedMap); err != nil {
 			return jsontypes.Normalized{}, err
 		}
 	}
 
-	if !newConfig.IsNull() && !newConfig.IsUnknown() {
-		if err := json.Unmarshal([]byte(newConfig.ValueString()), &newMap); err != nil {
+	if !responseConfig.IsNull() && !responseConfig.IsUnknown() {
+		if err := json.Unmarshal([]byte(responseConfig.ValueString()), &responseMap); err != nil {
 			return jsontypes.Normalized{}, err
 		}
 	}
 
-	for k, oldVal := range oldMap {
-		newVal, exists := newMap[k]
-		if !exists || newVal == "" {
-			newMap[k] = oldVal
+	for k, plannedVal := range plannedMap {
+		responseVal, exists := responseMap[k]
+		if !exists || responseVal == "" {
+			responseMap[k] = plannedVal
 		}
 	}
 
-	mergedJSON, err := json.Marshal(newMap)
+	mergedJSON, err := json.Marshal(responseMap)
 	if err != nil {
 		return jsontypes.Normalized{}, err
 	}

@@ -15,7 +15,7 @@ import (
 func TestResourceSubaccountDestination(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_with_additional_variables_with_service_instance")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_with_additional_configuration_with_service_instance")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -54,8 +54,8 @@ func TestResourceSubaccountDestination(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path with additional variables without service instance", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_with_additional_variables_without_service_instance")
+	t.Run("happy path with additional configuration without service instance", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_with_additional_configuration_without_service_instance")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -90,8 +90,8 @@ func TestResourceSubaccountDestination(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path without serv instance with additional variables for import id", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_without_service_instance_with_additional_variables_for_import_id")
+	t.Run("happy path without serv instance with additional configuration for import id", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_without_service_instance_with_additional_configuration_for_import_id")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -119,8 +119,8 @@ func TestResourceSubaccountDestination(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path TCP destination with additional variables", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_tcp_with_additional_variables")
+	t.Run("happy path TCP destination with additional configuration", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_tcp_with_additional_configuration")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
