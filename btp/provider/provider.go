@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -258,6 +259,15 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		resp.Diagnostics.AddError(unableToCreateClient, "Cannot provide both id token and username/password")
 		return
 	}
+
+	// Log resolved provider configuration at DEBUG level to aid troubleshooting
+	// and quickly identify basic misconfigurations (e.g. Global Account, IdP,
+	// or CLI server URL) during provider initialization.
+	tflog.Debug(ctx, "Initializing SAP BTP provider with resolved configuration as:", map[string]any{
+		"global_account": config.GlobalAccount.ValueString(),
+		"idp":            idp,
+		"cli_server_url": selectedCLIServerURL,
+	})
 
 	//Determine and execute the login flow depending on the provided parameters
 	switch authFlow := determineAuthFlow(config, idToken, ssoLogin, assertion); authFlow {
