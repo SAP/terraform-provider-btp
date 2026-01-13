@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
@@ -55,6 +57,51 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 					ImportState:             true,
 					ImportStateVerify:       true,
 					ImportStateVerifyIgnore: []string{"parameters"},
+				},
+			},
+		})
+	})
+	t.Run("happy path - CF creation with timeout import", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_environment_instance_import.with_timeout")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountEnvironmentInstanceCFTimeout("uut",
+						"integration-test-acc-static",
+						"cloudFoundry-from-terraform",
+						"standard",
+						"cf-eu12",
+						"cf-terraform-org",
+						"john.doe@int.test",
+						"60m",
+						"20m",
+						"30m"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Provision"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12"),
+						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "labels", regexp.MustCompile(`"API Endpoint":"https:\/\/api\.cf\.eu12\.hana\.ondemand\.com"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.create", "60m"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.update", "20m"),
+						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.delete", "30m"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity(
+							"btp_subaccount_environment_instance.uut",
+							map[string]knownvalue.Check{
+								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
+								"id":            knownvalue.StringRegexp(regexpValidUUID),
+							},
+						),
+					},
 				},
 			},
 		})
