@@ -409,13 +409,6 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 
-	identity := subaccountEnvironmentInstanceIdentityModel{
-		SubaccountID: state.SubaccountId,
-		Id:           state.Id,
-	}
-
-	diags = resp.Identity.Set(ctx, identity)
-	resp.Diagnostics.Append(diags...)
 }
 
 func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
