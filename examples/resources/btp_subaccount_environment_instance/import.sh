@@ -11,8 +11,8 @@ import {
 
 import {
   to = btp_subaccount_environment_instance.<resource_name>
-identity = {
-  subaccount_id = "subaccount_id>"
-  id = "<environment_instance_id>"
-}
+  identity = {
+    subaccount_id = "subaccount_id>"
+    id = "<environment_instance_id>"
+  }
 }
