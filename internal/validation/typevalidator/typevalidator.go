@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type typeValidator struct{
+type typeValidator struct {
 	typeExpr path.Expression
 }
 
@@ -22,7 +22,7 @@ func (v typeValidator) MarkdownDescription(ctx context.Context) string {
 	return "field can only be configured when destination is of type \"HTTP\""
 }
 
-func (v typeValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) { 
+func (v typeValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {
 
 	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
 		return
@@ -45,7 +45,7 @@ func (v typeValidator) ValidateString(ctx context.Context, request validator.Str
 		response.Diagnostics.AddAttributeError(
 			request.Path,
 			v.Description(ctx),
-			fmt.Sprintf("please configure %s in the attribute additional_configuration.\nrefer to the examples documented for your specific destination type.", request.Path.String()),
+			fmt.Sprintf("Please configure field \"%s\" in the attribute additional_configuration.\nRefer to the examples documented for your specific destination type.", request.Path.String()),
 		)
 	}
 }
