@@ -24,6 +24,7 @@ import (
 
 const ErrUnexpectedImportIdentifier = "Unexpected Import Identifier"
 const ErrApiReadingDestination = "API Error Reading destination"
+const ErrApiMergingDestinationAdditionalConfiguration = "API Error Merging destination Additional Configuration"
 
 func newSubaccountDestinationResource() resource.Resource {
 	return &subaccountDestinationResource{}
@@ -170,6 +171,7 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	planAdditionalConfiguration := data.AdditionalConfiguration
 
 	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
 	if err != nil {
@@ -179,16 +181,28 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 
 	data, diags = destinationResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
+
+	data.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, data.AdditionalConfiguration)
+	if err != nil {
+		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		return
+	}
+
 	id := data.SubaccountID.ValueString() + "," + data.Name.ValueString() + "," + data.ServiceInstanceID.ValueString()
 	data.ID = types.StringValue(id)
 
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 
-	identity := subaccountDestinationIdentityModel{
-		SubaccountID:      data.SubaccountID,
-		Name:              data.Name,
-		ServiceInstanceID: data.ServiceInstanceID,
+	var identity subaccountDestinationIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = subaccountDestinationIdentityModel{
+			SubaccountID:      data.SubaccountID,
+			Name:              data.Name,
+			ServiceInstanceID: data.ServiceInstanceID,
+		}
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
@@ -202,6 +216,7 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	planAdditionalConfiguration := plan.AdditionalConfiguration
 
 	destinationData, err := BuildDestinationConfigurationJSON(plan)
 	if err != nil {
@@ -223,6 +238,12 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 
 	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
+	plan.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
+	if err != nil {
+		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		return
+	}
+
 	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
 	plan.ID = types.StringValue(id)
 
@@ -247,6 +268,7 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	planAdditionalConfiguration := plan.AdditionalConfiguration
 	destinationData, err := BuildDestinationConfigurationJSON(plan)
 	if err != nil {
 		resp.Diagnostics.AddError("Error generating Resource Destination body", fmt.Sprintf("%s", err))
@@ -267,6 +289,12 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 
 	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
+	plan.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
+	if err != nil {
+		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		return
+	}
+
 	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
 	plan.ID = types.StringValue(id)
 
