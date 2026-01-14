@@ -47,26 +47,24 @@ type subaccountDestinationName struct {
 
 func BuildDestinationConfigurationJSON(destination subaccountDestinationResourceType) (string, error) {
 	config := map[string]any{}
-
-	if !destination.Name.IsNull() {
+	if !destination.Name.IsNull() && destination.Name.ValueString() != "" {
 		config["Name"] = destination.Name.ValueString()
 	}
-	if !destination.Type.IsNull() {
+	if !destination.Type.IsNull() && destination.Type.ValueString() != "" {
 		config["Type"] = destination.Type.ValueString()
 	}
-	if !destination.ProxyType.IsNull() {
+	if !destination.ProxyType.IsNull() && destination.ProxyType.ValueString() != "" {
 		config["ProxyType"] = destination.ProxyType.ValueString()
 	}
-	if !destination.URL.IsNull() {
+	if !destination.URL.IsNull() && destination.URL.ValueString() != "" {
 		config["URL"] = destination.URL.ValueString()
 	}
-	if !destination.Authentication.IsNull() {
+	if !destination.Authentication.IsNull() && destination.Authentication.ValueString() != "" {
 		config["Authentication"] = destination.Authentication.ValueString()
 	}
-	if !destination.Description.IsNull() {
+	if !destination.Description.IsNull() && destination.Description.ValueString() != "" {
 		config["Description"] = destination.Description.ValueString()
 	}
-
 	if !destination.AdditionalConfiguration.IsNull() {
 		var extra map[string]any
 		err := json.Unmarshal([]byte(destination.AdditionalConfiguration.ValueString()), &extra)
@@ -184,14 +182,31 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 		}
 		return ""
 	}
+	desc, url, proxy, auth := extract("Description"), extract("URL"), extract("ProxyType"), extract("Authentication")
 	destination.CreationTime = types.StringValue(creationTime)
 	destination.ModificationTime = types.StringValue(modifyTime)
 	destination.Name = types.StringValue(extract("Name"))
 	destination.Type = types.StringValue(extract("Type"))
-	destination.Description = types.StringValue(extract("Description"))
-	destination.URL = types.StringValue(extract("URL"))
-	destination.ProxyType = types.StringValue(extract("ProxyType"))
-	destination.Authentication = types.StringValue(extract("Authentication"))
+	if desc == "" {
+		destination.Description = types.StringNull()
+	} else {
+		destination.Description = types.StringValue(desc)
+	}
+	if url == "" {
+		destination.URL = types.StringNull()
+	} else {
+		destination.URL = types.StringValue(url)
+	}
+	if proxy == "" {
+		destination.ProxyType = types.StringNull()
+	} else {
+		destination.ProxyType = types.StringValue(proxy)
+	}
+	if auth == "" {
+		destination.Authentication = types.StringNull()
+	} else {
+		destination.Authentication = types.StringValue(auth)
+	}
 	if serviceInstanceID.ValueString() == "" {
 		destination.ServiceInstanceID = types.StringNull()
 	} else {
@@ -213,4 +228,36 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 	var diagnostics diag.Diagnostics
 
 	return destination, diagnostics
+}
+
+// This function add the masked fields which are not fetched in read operation
+func MergeAdditionalConfig(plannedConfig jsontypes.Normalized, responseConfig jsontypes.Normalized) (jsontypes.Normalized, error) {
+	plannedMap := make(map[string]string)
+	responseMap := make(map[string]string)
+
+	if !plannedConfig.IsNull() && !plannedConfig.IsUnknown() {
+		if err := json.Unmarshal([]byte(plannedConfig.ValueString()), &plannedMap); err != nil {
+			return jsontypes.Normalized{}, err
+		}
+	}
+
+	if !responseConfig.IsNull() && !responseConfig.IsUnknown() {
+		if err := json.Unmarshal([]byte(responseConfig.ValueString()), &responseMap); err != nil {
+			return jsontypes.Normalized{}, err
+		}
+	}
+
+	for k, plannedVal := range plannedMap {
+		responseVal, exists := responseMap[k]
+		if !exists || responseVal == "" {
+			responseMap[k] = plannedVal
+		}
+	}
+
+	mergedJSON, err := json.Marshal(responseMap)
+	if err != nil {
+		return jsontypes.Normalized{}, err
+	}
+
+	return jsontypes.NewNormalizedValue(string(mergedJSON)), nil
 }
