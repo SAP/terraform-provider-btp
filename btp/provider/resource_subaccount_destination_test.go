@@ -133,11 +133,11 @@ func TestResourceSubaccountDestination(t *testing.T) {
 							"res_tcp",
 							"res_tcp",
 							"TCP",
-							"Internet",
-							"TCP destination test",
 							"integration-test-destination",
 							map[string]string{
-								"Address": "host:1234",
+								"Address":     "host:1234",
+								"ProxyType":   "Internet",
+								"Description": "TCP destination test",
 							},
 						),
 					Check: resource.ComposeAggregateTestCheckFunc(
@@ -145,7 +145,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 						resource.TestCheckResourceAttr(
 							"btp_subaccount_destination.res_tcp",
 							"additional_configuration",
-							"{\"Address\":\"host:1234\"}",
+							"{\"Address\":\"host:1234\",\"Description\":\"TCP destination test\",\"ProxyType\":\"Internet\"}",
 						),
 					),
 				},
@@ -212,14 +212,14 @@ func TestResourceSubaccountDestination(t *testing.T) {
 							"res_mail",
 							"res_mail",
 							"MAIL",
-							"Internet",
-							"BasicAuthentication",
 							"integration-test-destination",
 							map[string]string{
 								"mail.url":         "mail://mail.example.com:389",
 								"mail.description": "MAIL destination test",
 								"mail.user":        "abc",
 								"mail.password":    "abc",
+								"ProxyType":        "Internet",
+								"Authentication":   "BasicAuthentication",
 							},
 						),
 					Check: resource.ComposeAggregateTestCheckFunc(
@@ -364,6 +364,31 @@ func TestResourceSubaccountDestination(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - proxy_type, url and authentication must be configured in additional_configuration for destinations not of type HTTP", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config:      hclResourceDestination("test_destination", "tf_destination", "RFC", "Internet", "https://myservice.example.com", "NoAuthentication", "testing resource for destination", "integration-test-destination", map[string]string{"Abc": "test"}),
+					ExpectError: regexp.MustCompile(`Please configure field "proxy_type" in the attribute\nadditional_configuration.\nRefer to the examples documented for your specific destination type.`),
+				},
+				{
+					Config:      hclResourceDestination("test_destination", "tf_destination", "TCP", "Internet", "https://myservice.example.com", "NoAuthentication", "testing resource for destination", "integration-test-destination", map[string]string{"Abc": "test"}),
+					ExpectError: regexp.MustCompile(`Please configure field "proxy_type" in the attribute\nadditional_configuration.\nRefer to the examples documented for your specific destination type.`),
+				},
+				{
+					Config:      hclResourceDestination("test_destination", "tf_destination", "LDAP", "Internet", "https://myservice.example.com", "NoAuthentication", "testing resource for destination", "integration-test-destination", map[string]string{"Abc": "test"}),
+					ExpectError: regexp.MustCompile(`Please configure field "proxy_type" in the attribute\nadditional_configuration.\nRefer to the examples documented for your specific destination type.`),
+				},
+				{
+					Config:      hclResourceDestination("test_destination", "tf_destination", "MAIL", "Internet", "https://myservice.example.com", "NoAuthentication", "testing resource for destination", "integration-test-destination", map[string]string{"Abc": "test"}),
+					ExpectError: regexp.MustCompile(`Please configure field "proxy_type" in the attribute\nadditional_configuration.\nRefer to the examples documented for your specific destination type.`),
+				},
+			},
+		})
+	})
 }
 func hclResourceDestination(resourceName string, displayName string, destType string, proxyType string, url string, authentication string, description string, subaccountName string, additionalConfig map[string]string) string {
 
@@ -393,7 +418,7 @@ func hclResourceDestination(resourceName string, displayName string, destType st
 
 	return fmt.Sprintf(template, resourceName, displayName, destType, proxyType, url, authentication, description, subaccountName, configBlock)
 }
-func hclResourceDestinationTCP(resourceName string, displayName string, destType string, proxyType string, description string, subaccountName string, additionalConfig map[string]string) string {
+func hclResourceDestinationTCP(resourceName string, displayName string, destType string, subaccountName string, additionalConfig map[string]string) string {
 
 	var configBlock string
 	if len(additionalConfig) > 0 {
@@ -411,13 +436,11 @@ func hclResourceDestinationTCP(resourceName string, displayName string, destType
 	resource "btp_subaccount_destination" "%s" {
 	name           = "%s"
 	type           = "%s"
-	proxy_type     = "%s"
-	description    = "%s"
 	subaccount_id     = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	%s
 }`
 
-	return fmt.Sprintf(template, resourceName, displayName, destType, proxyType, description, subaccountName, configBlock)
+	return fmt.Sprintf(template, resourceName, displayName, destType, subaccountName, configBlock)
 }
 
 func hclResourceDestinationLDAP(resourceName string, displayName string, destType string, subaccountName string, additionalConfig map[string]string) string {
@@ -444,7 +467,7 @@ func hclResourceDestinationLDAP(resourceName string, displayName string, destTyp
 
 	return fmt.Sprintf(template, resourceName, displayName, destType, subaccountName, configBlock)
 }
-func hclResourceDestinationMAIL(resourceName string, displayName string, destType string, proxyType string, authentication string, subaccountName string, additionalConfig map[string]string) string {
+func hclResourceDestinationMAIL(resourceName string, displayName string, destType string, subaccountName string, additionalConfig map[string]string) string {
 
 	var configBlock string
 	if len(additionalConfig) > 0 {
@@ -462,13 +485,11 @@ func hclResourceDestinationMAIL(resourceName string, displayName string, destTyp
 	resource "btp_subaccount_destination" "%s" {
 	name           = "%s"
 	type           = "%s"
-	proxy_type     = "%s"
-	authentication = "%s"
 	subaccount_id     = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 	%s
 }`
 
-	return fmt.Sprintf(template, resourceName, displayName, destType, proxyType, authentication, subaccountName, configBlock)
+	return fmt.Sprintf(template, resourceName, displayName, destType, subaccountName, configBlock)
 }
 
 func hclResourceDestinationRFC(resourceName string, displayName string, destType string, subaccountName string, additionalConfig map[string]string) string {

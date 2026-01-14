@@ -56,7 +56,7 @@ func (rs *subaccountDestinationResource) Configure(_ context.Context, req resour
 func (rs *subaccountDestinationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
-							  This resource must be used only for HTTP destinations. We recommend using the resource 'btp_subaccount_destination_generic' to accommodate all types.
+							  This resource must be preferred only for HTTP destinations. We recommend using the resource 'btp_subaccount_destination_generic' to accommodate all types.
 		
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
@@ -109,21 +109,21 @@ __Notes:__
 			"proxy_type": schema.StringAttribute{
 				MarkdownDescription: "The proxytype of the destination.",
 				Optional:            true,
-				Validators:          []validator.String{
+				Validators: []validator.String{
 					typevalidator.ValidateType(path.MatchRoot("type")),
 				},
 			},
 			"url": schema.StringAttribute{
 				MarkdownDescription: "The url of the destination.",
 				Optional:            true,
-				Validators:          []validator.String{
+				Validators: []validator.String{
 					typevalidator.ValidateType(path.MatchRoot("type")),
 				},
 			},
 			"authentication": schema.StringAttribute{
 				MarkdownDescription: "The authentication of the destination.",
 				Optional:            true,
-				Validators:          []validator.String{
+				Validators: []validator.String{
 					typevalidator.ValidateType(path.MatchRoot("type")),
 				},
 			},
@@ -134,6 +134,9 @@ __Notes:__
 			"description": schema.StringAttribute{
 				MarkdownDescription: "The description of the destination.",
 				Optional:            true,
+				Validators: []validator.String{
+					typevalidator.ValidateType(path.MatchRoot("type")),
+				},
 			},
 			"additional_configuration": schema.StringAttribute{
 				MarkdownDescription: "The additional configuration parameters for the destination.",

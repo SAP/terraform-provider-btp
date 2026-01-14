@@ -149,6 +149,7 @@ func destinationDatasourceValueFrom(value connectivity.DestinationResponse, suba
 }
 
 func destinationResourceValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationResourceType, diag.Diagnostics) {
+
 	creationTimeString, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
 	if err != nil {
 		diagnostics := diag.Diagnostics{
@@ -182,31 +183,38 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 		}
 		return ""
 	}
-	desc, url, proxy, auth := extract("Description"), extract("URL"), extract("ProxyType"), extract("Authentication")
+
 	destination.CreationTime = types.StringValue(creationTime)
 	destination.ModificationTime = types.StringValue(modifyTime)
+
 	destination.Name = types.StringValue(extract("Name"))
 	destination.Type = types.StringValue(extract("Type"))
-	if desc == "" {
-		destination.Description = types.StringNull()
-	} else {
-		destination.Description = types.StringValue(desc)
+
+	if destination.Type == types.StringValue("HTTP") {
+		desc, url, proxy, auth := extract("Description"), extract("URL"), extract("ProxyType"), extract("Authentication")
+
+		if desc == "" {
+			destination.Description = types.StringNull()
+		} else {
+			destination.Description = types.StringValue(desc)
+		}
+		if url == "" {
+			destination.URL = types.StringNull()
+		} else {
+			destination.URL = types.StringValue(url)
+		}
+		if proxy == "" {
+			destination.ProxyType = types.StringNull()
+		} else {
+			destination.ProxyType = types.StringValue(proxy)
+		}
+		if auth == "" {
+			destination.Authentication = types.StringNull()
+		} else {
+			destination.Authentication = types.StringValue(auth)
+		}
 	}
-	if url == "" {
-		destination.URL = types.StringNull()
-	} else {
-		destination.URL = types.StringValue(url)
-	}
-	if proxy == "" {
-		destination.ProxyType = types.StringNull()
-	} else {
-		destination.ProxyType = types.StringValue(proxy)
-	}
-	if auth == "" {
-		destination.Authentication = types.StringNull()
-	} else {
-		destination.Authentication = types.StringValue(auth)
-	}
+
 	if serviceInstanceID.ValueString() == "" {
 		destination.ServiceInstanceID = types.StringNull()
 	} else {
