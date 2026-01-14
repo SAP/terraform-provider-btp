@@ -19,6 +19,7 @@ import (
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
+	"github.com/SAP/terraform-provider-btp/internal/validation/typevalidator"
 )
 
 const ErrUnexpectedImportIdentifier = "Unexpected Import Identifier"
@@ -54,6 +55,7 @@ func (rs *subaccountDestinationResource) Configure(_ context.Context, req resour
 func (rs *subaccountDestinationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
+							  This resource must be used only for HTTP destinations. We recommend using the resource 'btp_subaccount_destination_generic' to accommodate all types.
 		
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
@@ -105,15 +107,24 @@ __Notes:__
 			},
 			"proxy_type": schema.StringAttribute{
 				MarkdownDescription: "The proxytype of the destination.",
-				Required:            true,
+				Optional:            true,
+				Validators:          []validator.String{
+					typevalidator.ValidateType(path.MatchRoot("type")),
+				},
 			},
 			"url": schema.StringAttribute{
 				MarkdownDescription: "The url of the destination.",
-				Required:            true,
+				Optional:            true,
+				Validators:          []validator.String{
+					typevalidator.ValidateType(path.MatchRoot("type")),
+				},
 			},
 			"authentication": schema.StringAttribute{
 				MarkdownDescription: "The authentication of the destination.",
-				Required:            true,
+				Optional:            true,
+				Validators:          []validator.String{
+					typevalidator.ValidateType(path.MatchRoot("type")),
+				},
 			},
 			"service_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The service instance that becomes part of the path used to access the destination of the subaccount.",
@@ -132,6 +143,7 @@ __Notes:__
 				},
 			},
 		},
+		DeprecationMessage: "The resource btp_subaccount_destination will no longer be maintained. Please use the resource btp_subaccount_destination_generic instead.",
 	}
 }
 
