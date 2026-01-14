@@ -99,8 +99,7 @@ resource "btp_subaccount_destination" "ldap_dest" {
 #subaccount destination resource with MAIL type.
 resource "btp_subaccount_destination" "mail_dest" {
   name          = "mail_dest"
-  type          = "TCP"
-  proxy_type    = "Internet"
+  type          = "MAIL"
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 
   additional_configuration = jsonencode({
@@ -111,6 +110,8 @@ resource "btp_subaccount_destination" "mail_dest" {
     "mail.user"               = "user@example.com"
     "mail.password"           = "secret"
     "mail.transport.protocol" = "smtp"
+    "ProxyType"               = "Internet"
+    "Authentication"          = "BasicAuthentication"
   })
 }
 
@@ -119,9 +120,9 @@ resource "btp_subaccount_destination" "tcp_dest" {
   name          = "tcp_dest"
   type          = "TCP"
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  proxy_type    = "OnPremise"
-  description   = "TCP destination example"
   additional_configuration = jsonencode({
-    "Address" = "host:1234"
+    "Address" = "host:1234",
+    "ProxyType" = "OnPremise",
+    "Description" = "TCP destination example"
   })
 }
