@@ -2,6 +2,7 @@ package provider
 
 import (
 	"encoding/json"
+	"maps"
 	"strconv"
 	"time"
 
@@ -172,9 +173,7 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 	}
 
 	tmp := make(map[string]string)
-	for k, v := range value.DestinationConfiguration {
-		tmp[k] = v
-	}
+	maps.Copy(tmp, value.DestinationConfiguration)
 
 	extract := func(key string) string {
 		if v, ok := tmp[key]; ok {
@@ -190,36 +189,23 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 	destination.Name = types.StringValue(extract("Name"))
 	destination.Type = types.StringValue(extract("Type"))
 
-	if destination.Type == types.StringValue("HTTP") {
+	setStringOrNull := func(value string) types.String {
+		if value == "" {
+			return types.StringNull()
+		}
+		return types.StringValue(value)
+	}
+
+	if destination.Type.ValueString() == "HTTP" {
 		desc, url, proxy, auth := extract("Description"), extract("URL"), extract("ProxyType"), extract("Authentication")
 
-		if desc == "" {
-			destination.Description = types.StringNull()
-		} else {
-			destination.Description = types.StringValue(desc)
-		}
-		if url == "" {
-			destination.URL = types.StringNull()
-		} else {
-			destination.URL = types.StringValue(url)
-		}
-		if proxy == "" {
-			destination.ProxyType = types.StringNull()
-		} else {
-			destination.ProxyType = types.StringValue(proxy)
-		}
-		if auth == "" {
-			destination.Authentication = types.StringNull()
-		} else {
-			destination.Authentication = types.StringValue(auth)
-		}
+		destination.Description = setStringOrNull(desc)
+		destination.URL = setStringOrNull(url)
+		destination.ProxyType = setStringOrNull(proxy)
+		destination.Authentication = setStringOrNull(auth)
 	}
 
-	if serviceInstanceID.ValueString() == "" {
-		destination.ServiceInstanceID = types.StringNull()
-	} else {
-		destination.ServiceInstanceID = serviceInstanceID
-	}
+	destination.ServiceInstanceID = setStringOrNull(extract("ServiceInstanceID"))
 
 	if len(tmp) == 0 {
 		destination.AdditionalConfiguration = jsontypes.NewNormalizedNull()

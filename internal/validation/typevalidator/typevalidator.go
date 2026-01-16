@@ -29,11 +29,26 @@ func (v typeValidator) ValidateString(ctx context.Context, request validator.Str
 	}
 
 	// get the path for attribute type from the expression
-	typePath, _ := request.Config.PathMatches(ctx, v.typeExpr)
-
+	typePath, diags := request.Config.PathMatches(ctx, v.typeExpr)
+	if diags.HasError() {
+		response.Diagnostics.Append(diags...)
+		return
+	}
+	if len(typePath) == 0 {
+		response.Diagnostics.AddAttributeWarning(
+			request.Path,
+			v.Description(ctx),
+			"unable to determine destination type because the type attribute path could not be resolved in configuration",
+		)
+		return
+	}
 	// get the value of the attribute type from the path
 	var typeVal attr.Value
-	_ = request.Config.GetAttribute(ctx, typePath[0], &typeVal)
+	diags = request.Config.GetAttribute(ctx, typePath[0], &typeVal)
+	if diags.HasError() {
+		response.Diagnostics.Append(diags...)
+		return
+	}
 
 	val, ok := typeVal.(types.String)
 	if !ok {

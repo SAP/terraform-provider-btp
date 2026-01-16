@@ -201,11 +201,15 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 
 	diags = req.Identity.Get(ctx, &identity)
 	if diags.HasError() {
+		resp.Diagnostics.Append(diags...)
+		diags = nil
 		identity = subaccountDestinationIdentityModel{
 			SubaccountID:      data.SubaccountID,
 			Name:              data.Name,
 			ServiceInstanceID: data.ServiceInstanceID,
 		}
+	} else {
+		resp.Diagnostics.Append(diags...)
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
