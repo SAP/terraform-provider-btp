@@ -72,7 +72,7 @@ Connectivity and Destination Administrator`,
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
 							MarkdownDescription: "The descriptive name of the destination for subaccount",
-							Required:            true,
+							Computed:            true,
 						},
 					},
 				},
@@ -127,7 +127,7 @@ Connectivity and Destination Administrator`,
 						},
 						"additional_configuration": schema.StringAttribute{
 							MarkdownDescription: "The additional configuration parameters for the destination.",
-							Optional:            true,
+							Computed:            true,
 							CustomType:          jsontypes.NormalizedType{},
 							Validators: []validator.String{
 								jsonvalidator.ValidJSON(),
@@ -138,6 +138,7 @@ Connectivity and Destination Administrator`,
 				Computed: true,
 			},
 		},
+		DeprecationMessage: "The datasource btp_subaccount_destinations will no longer be maintained. Please use the datasource btp_subaccount_destinations_generic instead.",
 	}
 }
 

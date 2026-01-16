@@ -97,6 +97,7 @@ Connectivity and Destination Administrator`,
 				},
 			},
 		},
+		DeprecationMessage: "The datasource btp_subaccount_destination will no longer be maintained. Please use the datasource btp_subaccount_destination_generic instead.",
 	}
 }
 
