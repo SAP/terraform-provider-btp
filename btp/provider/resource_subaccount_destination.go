@@ -197,22 +197,14 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 
-	var identity subaccountDestinationIdentityModel
-
-	diags = req.Identity.Get(ctx, &identity)
-	if diags.HasError() {
-		resp.Diagnostics.Append(diags...)
-		diags = nil
-		identity = subaccountDestinationIdentityModel{
-			SubaccountID:      data.SubaccountID,
-			Name:              data.Name,
-			ServiceInstanceID: data.ServiceInstanceID,
-		}
-	} else {
-		resp.Diagnostics.Append(diags...)
+	identity := subaccountDestinationIdentityModel{
+		SubaccountID:      data.SubaccountID,
+		Name:              data.Name,
+		ServiceInstanceID: data.ServiceInstanceID,
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
+
 	resp.Diagnostics.Append(diags...)
 }
 

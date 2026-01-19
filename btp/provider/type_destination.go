@@ -205,7 +205,7 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 		destination.Authentication = setStringOrNull(auth)
 	}
 
-	destination.ServiceInstanceID = setStringOrNull(extract("ServiceInstanceID"))
+	destination.ServiceInstanceID = setStringOrNull(serviceInstanceID.ValueString())
 
 	if len(tmp) == 0 {
 		destination.AdditionalConfiguration = jsontypes.NewNormalizedNull()
