@@ -26,16 +26,24 @@ func TestTypeValidator(t *testing.T) {
 	type testCase struct {
 		destType  string
 		expErrors int
+		typeExpr path.Expression
 	}
 
 	testCases := map[string]testCase{
 		"type-http": {
 			destType:  "HTTP",
 			expErrors: 0,
+			typeExpr:  path.MatchRoot("type"),
 		},
 		"type-non-http": {
 			destType:  "RFC",
 			expErrors: 1,
+			typeExpr:  path.MatchRoot("type"),
+		},
+		"incorrect-attribute-path": {
+			destType:  "RFC",
+			expErrors: 1,
+			typeExpr:  path.MatchRoot("incorrect_attribute"),
 		},
 	}
 
@@ -60,7 +68,7 @@ func TestTypeValidator(t *testing.T) {
 			}
 
 			v := typeValidator{
-				typeExpr: path.MatchRoot("type"),
+				typeExpr: test.typeExpr,
 			}
 
 			req := validator.StringRequest{

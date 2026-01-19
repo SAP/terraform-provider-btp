@@ -51,6 +51,12 @@ func TestResourceSubaccountDestination(t *testing.T) {
 					ImportState:     true,
 					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
+				{
+					ResourceName:    "btp_subaccount_destination.res1",
+					ImportState:     true,
+					ImportStateId:   "incorrect_id",
+					ExpectError: 	regexp.MustCompile(`Unexpected Import Identifier\n\nExpected one of:\n  - subaccount_id,name\n  - subaccount_id,name,service_instance_id\nGot: "incorrect_id"`),
+				},
 			},
 		})
 	})
@@ -90,7 +96,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path without serv instance with additional configuration for import id", func(t *testing.T) {
+	t.Run("happy path without service instance with additional configuration for import id", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_without_service_instance_with_additional_configuration_for_import_id")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
