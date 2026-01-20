@@ -19,10 +19,12 @@ import (
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
+	"github.com/SAP/terraform-provider-btp/internal/validation/typevalidator"
 )
 
 const ErrUnexpectedImportIdentifier = "Unexpected Import Identifier"
 const ErrApiReadingDestination = "API Error Reading destination"
+const ErrApiMergingDestinationAdditionalConfiguration = "API Error Merging destination Additional Configuration"
 
 func newSubaccountDestinationResource() resource.Resource {
 	return &subaccountDestinationResource{}
@@ -54,6 +56,7 @@ func (rs *subaccountDestinationResource) Configure(_ context.Context, req resour
 func (rs *subaccountDestinationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
+							  This resource must be preferred only for HTTP destinations. We recommend using the resource 'btp_subaccount_destination_generic' to accommodate all types.
 		
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
@@ -105,15 +108,24 @@ __Notes:__
 			},
 			"proxy_type": schema.StringAttribute{
 				MarkdownDescription: "The proxytype of the destination.",
-				Required:            true,
+				Optional:            true,
+				Validators: []validator.String{
+					typevalidator.ValidateType(path.MatchRoot("type")),
+				},
 			},
 			"url": schema.StringAttribute{
 				MarkdownDescription: "The url of the destination.",
-				Required:            true,
+				Optional:            true,
+				Validators: []validator.String{
+					typevalidator.ValidateType(path.MatchRoot("type")),
+				},
 			},
 			"authentication": schema.StringAttribute{
 				MarkdownDescription: "The authentication of the destination.",
-				Required:            true,
+				Optional:            true,
+				Validators: []validator.String{
+					typevalidator.ValidateType(path.MatchRoot("type")),
+				},
 			},
 			"service_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The service instance that becomes part of the path used to access the destination of the subaccount.",
@@ -122,6 +134,9 @@ __Notes:__
 			"description": schema.StringAttribute{
 				MarkdownDescription: "The description of the destination.",
 				Optional:            true,
+				Validators: []validator.String{
+					typevalidator.ValidateType(path.MatchRoot("type")),
+				},
 			},
 			"additional_configuration": schema.StringAttribute{
 				MarkdownDescription: "The additional configuration parameters for the destination.",
@@ -132,6 +147,7 @@ __Notes:__
 				},
 			},
 		},
+		DeprecationMessage: "The resource btp_subaccount_destination will no longer be maintained. Please use the resource btp_subaccount_destination_generic instead.",
 	}
 }
 
@@ -158,6 +174,7 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	planAdditionalConfiguration := data.AdditionalConfiguration
 
 	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
 	if err != nil {
@@ -167,6 +184,13 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 
 	data, diags = destinationResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
+
+	data.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, data.AdditionalConfiguration)
+	if err != nil {
+		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		return
+	}
+
 	id := data.SubaccountID.ValueString() + "," + data.Name.ValueString() + "," + data.ServiceInstanceID.ValueString()
 	data.ID = types.StringValue(id)
 
@@ -180,6 +204,7 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
+
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -190,6 +215,7 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	planAdditionalConfiguration := plan.AdditionalConfiguration
 
 	destinationData, err := BuildDestinationConfigurationJSON(plan)
 	if err != nil {
@@ -211,6 +237,12 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 
 	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
+	plan.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
+	if err != nil {
+		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		return
+	}
+
 	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
 	plan.ID = types.StringValue(id)
 
@@ -235,6 +267,7 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	planAdditionalConfiguration := plan.AdditionalConfiguration
 	destinationData, err := BuildDestinationConfigurationJSON(plan)
 	if err != nil {
 		resp.Diagnostics.AddError("Error generating Resource Destination body", fmt.Sprintf("%s", err))
@@ -255,6 +288,12 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 
 	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
+	plan.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
+	if err != nil {
+		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		return
+	}
+
 	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
 	plan.ID = types.StringValue(id)
 

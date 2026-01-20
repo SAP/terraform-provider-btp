@@ -63,7 +63,7 @@ data "btp_subaccount_destinations" "dest_by_subacount_and_service_instance" {
 <a id="nestedatt--destination_names"></a>
 ### Nested Schema for `destination_names`
 
-Required:
+Read-Only:
 
 - `name` (String) The descriptive name of the destination for subaccount
 
@@ -71,12 +71,9 @@ Required:
 <a id="nestedatt--values"></a>
 ### Nested Schema for `values`
 
-Optional:
-
-- `additional_configuration` (String) The additional configuration parameters for the destination.
-
 Read-Only:
 
+- `additional_configuration` (String) The additional configuration parameters for the destination.
 - `authentication` (String) The authentication of the destination.
 - `creation_time` (String) The date and time when the resource was created.
 - `description` (String) The description of the destination.
