@@ -226,16 +226,24 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 
 // This function add the masked fields which are not fetched in read operation
 func MergeAdditionalConfig(plannedConfig jsontypes.Normalized, responseConfig jsontypes.Normalized) (jsontypes.Normalized, error) {
+	if plannedConfig.IsNull() {
+		return responseConfig, nil
+	}
+
+	if responseConfig.IsNull() {
+		return plannedConfig, nil
+	}
+	
 	plannedMap := make(map[string]string)
 	responseMap := make(map[string]string)
 
-	if !plannedConfig.IsNull() && !plannedConfig.IsUnknown() {
+	if !plannedConfig.IsUnknown() {
 		if err := json.Unmarshal([]byte(plannedConfig.ValueString()), &plannedMap); err != nil {
 			return jsontypes.Normalized{}, err
 		}
 	}
 
-	if !responseConfig.IsNull() && !responseConfig.IsUnknown() {
+	if !responseConfig.IsUnknown() {
 		if err := json.Unmarshal([]byte(responseConfig.ValueString()), &responseMap); err != nil {
 			return jsontypes.Normalized{}, err
 		}
