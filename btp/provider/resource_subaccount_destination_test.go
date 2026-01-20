@@ -52,10 +52,10 @@ func TestResourceSubaccountDestination(t *testing.T) {
 					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 				{
-					ResourceName:    "btp_subaccount_destination.res1",
-					ImportState:     true,
-					ImportStateId:   "incorrect_id",
-					ExpectError: 	regexp.MustCompile(`Unexpected Import Identifier\n\nExpected one of:\n  - subaccount_id,name\n  - subaccount_id,name,service_instance_id\nGot: "incorrect_id"`),
+					ResourceName:  "btp_subaccount_destination.res1",
+					ImportState:   true,
+					ImportStateId: "incorrect_id",
+					ExpectError:   regexp.MustCompile(`Unexpected Import Identifier\n\nExpected one of:\n  - subaccount_id,name\n  - subaccount_id,name,service_instance_id\nGot: "incorrect_id"`),
 				},
 			},
 		})

@@ -26,7 +26,7 @@ func TestTypeValidator(t *testing.T) {
 	type testCase struct {
 		destType  string
 		expErrors int
-		typeExpr path.Expression
+		typeExpr  path.Expression
 	}
 
 	testCases := map[string]testCase{

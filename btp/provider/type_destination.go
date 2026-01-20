@@ -233,7 +233,7 @@ func MergeAdditionalConfig(plannedConfig jsontypes.Normalized, responseConfig js
 	if responseConfig.IsNull() {
 		return plannedConfig, nil
 	}
-	
+
 	plannedMap := make(map[string]string)
 	responseMap := make(map[string]string)
 
