@@ -36,7 +36,7 @@ __Notes:__
 ```terraform
 #subaccount destination without auth
 resource "btp_subaccount_destination_generic" "http_dest" {
-  subaccount_id  = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   service_instance_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   additional_configuration = jsonencode({
     "Name"           = "project"
@@ -45,14 +45,14 @@ resource "btp_subaccount_destination_generic" "http_dest" {
     "URL"            = "https://myservice.example.com"
     "Authentication" = "NoAuthentication"
     "Description"    = "trial destination of basic usecase with service instance"
-  
+
   })
 }
 
 #subaccount destination creation without service instance and without labels (additional configuration). 
 resource "btp_subaccount_destination" "destination" {
-  subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-    additional_configuration = jsonencode({
+  subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  additional_configuration = jsonencode({
     "Name"           = "project"
     "Type"           = "HTTP"
     "ProxyType"      = "Internet"
@@ -65,7 +65,7 @@ resource "btp_subaccount_destination" "destination" {
 #subaccount destination creation without service instance and and labels (additional configuration). 
 #Note: Auth properties are part of additional configuration.
 resource "btp_subaccount_destination_generic" "http_dest_with_additional_configuration_auth" {
-  subaccount_id     = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   additional_configuration = jsonencode({
     "Name"            = "project_with_auth"
     "Type"            = "HTTP"
@@ -119,13 +119,13 @@ resource "btp_subaccount_destination_generic" "ldap_dest" {
 resource "btp_subaccount_destination_generic" "mail_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   additional_configuration = jsonencode({
-    "Name"                    = "mail_dest"
-    "Type"                    = "MAIL"
-    "Authentication"          = "BasicAuthentication"
-    "ProxyType"               = "OnPremise"
-    "mail.description"        = "MAIL destination test update"
-    "mail.user"               = "user@example.com"
-    "mail.password"           = "secret"
+    "Name"             = "mail_dest"
+    "Type"             = "MAIL"
+    "Authentication"   = "BasicAuthentication"
+    "ProxyType"        = "OnPremise"
+    "mail.description" = "MAIL destination test update"
+    "mail.user"        = "user@example.com"
+    "mail.password"    = "secret"
   })
 }
 
@@ -133,11 +133,11 @@ resource "btp_subaccount_destination_generic" "mail_dest" {
 resource "btp_subaccount_destination_generic" "tcp_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   additional_configuration = jsonencode({
-    "Name"          = "tcp_dest"
-    "Type"          = "TCP"
-    "Address"       = "host:1234"
-    "ProxyType"     = "OnPremise"
-    "Description"   = "TCP destination example update"
+    "Name"        = "tcp_dest"
+    "Type"        = "TCP"
+    "Address"     = "host:1234"
+    "ProxyType"   = "OnPremise"
+    "Description" = "TCP destination example update"
   })
 }
 ```
