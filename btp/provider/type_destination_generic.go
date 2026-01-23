@@ -12,22 +12,22 @@ import (
 )
 
 type subaccountDestinationGenericResourceType struct {
-	SubaccountID            types.String         `tfsdk:"subaccount_id"`
-	ID                      types.String         `tfsdk:"id"`
-	CreationTime            types.String         `tfsdk:"creation_time"`
-	Etag                    types.String         `tfsdk:"etag"`
-	Name                    types.String         `tfsdk:"name"`
-	ModificationTime        types.String         `tfsdk:"modification_time"`
-	ServiceInstanceID       types.String         `tfsdk:"service_instance_id"`
-	AdditionalConfiguration jsontypes.Normalized `tfsdk:"additional_configuration"`
+	SubaccountID             types.String         `tfsdk:"subaccount_id"`
+	ID                       types.String         `tfsdk:"id"`
+	CreationTime             types.String         `tfsdk:"creation_time"`
+	Etag                     types.String         `tfsdk:"etag"`
+	Name                     types.String         `tfsdk:"name"`
+	ModificationTime         types.String         `tfsdk:"modification_time"`
+	ServiceInstanceID        types.String         `tfsdk:"service_instance_id"`
+	DestinationConfiguration jsontypes.Normalized `tfsdk:"destination_configuration"`
 }
 
 func BuildDestinationGenericConfigurationJSON(destination subaccountDestinationGenericResourceType) (string, string, error) {
 	config := map[string]any{}
 	name := ""
-	if !destination.AdditionalConfiguration.IsNull() {
+	if !destination.DestinationConfiguration.IsNull() {
 		var extra map[string]any
-		err := json.Unmarshal([]byte(destination.AdditionalConfiguration.ValueString()), &extra)
+		err := json.Unmarshal([]byte(destination.DestinationConfiguration.ValueString()), &extra)
 		if err != nil {
 			return "", name, err
 		}
@@ -81,7 +81,7 @@ func destinationGenericResourceValueFrom(value connectivity.DestinationResponse,
 	}
 
 	if len(tmp) == 0 {
-		destination.AdditionalConfiguration = jsontypes.NewNormalizedNull()
+		destination.DestinationConfiguration = jsontypes.NewNormalizedNull()
 	} else {
 		additionalJSON, err := json.Marshal(tmp)
 		if err != nil {
@@ -90,7 +90,7 @@ func destinationGenericResourceValueFrom(value connectivity.DestinationResponse,
 			}
 			return subaccountDestinationGenericResourceType{}, diagnostics
 		}
-		destination.AdditionalConfiguration = jsontypes.NewNormalizedValue(string(additionalJSON))
+		destination.DestinationConfiguration = jsontypes.NewNormalizedValue(string(additionalJSON))
 	}
 	var diagnostics diag.Diagnostics
 

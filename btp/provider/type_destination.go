@@ -225,7 +225,7 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 }
 
 // This function add the masked fields which are not fetched in read operation
-func MergeAdditionalConfig(plannedConfig jsontypes.Normalized, responseConfig jsontypes.Normalized) (jsontypes.Normalized, error) {
+func MergeDestinationConfig(plannedConfig jsontypes.Normalized, responseConfig jsontypes.Normalized) (jsontypes.Normalized, error) {
 	if plannedConfig.IsNull() {
 		return responseConfig, nil
 	}

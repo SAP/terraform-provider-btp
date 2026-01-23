@@ -19,7 +19,7 @@ description: |-
 
 Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
 							  This resource must be preferred only for HTTP destinations. We recommend using the resource 'btp_subaccount_destination_generic' to accommodate all types.
-		
+
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
 

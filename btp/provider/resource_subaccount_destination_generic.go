@@ -49,7 +49,7 @@ func (rs *subaccountDestinationGenericResource) Configure(_ context.Context, req
 func (rs *subaccountDestinationGenericResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
-		
+
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
 
@@ -78,12 +78,9 @@ __Notes:__
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The descriptive name of the destination for subaccount",
 				Computed:            true,
-				// Validators: []validator.String{
-				// 	stringvalidator.RegexMatches(regexp.MustCompile(`^[^\/]{1,255}$`), "must not contain '/', not be empty and not exceed 255 characters"),
-				// },
 			},
 			"creation_time": schema.StringAttribute{
-				MarkdownDescription: "The date and time when the resource was created in",
+				MarkdownDescription: "The date and time when the resource was created",
 				Computed:            true,
 			},
 			"etag": schema.StringAttribute{
@@ -98,9 +95,10 @@ __Notes:__
 				MarkdownDescription: "The service instance that becomes part of the path used to access the destination of the subaccount.",
 				Optional:            true,
 			},
-			"additional_configuration": schema.StringAttribute{
-				MarkdownDescription: "The additional configuration parameters for the destination.",
+			"destination_configuration": schema.StringAttribute{
+				MarkdownDescription: "The configuration parameters for the destination.",
 				Required:            true,
+				Sensitive:           true,
 				CustomType:          jsontypes.NormalizedType{},
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
@@ -133,7 +131,7 @@ func (rs *subaccountDestinationGenericResource) Read(ctx context.Context, req re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	planAdditionalConfiguration := data.AdditionalConfiguration
+	planDestinationConfiguration := data.DestinationConfiguration
 
 	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
 	if err != nil {
@@ -144,9 +142,9 @@ func (rs *subaccountDestinationGenericResource) Read(ctx context.Context, req re
 	data, diags = destinationGenericResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID, data.Name.ValueString())
 	resp.Diagnostics.Append(diags...)
 
-	data.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, data.AdditionalConfiguration)
+	data.DestinationConfiguration, err = MergeDestinationConfig(planDestinationConfiguration, data.DestinationConfiguration)
 	if err != nil {
-		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -178,7 +176,7 @@ func (rs *subaccountDestinationGenericResource) Create(ctx context.Context, req 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	planAdditionalConfiguration := plan.AdditionalConfiguration
+	planDestinationConfiguration := plan.DestinationConfiguration
 
 	destinationData, name, err := BuildDestinationGenericConfigurationJSON(plan)
 	if err != nil {
@@ -200,9 +198,9 @@ func (rs *subaccountDestinationGenericResource) Create(ctx context.Context, req 
 
 	plan, diags = destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
 	resp.Diagnostics.Append(diags...)
-	plan.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
+	plan.DestinationConfiguration, err = MergeDestinationConfig(planDestinationConfiguration, plan.DestinationConfiguration)
 	if err != nil {
-		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -230,7 +228,7 @@ func (rs *subaccountDestinationGenericResource) Update(ctx context.Context, req 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	planAdditionalConfiguration := plan.AdditionalConfiguration
+	planDestinationConfiguration := plan.DestinationConfiguration
 	destinationData, name, err := BuildDestinationGenericConfigurationJSON(plan)
 	if err != nil {
 		resp.Diagnostics.AddError("Error generating Resource Destination body", fmt.Sprintf("%s", err))
@@ -251,9 +249,9 @@ func (rs *subaccountDestinationGenericResource) Update(ctx context.Context, req 
 
 	plan, diags = destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
 	resp.Diagnostics.Append(diags...)
-	plan.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
+	plan.DestinationConfiguration, err = MergeDestinationConfig(planDestinationConfiguration, plan.DestinationConfiguration)
 	if err != nil {
-		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -283,7 +281,7 @@ func (rs *subaccountDestinationGenericResource) Delete(ctx context.Context, req 
 	}
 	_, name, err := BuildDestinationGenericConfigurationJSON(state)
 	if err != nil {
-		resp.Diagnostics.AddError("Error retreaving name", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("Error retrieving name", fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -342,7 +340,7 @@ func (rs *subaccountDestinationGenericResource) ImportState(ctx context.Context,
 		}
 	}
 
-	var identity subaccountDestinationIdentityModel
+	var identity subaccountDestinationGenericIdentityModel
 	diags := resp.Identity.Get(ctx, &identity)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {

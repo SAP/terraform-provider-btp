@@ -25,6 +25,7 @@ import (
 const ErrUnexpectedImportIdentifier = "Unexpected Import Identifier"
 const ErrApiReadingDestination = "API Error Reading destination"
 const ErrApiMergingDestinationAdditionalConfiguration = "API Error Merging destination Additional Configuration"
+const ErrApiMergingDestinationConfiguration = "API Error Merging Destination Configuration"
 
 func newSubaccountDestinationResource() resource.Resource {
 	return &subaccountDestinationResource{}
@@ -57,7 +58,7 @@ func (rs *subaccountDestinationResource) Schema(_ context.Context, _ resource.Sc
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
 							  This resource must be preferred only for HTTP destinations. We recommend using the resource 'btp_subaccount_destination_generic' to accommodate all types.
-		
+
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
 
@@ -185,7 +186,7 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 	data, diags = destinationResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
 
-	data.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, data.AdditionalConfiguration)
+	data.AdditionalConfiguration, err = MergeDestinationConfig(planAdditionalConfiguration, data.AdditionalConfiguration)
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
 		return
@@ -237,7 +238,7 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 
 	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
-	plan.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
+	plan.AdditionalConfiguration, err = MergeDestinationConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
 		return
@@ -288,7 +289,7 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 
 	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
 	resp.Diagnostics.Append(diags...)
-	plan.AdditionalConfiguration, err = MergeAdditionalConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
+	plan.AdditionalConfiguration, err = MergeDestinationConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
 		return

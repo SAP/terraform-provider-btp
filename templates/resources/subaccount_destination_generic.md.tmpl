@@ -1,0 +1,51 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{tffile .ExampleFile}}
+{{- end }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{tffile .ImportFile}}
+{{- end }}
+
+
+## Destination Configuration Options
+
+The JSON object `destination_configuration` allows you to specify various settings for the destination depending on their type. The following sections reference the links to the documentation that points out the available configuration options for each destination type.
+
+### HTTP Destinations
+
+All parameters for the destination type "HTTP" are listed in the section [HTTP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/http-destinations) on help.sap.com.
+
+### RFC Destinations
+
+All parameters for the destination type "RFC" are listed in the section [RFC Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/rfc-destinations) on help.sap.com.
+
+### LDAP Destinations
+
+All parameters for the destination type "LDAP" are listed in the section [LDAP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/ldap-destinations) on help.sap.com.
+
+### TCP Destinations
+
+All parameters for the destination type "TCP" are listed in the section [TCP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/tcp-destinations) on help.sap.com.
+
+### MAIL Destinations
+
+All parameters for the destination type "MAIL" are listed in the section [MAIL Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/mail-destinations-e3de817e7c4949918840cf26f0406348) on help.sap.com.

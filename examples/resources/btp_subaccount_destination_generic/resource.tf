@@ -2,7 +2,7 @@
 resource "btp_subaccount_destination_generic" "http_dest" {
   subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   service_instance_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"           = "project"
     "Type"           = "HTTP"
     "ProxyType"      = "Internet"
@@ -13,10 +13,10 @@ resource "btp_subaccount_destination_generic" "http_dest" {
   })
 }
 
-#subaccount destination creation without service instance and without labels (additional configuration). 
-resource "btp_subaccount_destination" "destination" {
+#subaccount destination creation without service instance and without labels (additional configuration).
+resource "btp_subaccount_destination_generic" "destination" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"           = "project"
     "Type"           = "HTTP"
     "ProxyType"      = "Internet"
@@ -26,11 +26,11 @@ resource "btp_subaccount_destination" "destination" {
   })
 }
 
-#subaccount destination creation without service instance and and labels (additional configuration). 
+#subaccount destination creation without service instance and and labels (additional configuration).
 #Note: Auth properties are part of additional configuration.
-resource "btp_subaccount_destination_generic" "http_dest_with_additional_configuration_auth" {
+resource "btp_subaccount_destination_generic" "http_dest_with_destination_configuration_auth" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"            = "project_with_auth"
     "Type"            = "HTTP"
     "clientId"        = "abc"
@@ -45,7 +45,7 @@ resource "btp_subaccount_destination_generic" "http_dest_with_additional_configu
 #subaccount destination rfc type
 resource "btp_subaccount_destination_generic" "rfc_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"                                  = "rfc_dest"
     "Type"                                  = "RFC"
     "jco.client.ashost"                     = "va4hci"
@@ -67,7 +67,7 @@ resource "btp_subaccount_destination_generic" "rfc_dest" {
 #subaccount destination ldap type
 resource "btp_subaccount_destination_generic" "ldap_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"                = "ldap_dest"
     "Type"                = "LDAP"
     "ldap.url"            = "ldap://ldap.example.com:389"
@@ -82,7 +82,7 @@ resource "btp_subaccount_destination_generic" "ldap_dest" {
 #subaccount destination mail type
 resource "btp_subaccount_destination_generic" "mail_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"             = "mail_dest"
     "Type"             = "MAIL"
     "Authentication"   = "BasicAuthentication"
@@ -96,7 +96,7 @@ resource "btp_subaccount_destination_generic" "mail_dest" {
 #subaccount destination tcp type
 resource "btp_subaccount_destination_generic" "tcp_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"        = "tcp_dest"
     "Type"        = "TCP"
     "Address"     = "host:1234"

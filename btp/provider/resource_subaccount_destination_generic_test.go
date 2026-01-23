@@ -38,7 +38,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res1", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res1", "creation_time", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res1", "modification_time", regexpValidRFC3999Format),
-						resource.TestCheckResourceAttr("btp_subaccount_destination_generic.res1", "additional_configuration", "{\"Authentication\":\"NoAuthentication\",\"Description\":\"trial destination of basic usecase\",\"Name\":\"res1\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice.example.com\"}"),
+						resource.TestCheckResourceAttr("btp_subaccount_destination_generic.res1", "destination_configuration", "{\"Authentication\":\"NoAuthentication\",\"Description\":\"trial destination of basic usecase\",\"Name\":\"res1\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice.example.com\"}"),
 					),
 					ConfigStateChecks: []statecheck.StateCheck{
 						statecheck.ExpectIdentity("btp_subaccount_destination_generic.res1", map[string]knownvalue.Check{
@@ -76,7 +76,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res2", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res2", "creation_time", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res2", "modification_time", regexpValidRFC3999Format),
-						resource.TestCheckResourceAttr("btp_subaccount_destination_generic.res2", "additional_configuration", "{\"Authentication\":\"NoAuthentication\",\"Description\":\"trial destination of basic usecase\",\"Name\":\"res2\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice.example.com\"}"),
+						resource.TestCheckResourceAttr("btp_subaccount_destination_generic.res2", "destination_configuration", "{\"Authentication\":\"NoAuthentication\",\"Description\":\"trial destination of basic usecase\",\"Name\":\"res2\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice.example.com\"}"),
 					),
 					ConfigStateChecks: []statecheck.StateCheck{
 						statecheck.ExpectIdentity("btp_subaccount_destination_generic.res2", map[string]knownvalue.Check{
@@ -115,7 +115,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res4", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res4", "creation_time", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res4", "modification_time", regexpValidRFC3999Format),
-						resource.TestCheckResourceAttr("btp_subaccount_destination_generic.res4", "additional_configuration", "{\"Authentication\":\"NoAuthentication\",\"Description\":\"trial destination of basic usecase\",\"Name\":\"res4\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice.example.com\"}"),
+						resource.TestCheckResourceAttr("btp_subaccount_destination_generic.res4", "destination_configuration", "{\"Authentication\":\"NoAuthentication\",\"Description\":\"trial destination of basic usecase\",\"Name\":\"res4\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice.example.com\"}"),
 					),
 				},
 				{
@@ -131,14 +131,14 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res4", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res4", "creation_time", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res4", "modification_time", regexpValidRFC3999Format),
-						resource.TestCheckResourceAttr("btp_subaccount_destination_generic.res4", "additional_configuration", "{\"Authentication\":\"NoAuthentication\",\"Description\":\"trial destination of basic usecase update\",\"Name\":\"res4\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice.example.com\"}"),
+						resource.TestCheckResourceAttr("btp_subaccount_destination_generic.res4", "destination_configuration", "{\"Authentication\":\"NoAuthentication\",\"Description\":\"trial destination of basic usecase update\",\"Name\":\"res4\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice.example.com\"}"),
 					),
 				},
 			},
 		})
 	})
 	t.Run("happy path TCP destination with additional configuration", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_tcp_with_additional_configuration")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_tcp_with_destination_configuration")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -161,7 +161,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr(
 							"btp_subaccount_destination_generic.res_tcp",
-							"additional_configuration",
+							"destination_configuration",
 							"{\"Address\":\"host:1234\",\"Description\":\"TCP destination example\",\"Name\":\"res_tcp\",\"ProxyType\":\"OnPremise\",\"Type\":\"TCP\"}",
 						),
 					),
@@ -170,7 +170,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 	t.Run("happy path LDAP destination with additional configuration", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_ldap_with_additional_configuration")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_ldap_with_destination_configuration")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -196,17 +196,17 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr(
 							"btp_subaccount_destination_generic.res_ldap",
-							"additional_configuration",
+							"destination_configuration",
 							regexp.MustCompile(`"ldap.url":"ldap://ldap.example.com:389"`),
 						),
 						resource.TestMatchResourceAttr(
 							"btp_subaccount_destination_generic.res_ldap",
-							"additional_configuration",
+							"destination_configuration",
 							regexp.MustCompile(`"ldap.authentication":"BasicAuthentication"`),
 						),
 						resource.TestMatchResourceAttr(
 							"btp_subaccount_destination_generic.res_ldap",
-							"additional_configuration",
+							"destination_configuration",
 							regexp.MustCompile(`"ldap.user":"abc"`),
 						),
 					),
@@ -215,7 +215,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 	t.Run("happy path MAIL destination with additional configuration", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_mail_with_additional_configuration")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_mail_with_destination_configuration")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -241,12 +241,12 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr(
 							"btp_subaccount_destination_generic.res_mail",
-							"additional_configuration",
+							"destination_configuration",
 							regexp.MustCompile(`"mail.url":"mail://mail.example.com:389"`),
 						),
 						resource.TestMatchResourceAttr(
 							"btp_subaccount_destination_generic.res_mail",
-							"additional_configuration",
+							"destination_configuration",
 							regexp.MustCompile(`"mail.user":"abc"`),
 						),
 					),
@@ -255,7 +255,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 	t.Run("happy path RFC destination with additional configuration", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_rfc_with_additional_configuration")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_rfc_with_destination_configuration")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -287,22 +287,22 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr(
 							"btp_subaccount_destination_generic.res_rfc",
-							"additional_configuration",
+							"destination_configuration",
 							regexp.MustCompile(`"jco.client.ashost":"va4hci"`),
 						),
 						resource.TestMatchResourceAttr(
 							"btp_subaccount_destination_generic.res_rfc",
-							"additional_configuration",
+							"destination_configuration",
 							regexp.MustCompile(`"jco.client.client":"001"`),
 						),
 						resource.TestMatchResourceAttr(
 							"btp_subaccount_destination_generic.res_rfc",
-							"additional_configuration",
+							"destination_configuration",
 							regexp.MustCompile(`"jco.client.user":"SAPIPS"`),
 						),
 						resource.TestMatchResourceAttr(
 							"btp_subaccount_destination_generic.res_rfc",
-							"additional_configuration",
+							"destination_configuration",
 							regexp.MustCompile(`"jco.destination.proxy_type":"OnPremise"`),
 						),
 					),
@@ -324,20 +324,20 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 }
-func hclResourceDestinationGeneric(resourceName string, subaccountName string, additionalConfig map[string]string) string {
+func hclResourceDestinationGeneric(resourceName string, subaccountName string, destinationConfig map[string]string) string {
 
 	var configBlock string
-	if len(additionalConfig) > 0 {
+	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
-		for k, v := range additionalConfig {
+		for k, v := range destinationConfig {
 			configBuilder.WriteString(fmt.Sprintf("		%s = \"%s\"\n", k, v))
 		}
 
-		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
+		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination_generic" "%s" {
 	subaccount_id     = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
@@ -347,20 +347,20 @@ func hclResourceDestinationGeneric(resourceName string, subaccountName string, a
 	return fmt.Sprintf(template, resourceName, subaccountName, configBlock)
 }
 
-func hclResourceDestinationGenericWithServiceInstance(resourceName string, subaccountName string, serviceInstanceName string, additionalConfig map[string]string) string {
+func hclResourceDestinationGenericWithServiceInstance(resourceName string, subaccountName string, serviceInstanceName string, destinationConfig map[string]string) string {
 
 	var configBlock string
-	if len(additionalConfig) > 0 {
+	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
-		for k, v := range additionalConfig {
+		for k, v := range destinationConfig {
 			configBuilder.WriteString(fmt.Sprintf("		%s = \"%s\"\n", k, v))
 		}
 
-		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
+		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	data "btp_subaccount_service_instance" "dest" {
   		subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
@@ -375,20 +375,20 @@ func hclResourceDestinationGenericWithServiceInstance(resourceName string, subac
 	return fmt.Sprintf(template, subaccountName, serviceInstanceName, resourceName, subaccountName, configBlock)
 }
 
-func hclResourceDestinationGenericTCP(resourceName string, subaccountName string, additionalConfig map[string]string) string {
+func hclResourceDestinationGenericTCP(resourceName string, subaccountName string, destinationConfig map[string]string) string {
 
 	var configBlock string
-	if len(additionalConfig) > 0 {
+	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
-		for k, v := range additionalConfig {
+		for k, v := range destinationConfig {
 			configBuilder.WriteString(fmt.Sprintf("		%s = \"%s\"\n", k, v))
 		}
 
-		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
+		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination_generic" "%s" {
 	subaccount_id     = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
@@ -398,20 +398,20 @@ func hclResourceDestinationGenericTCP(resourceName string, subaccountName string
 	return fmt.Sprintf(template, resourceName, subaccountName, configBlock)
 }
 
-func hclResourceDestinationGenericLDAP(resourceName string, subaccountName string, additionalConfig map[string]string) string {
+func hclResourceDestinationGenericLDAP(resourceName string, subaccountName string, destinationConfig map[string]string) string {
 
 	var configBlock string
-	if len(additionalConfig) > 0 {
+	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
-		for k, v := range additionalConfig {
+		for k, v := range destinationConfig {
 			configBuilder.WriteString(fmt.Sprintf(`        "%s" = "%s"`+"\n", k, v))
 		}
 
-		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
+		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination_generic" "%s" {
 	subaccount_id     = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
@@ -420,20 +420,20 @@ func hclResourceDestinationGenericLDAP(resourceName string, subaccountName strin
 
 	return fmt.Sprintf(template, resourceName, subaccountName, configBlock)
 }
-func hclResourceDestinationGenericMAIL(resourceName string, subaccountName string, additionalConfig map[string]string) string {
+func hclResourceDestinationGenericMAIL(resourceName string, subaccountName string, destinationConfig map[string]string) string {
 
 	var configBlock string
-	if len(additionalConfig) > 0 {
+	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
-		for k, v := range additionalConfig {
+		for k, v := range destinationConfig {
 			configBuilder.WriteString(fmt.Sprintf(`        "%s" = "%s"`+"\n", k, v))
 		}
 
-		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
+		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination_generic" "%s" {
 	subaccount_id     = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
@@ -443,20 +443,20 @@ func hclResourceDestinationGenericMAIL(resourceName string, subaccountName strin
 	return fmt.Sprintf(template, resourceName, subaccountName, configBlock)
 }
 
-func hclResourceDestinationGenericRFC(resourceName string, subaccountName string, additionalConfig map[string]string) string {
+func hclResourceDestinationGenericRFC(resourceName string, subaccountName string, destinationConfig map[string]string) string {
 
 	var configBlock string
-	if len(additionalConfig) > 0 {
+	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
-		for k, v := range additionalConfig {
+		for k, v := range destinationConfig {
 			configBuilder.WriteString(fmt.Sprintf(`        "%s" = "%s"`+"\n", k, v))
 		}
 
-		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
+		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination_generic" "%s" {
 	subaccount_id     = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]

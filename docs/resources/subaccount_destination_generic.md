@@ -17,7 +17,7 @@ description: |-
 # btp_subaccount_destination_generic (Resource)
 
 Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
-		
+
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
 
@@ -38,7 +38,7 @@ __Notes:__
 resource "btp_subaccount_destination_generic" "http_dest" {
   subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   service_instance_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"           = "project"
     "Type"           = "HTTP"
     "ProxyType"      = "Internet"
@@ -49,10 +49,10 @@ resource "btp_subaccount_destination_generic" "http_dest" {
   })
 }
 
-#subaccount destination creation without service instance and without labels (additional configuration). 
-resource "btp_subaccount_destination" "destination" {
+#subaccount destination creation without service instance and without labels (additional configuration).
+resource "btp_subaccount_destination_generic" "destination" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"           = "project"
     "Type"           = "HTTP"
     "ProxyType"      = "Internet"
@@ -62,11 +62,11 @@ resource "btp_subaccount_destination" "destination" {
   })
 }
 
-#subaccount destination creation without service instance and and labels (additional configuration). 
+#subaccount destination creation without service instance and and labels (additional configuration).
 #Note: Auth properties are part of additional configuration.
-resource "btp_subaccount_destination_generic" "http_dest_with_additional_configuration_auth" {
+resource "btp_subaccount_destination_generic" "http_dest_with_destination_configuration_auth" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"            = "project_with_auth"
     "Type"            = "HTTP"
     "clientId"        = "abc"
@@ -81,7 +81,7 @@ resource "btp_subaccount_destination_generic" "http_dest_with_additional_configu
 #subaccount destination rfc type
 resource "btp_subaccount_destination_generic" "rfc_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"                                  = "rfc_dest"
     "Type"                                  = "RFC"
     "jco.client.ashost"                     = "va4hci"
@@ -103,7 +103,7 @@ resource "btp_subaccount_destination_generic" "rfc_dest" {
 #subaccount destination ldap type
 resource "btp_subaccount_destination_generic" "ldap_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"                = "ldap_dest"
     "Type"                = "LDAP"
     "ldap.url"            = "ldap://ldap.example.com:389"
@@ -118,7 +118,7 @@ resource "btp_subaccount_destination_generic" "ldap_dest" {
 #subaccount destination mail type
 resource "btp_subaccount_destination_generic" "mail_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"             = "mail_dest"
     "Type"             = "MAIL"
     "Authentication"   = "BasicAuthentication"
@@ -132,7 +132,7 @@ resource "btp_subaccount_destination_generic" "mail_dest" {
 #subaccount destination tcp type
 resource "btp_subaccount_destination_generic" "tcp_dest" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  additional_configuration = jsonencode({
+  destination_configuration = jsonencode({
     "Name"        = "tcp_dest"
     "Type"        = "TCP"
     "Address"     = "host:1234"
@@ -147,7 +147,7 @@ resource "btp_subaccount_destination_generic" "tcp_dest" {
 
 ### Required
 
-- `additional_configuration` (String) The additional configuration parameters for the destination.
+- `destination_configuration` (String, Sensitive) The configuration parameters for the destination.
 - `subaccount_id` (String) The ID of the subaccount.
 
 ### Optional
@@ -156,7 +156,7 @@ resource "btp_subaccount_destination_generic" "tcp_dest" {
 
 ### Read-Only
 
-- `creation_time` (String) The date and time when the resource was created in
+- `creation_time` (String) The date and time when the resource was created
 - `etag` (String) The etag for the destination resource
 - `id` (String, Deprecated) The ID of the destination used for import operations.
 - `modification_time` (String) The date and time when the resource was modified
@@ -207,3 +207,28 @@ identity = {
   }
 }
 ```
+
+
+## Destination Configuration Options
+
+The JSON object `destination_configuration` allows you to specify various settings for the destination depending on their type. The following sections reference the links to the documentation that points out the available configuration options for each destination type.
+
+### HTTP Destinations
+
+All parameters for the destination type "HTTP" are listed in the section [HTTP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/http-destinations) on help.sap.com.
+
+### RFC Destinations
+
+All parameters for the destination type "RFC" are listed in the section [RFC Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/rfc-destinations) on help.sap.com.
+
+### LDAP Destinations
+
+All parameters for the destination type "LDAP" are listed in the section [LDAP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/ldap-destinations) on help.sap.com.
+
+### TCP Destinations
+
+All parameters for the destination type "TCP" are listed in the section [TCP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/tcp-destinations) on help.sap.com.
+
+### MAIL Destinations
+
+All parameters for the destination type "MAIL" are listed in the section [MAIL Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/mail-destinations-e3de817e7c4949918840cf26f0406348) on help.sap.com.
