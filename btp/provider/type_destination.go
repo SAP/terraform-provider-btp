@@ -85,6 +85,7 @@ func BuildDestinationConfigurationJSON(destination subaccountDestinationResource
 }
 
 func destinationDatasourceValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationType, diag.Diagnostics) {
+
 	creationTimeString, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
 	if err != nil {
 		diagnostics := diag.Diagnostics{
@@ -93,6 +94,7 @@ func destinationDatasourceValueFrom(value connectivity.DestinationResponse, suba
 		return subaccountDestinationType{}, diagnostics
 	}
 	creationTime := time.UnixMilli(creationTimeString).UTC().Format(time.RFC3339)
+
 	modificationTimeString, err := strconv.ParseInt(value.SystemMetadata.ModificationTime, 10, 64)
 	if err != nil {
 		diagnostics := diag.Diagnostics{
@@ -101,15 +103,14 @@ func destinationDatasourceValueFrom(value connectivity.DestinationResponse, suba
 		return subaccountDestinationType{}, diagnostics
 	}
 	modifyTime := time.UnixMilli(modificationTimeString).UTC().Format(time.RFC3339)
+
 	destination := subaccountDestinationType{
 		Etag:         types.StringValue(value.SystemMetadata.Etag),
 		SubaccountID: subaccountID,
 	}
 
 	tmp := make(map[string]string)
-	for k, v := range value.DestinationConfiguration {
-		tmp[k] = v
-	}
+	maps.Copy(tmp, value.DestinationConfiguration)
 
 	extract := func(key string) string {
 		if v, ok := tmp[key]; ok {
@@ -159,6 +160,7 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 		return subaccountDestinationResourceType{}, diagnostics
 	}
 	creationTime := time.UnixMilli(creationTimeString).UTC().Format(time.RFC3339)
+
 	modificationTimeString, err := strconv.ParseInt(value.SystemMetadata.ModificationTime, 10, 64)
 	if err != nil {
 		diagnostics := diag.Diagnostics{
@@ -167,6 +169,7 @@ func destinationResourceValueFrom(value connectivity.DestinationResponse, subacc
 		return subaccountDestinationResourceType{}, diagnostics
 	}
 	modifyTime := time.UnixMilli(modificationTimeString).UTC().Format(time.RFC3339)
+
 	destination := subaccountDestinationResourceType{
 		Etag:         types.StringValue(value.SystemMetadata.Etag),
 		SubaccountID: subaccountID,

@@ -2,6 +2,7 @@ package provider
 
 import (
 	"encoding/json"
+	"maps"
 	"strconv"
 	"time"
 
@@ -22,6 +23,16 @@ type subaccountDestinationGenericResourceType struct {
 	DestinationConfiguration jsontypes.Normalized `tfsdk:"destination_configuration"`
 }
 
+type subaccountDestinationGenericType struct {
+	SubaccountID             types.String         `tfsdk:"subaccount_id"`
+	CreationTime             types.String         `tfsdk:"creation_time"`
+	Etag                     types.String         `tfsdk:"etag"`
+	ModificationTime         types.String         `tfsdk:"modification_time"`
+	Name                     types.String         `tfsdk:"name"`
+	ServiceInstanceID        types.String         `tfsdk:"service_instance_id"`
+	DestinationConfiguration jsontypes.Normalized `tfsdk:"destination_configuration"`
+}
+
 func BuildDestinationGenericConfigurationJSON(destination subaccountDestinationGenericResourceType) (string, string, error) {
 	config := map[string]any{}
 	name := ""
@@ -31,9 +42,7 @@ func BuildDestinationGenericConfigurationJSON(destination subaccountDestinationG
 		if err != nil {
 			return "", name, err
 		}
-		for k, v := range extra {
-			config[k] = v
-		}
+		maps.Copy(config, extra)
 	}
 	name, _ = config["Name"].(string)
 
@@ -53,6 +62,7 @@ func destinationGenericResourceValueFrom(value connectivity.DestinationResponse,
 		return subaccountDestinationGenericResourceType{}, diagnostics
 	}
 	creationTime := time.UnixMilli(creationTimeString).UTC().Format(time.RFC3339)
+
 	modificationTimeString, err := strconv.ParseInt(value.SystemMetadata.ModificationTime, 10, 64)
 	if err != nil {
 		diagnostics := diag.Diagnostics{
@@ -61,15 +71,14 @@ func destinationGenericResourceValueFrom(value connectivity.DestinationResponse,
 		return subaccountDestinationGenericResourceType{}, diagnostics
 	}
 	modifyTime := time.UnixMilli(modificationTimeString).UTC().Format(time.RFC3339)
+
 	destination := subaccountDestinationGenericResourceType{
 		Etag:         types.StringValue(value.SystemMetadata.Etag),
 		SubaccountID: subaccountID,
 	}
 
 	tmp := make(map[string]string)
-	for k, v := range value.DestinationConfiguration {
-		tmp[k] = v
-	}
+	maps.Copy(tmp, value.DestinationConfiguration)
 
 	destination.CreationTime = types.StringValue(creationTime)
 	destination.ModificationTime = types.StringValue(modifyTime)
@@ -80,18 +89,74 @@ func destinationGenericResourceValueFrom(value connectivity.DestinationResponse,
 		destination.ServiceInstanceID = serviceInstanceID
 	}
 
-	if len(tmp) == 0 {
-		destination.DestinationConfiguration = jsontypes.NewNormalizedNull()
-	} else {
-		additionalJSON, err := json.Marshal(tmp)
-		if err != nil {
-			diagnostics := diag.Diagnostics{
-				diag.NewErrorDiagnostic("failed to marshal additional configuration", err.Error()),
-			}
-			return subaccountDestinationGenericResourceType{}, diagnostics
+	destinationJSON, err := json.Marshal(tmp)
+	if err != nil {
+		diagnostics := diag.Diagnostics{
+			diag.NewErrorDiagnostic("failed to marshal additional configuration", err.Error()),
 		}
-		destination.DestinationConfiguration = jsontypes.NewNormalizedValue(string(additionalJSON))
+		return subaccountDestinationGenericResourceType{}, diagnostics
 	}
+	destination.DestinationConfiguration = jsontypes.NewNormalizedValue(string(destinationJSON))
+
+	var diagnostics diag.Diagnostics
+
+	return destination, diagnostics
+}
+
+func destinationGenericDatasourceValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationGenericType, diag.Diagnostics) {
+
+	creationTimeString, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
+	if err != nil {
+		diagnostics := diag.Diagnostics{
+			diag.NewErrorDiagnostic("failed to convert creation time", err.Error()),
+		}
+		return subaccountDestinationGenericType{}, diagnostics
+	}
+	creationTime := time.UnixMilli(creationTimeString).UTC().Format(time.RFC3339)
+
+	modificationTimeString, err := strconv.ParseInt(value.SystemMetadata.ModificationTime, 10, 64)
+	if err != nil {
+		diagnostics := diag.Diagnostics{
+			diag.NewErrorDiagnostic("failed to convert modification time", err.Error()),
+		}
+		return subaccountDestinationGenericType{}, diagnostics
+	}
+	modifyTime := time.UnixMilli(modificationTimeString).UTC().Format(time.RFC3339)
+
+	destination := subaccountDestinationGenericType{
+		Etag:         types.StringValue(value.SystemMetadata.Etag),
+		SubaccountID: subaccountID,
+	}
+
+	tmp := make(map[string]string)
+	maps.Copy(tmp, value.DestinationConfiguration)
+
+	extract := func(key string) string {
+		if v, ok := tmp[key]; ok {
+			delete(tmp, key)
+			return v
+		}
+		return ""
+	}
+	destination.CreationTime = types.StringValue(creationTime)
+	destination.ModificationTime = types.StringValue(modifyTime)
+	destination.Name = types.StringValue(extract("Name"))
+
+	if serviceInstanceID.ValueString() == "" {
+		destination.ServiceInstanceID = types.StringNull()
+	} else {
+		destination.ServiceInstanceID = serviceInstanceID
+	}
+
+	destinationJSON, err := json.Marshal(tmp)
+	if err != nil {
+		diagnostics := diag.Diagnostics{
+			diag.NewErrorDiagnostic("failed to marshal additional configuration", err.Error()),
+		}
+		return subaccountDestinationGenericType{}, diagnostics
+	}
+	destination.DestinationConfiguration = jsontypes.NewNormalizedValue(string(destinationJSON))
+
 	var diagnostics diag.Diagnostics
 
 	return destination, diagnostics
