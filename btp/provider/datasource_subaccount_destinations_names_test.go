@@ -12,7 +12,7 @@ func TestDataSourceSubaccountDestinationsNames(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path without service instance only names", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destinations_names_without_service_instance_v2")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destinations_names_without_service_instance_generic")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -20,7 +20,7 @@ func TestDataSourceSubaccountDestinationsNames(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDestinationsNamesV2("uut", "integration-test-destination"),
+					Config: hclProviderFor(user) + hclDatasourceDestinationsNamesGeneric("uut", "integration-test-destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_destinations_names.uut", "destination_names.#", "4"),
 					),
@@ -29,7 +29,7 @@ func TestDataSourceSubaccountDestinationsNames(t *testing.T) {
 		})
 	})
 	t.Run("happy path with service instance only names", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destinations_names_with_service_instance_v2")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destinations_names_with_service_instance_generic")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -37,7 +37,7 @@ func TestDataSourceSubaccountDestinationsNames(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceDestinationsSINamesV2("uut", "integration-test-destination", "servtest"),
+					Config: hclProviderFor(user) + hclDatasourceDestinationsSINamesGeneric("uut", "integration-test-destination", "servtest"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_destinations_names.uut", "destination_names.#", "2"),
 					),
@@ -59,7 +59,7 @@ func TestDataSourceSubaccountDestinationsNames(t *testing.T) {
 	})
 }
 
-func hclDatasourceDestinationsNamesV2(datasourceName string, subaccount string) string {
+func hclDatasourceDestinationsNamesGeneric(datasourceName string, subaccount string) string {
 	template := `
 	data "btp_subaccounts" "all" {}
 	data "btp_subaccount_destinations_names" "%s" {
@@ -68,7 +68,7 @@ func hclDatasourceDestinationsNamesV2(datasourceName string, subaccount string) 
 	return fmt.Sprintf(template, datasourceName, subaccount)
 }
 
-func hclDatasourceDestinationsSINamesV2(datasourceName string, subaccountName string, serviceInstanceName string) string {
+func hclDatasourceDestinationsSINamesGeneric(datasourceName string, subaccountName string, serviceInstanceName string) string {
 	template := `
 	data "btp_subaccounts" "all" {}
 	data "btp_subaccount_service_instance" "dest" {
