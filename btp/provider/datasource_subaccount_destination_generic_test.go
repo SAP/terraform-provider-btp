@@ -76,7 +76,7 @@ func TestDataSourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 	t.Run("error path - destination not found", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_not_found")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_not_found_generic")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
