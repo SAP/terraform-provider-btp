@@ -14,8 +14,8 @@ import (
 
 func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 	t.Parallel()
-	t.Run("happy path", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_with_additional_variables_with_service_instance")
+	t.Run("happy path HTTP destination with service instance", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http_with_service_instance")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -56,8 +56,8 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path with additional variables without service instance", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_with_additional_variables_without_service_instance")
+	t.Run("happy path HTTP destination", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -95,8 +95,8 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path update", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_update")
+	t.Run("happy path HTTP destination update", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http_update")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -137,8 +137,8 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path TCP destination with additional configuration", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_tcp_with_destination_configuration")
+	t.Run("happy path TCP destination", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_tcp")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -169,8 +169,8 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path LDAP destination with additional configuration", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_ldap_with_destination_configuration")
+	t.Run("happy path LDAP destination", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_ldap")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -214,8 +214,8 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path MAIL destination with additional configuration", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_mail_with_destination_configuration")
+	t.Run("happy path MAIL destination", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_mail")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -254,8 +254,8 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path RFC destination with additional configuration", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_rfc_with_destination_configuration")
+	t.Run("happy path RFC destination", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_rfc")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
