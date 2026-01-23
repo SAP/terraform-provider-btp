@@ -2,7 +2,7 @@
 page_title: "btp_subaccount_destinations_generic Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets list of all subaccount destinations details/names.
+  Gets list of all subaccount destinations details.
   Tip:
   You must have the appropriate connectivity and destination permissions, such as:
   Subaccount Administrator
@@ -13,7 +13,7 @@ description: |-
 
 # btp_subaccount_destinations_generic (Data Source)
 
-Gets list of all subaccount destinations details/names.
+Gets list of all subaccount destinations details.
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
 

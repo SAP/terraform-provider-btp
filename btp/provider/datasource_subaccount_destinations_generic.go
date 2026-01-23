@@ -44,7 +44,7 @@ func (ds *subaccountDestinationsGenericDataSource) Configure(_ context.Context, 
 
 func (ds *subaccountDestinationsGenericDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets list of all subaccount destinations details/names.
+		MarkdownDescription: `Gets list of all subaccount destinations details.
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
 
