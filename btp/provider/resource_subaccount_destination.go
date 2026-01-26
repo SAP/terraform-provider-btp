@@ -177,9 +177,9 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 	}
 	planAdditionalConfiguration := data.AdditionalConfiguration
 
-	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
+	cliRes, rawRes, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Destination (Subaccount)")
 		return
 	}
 

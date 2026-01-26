@@ -133,12 +133,12 @@ func (rs *subaccountDestinationGenericResource) Read(ctx context.Context, req re
 	}
 	planDestinationConfiguration := data.DestinationConfiguration
 
-	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
+	cliRes, rawRes, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Destination Generic (Subaccount)")
 		return
 	}
-
+	
 	data, diags = destinationGenericResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID, data.Name.ValueString())
 	resp.Diagnostics.Append(diags...)
 
