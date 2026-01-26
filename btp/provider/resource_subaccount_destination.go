@@ -87,6 +87,9 @@ __Notes:__
 			"creation_time": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created in",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"etag": schema.StringAttribute{
 				MarkdownDescription: "The etag for the destination resource",

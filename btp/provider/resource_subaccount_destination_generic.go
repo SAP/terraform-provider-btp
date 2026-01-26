@@ -82,6 +82,9 @@ __Notes:__
 			"creation_time": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"etag": schema.StringAttribute{
 				MarkdownDescription: "The etag for the destination resource",
@@ -138,7 +141,7 @@ func (rs *subaccountDestinationGenericResource) Read(ctx context.Context, req re
 		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Destination Generic (Subaccount)")
 		return
 	}
-	
+
 	data, diags = destinationGenericResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID, data.Name.ValueString())
 	resp.Diagnostics.Append(diags...)
 
