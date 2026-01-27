@@ -33,6 +33,7 @@ type subaccountDestinationGenericType struct {
 	DestinationConfiguration jsontypes.Normalized `tfsdk:"destination_configuration"`
 }
 
+// for excracting name and creation of json string from the destination json configuration
 func BuildDestinationGenericConfigurationJSON(destination subaccountDestinationGenericResourceType) (string, string, error) {
 	config := map[string]any{}
 	name := ""
