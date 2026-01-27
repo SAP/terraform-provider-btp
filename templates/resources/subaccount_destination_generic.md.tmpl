@@ -49,3 +49,12 @@ All parameters for the destination type "TCP" are listed in the section [TCP Des
 ### MAIL Destinations
 
 All parameters for the destination type "MAIL" are listed in the section [MAIL Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/mail-destinations-e3de817e7c4949918840cf26f0406348) on help.sap.com.
+
+## Restriction
+
+### Import of Destinations
+
+In general, the resource supports import of existing destinations. However, there are two points that need to be considered when importing this resource:
+
+- The Terraform feature of [configuration generation](https://developer.hashicorp.com/terraform/language/import/generating-configuration) as this does not support the import of attributes marked as sensitive. Due to the design of the resource this results in an incomplete configuration as the attribute `destination_configuration` is marked as sensitive to prevent the exposure of credentials. Hence, the generated configuration will not include this attribute and you need to manually add it to your configuration.
+- The import of configurations that contain credentials or passwords inside of the attribute `destination_configuration` will always result in an *import* and *change* of the resource as the underlying API does not return any credentials or password data for security reasons.
