@@ -82,4 +82,12 @@ import {
   to = btp_subaccount_service_binding.<resource_name>
   id = "<subaccount_id>,<service_binding_id>"
 }
+
+import {
+  to = btp_subaccount_service_binding.<resource_name>
+  identity = {
+    subaccount_id = "subaccount_id>"
+    id = "<service_binding_id>"
+  }
+}
 ```

@@ -8,13 +8,15 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceSubaccountServiceBinding(t *testing.T) {
 	// Using the alert notification service as ID for the service instance
 	t.Run("happy path - simple service_binding", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding_with_import")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -29,6 +31,15 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "last_modified", regexpValidRFC3999Format),
 					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity(
+							"btp_subaccount_service_binding.uut",
+							map[string]knownvalue.Check{
+								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
+								"id":            knownvalue.StringRegexp(regexpValidUUID),
+							},
+						),
+					},
 				},
 				{
 					ResourceName:      "btp_subaccount_service_binding.uut",
