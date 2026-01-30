@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"regexp"
 
-	//"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -16,6 +15,32 @@ import (
 func TestResourceSubaccountServiceBinding(t *testing.T) {
 	// Using the alert notification service as ID for the service instance
 	t.Run("happy path - simple service_binding", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBindingByServiceInstanceBySubaccount("uut", "integration-test-services-static", "tf-testacc-alertnotification-instance", "tfint-test-alert-sb"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_binding.uut", "last_modified", regexpValidRFC3999Format),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_service_binding.uut",
+					ImportStateIdFunc: getServiceBindingImportStateId("btp_subaccount_service_binding.uut"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+	t.Run("happy path - simple service_binding with import", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding_with_import")
 		defer stopQuietly(rec)
 
@@ -45,7 +70,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 					ResourceName:      "btp_subaccount_service_binding.uut",
 					ImportStateIdFunc: getServiceBindingImportStateId("btp_subaccount_service_binding.uut"),
 					ImportState:       true,
-					ImportStateVerify: true,
+					ImportStateKind:   resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})
