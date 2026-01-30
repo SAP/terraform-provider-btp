@@ -29,6 +29,7 @@ The following list provides an overview of the resources and their support for t
 | btp_globalaccount_trust_configuration        | Yes
 | btp_subaccount                               | Yes with restrictions (see [documentation](https://registry.terraform.io/providers/SAP/btp/latest/docs/resources/subaccount#restriction))
 | btp_subaccount_api_credential                | No
+| btp_subaccount_destination_generic           | Yes with restrictions (see [documentation](https://registry.terraform.io/providers/SAP/btp/latest/docs/resources/subaccount_destination_generic#restriction))
 | btp_subaccount_entitlement                   | Yes
 | btp_subaccount_environment_instance          | Yes
 | btp_subaccount_role                          | Yes
