@@ -13,6 +13,6 @@ import {
   to = btp_subaccount_service_instance.<resource_name>
   identity = {
     subaccount_id = "subaccount_id>"
-    id = "<service_instance_id>"
+    id            = "<service_instance_id>"
   }
 }
