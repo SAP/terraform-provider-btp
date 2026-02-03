@@ -254,7 +254,9 @@ func MergeDestinationConfig(plannedConfig jsontypes.Normalized, responseConfig j
 
 	for k, plannedVal := range plannedMap {
 		responseVal, exists := responseMap[k]
-		if !exists || responseVal == "" {
+		// Some values are not returned by the API or are masked with <redacted>
+		// To achieve consistency between state and plan we take the planned value in those cases
+		if !exists || responseVal == "" || responseVal == "<redacted>" {
 			responseMap[k] = plannedVal
 		}
 	}
