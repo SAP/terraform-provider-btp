@@ -114,6 +114,14 @@ import {
   to = btp_subaccount_service_instance.<resource_name>
   id = "<subaccount_id>,<service_instance_id>"
 }
+
+import {
+  to = btp_subaccount_service_instance.<resource_name>
+  identity = {
+    subaccount_id = "subaccount_id>"
+    id            = "<service_instance_id>"
+  }
+}
 ```
 
 

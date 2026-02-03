@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
@@ -65,6 +67,45 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 					ImportStateIdFunc: getServiceInstanceIdForImport("btp_subaccount_service_instance.uut"),
 					ImportState:       true,
 					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+	t.Run("happy path - simple service creation with import", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters_with import")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWoParametersBySubaccountByServicePlan("uut", "integration-test-services-static", "TF-TEST-AUDIT-LOG", "default", "auditlog-management"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "TF-TEST-AUDIT-LOG"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity(
+							"btp_subaccount_service_instance.uut",
+							map[string]knownvalue.Check{
+								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
+								"id":            knownvalue.StringRegexp(regexpValidUUID),
+							},
+						),
+					},
+				},
+				{
+					ResourceName:      "btp_subaccount_service_instance.uut",
+					ImportStateIdFunc: getServiceInstanceIdForImport("btp_subaccount_service_instance.uut"),
+					ImportState:       true,
+					ImportStateKind:   resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})

@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -156,6 +157,24 @@ You must be assigned to the admin or the service administrator role of the subac
 	}
 }
 
+type subaccountServiceInstanceIdentityModel struct {
+	SubaccountID types.String `tfsdk:"subaccount_id"`
+	Id           types.String `tfsdk:"id"`
+}
+
+func (rs *subaccountServiceInstanceResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"subaccount_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state subaccountServiceInstanceType
 	diags := req.State.Get(ctx, &state)
@@ -186,6 +205,19 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 
 	diags = resp.State.Set(ctx, &newState)
 	resp.Diagnostics.Append(diags...)
+
+	var identity subaccountServiceInstanceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = subaccountServiceInstanceIdentityModel{
+			SubaccountID: state.SubaccountId,
+			Id:           state.Id,
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -233,6 +265,13 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	identity := subaccountServiceInstanceIdentityModel{
+		SubaccountID: state.SubaccountId,
+		Id:           state.Id,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 
 	if plan.Shared.ValueBool() {
@@ -433,18 +472,32 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 }
 
 func (rs *subaccountServiceInstanceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount_id,id. Got: %q", req.ID),
-		)
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
+
+		if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: subaccount_id,id. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
+	var identity subaccountServiceInstanceIdentityModel
+	diags := resp.Identity.Get(ctx, &identity)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), identity.SubaccountID)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), identity.Id)...)
 }
 
 func (rs *subaccountServiceInstanceResource) CreateStateChange(ctx context.Context, cliRes servicemanager.ServiceInstanceResponseObject, plan subaccountServiceInstanceType, operation string) (tfutils.StateChangeConf, diag.Diagnostics) {
