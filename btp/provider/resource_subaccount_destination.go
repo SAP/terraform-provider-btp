@@ -149,6 +149,7 @@ __Notes:__
 			"additional_configuration": schema.StringAttribute{
 				MarkdownDescription: "The additional configuration parameters for the destination.",
 				Optional:            true,
+				Sensitive:           true,
 				CustomType:          jsontypes.NormalizedType{},
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),

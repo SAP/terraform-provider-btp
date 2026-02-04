@@ -235,6 +235,10 @@ All parameters for the destination type "MAIL" are listed in the section [MAIL D
 
 ## Restriction
 
+### Change of Destination Name
+
+The destination name cannot be changed via the API after creation. Hence, a change of the attribute `name` in the `destination_configuration` JSON string will trigger a replacement (i.e., deletion and recreation) of the resource in Terraform.
+
 ### Import of Destinations
 
 In general, the resource supports import of existing destinations. However, there are two points that need to be considered when importing this resource:
