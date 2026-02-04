@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -18,6 +19,8 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
 )
+
+const modifierDesc = "Destination must be replaced due to name change."
 
 func newSubaccountDestinationGenericResource() resource.Resource {
 	return &subaccountDestinationGenericResource{}
@@ -78,6 +81,10 @@ __Notes:__
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The descriptive name of the destination for subaccount",
 				Computed:            true,
+				// Must be removed if update of name is possible via API
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"creation_time": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created",
@@ -106,8 +113,63 @@ __Notes:__
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
 				},
+				// Must be removed if update of name is possible via API
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplaceIf(replacePlanModifier, modifierDesc, modifierDesc),
+				},
 			},
 		},
+	}
+}
+
+var replacePlanModifier = func(ctx context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+	// There is currently no option to update the name of a destination
+	// We check if the JSON configuration in the state and plan have different "Name" values
+	// and if so, we force a replacement
+	if request.State.Raw.IsNull() {
+		return
+	}
+	if request.Plan.Raw.IsNull() {
+		return
+	}
+
+	var stateVal, planVal subaccountDestinationGenericResourceType
+	diags := request.State.Get(ctx, &stateVal)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	diags = request.Plan.Get(ctx, &planVal)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	extractName := func(jsonStr string) (string, error) {
+		var config map[string]any
+		err := json.Unmarshal([]byte(jsonStr), &config)
+		if err != nil {
+			return "", err
+		}
+		name, _ := config["Name"].(string)
+		return name, nil
+	}
+
+	stateName, err := extractName(stateVal.DestinationConfiguration.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError("failed to unmarshal state JSON", err.Error())
+		return
+	}
+
+	planName, err := extractName(planVal.DestinationConfiguration.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError("failed to unmarshal plan JSON", err.Error())
+		return
+	}
+
+	if stateName != planName {
+		response.RequiresReplace = true
 	}
 }
 

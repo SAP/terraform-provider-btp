@@ -105,6 +105,10 @@ __Notes:__
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(regexp.MustCompile(`^[^\/]{1,255}$`), "must not contain '/', not be empty and not exceed 255 characters"),
 				},
+				// Must be removed if update of name is possible via API
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"type": schema.StringAttribute{
 				MarkdownDescription: "The type of request from destination.",
