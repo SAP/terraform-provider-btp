@@ -13,7 +13,7 @@ import (
 )
 
 func TestResourceSubaccountRoleCollectionRole(t *testing.T) {
-	// 1. HAPPY PATH: Create Base + Role, then Import via 5-part String
+
 	t.Run("happy path", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_role")
 		defer stopQuietly(rec)
@@ -43,7 +43,6 @@ func TestResourceSubaccountRoleCollectionRole(t *testing.T) {
 					),
 				},
 				{
-					// Test the 5-part String Import: sub_id,name,role_name,app_id,temp_name
 					ResourceName:      "btp_subaccount_role_collection_role.uut",
 					ImportStateIdFunc: getImportIdForRoleCollectionRole("btp_subaccount_role_collection_role.uut", "MyTestCollection", "Subaccount Admin", "Subaccount_Admin", "cis-local!b2"),
 					ImportState:       true,
@@ -53,7 +52,6 @@ func TestResourceSubaccountRoleCollectionRole(t *testing.T) {
 		})
 	})
 
-	// 2. IDENTITY IMPORT: Test modern Terraform 1.12+ Identity Import
 	t.Run("happy path - import with resource identity", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_role.import_identity")
 		defer stopQuietly(rec)
@@ -88,7 +86,6 @@ func TestResourceSubaccountRoleCollectionRole(t *testing.T) {
 		})
 	})
 
-	// 3. ERROR PATH: Test invalid ID format (too few parts)
 	t.Run("error path - import with wrong key", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_role.import_error")
 		defer stopQuietly(rec)
@@ -113,7 +110,6 @@ func TestResourceSubaccountRoleCollectionRole(t *testing.T) {
 		})
 	})
 
-	// 4. ERROR PATH: Missing required subaccount_id
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
