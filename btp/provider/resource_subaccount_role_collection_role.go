@@ -115,19 +115,19 @@ func (rs *subaccountRoleCollectionRoleResource) IdentitySchema(_ context.Context
 	resp.IdentitySchema = identityschema.Schema{
 		Attributes: map[string]identityschema.Attribute{
 			"subaccount_id": identityschema.StringAttribute{
-				RequiredForImport: true, // can be defaulted by the provider configuration
+				RequiredForImport: true,
 			},
 			"name": identityschema.StringAttribute{
-				RequiredForImport: true, // must be set during import by the practitioner
+				RequiredForImport: true,
 			},
 			"role_name": identityschema.StringAttribute{
-				RequiredForImport: true, // must be set during import by the practitioner
+				RequiredForImport: true,
 			},
 			"role_template_name": identityschema.StringAttribute{
-				RequiredForImport: true, // must be set during import by the practitioner
+				RequiredForImport: true,
 			},
 			"role_template_app_id": identityschema.StringAttribute{
-				RequiredForImport: true, // must be set during import by the practitioner
+				RequiredForImport: true,
 			},
 		},
 	}
@@ -141,14 +141,12 @@ func (rs *subaccountRoleCollectionRoleResource) Read(ctx context.Context, req re
 		return
 	}
 
-	// Fetch the current state of the Role Collection from the API
 	cliRes, _, err := rs.cli.Security.RoleCollection.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Role Collection", fmt.Sprintf("%s", err))
 		return
 	}
 
-	// Check if our specific role exists in the list returned by BTP
 	found := false
 	for _, role := range cliRes.RoleReferences {
 		if role.Name == state.RoleName.ValueString() && role.RoleTemplateAppId == state.RoleTemplateAppID.ValueString() {
@@ -174,10 +172,8 @@ func (rs *subaccountRoleCollectionRoleResource) Read(ctx context.Context, req re
 		))
 	}
 
-	// Update state to match API (Description, etc., if tracked)
 	resp.State.Set(ctx, &state)
 
-	// Set data returned by API in identity
 	identity := SubaccountRoleCollectionRoleResourceIdentityModel{
 		SubaccountId:      types.StringValue(state.SubaccountId.ValueString()),
 		Name:              types.StringValue(state.Name.ValueString()),
@@ -198,7 +194,6 @@ func (rs *subaccountRoleCollectionRoleResource) Create(ctx context.Context, req 
 		return
 	}
 
-	// Call the BTP API to add exactly ONE role to the collection
 	_, err := rs.cli.Security.Role.AddBySubaccount(
 		ctx,
 		plan.SubaccountId.ValueString(),
@@ -251,7 +246,6 @@ func (rs *subaccountRoleCollectionRoleResource) Delete(ctx context.Context, req 
 		return
 	}
 
-	// Call the API to remove only this role from the collection
 	_, err := rs.cli.Security.Role.RemoveBySubaccount(
 		ctx,
 		state.SubaccountId.ValueString(),
@@ -271,7 +265,6 @@ func (rs *subaccountRoleCollectionRoleResource) ImportState(ctx context.Context,
 	if req.ID != "" {
 		idParts := strings.Split(req.ID, ",")
 
-		// MUST be 5 parts for the individual role resource
 		if len(idParts) != 5 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" || idParts[3] == "" || idParts[4] == "" {
 			resp.Diagnostics.AddError(
 				"Unexpected Import Identifier",

@@ -191,7 +191,6 @@ func (rs *subaccountRoleCollectionBaseResource) Update(ctx context.Context, req 
 		return
 	}
 
-	// Always update metadata (Description) first
 	_, _, err := rs.cli.Security.RoleCollection.UpdateBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.Name.ValueString(), plan.Description.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Role Collection (Subaccount)", fmt.Sprintf("%s", err))
