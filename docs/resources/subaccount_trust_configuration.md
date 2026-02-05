@@ -81,4 +81,12 @@ import {
   to = btp_subaccount_trust_configuration.<resource_name>
   id = "<subaccount_id>,<origin>"
 }
+
+import {
+  to = btp_subaccount_trust_configuration.<resource_name>
+  identity = {
+    subaccount_id = "subaccount_id>"
+    origin        = "<origin>"
+  }
+}
 ```
