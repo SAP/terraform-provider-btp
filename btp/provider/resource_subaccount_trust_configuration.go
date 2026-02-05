@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
@@ -16,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 const OriginSapDefault = "sap.default"
@@ -166,6 +168,24 @@ __Further documentation:__
 	}
 }
 
+type subaccountTrustConfigurationIdentityModel struct {
+	SubaccountID types.String `tfsdk:"subaccount_id"`
+	Origin       types.String `tfsdk:"origin"`
+}
+
+func (rs *subaccountTrustConfigurationResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"subaccount_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"origin": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *subaccountTrustConfigurationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state subaccountTrustConfigurationType
 
@@ -189,6 +209,19 @@ func (rs *subaccountTrustConfigurationResource) Read(ctx context.Context, req re
 
 	diags = resp.State.Set(ctx, &updatedState)
 	resp.Diagnostics.Append(diags...)
+
+	var identity subaccountTrustConfigurationIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = subaccountTrustConfigurationIdentityModel{
+			SubaccountID: state.SubaccountId,
+			Origin:       state.Id,
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *subaccountTrustConfigurationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -266,6 +299,15 @@ func (rs *subaccountTrustConfigurationResource) Create(ctx context.Context, req 
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
+
+	identity := subaccountTrustConfigurationIdentityModel{
+		SubaccountID: state.SubaccountId,
+		Origin:       state.Id,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+
 }
 
 func (rs *subaccountTrustConfigurationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -364,16 +406,29 @@ func (rs *subaccountTrustConfigurationResource) Delete(ctx context.Context, req 
 }
 
 func (rs *subaccountTrustConfigurationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: subaccount_id,origin. Got: %q", req.ID),
-		)
+		if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: subaccount_id,origin. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("origin"), idParts[1])...)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("origin"), idParts[1])...)
+	var identity subaccountTrustConfigurationIdentityModel
+	diags := resp.Identity.Get(ctx, &identity)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), identity.SubaccountID)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("origin"), identity.Origin)...)
 }
