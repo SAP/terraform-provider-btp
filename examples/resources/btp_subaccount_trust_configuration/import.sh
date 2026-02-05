@@ -12,7 +12,7 @@ import {
 import {
   to = btp_subaccount_trust_configuration.<resource_name>
   identity = {
-    subaccount_id = "subaccount_id>"
+    subaccount_id = "<subaccount_id>"
     origin        = "<origin>"
   }
 }

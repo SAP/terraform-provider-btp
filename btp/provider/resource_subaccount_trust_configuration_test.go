@@ -71,7 +71,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 			},
 		})
 	})
-	t.Run("happy path - complete configuration with import block", func(t *testing.T) {
+	t.Run("happy path - Importing via identity ", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration_with_import_block")
 		defer stopQuietly(rec)
 
