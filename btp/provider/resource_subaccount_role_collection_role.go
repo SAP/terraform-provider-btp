@@ -68,6 +68,9 @@ For more details on role collections and roles, see the [official SAP BTP docume
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",
@@ -94,10 +97,16 @@ For more details on role collections and roles, see the [official SAP BTP docume
 			"role_template_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the referenced role template.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"role_template_app_id": schema.StringAttribute{
 				MarkdownDescription: "The name of the referenced template app id.",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 		},
 	}
