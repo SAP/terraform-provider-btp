@@ -30,6 +30,7 @@ type BtpClientError struct {
 	Message      string         `json:"error"` // This should always be available
 	Description  string         `json:"description"`
 	BrokerError  *SmBrokerError `json:"broker_error"` // Service Broker/Service Manager specific
+	DestError    *[]DestError   `json:"violations"`   // Destination service specific error details
 	ErrorMessage string         `json:"ErrorMessage"` // Alternate error field used by some services
 }
 
@@ -43,6 +44,13 @@ type SmBrokerError struct {
 	Description string `json:"Description"`
 	// ResponseError is set to the error that occurred when unmarshalling a response body from the broker.
 	ResponseError string `json:"ResponseError"`
+}
+
+// Destination service specific error details
+type DestError struct {
+	// A list of specific error details that may be returned by the destination service.
+	Configuration string   `json:"configuration"`
+	Errors        []string `json:"errors"`
 }
 
 type ErrorResponseBody struct {
@@ -597,6 +605,20 @@ func handleSpecialErrors(backendError BtpClientError, plainError error) error {
 	if backendError.BrokerError != nil {
 		// Handle the additional information provided by the service broker/service manager
 		return fmt.Errorf("%s - %s", backendError.Message, backendError.BrokerError.Description)
+	}
+
+	if backendError.DestError != nil {
+		// Handle the additional information provided by the destination service
+		var errorDetails []string
+		for _, violation := range *backendError.DestError {
+			if len(violation.Errors) > 0 {
+				configErrors := fmt.Sprintf("Configuration '%s': %s", violation.Configuration, strings.Join(violation.Errors, "; "))
+				errorDetails = append(errorDetails, configErrors)
+			}
+		}
+		if len(errorDetails) > 0 {
+			return fmt.Errorf("%s - %s", backendError.ErrorMessage, strings.Join(errorDetails, " | "))
+		}
 	}
 
 	return plainError
