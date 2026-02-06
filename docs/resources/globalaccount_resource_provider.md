@@ -102,8 +102,8 @@ import {
 import {
   to = btp_globalaccount_resource_provider.<resource_name>
   identity = {
-    resource_provider = "<resource_provider>"
-    id                = "<unique_technical_name>"
+    provider_type  = "<resource_provider>"
+    technical_name = "<unique_technical_name>"
   }
 }
 ```
