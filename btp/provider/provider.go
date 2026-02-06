@@ -409,6 +409,7 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newGlobalaccountWithHierarchyDataSource,
 		newGlobalaccountEntitlementsDataSource,
 		newGlobalaccountEntitlementsWithDcDataSource,
+		newGlobalAccountEntitlementWithDcDataSource,
 		newGlobalaccountRoleCollectionDataSource,
 		newGlobalaccountRoleCollectionsDataSource,
 		newGlobalaccountRoleDataSource,

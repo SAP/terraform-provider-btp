@@ -648,6 +648,7 @@ func TestProvider_HasDatasources(t *testing.T) {
 		*/
 		"btp_globalaccount_entitlements",
 		"btp_globalaccount_entitlements_with_data_centers",
+		"btp_globalaccount_entitlement_with_data_centers",
 		/*
 			"btp_globalaccount_resource_provider",
 			"btp_globalaccount_resource_providers",
