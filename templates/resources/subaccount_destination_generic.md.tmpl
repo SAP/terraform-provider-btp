@@ -1,0 +1,65 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{tffile .ExampleFile}}
+{{- end }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+{{ if .HasImport -}}
+## Import
+
+Import is supported using the following syntax:
+
+{{tffile .ImportFile}}
+{{- end }}
+
+
+## Destination Configuration Options
+
+The JSON object `destination_configuration` allows you to specify various settings for the destination depending on their type. The following sections reference the links to the documentation that points out the available configuration options for each destination type.
+
+### HTTP Destinations
+
+All parameters for the destination type "HTTP" are listed in the section [HTTP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/http-destinations) on help.sap.com.
+
+### RFC Destinations
+
+All parameters for the destination type "RFC" are listed in the section [RFC Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/rfc-destinations) on help.sap.com.
+
+### LDAP Destinations
+
+All parameters for the destination type "LDAP" are listed in the section [LDAP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/ldap-destinations) on help.sap.com.
+
+### TCP Destinations
+
+All parameters for the destination type "TCP" are listed in the section [TCP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/tcp-destinations) on help.sap.com.
+
+### MAIL Destinations
+
+All parameters for the destination type "MAIL" are listed in the section [MAIL Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/mail-destinations-e3de817e7c4949918840cf26f0406348) on help.sap.com.
+
+## Restriction
+
+### Change of Destination Name
+
+The destination name cannot be changed via the API after creation. Hence, a change of the attribute `name` in the `destination_configuration` JSON string will trigger a replacement (i.e., deletion and recreation) of the resource in Terraform.
+
+### Import of Destinations
+
+In general, the resource supports import of existing destinations. However, there are two points that need to be considered when importing this resource:
+
+- The Terraform feature of [configuration generation](https://developer.hashicorp.com/terraform/language/import/generating-configuration) as this does not support the import of attributes marked as sensitive. Due to the design of the resource this results in an incomplete configuration as the attribute `destination_configuration` is marked as sensitive to prevent the exposure of credentials. Hence, the generated configuration will not include this attribute and you need to manually add it to your configuration.
+- The recommended way to retrieve the values for the attribute `destination_configuration` for an import is to use the ["Export Destinations"](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/export-destinations) functionality and choose `JSON` as format. You should then use the values of the exported file should then be used as value for the attribute `destination_configuration` in your Terraform configuration.
+- The import of configurations that contain credentials or passwords inside of the attribute `destination_configuration` will always result in an *import* and *change* of the resource as the underlying API does not return any credentials or password data for security reasons.

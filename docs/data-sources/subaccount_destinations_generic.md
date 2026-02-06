@@ -1,8 +1,8 @@
 ---
-page_title: "btp_subaccount_destinations Data Source - terraform-provider-btp"
+page_title: "btp_subaccount_destinations_generic Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets list of all subaccount destinations details/names.
+  Gets list of all subaccount destinations details.
   Tip:
   You must have the appropriate connectivity and destination permissions, such as:
   Subaccount Administrator
@@ -11,9 +11,9 @@ description: |-
   Connectivity and Destination Administrator
 ---
 
-# btp_subaccount_destinations (Data Source)
+# btp_subaccount_destinations_generic (Data Source)
 
-Gets list of all subaccount destinations details/names.
+Gets list of all subaccount destinations details.
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
 
@@ -26,18 +26,12 @@ Connectivity and Destination Administrator
 
 ```terraform
 # Read all destination for a given subaccount
-data "btp_subaccount_destinations" "dest_by_subaccount" {
+data "btp_subaccount_destinations_generic" "dest_by_subaccount" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-}
-
-# Read all destination for a given subaccount with names only
-data "btp_subaccount_destinations" "dest_by_subaccount_names_only" {
-  subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
-  names_only    = true
 }
 
 # Read all destination for a given subaccount and service instance
-data "btp_subaccount_destinations" "dest_by_subaccount_and_service_instance" {
+data "btp_subaccount_destinations_generic" "dest_by_subaccount_and_service_instance" {
   subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   service_instance_id = "5aa54c2f-47a1-49a9-b2e8-cf9fea769b7f"
 }
@@ -52,36 +46,21 @@ data "btp_subaccount_destinations" "dest_by_subaccount_and_service_instance" {
 
 ### Optional
 
-- `names_only` (Boolean) The Bool value for getting names only. Default value is false.
 - `service_instance_id` (String) The service instance that becomes part of the path used to access the destination of the subaccount.
 
 ### Read-Only
 
-- `destination_names` (Attributes List) (see [below for nested schema](#nestedatt--destination_names))
 - `values` (Attributes List) (see [below for nested schema](#nestedatt--values))
-
-<a id="nestedatt--destination_names"></a>
-### Nested Schema for `destination_names`
-
-Read-Only:
-
-- `name` (String) The descriptive name of the destination for subaccount
-
 
 <a id="nestedatt--values"></a>
 ### Nested Schema for `values`
 
 Read-Only:
 
-- `additional_configuration` (String) The additional configuration parameters for the destination.
-- `authentication` (String) The authentication of the destination.
 - `creation_time` (String) The date and time when the resource was created.
-- `description` (String) The description of the destination.
+- `destination_configuration` (String) The configuration parameters for the destination.
 - `etag` (String) The etag for the destination resource
 - `modification_time` (String) The date and time when the resource was modified.
 - `name` (String) The descriptive name of the destination for subaccount
-- `proxy_type` (String) The proxytype of the destination.
 - `service_instance_id` (String) The service instance that becomes part of the path used to access the destination of the subaccount.
 - `subaccount_id` (String) The ID of the subaccount.
-- `type` (String) The type of request from destination.
-- `url` (String) The url of the destination.
