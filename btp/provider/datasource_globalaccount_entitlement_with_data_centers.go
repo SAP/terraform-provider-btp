@@ -11,15 +11,15 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 )
 
-func newGlobalAccountEntitlementWithDcDataSource() datasource.DataSource {
-	return &globalAccountEntitlementWithDcDataSource{}
+func newGlobalaccountEntitlementWithDcDataSource() datasource.DataSource {
+	return &globalaccountEntitlementWithDcDataSource{}
 }
 
-type globalAccountEntitlementWithDcDataSource struct {
+type globalaccountEntitlementWithDcDataSource struct {
 	cli *btpcli.ClientFacade
 }
 
-type globalAccountEntitlementWithDcDataSourceModel struct {
+type globalaccountEntitlementWithDcDataSourceModel struct {
 	ServiceName          types.String  `tfsdk:"service_name"`
 	ServiceDisplayName   types.String  `tfsdk:"service_display_name"`
 	PlanName             types.String  `tfsdk:"plan_name"`
@@ -32,17 +32,17 @@ type globalAccountEntitlementWithDcDataSourceModel struct {
 	DataCenterInfo       types.Map     `tfsdk:"datacenter_information"`
 }
 
-func (ds *globalAccountEntitlementWithDcDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (ds *globalaccountEntitlementWithDcDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = fmt.Sprintf("%s_globalaccount_entitlement_with_data_centers", req.ProviderTypeName)
 }
 
-func (ds *globalAccountEntitlementWithDcDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
+func (ds *globalaccountEntitlementWithDcDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData != nil {
 		ds.cli = req.ProviderData.(*btpcli.ClientFacade)
 	}
 }
 
-func (ds *globalAccountEntitlementWithDcDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (ds *globalaccountEntitlementWithDcDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Returns entitlement details for a specific plan of a given service for a global account including the data center availability.
 
@@ -121,9 +121,9 @@ You must be assigned to either the global account admin or global account viewer
 	}
 }
 
-func (ds *globalAccountEntitlementWithDcDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (ds *globalaccountEntitlementWithDcDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	// Note: plan_name must be specified. Only exact matches will be returned.
-	var data globalAccountEntitlementWithDcDataSourceModel
+	var data globalaccountEntitlementWithDcDataSourceModel
 
 	diags := req.Config.Get(ctx, &data)
 	resp.Diagnostics.Append(diags...)

@@ -50,7 +50,7 @@ func TestDataSourceGlobalaccountEntitlementsWithDataCenter(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(srv.Client()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountEntitlements("uut"),
+					Config:      hclProviderForCLIServerAt(srv.URL) + hclDatasourceGlobalaccountEntitlementsWithDataCenter("uut"),
 					ExpectError: regexp.MustCompile(`received response with unexpected status: 404 \[Status: 404; Correlation ID:\s+[a-f0-9\-]+\]`),
 				},
 			},
