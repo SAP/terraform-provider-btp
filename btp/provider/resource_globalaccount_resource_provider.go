@@ -7,10 +7,12 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
@@ -101,6 +103,24 @@ __Further documentation:__
 	}
 }
 
+type GlobalaccountResourceProviderIdentityModel struct {
+	TechnicalName types.String `tfsdk:"technical_name"`
+	ProviderType  types.String `tfsdk:"provider_type"`
+}
+
+func (rs *resourceGlobalaccountProviderResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"technical_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"provider_type": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *resourceGlobalaccountProviderResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state globalaccountResourceProviderType
 
@@ -122,6 +142,19 @@ func (rs *resourceGlobalaccountProviderResource) Read(ctx context.Context, req r
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
+
+	var identity GlobalaccountResourceProviderIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = GlobalaccountResourceProviderIdentityModel{
+			TechnicalName: state.TechnicalName,
+			ProviderType:  state.Provider,
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *resourceGlobalaccountProviderResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -148,6 +181,14 @@ func (rs *resourceGlobalaccountProviderResource) Create(ctx context.Context, req
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+
+	identity := GlobalaccountResourceProviderIdentityModel{
+		TechnicalName: state.TechnicalName,
+		ProviderType:  state.Provider,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -194,16 +235,28 @@ func (rs *resourceGlobalaccountProviderResource) Delete(ctx context.Context, req
 }
 
 func (rs *resourceGlobalaccountProviderResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.Split(req.ID, ",")
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: resource_provider,unique_technical_name. Got: %q", req.ID),
-		)
+		if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: resource_provider,unique_technical_name. Got: %q", req.ID),
+			)
+			return
+		}
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("provider_type"), idParts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("technical_name"), idParts[1])...)
 		return
 	}
 
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("resource_provider"), idParts[0])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
+	var identityData GlobalaccountResourceProviderIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("provider_type"), identityData.ProviderType)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("technical_name"), identityData.TechnicalName)...)
 }

@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 )
 
 func TestResourceGlobalaccountResourceProvider(t *testing.T) {
@@ -53,8 +55,8 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 		})
 	})
 
-	t.Run("happy path - update", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_globalaccount_resource_provider.update")
+	t.Run("happy path - update with import", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_resource_provider.update_with_import")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -93,6 +95,20 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "description", ""),
 						resource.TestCheckResourceAttr("btp_globalaccount_resource_provider.uut", "configuration", "{\"access_key_id\":\"AWSACCESSKEY\",\"secret_access_key\":\"AWSSECRETKEY\",\"vpc_id\":\"vpc-test\",\"region\":\"us-east-1\"}"),
 					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity(
+							"btp_globalaccount_resource_provider.uut",
+							map[string]knownvalue.Check{
+								"technical_name": knownvalue.StringExact("my_aws_resource_provider"),
+								"provider_type":  knownvalue.StringExact("AWS"),
+							},
+						),
+					},
+				},
+				{
+					ResourceName:    "btp_globalaccount_resource_provider.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})
