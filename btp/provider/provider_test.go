@@ -589,6 +589,8 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_globalaccount_resource_provider",
 		"btp_globalaccount_role",
 		"btp_globalaccount_role_collection",
+		"btp_subaccount_role_collection_role",
+		"btp_subaccount_role_collection_base",
 		"btp_globalaccount_role_collection_assignment",
 		"btp_globalaccount_security_settings",
 		"btp_globalaccount_trust_configuration",
