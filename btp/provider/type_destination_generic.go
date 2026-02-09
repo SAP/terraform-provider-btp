@@ -38,7 +38,7 @@ type subaccountDestinationGenericType struct {
 	DestinationConfiguration jsontypes.Normalized `tfsdk:"destination_configuration"`
 }
 
-// for excracting name and creation of json string from the destination json configuration
+// for extracting name and creation of json string from the destination json configuration
 func BuildDestinationGenericConfigurationJSON(destination subaccountDestinationGenericResourceType) (string, string, error) {
 	config := map[string]any{}
 	name := ""
@@ -177,7 +177,7 @@ func ValidateFromJSON(jsonStr string) error {
 
 	t, ok := m["Type"].(string)
 	if !ok || t == "" {
-		return errors.New("missing or invalid 'type'")
+		return errors.New("missing or invalid 'Type'")
 	}
 
 	switch strings.ToUpper(t) {

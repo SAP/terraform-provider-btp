@@ -60,8 +60,8 @@ Subaccount Administrator
 Destination Administrator
 Connectivity and Destination Administrator
 __Scope:__
-- **Subaccount-level destination**: Specify only the 'subaccount_id' and 'name' attribute.
-- **Service instance-level destination**: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
+- **Subaccount-level destination**: Specify only the 'subaccount_id' attribute.
+- **Service instance-level destination**: Specify the 'subaccount_id' and 'service_instance_id' attributes.
 
 __Notes:__
 - 'service_instance_id' is optional. When omitted, the destination is created at the subaccount level.`,
@@ -250,7 +250,7 @@ func (rs *subaccountDestinationGenericResource) Create(ctx context.Context, req 
 	}
 	err = ValidateFromJSON(destinationData)
 	if err != nil {
-		resp.Diagnostics.AddError("Error Validation of Url for Resource Destination", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError("Invalid destination configuration:", fmt.Sprintf("%s", err))
 		return
 	}
 	_, _, err = rs.cli.Connectivity.Destination.CreateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString())

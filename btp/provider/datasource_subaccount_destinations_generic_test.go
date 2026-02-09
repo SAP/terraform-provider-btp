@@ -51,7 +51,7 @@ func TestDataSourceSubaccountDestinationsGeneric(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      `data "btp_subaccount_destinations" "test" {}`,
+					Config:      `data "btp_subaccount_destinations_generic" "test" {}`,
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found.`),
 				},
 			},
