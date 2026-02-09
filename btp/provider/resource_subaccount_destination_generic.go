@@ -248,7 +248,11 @@ func (rs *subaccountDestinationGenericResource) Create(ctx context.Context, req 
 		resp.Diagnostics.AddError("Error generating Resource Destination body", fmt.Sprintf("%s", err))
 		return
 	}
-
+	err = ValidateFromJSON(destinationData)
+	if err != nil {
+		resp.Diagnostics.AddError("Error Validation of Url for Resource Destination", fmt.Sprintf("%s", err))
+		return
+	}
 	_, _, err = rs.cli.Connectivity.Destination.CreateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Destination", fmt.Sprintf("%s", err))
@@ -299,7 +303,11 @@ func (rs *subaccountDestinationGenericResource) Update(ctx context.Context, req 
 		resp.Diagnostics.AddError("Error generating Resource Destination body", fmt.Sprintf("%s", err))
 		return
 	}
-
+	err = ValidateFromJSON(destinationData)
+	if err != nil {
+		resp.Diagnostics.AddError("Error Validation of Url for Resource Destination", fmt.Sprintf("%s", err))
+		return
+	}
 	_, _, err = rs.cli.Connectivity.Destination.UpdateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Destination", fmt.Sprintf("%s", err))

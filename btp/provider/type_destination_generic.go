@@ -2,8 +2,13 @@ package provider
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"maps"
+	"net"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/connectivity"
@@ -161,4 +166,62 @@ func destinationGenericDatasourceValueFrom(value connectivity.DestinationRespons
 	var diagnostics diag.Diagnostics
 
 	return destination, diagnostics
+}
+
+func ValidateFromJSON(jsonStr string) error {
+	var m map[string]interface{}
+
+	if err := json.Unmarshal([]byte(jsonStr), &m); err != nil {
+		return fmt.Errorf("invalid JSON: %w", err)
+	}
+
+	t, ok := m["Type"].(string)
+	if !ok || t == "" {
+		return errors.New("missing or invalid 'type'")
+	}
+
+	switch strings.ToUpper(t) {
+
+	case "HTTP":
+		u, ok := m["URL"].(string)
+		if !ok || u == "" {
+			return errors.New("missing 'URL' for HTTP type")
+		}
+		if !strings.HasPrefix(u, "http://") && !strings.HasPrefix(u, "https://") {
+			return errors.New("HTTP URL must start with http:// or https://")
+		}
+		if _, err := url.ParseRequestURI(u); err != nil {
+			return errors.New("invalid HTTP URL")
+		}
+
+	case "LDAP":
+		u, ok := m["ldap.url"].(string)
+		if !ok || u == "" {
+			return errors.New("missing 'ldap.url'")
+		}
+		if !strings.HasPrefix(u, "ldap://") && !strings.HasPrefix(u, "ldaps://") {
+			return errors.New("LDAP URL must start with ldap:// or ldaps://")
+		}
+		if _, err := url.ParseRequestURI(u); err != nil {
+			return errors.New("invalid LDAP URL")
+		}
+
+	case "TCP":
+		addr, ok := m["Address"].(string)
+		if !ok || addr == "" {
+			return errors.New("missing 'Address' for TCP type")
+		}
+		host, port, err := net.SplitHostPort(addr)
+		if err != nil || host == "" || port == "" {
+			return errors.New("TCP Address must be in host:port format")
+		}
+		p, err := strconv.Atoi(port)
+		if err != nil || p <= 0 || p > 65535 {
+			return errors.New("TCP port must be a valid number between 1 and 65535")
+		}
+
+	default:
+		return nil // intentionally no validation for unknown types
+	}
+	return nil
 }
