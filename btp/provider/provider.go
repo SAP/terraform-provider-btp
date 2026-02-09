@@ -360,6 +360,8 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newSubaccountResource,
 		newSubaccountRoleCollectionAssignmentResource,
 		newSubaccountRoleCollectionResource,
+		newSubaccountRoleCollectionRoleResource,
+		newSubaccountRoleCollectionBaseResource,
 		newSubaccountSecuritySettingsResource,
 		newSubaccountServiceBindingResource,
 		newSubaccountServiceBrokerResource,
