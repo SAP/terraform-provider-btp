@@ -50,11 +50,21 @@ func BuildDestinationGenericConfigurationJSON(destination subaccountDestinationG
 		}
 		maps.Copy(config, extra)
 	}
-	name, _ = config["Name"].(string)
-
+	rawName, ok := config["Name"]
+	if !ok {
+		return "", "", errors.New(`destination_configuration JSON must contain a "Name" property`)
+	}
+	name, ok = rawName.(string)
+	if !ok {
+		return "", "", fmt.Errorf(`destination_configuration JSON property "Name" must be a string, got %T`, rawName)
+	}
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return "", "", errors.New(`destination_configuration JSON property "Name" must be a non-empty string`)
+	}
 	jsonBytes, err := json.Marshal(config)
 	if err != nil {
-		return "", name, err
+		return "", "", err
 	}
 	return string(jsonBytes), name, nil
 }
