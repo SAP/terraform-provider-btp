@@ -2,12 +2,11 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
@@ -19,33 +18,29 @@ import (
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/validation/jsonvalidator"
-	"github.com/SAP/terraform-provider-btp/internal/validation/typevalidator"
 )
 
-const ErrUnexpectedImportIdentifier = "Unexpected Import Identifier"
-const ErrApiReadingDestination = "API Error Reading destination"
-const ErrApiMergingDestinationAdditionalConfiguration = "API Error Merging destination Additional Configuration"
-const ErrApiMergingDestinationConfiguration = "API Error Merging Destination Configuration"
+const modifierDesc = "Destination must be replaced due to name change."
 
-func newSubaccountDestinationResource() resource.Resource {
-	return &subaccountDestinationResource{}
+func newSubaccountDestinationGenericResource() resource.Resource {
+	return &subaccountDestinationGenericResource{}
 }
 
-type subaccountDestinationIdentityModel struct {
+type subaccountDestinationGenericIdentityModel struct {
 	SubaccountID      types.String `tfsdk:"subaccount_id"`
 	Name              types.String `tfsdk:"name"`
 	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
 }
 
-type subaccountDestinationResource struct {
+type subaccountDestinationGenericResource struct {
 	cli *btpcli.ClientFacade
 }
 
-func (rs *subaccountDestinationResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = fmt.Sprintf("%s_subaccount_destination", req.ProviderTypeName)
+func (rs *subaccountDestinationGenericResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = fmt.Sprintf("%s_subaccount_destination_generic", req.ProviderTypeName)
 }
 
-func (rs *subaccountDestinationResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (rs *subaccountDestinationGenericResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -54,10 +49,9 @@ func (rs *subaccountDestinationResource) Configure(_ context.Context, req resour
 }
 
 // Schema defines the schema for the resource.
-func (rs *subaccountDestinationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (rs *subaccountDestinationGenericResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
-							  This resource must be preferred only for HTTP destinations. We recommend using the resource 'btp_subaccount_destination_generic' to accommodate all types.
 
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
@@ -66,8 +60,8 @@ Subaccount Administrator
 Destination Administrator
 Connectivity and Destination Administrator
 __Scope:__
-- **Subaccount-level destination**: Specify only the 'subaccount_id' and 'name' attribute.
-- **Service instance-level destination**: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
+- **Subaccount-level destination**: Specify only the 'subaccount_id' attribute.
+- **Service instance-level destination**: Specify the 'subaccount_id' and 'service_instance_id' attributes.
 
 __Notes:__
 - 'service_instance_id' is optional. When omitted, the destination is created at the subaccount level.`,
@@ -84,8 +78,16 @@ __Notes:__
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"name": schema.StringAttribute{
+				MarkdownDescription: "The descriptive name of the destination for subaccount",
+				Computed:            true,
+				// Must be removed if update of name is possible via API
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"creation_time": schema.StringAttribute{
-				MarkdownDescription: "The date and time when the resource was created in",
+				MarkdownDescription: "The date and time when the resource was created",
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -99,68 +101,79 @@ __Notes:__
 				MarkdownDescription: "The date and time when the resource was modified",
 				Computed:            true,
 			},
-			"name": schema.StringAttribute{
-				MarkdownDescription: "The descriptive name of the destination for subaccount",
-				Required:            true,
-				Validators: []validator.String{
-					stringvalidator.RegexMatches(regexp.MustCompile(`^[^\/]{1,255}$`), "must not contain '/', not be empty and not exceed 255 characters"),
-				},
-				// Must be removed if update of name is possible via API
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
-			},
-			"type": schema.StringAttribute{
-				MarkdownDescription: "The type of request from destination.",
-				Required:            true,
-			},
-			"proxy_type": schema.StringAttribute{
-				MarkdownDescription: "The proxytype of the destination.",
-				Optional:            true,
-				Validators: []validator.String{
-					typevalidator.ValidateType(path.MatchRoot("type")),
-				},
-			},
-			"url": schema.StringAttribute{
-				MarkdownDescription: "The url of the destination.",
-				Optional:            true,
-				Validators: []validator.String{
-					typevalidator.ValidateType(path.MatchRoot("type")),
-				},
-			},
-			"authentication": schema.StringAttribute{
-				MarkdownDescription: "The authentication of the destination.",
-				Optional:            true,
-				Validators: []validator.String{
-					typevalidator.ValidateType(path.MatchRoot("type")),
-				},
-			},
 			"service_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The service instance that becomes part of the path used to access the destination of the subaccount.",
 				Optional:            true,
 			},
-			"description": schema.StringAttribute{
-				MarkdownDescription: "The description of the destination.",
-				Optional:            true,
-				Validators: []validator.String{
-					typevalidator.ValidateType(path.MatchRoot("type")),
-				},
-			},
-			"additional_configuration": schema.StringAttribute{
-				MarkdownDescription: "The additional configuration parameters for the destination.",
-				Optional:            true,
+			"destination_configuration": schema.StringAttribute{
+				MarkdownDescription: "The configuration parameters for the destination.",
+				Required:            true,
 				Sensitive:           true,
 				CustomType:          jsontypes.NormalizedType{},
 				Validators: []validator.String{
 					jsonvalidator.ValidJSON(),
 				},
+				// Must be removed if update of name is possible via API
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplaceIf(replacePlanModifier, modifierDesc, modifierDesc),
+				},
 			},
 		},
-		DeprecationMessage: "The resource btp_subaccount_destination will no longer be maintained. Please use the resource btp_subaccount_destination_generic instead.",
 	}
 }
 
-func (rs *subaccountDestinationResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+var replacePlanModifier = func(ctx context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+	// There is currently no option to update the name of a destination
+	// We check if the JSON configuration in the state and plan have different "Name" values
+	// and if so, we force a replacement
+	if request.State.Raw.IsNull() {
+		return
+	}
+	if request.Plan.Raw.IsNull() {
+		return
+	}
+
+	var stateVal, planVal subaccountDestinationGenericResourceType
+	diags := request.State.Get(ctx, &stateVal)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	diags = request.Plan.Get(ctx, &planVal)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	extractName := func(jsonStr string) (string, error) {
+		var config map[string]any
+		err := json.Unmarshal([]byte(jsonStr), &config)
+		if err != nil {
+			return "", err
+		}
+		name, _ := config["Name"].(string)
+		return name, nil
+	}
+
+	stateName, err := extractName(stateVal.DestinationConfiguration.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError("failed to unmarshal state JSON", err.Error())
+		return
+	}
+
+	planName, err := extractName(planVal.DestinationConfiguration.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError("failed to unmarshal plan JSON", err.Error())
+		return
+	}
+
+	if stateName != planName {
+		response.RequiresReplace = true
+	}
+}
+
+func (rs *subaccountDestinationGenericResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
 	resp.IdentitySchema = identityschema.Schema{
 		Attributes: map[string]identityschema.Attribute{
 			"subaccount_id": identityschema.StringAttribute{
@@ -176,27 +189,27 @@ func (rs *subaccountDestinationResource) IdentitySchema(_ context.Context, _ res
 	}
 }
 
-func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data subaccountDestinationResourceType
+func (rs *subaccountDestinationGenericResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data subaccountDestinationGenericResourceType
 	diags := req.State.Get(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	planAdditionalConfiguration := data.AdditionalConfiguration
+	planDestinationConfiguration := data.DestinationConfiguration
 
 	cliRes, rawRes, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
 	if err != nil {
-		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Destination (Subaccount)")
+		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Destination Generic (Subaccount)")
 		return
 	}
 
-	data, diags = destinationResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID)
+	data, diags = destinationGenericResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID, data.Name.ValueString())
 	resp.Diagnostics.Append(diags...)
 
-	data.AdditionalConfiguration, err = MergeDestinationConfig(planAdditionalConfiguration, data.AdditionalConfiguration)
+	data.DestinationConfiguration, err = MergeDestinationConfig(planDestinationConfiguration, data.DestinationConfiguration)
 	if err != nil {
-		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
 		return
 	}
 
@@ -206,61 +219,69 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 	diags = resp.State.Set(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 
-	identity := subaccountDestinationIdentityModel{
-		SubaccountID:      data.SubaccountID,
-		Name:              data.Name,
-		ServiceInstanceID: data.ServiceInstanceID,
+	var identity subaccountDestinationGenericIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = subaccountDestinationGenericIdentityModel{
+			SubaccountID:      data.SubaccountID,
+			Name:              data.Name,
+			ServiceInstanceID: data.ServiceInstanceID,
+		}
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
-
 	resp.Diagnostics.Append(diags...)
 }
 
-func (rs *subaccountDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan subaccountDestinationResourceType
+func (rs *subaccountDestinationGenericResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan subaccountDestinationGenericResourceType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	planAdditionalConfiguration := plan.AdditionalConfiguration
+	planDestinationConfiguration := plan.DestinationConfiguration
 
-	destinationData, err := BuildDestinationConfigurationJSON(plan)
+	destinationData, name, err := BuildDestinationGenericConfigurationJSON(plan)
 	if err != nil {
 		resp.Diagnostics.AddError("Error generating Resource Destination body", fmt.Sprintf("%s", err))
 		return
 	}
-
+	err = ValidateFromJSON(destinationData)
+	if err != nil {
+		resp.Diagnostics.AddError("Invalid destination configuration:", fmt.Sprintf("%s", err))
+		return
+	}
 	_, _, err = rs.cli.Connectivity.Destination.CreateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Destination", fmt.Sprintf("%s", err))
 		return
 	}
 
-	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString())
+	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), name, plan.ServiceInstanceID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
 		return
 	}
 
-	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
+	plan, diags = destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
 	resp.Diagnostics.Append(diags...)
-	plan.AdditionalConfiguration, err = MergeDestinationConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
+	plan.DestinationConfiguration, err = MergeDestinationConfig(planDestinationConfiguration, plan.DestinationConfiguration)
 	if err != nil {
-		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
 		return
 	}
 
-	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
+	id := plan.SubaccountID.ValueString() + "," + name + "," + plan.ServiceInstanceID.ValueString()
 	plan.ID = types.StringValue(id)
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 
-	identity := subaccountDestinationIdentityModel{
+	identity := subaccountDestinationGenericIdentityModel{
 		SubaccountID:      plan.SubaccountID,
-		Name:              plan.Name,
+		Name:              types.StringValue(name),
 		ServiceInstanceID: plan.ServiceInstanceID,
 	}
 
@@ -268,50 +289,54 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 	resp.Diagnostics.Append(diags...)
 }
 
-func (rs *subaccountDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (rs *subaccountDestinationGenericResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
-	var plan subaccountDestinationResourceType
+	var plan subaccountDestinationGenericResourceType
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	planAdditionalConfiguration := plan.AdditionalConfiguration
-	destinationData, err := BuildDestinationConfigurationJSON(plan)
+	planDestinationConfiguration := plan.DestinationConfiguration
+	destinationData, name, err := BuildDestinationGenericConfigurationJSON(plan)
 	if err != nil {
 		resp.Diagnostics.AddError("Error generating Resource Destination body", fmt.Sprintf("%s", err))
 		return
 	}
-
+	err = ValidateFromJSON(destinationData)
+	if err != nil {
+		resp.Diagnostics.AddError("Error Validation of Url for Resource Destination", fmt.Sprintf("%s", err))
+		return
+	}
 	_, _, err = rs.cli.Connectivity.Destination.UpdateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Destination", fmt.Sprintf("%s", err))
 		return
 	}
 
-	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString())
+	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), name, plan.ServiceInstanceID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
 		return
 	}
 
-	plan, diags = destinationResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID)
+	plan, diags = destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
 	resp.Diagnostics.Append(diags...)
-	plan.AdditionalConfiguration, err = MergeDestinationConfig(planAdditionalConfiguration, plan.AdditionalConfiguration)
+	plan.DestinationConfiguration, err = MergeDestinationConfig(planDestinationConfiguration, plan.DestinationConfiguration)
 	if err != nil {
-		resp.Diagnostics.AddError(ErrApiMergingDestinationAdditionalConfiguration, fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
 		return
 	}
 
-	id := plan.SubaccountID.ValueString() + "," + plan.Name.ValueString() + "," + plan.ServiceInstanceID.ValueString()
+	id := plan.SubaccountID.ValueString() + "," + name + "," + plan.ServiceInstanceID.ValueString()
 	plan.ID = types.StringValue(id)
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 
-	identity := subaccountDestinationIdentityModel{
+	identity := subaccountDestinationGenericIdentityModel{
 		SubaccountID:      plan.SubaccountID,
-		Name:              plan.Name,
+		Name:              types.StringValue(name),
 		ServiceInstanceID: plan.ServiceInstanceID,
 	}
 
@@ -320,22 +345,27 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 
 }
 
-func (rs *subaccountDestinationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state subaccountDestinationResourceType
+func (rs *subaccountDestinationGenericResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state subaccountDestinationGenericResourceType
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	_, name, err := BuildDestinationGenericConfigurationJSON(state)
+	if err != nil {
+		resp.Diagnostics.AddError("Error retrieving name", fmt.Sprintf("%s", err))
+		return
+	}
 
-	_, _, err := rs.cli.Connectivity.Destination.DeleteBySubaccount(ctx, state.SubaccountID.ValueString(), state.Name.ValueString(), state.ServiceInstanceID.ValueString())
+	_, _, err = rs.cli.Connectivity.Destination.DeleteBySubaccount(ctx, state.SubaccountID.ValueString(), name, state.ServiceInstanceID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Destination", fmt.Sprintf("%s", err))
 		return
 	}
 }
 
-func (rs *subaccountDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (rs *subaccountDestinationGenericResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	if req.ID != "" {
 
 		idParts := strings.Split(req.ID, ",")
@@ -383,7 +413,7 @@ func (rs *subaccountDestinationResource) ImportState(ctx context.Context, req re
 		}
 	}
 
-	var identity subaccountDestinationIdentityModel
+	var identity subaccountDestinationGenericIdentityModel
 	diags := resp.Identity.Get(ctx, &identity)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {

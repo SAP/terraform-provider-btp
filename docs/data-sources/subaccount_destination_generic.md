@@ -1,5 +1,5 @@
 ---
-page_title: "btp_subaccount_destination Data Source - terraform-provider-btp"
+page_title: "btp_subaccount_destination_generic Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
   Gets details about a specific subaccount destination.
@@ -11,7 +11,7 @@ description: |-
   Connectivity and Destination Administrator
 ---
 
-# btp_subaccount_destination (Data Source)
+# btp_subaccount_destination_generic (Data Source)
 
 Gets details about a specific subaccount destination.
 __Tip:__
@@ -26,13 +26,13 @@ Connectivity and Destination Administrator
 
 ```terraform
 # Read a destination by name for a subaccount
-data "btp_subaccount_destination" "test_subaccount" {
+data "btp_subaccount_destination_generic" "test_subaccount" {
   name          = "my-destination"
   subaccount_id = "6aa64c2f-38c1-12345-a1b2-cf9fea769b7f"
 }
 
 # Read a destination by name for a subaccount and service instance
-data "btp_subaccount_destination" "test_service_instance" {
+data "btp_subaccount_destination_generic" "test_service_instance" {
   name                = "my-destination"
   subaccount_id       = "6aa64c2f-38c1-12345-a1b2-cf9fea769b7f"
   service_instance_id = "7bb75d3e-49d2-67890-b2c3-df0feb870c8e"
@@ -53,12 +53,7 @@ data "btp_subaccount_destination" "test_service_instance" {
 
 ### Read-Only
 
-- `additional_configuration` (String) The additional configuration parameters for the destination.
-- `authentication` (String) The authentication of the destination.
 - `creation_time` (String) The date and time when the resource was created.
-- `description` (String) The description of the destination.
+- `destination_configuration` (String) The configuration parameters for the destination.
 - `etag` (String) The etag for the destination resource
 - `modification_time` (String) The date and time when the resource was modified.
-- `proxy_type` (String) The proxytype of the destination.
-- `type` (String) The type of request from destination.
-- `url` (String) The url of the destination.

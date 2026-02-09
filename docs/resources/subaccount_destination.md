@@ -19,7 +19,7 @@ description: |-
 
 Manages a destination in a SAP BTP subaccount or in the scope of a specific service instance.
 							  This resource must be preferred only for HTTP destinations. We recommend using the resource 'btp_subaccount_destination_generic' to accommodate all types.
-		
+
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
 
@@ -177,7 +177,7 @@ resource "btp_subaccount_destination" "tcp_dest" {
 
 ### Optional
 
-- `additional_configuration` (String) The additional configuration parameters for the destination.
+- `additional_configuration` (String, Sensitive) The additional configuration parameters for the destination.
 - `authentication` (String) The authentication of the destination.
 - `description` (String) The description of the destination.
 - `proxy_type` (String) The proxytype of the destination.
@@ -236,3 +236,17 @@ identity = {
   }
 }
 ```
+
+
+## Restriction
+
+### Change of Destination Name
+
+The destination name cannot be changed via the API after creation. Hence, a change of the attribute `name` will trigger a replacement (i.e., deletion and recreation) of the resource in Terraform.
+
+### Import of Destinations
+
+In general, the resource supports import of existing destinations. However, there are two points that need to be considered when importing this resource:
+
+- The Terraform feature of [configuration generation](https://developer.hashicorp.com/terraform/language/import/generating-configuration) as this does not support the import of attributes marked as sensitive. Due to the design of the resource this results in an incomplete configuration as the attribute `additional_configuration` is marked as sensitive to prevent the exposure of credentials. Hence, the generated configuration will not include this attribute and you need to manually add it to your configuration.
+- The import of configurations that contain credentials or passwords inside of the attribute `additional_configuration` will always result in an *import* and *change* of the resource as the underlying API does not return any credentials or password data for security reasons.
