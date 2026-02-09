@@ -310,6 +310,27 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 			},
 		})
 	})
+	t.Run("error path HTTP destination invalid url", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http_url_error")
+		defer stopQuietly(rec)
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDestinationGeneric("res2", "integration-test-destination", map[string]string{
+						"ProxyType":      "Internet",
+						"URL":            "htt://myservice.example.com",
+						"Authentication": "NoAuthentication",
+						"Description":    "trial destination of basic usecase",
+						"Name":           "res2",
+						"Type":           "HTTP",
+					}),
+					ExpectError: regexp.MustCompile(`HTTP URL must start with http:// or https://`),
+				},
+			},
+		})
+	})
 
 	t.Run("error path - subaccount not provided", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
