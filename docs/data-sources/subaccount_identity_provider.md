@@ -14,7 +14,7 @@ Gets details about a specific available identity provider for a subaccount.
 ```terraform
 data "btp_subaccount_identity_provider" "single_idp" {
   subaccount_id = "<subaccount_id>"
-  host= "<host>"
+  host          = "<host>"
 }
 ```
 

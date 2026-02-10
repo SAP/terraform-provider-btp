@@ -13,7 +13,7 @@ Gets details about a specific available identity provider for a globalaccount.
 
 ```terraform
 data "btp_globalaccount_identity_provider" "single_global_idp" {
-  host= "<host>"
+  host = "<host>"
 }
 ```
 
