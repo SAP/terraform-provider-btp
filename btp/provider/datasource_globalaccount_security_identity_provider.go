@@ -32,7 +32,7 @@ func (ds *globalaccountSecurityIdentityProviderDataSource) Configure(_ context.C
 
 func (ds *globalaccountSecurityIdentityProviderDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Gets details about a specific available identity provider for a globalaccount.`,
+		MarkdownDescription: `Gets details about a specific available identity provider for a global account.`,
 		Attributes: map[string]schema.Attribute{
 			"host": schema.StringAttribute{
 				MarkdownDescription: "The host of the identity provider.",

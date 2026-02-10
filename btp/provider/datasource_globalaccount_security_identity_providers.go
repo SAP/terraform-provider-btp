@@ -32,7 +32,7 @@ func (ds *globalaccountSecurityIdentityProvidersDataSource) Configure(_ context.
 
 func (ds *globalaccountSecurityIdentityProvidersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Lists the available identity providers for a globalaccount.`,
+		MarkdownDescription: `Lists the available identity providers for a global account.`,
 		Attributes: map[string]schema.Attribute{
 			"values": schema.ListNestedAttribute{
 				Computed: true,

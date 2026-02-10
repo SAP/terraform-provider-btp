@@ -2,12 +2,12 @@
 page_title: "btp_globalaccount_identity_provider Data Source - terraform-provider-btp"
 subcategory: ""
 description: |-
-  Gets details about a specific available identity provider for a globalaccount.
+  Gets details about a specific available identity provider for a global account.
 ---
 
 # btp_globalaccount_identity_provider (Data Source)
 
-Gets details about a specific available identity provider for a globalaccount.
+Gets details about a specific available identity provider for a global account.
 
 ## Example Usage
 
