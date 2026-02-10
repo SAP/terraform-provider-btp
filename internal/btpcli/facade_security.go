@@ -9,6 +9,7 @@ func newSecurityFacade(cliClient *v2Client) securityFacade {
 		Settings:       newSecuritySettingsFacade(cliClient),
 		Trust:          newSecurityTrustFacade(cliClient),
 		User:           newSecurityUserFacade(cliClient),
+		Idp:            newSecurityIdentityProviderFacade(cliClient),
 	}
 }
 
@@ -20,4 +21,5 @@ type securityFacade struct {
 	Settings       securitySettingsFacade
 	Trust          securityTrustFacade
 	User           securityUserFacade
+	Idp            securityIdentityProviderFacade
 }
