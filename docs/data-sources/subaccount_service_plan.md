@@ -56,3 +56,4 @@ data "btp_subaccount_service_plan" "by_name" {
 - `ready` (Boolean) Shows whether the service plan is ready.
 - `serviceoffering_id` (String) The ID of the service offering.
 - `shareable` (Boolean) Shows whether the service plan supports instance sharing.
+- `supported_platforms` (List of String) The list of supported platforms for the service plan.

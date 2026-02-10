@@ -22,16 +22,17 @@ type subaccountServicePlanValueConfig struct {
 	Id   types.String `tfsdk:"id"`
 	Name types.String `tfsdk:"name"`
 	/* OUTPUT */
-	Ready             types.Bool   `tfsdk:"ready"`
-	Description       types.String `tfsdk:"description"`
-	CatalogId         types.String `tfsdk:"catalog_id"`
-	CatalogName       types.String `tfsdk:"catalog_name"`
-	Free              types.Bool   `tfsdk:"free"`
-	Bindable          types.Bool   `tfsdk:"bindable"`
-	ServiceOfferingId types.String `tfsdk:"serviceoffering_id"`
-	CreatedDate       types.String `tfsdk:"created_date"`
-	LastModified      types.String `tfsdk:"last_modified"`
-	Shareable         types.Bool   `tfsdk:"shareable"`
+	Ready              types.Bool     `tfsdk:"ready"`
+	Description        types.String   `tfsdk:"description"`
+	CatalogId          types.String   `tfsdk:"catalog_id"`
+	CatalogName        types.String   `tfsdk:"catalog_name"`
+	Free               types.Bool     `tfsdk:"free"`
+	Bindable           types.Bool     `tfsdk:"bindable"`
+	ServiceOfferingId  types.String   `tfsdk:"serviceoffering_id"`
+	CreatedDate        types.String   `tfsdk:"created_date"`
+	LastModified       types.String   `tfsdk:"last_modified"`
+	Shareable          types.Bool     `tfsdk:"shareable"`
+	SupportedPlatforms []types.String `tfsdk:"supported_platforms"`
 }
 
 type subaccountServicePlansDataSourceConfig struct {
@@ -149,6 +150,11 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 							MarkdownDescription: "Shows whether the service plan supports instance sharing.",
 							Computed:            true,
 						},
+						"supported_platforms": schema.ListAttribute{
+							MarkdownDescription: "The list of supported platforms for the service plan.",
+							Computed:            true,
+							ElementType:         types.StringType,
+						},
 					},
 				},
 				Computed: true,
@@ -195,19 +201,25 @@ func (ds *subaccountServicePlansDataSource) Read(ctx context.Context, req dataso
 			shareable = item.Metadata.SupportsInstanceSharing
 		}
 
+		supportedPlatforms := []types.String{}
+		if item.Metadata != nil && item.Metadata.SupportedPlatforms != nil {
+			supportedPlatforms = mapSupportedPlatforms(item.Metadata.SupportedPlatforms)
+		}
+
 		value := subaccountServicePlanValueConfig{
-			Id:                types.StringValue(item.Id),
-			Name:              types.StringValue(item.Name),
-			Ready:             types.BoolValue(item.Ready),
-			Description:       types.StringValue(item.Description),
-			CatalogId:         types.StringValue(item.CatalogId),
-			CatalogName:       types.StringValue(item.CatalogName),
-			Free:              types.BoolValue(item.Free),
-			Bindable:          types.BoolValue(item.Bindable),
-			ServiceOfferingId: types.StringValue(item.ServiceOfferingId),
-			CreatedDate:       timeToValue(item.CreatedAt),
-			LastModified:      timeToValue(item.UpdatedAt),
-			Shareable:         types.BoolValue(shareable),
+			Id:                 types.StringValue(item.Id),
+			Name:               types.StringValue(item.Name),
+			Ready:              types.BoolValue(item.Ready),
+			Description:        types.StringValue(item.Description),
+			CatalogId:          types.StringValue(item.CatalogId),
+			CatalogName:        types.StringValue(item.CatalogName),
+			Free:               types.BoolValue(item.Free),
+			Bindable:           types.BoolValue(item.Bindable),
+			ServiceOfferingId:  types.StringValue(item.ServiceOfferingId),
+			CreatedDate:        timeToValue(item.CreatedAt),
+			LastModified:       timeToValue(item.UpdatedAt),
+			Shareable:          types.BoolValue(shareable),
+			SupportedPlatforms: supportedPlatforms,
 		}
 
 		data.Values = append(data.Values, value)

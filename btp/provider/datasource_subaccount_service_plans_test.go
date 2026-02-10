@@ -22,7 +22,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountPlansBySubaccount("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_plans.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "values.#", "40"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "values.#", "37"),
 					),
 				},
 			},
@@ -41,7 +41,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountPlansByEnvironmentBySubaccount("uut", "integration-test-services-static", "cloudfoundry"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_plans.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "values.#", "45"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_plans.uut", "values.#", "42"),
 					),
 				},
 			},

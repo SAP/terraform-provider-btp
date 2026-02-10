@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -54,4 +55,23 @@ func subaccountEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedAs
 func isTransferAmountRequired(category string) bool {
 	// Check if Amount needs to be mapped - only true if the entitlement has a numeric quota
 	return category == entitlementCategoryService || category == entitlementCategoryQuotaBasedApplication || category == entitlementCategoryPlatformBasedApplication || category == entitlementCategoryEnvironment
+}
+
+func mapSupportedPlatforms(supportedPlatforms []string) []types.String {
+	var list []types.String
+	for _, platform := range supportedPlatforms {
+		var platformValue string
+
+		switch platform {
+		case "kubernetes":
+			platformValue = "KYMA"
+		case "sapcp", "sapbtp":
+			platformValue = "OTHER"
+		default:
+			platformValue = strings.ToUpper(platform)
+		}
+
+		list = append(list, types.StringValue(platformValue))
+	}
+	return list
 }
