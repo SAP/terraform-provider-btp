@@ -235,3 +235,45 @@ func ValidateFromJSON(jsonStr string) error {
 	}
 	return nil
 }
+
+// This function add the masked fields which are not fetched in read operation
+func MergeGenericDestinationConfig(plannedConfig jsontypes.Normalized, responseConfig jsontypes.Normalized) (jsontypes.Normalized, error) {
+	if plannedConfig.IsNull() {
+		return responseConfig, nil
+	}
+
+	if responseConfig.IsNull() {
+		return plannedConfig, nil
+	}
+
+	plannedMap := make(map[string]string)
+	responseMap := make(map[string]string)
+
+	if !plannedConfig.IsUnknown() {
+		if err := json.Unmarshal([]byte(plannedConfig.ValueString()), &plannedMap); err != nil {
+			return jsontypes.Normalized{}, err
+		}
+	}
+
+	if !responseConfig.IsUnknown() {
+		if err := json.Unmarshal([]byte(responseConfig.ValueString()), &responseMap); err != nil {
+			return jsontypes.Normalized{}, err
+		}
+	}
+
+	for k, plannedVal := range plannedMap {
+		responseVal, exists := responseMap[k]
+		// Some values are not returned by the API or are masked with <redacted>
+		// To achieve consistency between state and plan we take the planned value in those cases
+		if !exists || responseVal == "" || responseVal == "<redacted>" {
+			responseMap[k] = plannedVal
+		}
+	}
+
+	mergedJSON, err := json.Marshal(responseMap)
+	if err != nil {
+		return jsontypes.Normalized{}, err
+	}
+
+	return jsontypes.NewNormalizedValue(string(mergedJSON)), nil
+}

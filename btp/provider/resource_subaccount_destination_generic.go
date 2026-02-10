@@ -207,7 +207,7 @@ func (rs *subaccountDestinationGenericResource) Read(ctx context.Context, req re
 	data, diags = destinationGenericResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID, data.Name.ValueString())
 	resp.Diagnostics.Append(diags...)
 
-	data.DestinationConfiguration, err = MergeDestinationConfig(planDestinationConfiguration, data.DestinationConfiguration)
+	data.DestinationConfiguration, err = MergeGenericDestinationConfig(planDestinationConfiguration, data.DestinationConfiguration)
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
 		return
@@ -267,7 +267,7 @@ func (rs *subaccountDestinationGenericResource) Create(ctx context.Context, req 
 
 	plan, diags = destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
 	resp.Diagnostics.Append(diags...)
-	plan.DestinationConfiguration, err = MergeDestinationConfig(planDestinationConfiguration, plan.DestinationConfiguration)
+	plan.DestinationConfiguration, err = MergeGenericDestinationConfig(planDestinationConfiguration, plan.DestinationConfiguration)
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
 		return
@@ -322,7 +322,7 @@ func (rs *subaccountDestinationGenericResource) Update(ctx context.Context, req 
 
 	plan, diags = destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
 	resp.Diagnostics.Append(diags...)
-	plan.DestinationConfiguration, err = MergeDestinationConfig(planDestinationConfiguration, plan.DestinationConfiguration)
+	plan.DestinationConfiguration, err = MergeGenericDestinationConfig(planDestinationConfiguration, plan.DestinationConfiguration)
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
 		return
