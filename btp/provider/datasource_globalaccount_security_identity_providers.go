@@ -6,32 +6,9 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_authz"
 )
-
-type globalaccountIdentityProvidersDataSourceModel struct {
-	Values []globalaccountIdpModel `tfsdk:"values"`
-}
-
-type globalaccountIdpModel struct {
-	TenantType   types.String `tfsdk:"tenant_type"`
-	DisplayName  types.String `tfsdk:"display_name"`
-	CommonHost   types.String `tfsdk:"common_host"`
-	Description  types.String `tfsdk:"description"`
-	CustomHost   types.String `tfsdk:"custom_host"`
-	CustomerName types.String `tfsdk:"customer_name"`
-	CostCenterId types.Int64  `tfsdk:"cost_center_id"`
-	DataCenterId types.String `tfsdk:"data_center_id"`
-	Host         types.String `tfsdk:"host"`
-	CustomerId   types.String `tfsdk:"customer_id"`
-	TenantId     types.String `tfsdk:"tenant_id"`
-	Region       types.String `tfsdk:"region"`
-	Status       types.String `tfsdk:"status"`
-}
 
 func newGlobalaccountSecurityIdentityProvidersDataSource() datasource.DataSource {
 	return &globalaccountSecurityIdentityProvidersDataSource{}
@@ -99,29 +76,4 @@ func (ds *globalaccountSecurityIdentityProvidersDataSource) Read(ctx context.Con
 	resp.Diagnostics.Append(diags...)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
-}
-
-func globalaccountIdentityProvidersDataSourceValueFrom(value []xsuaa_authz.Idp) (data globalaccountIdentityProvidersDataSourceModel, diags diag.Diagnostics) {
-	data.Values = []globalaccountIdpModel{}
-
-	for _, val := range value {
-		idp := globalaccountIdpModel{
-			TenantType:   types.StringValue(val.TenantType),
-			DisplayName:  types.StringPointerValue(val.DisplayName),
-			CommonHost:   types.StringValue(val.CommonHost),
-			Description:  types.StringValue(val.Description),
-			CustomHost:   types.StringPointerValue(val.CustomHost),
-			CustomerName: types.StringPointerValue(val.CustomerName),
-			CostCenterId: types.Int64Value(int64(val.CostCenterId)),
-			DataCenterId: types.StringValue(val.DataCenterId),
-			Host:         types.StringValue(val.Host),
-			CustomerId:   types.StringPointerValue(val.CustomerId),
-			TenantId:     types.StringValue(val.TenantId),
-			Region:       types.StringValue(val.Region),
-			Status:       types.StringValue(val.Status),
-		}
-		data.Values = append(data.Values, idp)
-	}
-
-	return
 }

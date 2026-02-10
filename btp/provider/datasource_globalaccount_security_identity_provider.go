@@ -6,28 +6,9 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
-	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_authz"
 )
-
-type globalaccountIdentityProviderDataSourceModel struct {
-	TenantId     types.String `tfsdk:"tenant_id"`
-	TenantType   types.String `tfsdk:"tenant_type"`
-	DisplayName  types.String `tfsdk:"display_name"`
-	CommonHost   types.String `tfsdk:"common_host"`
-	Description  types.String `tfsdk:"description"`
-	CustomHost   types.String `tfsdk:"custom_host"`
-	CustomerName types.String `tfsdk:"customer_name"`
-	CostCenterId types.Int64  `tfsdk:"cost_center_id"`
-	DataCenterId types.String `tfsdk:"data_center_id"`
-	Host         types.String `tfsdk:"host"`
-	CustomerId   types.String `tfsdk:"customer_id"`
-	Region       types.String `tfsdk:"region"`
-	Status       types.String `tfsdk:"status"`
-}
 
 func newGlobalaccountSecurityIdentityProviderDataSource() datasource.DataSource {
 	return &globalaccountSecurityIdentityProviderDataSource{}
@@ -131,22 +112,4 @@ func (ds *globalaccountSecurityIdentityProviderDataSource) Read(ctx context.Cont
 	resp.Diagnostics.Append(diags...)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
-}
-
-func globalaccountIdentityProviderDataSourceValueFrom(val xsuaa_authz.Idp) (data globalaccountIdentityProviderDataSourceModel, diags diag.Diagnostics) {
-	data.TenantId = types.StringValue(val.TenantId)
-	data.TenantType = types.StringValue(val.TenantType)
-	data.DisplayName = types.StringPointerValue(val.DisplayName)
-	data.CommonHost = types.StringValue(val.CommonHost)
-	data.Description = types.StringValue(val.Description)
-	data.CustomHost = types.StringPointerValue(val.CustomHost)
-	data.CustomerName = types.StringPointerValue(val.CustomerName)
-	data.CostCenterId = types.Int64Value(int64(val.CostCenterId))
-	data.DataCenterId = types.StringValue(val.DataCenterId)
-	data.Host = types.StringValue(val.Host)
-	data.CustomerId = types.StringPointerValue(val.CustomerId)
-	data.Region = types.StringValue(val.Region)
-	data.Status = types.StringValue(val.Status)
-
-	return
 }

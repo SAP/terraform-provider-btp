@@ -15,7 +15,7 @@ type Idp struct {
 	Description  string  `json:"description"`
 	CustomHost   *string `json:"customHost"`
 	CustomerName *string `json:"customerName"`
-	CostCenterId int     `json:"costCenterId"`
+	CostCenterId int64   `json:"costCenterId"`
 	DataCenterId string  `json:"dataCenterId"`
 	Host         string  `json:"host"`
 	CustomerId   *string `json:"customerId"`
