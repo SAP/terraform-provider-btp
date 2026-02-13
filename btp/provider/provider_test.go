@@ -628,7 +628,7 @@ func TestProvider_HasResources(t *testing.T) {
 	assert.ElementsMatch(t, expectedResources, registeredResources)
 }
 
-func TestSCCProvider_ListResources(t *testing.T) {
+func TestProvider_HasListResources(t *testing.T) {
 	ctx := context.Background()
 
 	expected := []string{
