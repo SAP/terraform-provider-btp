@@ -40,7 +40,7 @@ type GlobalAccountResponseObject struct {
 	// The current state of the global account. * <b>STARTED:</b> CRUD operation on an entity has started. * <b>CREATING:</b> Creating entity operation is in progress. * <b>UPDATING:</b> Updating entity operation is in progress. * <b>MOVING:</b> Moving entity operation is in progress. * <b>PROCESSING:</b> A series of operations related to the entity is in progress. * <b>DELETING:</b> Deleting entity operation is in progress. * <b>OK:</b> The CRUD operation or series of operations completed successfully. * <b>PENDING REVIEW:</b> The processing operation has been stopped for reviewing and can be restarted by the operator. * <b>CANCELLED:</b> The operation or processing was canceled by the operator. * <b>CREATION_FAILED:</b> The creation operation failed, and the entity was not created or was created but cannot be used. * <b>UPDATE_FAILED:</b> The update operation failed, and the entity was not updated. * <b>PROCESSING_FAILED:</b> The processing operations failed. * <b>DELETION_FAILED:</b> The delete operation failed, and the entity was not deleted. * <b>MOVE_FAILED:</b> Entity could not be moved to a different location. * <b>MIGRATING:</b> Migrating entity from NEO to CF.
 	EntityState string `json:"entityState,omitempty"`
 	// The planned date that the global account expires. This is the same date as the Contract End Date, unless a manual adjustment has been made to the actual expiration date of the global account. Typically, this property is automatically populated only when a formal termination order is received from the CRM system. From a customer perspective, this date marks the start of the grace period, which is typically 30 days before the actual deletion of the account.
-	ExpiryDate Time `json:"expiryDate,omitempty"`
+	ExpiryDate Time `json:"expiryDate"`
 	// The geographic locations from where the global account can be accessed. * <b>STANDARD:</b> The global account can be accessed from any geographic location. * <b>EU_ACCESS:</b> The global account can be accessed only within locations in the EU.
 	GeoAccess string `json:"geoAccess"`
 	// The GUID of the directory's global account entity.
@@ -52,7 +52,7 @@ type GlobalAccountResponseObject struct {
 	// The type of license for the global account. The license type affects the scope of functions of the account. * <b>DEVELOPER:</b> For internal developer global accounts on Staging or Canary landscapes. * <b>CUSTOMER:</b> For customer global accounts. * <b>PARTNER:</b> For partner global accounts. * <b>INTERNAL_DEV:</b> For internal global accounts on the Dev landscape. * <b>INTERNAL_PROD:</b> For internal global accounts on the Live landscape. * <b>TRIAL:</b> For customer trial accounts.
 	LicenseType string `json:"licenseType"`
 	// The date the global account was last modified. Dates and times are in UTC format.
-	ModifiedDate Time `json:"modifiedDate,omitempty"`
+	ModifiedDate Time `json:"modifiedDate"`
 	// The origin of the account. * <b>ORDER:</b> Created by the Order Processing API or Submit Order wizard. * <b>OPERATOR:</b> Created by the Global Account wizard. * <b>REGION_SETUP:</b> Created automatically as part of the region setup.
 	Origin string `json:"origin,omitempty"`
 	// The GUID of the global account's parent entity. Typically this is the global account.
@@ -60,7 +60,7 @@ type GlobalAccountResponseObject struct {
 	// The Type of the global account's parent entity.
 	ParentType string `json:"parentType"`
 	// The date that an expired contract was renewed. Dates and times are in UTC format.
-	RenewalDate Time `json:"renewalDate,omitempty"`
+	RenewalDate Time `json:"renewalDate"`
 	// For internal accounts, the service for which the global account was created.
 	ServiceId string `json:"serviceId,omitempty"`
 	// Information about the state.

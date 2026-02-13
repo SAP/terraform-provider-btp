@@ -28,7 +28,7 @@ type SubaccountResponseObject struct {
 	// Contains information about the labels assigned to a specified subaccount. Labels are represented in a JSON array of key-value pairs; each key has up to 10 corresponding values. This field replaces the deprecated \"customProperties\" field, which supports only single values per key.
 	Labels map[string][]string `json:"labels,omitempty"`
 	// The date the subaccount was last modified. Dates and times are in UTC format.
-	ModifiedDate Time `json:"modifiedDate,omitempty"`
+	ModifiedDate Time `json:"modifiedDate"`
 	// The features of parent entity of the subaccount.
 	ParentFeatures []string `json:"parentFeatures"`
 	// The GUID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the GUID of the global account.

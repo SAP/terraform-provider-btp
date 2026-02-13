@@ -287,8 +287,8 @@ func stopQuietly(rec *recorder.Recorder) {
 }
 
 func getNameFromEmail(email string) (firstName, lastName string) {
-	emailAt := strings.Index(email, "@")
-	names := strings.Split(email[:emailAt], ".")
+	before, _, _ := strings.Cut(email, "@")
+	names := strings.Split(before, ".")
 
 	emailFirstName := " "
 	emailLastName := " "

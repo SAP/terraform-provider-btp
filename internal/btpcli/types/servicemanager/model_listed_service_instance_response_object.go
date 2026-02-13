@@ -37,8 +37,8 @@ type ListedServiceInstanceResponseObject struct {
 	// Whether the service instance can be used.
 	Usable bool `json:"usable,omitempty"`
 	// The time the service instance was created.<br/>In ISO 8601 format:</br> YYYY-MM-DDThh:mm:ssTZD
-	CreatedAt time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 	// The last time the service instance was updated.<br/> In ISO 8601 format.
-	UpdatedAt time.Time            `json:"updated_at,omitempty"`
+	UpdatedAt time.Time            `json:"updated_at"`
 	Labels    *map[string][]string `json:"labels,omitempty"`
 }

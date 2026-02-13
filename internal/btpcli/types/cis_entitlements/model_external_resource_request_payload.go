@@ -10,7 +10,7 @@ package cis_entitlements
 
 type ExternalResourceRequestPayload struct {
 	// Any additional data to include.
-	ResourceData *interface{} `json:"resourceData,omitempty"`
+	ResourceData *any `json:"resourceData,omitempty"`
 	// The name of the resource.
 	ResourceName string `json:"resourceName,omitempty"`
 	// The name of the provider.

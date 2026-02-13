@@ -311,7 +311,7 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateCreating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateCreationFailed, cis.StateCanceled},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, _, err := rs.cli.Accounts.Subaccount.Get(ctx, cliRes.Guid)
 
 			if err != nil {
@@ -393,7 +393,7 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateUpdating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, _, err := rs.cli.Accounts.Subaccount.Get(ctx, cliRes.Guid)
 
 			if err != nil {
@@ -458,7 +458,7 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateDeleting, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateDeletionFailed, cis.StateCanceled, "DELETED"},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, comRes, err := rs.cli.Accounts.Subaccount.Get(ctx, cliRes.Guid)
 
 			if comRes.StatusCode == http.StatusNotFound {

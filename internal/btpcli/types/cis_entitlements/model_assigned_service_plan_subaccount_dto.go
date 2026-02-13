@@ -18,7 +18,7 @@ type AssignedServicePlanSubaccountDto struct {
 	// The amount of the entitlement to automatically assign to subaccounts that are added in the future to the entitlement's assigned directory.   Requires that autoAssign is set to TRUE, and there is remaining quota for the entitlement. To automatically distribute to subaccounts that are added in the future to the directory, distribute must be set to TRUE.
 	AutoDistributeAmount int32 `json:"autoDistributeAmount,omitempty"`
 	// Date the subaccount has been created. Dates and times are in UTC format.
-	CreatedDate Time `json:"createdDate,omitempty"`
+	CreatedDate Time `json:"createdDate"`
 	// The unique ID of the global account or directory to which the entitlement is assigned.
 	EntityId string `json:"entityId,omitempty"`
 	// The current state of the service plan assignment. * <b>STARTED:</b> CRUD operation on an entity has started. * <b>PROCESSING:</b> A series of operations related to the entity is in progress. * <b>PROCESSING_FAILED:</b> The processing operations failed. * <b>OK:</b> The CRUD operation or series of operations completed successfully.
@@ -26,7 +26,7 @@ type AssignedServicePlanSubaccountDto struct {
 	// The type of entity to which the entitlement is assigned. * <b>SUBACCOUNT:</b> The entitlement is assigned to a subaccount. * <b>GLOBAL_ACCOUNT:</b> The entitlement is assigned to a root global account. * <b>DIRECTORY:</b> The entitlement is assigned to a directory.
 	EntityType string `json:"entityType,omitempty"`
 	// Date the subaccount has been modified. Dates and times are in UTC format.
-	ModifiedDate          Time    `json:"modifiedDate,omitempty"`
+	ModifiedDate          Time    `json:"modifiedDate"`
 	ParentAmount          float64 `json:"parentAmount,omitempty"`
 	ParentId              string  `json:"parentId,omitempty"`
 	ParentRemainingAmount float64 `json:"parentRemainingAmount,omitempty"`

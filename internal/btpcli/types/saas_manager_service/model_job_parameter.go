@@ -9,7 +9,7 @@
 package saas_manager_service
 
 type JobParameter struct {
-	Identifying bool         `json:"identifying,omitempty"`
-	Type_       string       `json:"type,omitempty"`
-	Value       *interface{} `json:"value,omitempty"`
+	Identifying bool   `json:"identifying,omitempty"`
+	Type_       string `json:"type,omitempty"`
+	Value       *any   `json:"value,omitempty"`
 }

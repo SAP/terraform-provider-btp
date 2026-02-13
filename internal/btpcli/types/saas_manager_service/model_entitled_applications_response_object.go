@@ -16,7 +16,7 @@ type EntitledApplicationsResponseObject struct {
 	// The unique registration name of the deployed multitenant application as defined by the app developer.
 	AppName string `json:"appName,omitempty"`
 	// The application coordinates provided in metadata for customer-facing UIs.
-	ApplicationCoordinates *interface{} `json:"applicationCoordinates,omitempty"`
+	ApplicationCoordinates *any `json:"applicationCoordinates,omitempty"`
 	// The authentication provider of the multitenant application. * XSUAA is the SAP Authorization and Trust Management service that defines scopes and permissions for users as tenants at the global account level. * IAS is Identity Authentication Service that defines scopes and permissions for users in zones (common data isolation systems across systems, SaaS tenants, and services).
 	AuthenticationProvider string `json:"authenticationProvider,omitempty"`
 	// The state of the automation solution.
@@ -30,7 +30,7 @@ type EntitledApplicationsResponseObject struct {
 	// The commercial name of the deployed multitenant application as defined by the app developer.
 	CommercialAppName string `json:"commercialAppName,omitempty"`
 	// The date the subscription was created. Dates and times are in UTC format.
-	CreatedDate Time `json:"createdDate,omitempty"`
+	CreatedDate Time `json:"createdDate"`
 	// Whether the application was developed by a customer. If not, then the application is developed by the cloud operator, such as SAP.
 	CustomerDeveloped bool `json:"customerDeveloped,omitempty"`
 	// The description of the multitenant application for customer-facing UIs.
@@ -48,11 +48,11 @@ type EntitledApplicationsResponseObject struct {
 	// User-defined labels that are assigned as key-value pairs in a JSON array to the multitenant application subscription.  Example: {   \"Cost Center\": [\"19700626\"],   \"Department\": [\"Sales\"],   \"Contacts\": [\"name1@example.com\",\"name2@example.com\"],   \"EMEA\":[] }
 	Labels map[string][]string `json:"labels,omitempty"`
 	// JSON schema that describes the metadata that the consumer provide when subscribing to the application.
-	Metadata map[string]interface{} `json:"metadata,omitempty"`
+	Metadata map[string]any `json:"metadata,omitempty"`
 	// The date the subscription was last modified. Dates and times are in UTC format.
-	ModifiedDate Time `json:"modifiedDate,omitempty"`
+	ModifiedDate Time `json:"modifiedDate"`
 	// JSON schema that describes the parameters that the consumer must provide when subscribing to the application.
-	ParamsSchema map[string]interface{} `json:"paramsSchema,omitempty"`
+	ParamsSchema map[string]any `json:"paramsSchema,omitempty"`
 	// The description of the plan for customer-facing UIs.
 	PlanDescription string `json:"planDescription,omitempty"`
 	// The plan name of the application to which the consumer has subscribed.

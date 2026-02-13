@@ -8,9 +8,9 @@
 package servicemanager
 
 type ServiceInstanceParametersPlain struct {
-	Parameters map[string]interface{} `json:"-"`
+	Parameters map[string]any `json:"-"`
 }
 
 type ServiceInstanceParametersData struct {
-	Parameters map[string]interface{} `json:"data,omitempty"`
+	Parameters map[string]any `json:"data,omitempty"`
 }

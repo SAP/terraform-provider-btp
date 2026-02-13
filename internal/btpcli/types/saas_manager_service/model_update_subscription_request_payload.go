@@ -12,5 +12,5 @@ type UpdateSubscriptionRequestPayload struct {
 	// The new plan of the multitenant application to update in the existing subscription.
 	PlanName string `json:"planName,omitempty"`
 	// Additional subscription parameters determined by the application provider.
-	SubscriptionParams *interface{} `json:"subscriptionParams,omitempty"`
+	SubscriptionParams *any `json:"subscriptionParams,omitempty"`
 }

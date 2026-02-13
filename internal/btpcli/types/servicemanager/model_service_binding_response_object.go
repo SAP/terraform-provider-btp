@@ -32,8 +32,8 @@ type ServiceBindingResponseObject struct {
 	// The bound resources.
 	BindResource map[string]string `json:"bind_resource,omitempty"`
 	// The time the binding was created.<br/>In ISO 8601 format:</br> YYYY-MM-DDThh:mm:ssTZD
-	CreatedAt time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 	// The last time the binding was updated.<br/> In ISO 8601 format.
-	UpdatedAt time.Time            `json:"updated_at,omitempty"`
+	UpdatedAt time.Time            `json:"updated_at"`
 	Labels    ServiceManagerLabels `json:"labels,omitempty"`
 }

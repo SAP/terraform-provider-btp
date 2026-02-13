@@ -40,7 +40,6 @@ func TestUUIDValidator(t *testing.T) {
 	}
 
 	for name, test := range testCases {
-		name, test := name, test
 		t.Run(name, func(t *testing.T) {
 			req := validator.StringRequest{
 				ConfigValue: test.in,

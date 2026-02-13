@@ -31,7 +31,7 @@ type ScimUser struct {
 	DisplayName          string        `json:"displayName,omitempty"`
 	Locale               string        `json:"locale,omitempty"`
 	NickName             string        `json:"nickName,omitempty"`
-	PasswordLastModified time.Time     `json:"passwordLastModified,omitempty"`
+	PasswordLastModified time.Time     `json:"passwordLastModified"`
 	PreviousLogonTime    int64         `json:"previousLogonTime,omitempty"`
 	LastLogonTime        int64         `json:"lastLogonTime,omitempty"`
 	Schemas              []string      `json:"schemas,omitempty"`

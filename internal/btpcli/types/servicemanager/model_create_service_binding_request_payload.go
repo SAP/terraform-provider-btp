@@ -16,6 +16,6 @@ type CreateServiceBindingRequestPayload struct {
 	// Some services support providing of additional configuration parameters during binding creation. Pass these parameters as key-value pairs.<br> For the list of supported configuration parameters, see the documentation of a particular service offering.<br>You can also use the *GET /v1/service_bindings/{serviceBindingID}/parameters* API later to view the parameters defined during this step.
 	Parameters map[string]string `json:"parameters,omitempty"`
 	// The bind_resource object contains platform-specific information related to the context in which the service is used.<br> The examples of some common fields to use: <br> app_guid - A string GUID of an application associated with the binding. For credentials bindings. Must be unique within the scope of the platform.<br>app_guid - Represents the scope to which the binding applies within the platform. <br>For example, in Kubernetes it can map to a namespace.<br> The scope of what the platform maps the app_guid to is platform-specific and can vary across binding requests.<br>route - URL of the intermediate application. For route services bindings.
-	BindResource *interface{}         `json:"bind_resource,omitempty"`
+	BindResource *any                 `json:"bind_resource,omitempty"`
 	Labels       *map[string][]string `json:"labels,omitempty"`
 }

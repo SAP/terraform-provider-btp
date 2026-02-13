@@ -15,8 +15,8 @@ import (
 type Approval struct {
 	// The client id on the approval. Represents the application this approval or denial was for.
 	ClientId      string    `json:"clientId,omitempty"`
-	ExpiresAt     time.Time `json:"expiresAt,omitempty"`
-	LastUpdatedAt time.Time `json:"lastUpdatedAt,omitempty"`
+	ExpiresAt     time.Time `json:"expiresAt"`
+	LastUpdatedAt time.Time `json:"lastUpdatedAt"`
 	Scope         string    `json:"scope,omitempty"`
 	Status        string    `json:"status,omitempty"`
 	// The ID of the user.

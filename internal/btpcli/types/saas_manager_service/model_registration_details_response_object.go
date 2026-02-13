@@ -38,7 +38,7 @@ type RegistrationDetailsResponseObject struct {
 	// The unique ID of the Cloud Foundry org where the app provider has deployed and registered the multitenant application.
 	OrganizationGuid string `json:"organizationGuid,omitempty"`
 	// JSON schema that describes the parameters that the consumer must provide when subscribing to the application.
-	ParamsSchema map[string]interface{} `json:"paramsSchema,omitempty"`
+	ParamsSchema map[string]any `json:"paramsSchema,omitempty"`
 	// Whether the parameters are transferred to the application’s dependencies.
 	PropagateParams bool `json:"propagateParams,omitempty"`
 	// The unique ID of the tenant that provides the multitenant application.
