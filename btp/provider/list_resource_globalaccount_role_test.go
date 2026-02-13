@@ -1,9 +1,12 @@
 package provider
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/list"
+	res "github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/querycheck"
@@ -86,6 +89,20 @@ func TestGlobalaccountRoleListResource(t *testing.T) {
 				},
 			},
 		})
+	})
+
+	t.Run("error path - configure", func(t *testing.T) {
+		r := NewGlobalaccountRoleListResource().(list.ListResourceWithConfigure)
+		resp := &res.ConfigureResponse{}
+		req := res.ConfigureRequest{
+			ProviderData: struct{}{}, // Wrong type
+		}
+
+		r.Configure(context.Background(), req, resp)
+
+		if !resp.Diagnostics.HasError() {
+			t.Error("Expected error for invalid provider data type")
+		}
 	})
 
 }
