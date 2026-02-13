@@ -3,12 +3,12 @@
 page_title: "btp_globalaccount_role List Resource - SAP BTP"
 subcategory: ""
 description: |-
-  
+  This list resource allows you to discover all roles available within the configured BTP Global Account. It does not require any input configuration filters.
 ---
 
 # btp_globalaccount_role (List Resource)
 
-
+This list resource allows you to discover all roles available within the configured BTP Global Account. It does not require any input configuration filters.
 
 ## Example Usage
 
@@ -29,7 +29,7 @@ list "btp_globalaccount_role" "all" {
 }
 
 # List block to discover all roles in global account with full resource details
-# Setting include_resource = true returns full resource objects (e.g., description, is_read_only)
+# Setting include_resource = true returns full resource objects (e.g., description, read_only)
 list "btp_globalaccount_role" "with_resource" {
   provider = btp
   include_resource = true

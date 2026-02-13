@@ -23,11 +23,11 @@ func NewGlobalaccountRoleListResource() list.ListResource {
 	return &GlobalaccountRoleListResource{}
 }
 
-func (r *GlobalaccountRoleListResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (r *GlobalaccountRoleListResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_globalaccount_role" // must match managed resource
 }
 
-func (r *GlobalaccountRoleListResource) Configure(ctx context.Context,
+func (r *GlobalaccountRoleListResource) Configure(_ context.Context,
 	req resource.ConfigureRequest,
 	resp *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
@@ -49,16 +49,18 @@ func (r *GlobalaccountRoleListResource) Configure(ctx context.Context,
 }
 
 func (r *GlobalaccountRoleListResource) ListResourceConfigSchema(
-	ctx context.Context,
+	_ context.Context,
 	req list.ListResourceSchemaRequest,
 	resp *list.ListResourceSchemaResponse,
 ) {
 	// This list resource takes no input configurations (e.g. filters)
 	// from the HCL, so the schema remains empty.
-	resp.Schema = schema.Schema{}
+	resp.Schema = schema.Schema{
+		MarkdownDescription: "This list resource allows you to discover all roles available within the configured BTP Global Account. It does not require any input configuration filters.",
+	}
 }
 
-// List streams all subaccounts from the API
+// List streams all global account roles from the API
 func (r *GlobalaccountRoleListResource) List(
 	ctx context.Context,
 	req list.ListRequest,

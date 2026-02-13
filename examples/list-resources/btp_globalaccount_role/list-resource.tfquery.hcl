@@ -14,7 +14,7 @@ list "btp_globalaccount_role" "all" {
 }
 
 # List block to discover all roles in global account with full resource details
-# Setting include_resource = true returns full resource objects (e.g., description, is_read_only)
+# Setting include_resource = true returns full resource objects (e.g., description, read_only)
 list "btp_globalaccount_role" "with_resource" {
   provider = btp
   include_resource = true
