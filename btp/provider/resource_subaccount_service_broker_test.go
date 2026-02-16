@@ -6,7 +6,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 func TestResourceSubaccountServiceBroker(t *testing.T) {
@@ -19,29 +22,29 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBroker("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-test-broker", "a description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", "platform", "a-secure-password"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBroker("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-broker", "a description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", "admin", "secret"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-test-broker"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-broker"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "a description"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "username", "platform"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "password", "a-secure-password"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "username", "admin"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "password", "secret"),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "last_modified", regexpValidRFC3999Format),
 					),
 				},
 				{ // rename and update the description
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBroker("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-test-broker-new-name", "another description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", "platform", "a-secure-password"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBroker("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-broker-new-name", "another description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", "admin", "secret"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-test-broker-new-name"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-broker-new-name"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "another description"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "username", "platform"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "password", "a-secure-password"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "username", "admin"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "password", "secret"),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "last_modified", regexpValidRFC3999Format),
 					),
@@ -57,6 +60,59 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path - simple service_broker import block", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_broker_import_block")
+		defer stopQuietly(rec)
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_12_0),
+			},
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithCertKey("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-broker-with-mtls-and-basic-auth", "a description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-broker-with-mtls-and-basic-auth"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "a description"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "last_modified", regexpValidRFC3999Format),
+					),
+				},
+				{ // rename and update the description
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithCertKey("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-broker-with-mtls-and-basic-auth", "another description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-broker-with-mtls-and-basic-auth"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "another description"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "last_modified", regexpValidRFC3999Format),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity(
+							"btp_subaccount_service_broker.uut",
+							map[string]knownvalue.Check{
+								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
+								"id":            knownvalue.StringRegexp(regexpValidUUID),
+							},
+						),
+					},
+				},
+				{
+					ResourceName:            "btp_subaccount_service_broker.uut",
+					ImportState:             true,
+					ImportStateKind:         resource.ImportBlockWithResourceIdentity,
+					ImportStateVerifyIgnore: []string{"name", "username", "password", "mtls", "cert", "key"},
+					ExpectNonEmptyPlan:      true,
+				},
+			},
+		})
+	})
 	t.Run("happy path - service_broker with mtls only", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_broker_with_mtls")
 		defer stopQuietly(rec)
@@ -66,11 +122,11 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithMTLS("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-test-broker-with-mtls", "a description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", true),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithMTLS("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-broker-with-mtls", "a description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", true),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-test-broker-with-mtls"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-broker-with-mtls"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "a description"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "mtls", "true"),
@@ -79,11 +135,11 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 					),
 				},
 				{ // rename and update the description
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithMTLS("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-test-broker-with-mtls", "another description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", true),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithMTLS("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-broker-with-mtls", "another description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", true),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-test-broker-with-mtls"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-broker-with-mtls"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "another description"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "mtls", "true"),
@@ -111,31 +167,31 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithMTLSUserPwd("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-test-broker-with-mtls-and-basic-auth", "a description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", true, "platform", "a-secure-password"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithMTLSUserPwd("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-broker-with-mtls-and-basic-auth", "a description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", true, "admin", "secret"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-test-broker-with-mtls-and-basic-auth"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-broker-with-mtls-and-basic-auth"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "a description"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "mtls", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "username", "platform"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "password", "a-secure-password"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "username", "admin"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "password", "secret"),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "last_modified", regexpValidRFC3999Format),
 					),
 				},
 				{ // rename and update the description
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithMTLSUserPwd("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-test-broker-with-mtls-and-basic-auth", "another description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", true, "platform", "a-secure-password"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithMTLSUserPwd("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-broker-with-mtls-and-basic-auth", "another description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com", true, "admin", "secret"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-test-broker-with-mtls-and-basic-auth"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-broker-with-mtls-and-basic-auth"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "another description"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "mtls", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "username", "platform"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "password", "a-secure-password"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "username", "admin"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "password", "secret"),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "last_modified", regexpValidRFC3999Format),
 					),
@@ -160,11 +216,11 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithCertKey("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-test-broker-with-mtls-and-basic-auth", "a description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithCertKey("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-broker-with-mtls-and-basic-auth", "a description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-test-broker-with-mtls-and-basic-auth"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-broker-with-mtls-and-basic-auth"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "a description"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "created_date", regexpValidRFC3999Format),
@@ -172,11 +228,11 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 					),
 				},
 				{ // rename and update the description
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithCertKey("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-test-broker-with-mtls-and-basic-auth", "another description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceBrokerWithCertKey("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-dummy-broker-with-mtls-and-basic-auth", "another description", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-test-broker-with-mtls-and-basic-auth"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "name", "my-dummy-broker-with-mtls-and-basic-auth"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "description", "another description"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_broker.uut", "url", "https://my-dummy-broker.cfapps.eu12.hana.ondemand.com"),
 						resource.TestMatchResourceAttr("btp_subaccount_service_broker.uut", "created_date", regexpValidRFC3999Format),
@@ -226,7 +282,7 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountServiceBrokerWithMTLSUserPwd("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-broker", "a description", "https://my-broker-bogus-ratel-yb.cfapps.eu12.hana.ondemand.com", false, "platform", "a-secure-password"),
+					Config:      hclResourceSubaccountServiceBrokerWithMTLSUserPwd("uut", "59cd458e-e66e-4b60-b6d8-8f219379f9a5", "my-broker", "a description", "https://my-broker-bogus-ratel-yb.cfapps.eu12.hana.ondemand.com", false, "admin", "secret"),
 					ExpectError: regexp.MustCompile("Invalid Attribute Value Match"),
 				},
 			},

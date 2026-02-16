@@ -25,7 +25,7 @@ func TestDataSourceSubaccountServiceBroker(t *testing.T) {
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_broker.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_broker.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_broker.uut", "name", regexp.MustCompile("^integration-test-static-service-broker-.+")),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_broker.uut", "url", "https://integration-test-static-service-broker-quick-koala-wl.cfapps.eu12.hana.ondemand.com"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_broker.uut", "url", "https://integration-test-static-service-broker.cfapps.eu12.hana.ondemand.com"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_service_broker.uut", "ready", "true"),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_broker.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_broker.uut", "last_modified", regexpValidRFC3999Format),
