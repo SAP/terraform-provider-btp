@@ -14,6 +14,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/function"
+	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
@@ -625,6 +626,39 @@ func TestProvider_HasResources(t *testing.T) {
 	}
 
 	assert.ElementsMatch(t, expectedResources, registeredResources)
+}
+
+func TestProvider_HasListResources(t *testing.T) {
+	ctx := context.Background()
+
+	expected := []string{
+		"btp_globalaccount_role",
+	}
+
+	p := New()
+
+	listProvider, ok := p.(provider.ProviderWithListResources)
+	if !ok {
+		t.Fatalf("provider does not implement ProviderWithListResources")
+	}
+
+	var registered []string
+
+	for _, listResourceFunc := range listProvider.ListResources(ctx) {
+		var resp resource.MetadataResponse
+
+		listResourceFunc().Metadata(
+			ctx,
+			resource.MetadataRequest{
+				ProviderTypeName: "btp",
+			},
+			&resp,
+		)
+
+		registered = append(registered, resp.TypeName)
+	}
+
+	assert.ElementsMatch(t, expected, registered)
 }
 
 func TestProvider_HasDatasources(t *testing.T) {

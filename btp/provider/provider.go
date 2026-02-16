@@ -11,6 +11,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/function"
+	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -328,6 +329,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 	resp.DataSourceData = client
 	resp.ResourceData = client
+	resp.ListResourceData = client
 }
 
 // Resources - Defines provider resources
@@ -563,5 +565,12 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 				"Set the tls_client_certificate value in the configuration. "+
 				errorMessagePostfixWithoutEnv,
 		)
+	}
+}
+
+// ListResources defines the ListResources implemented in the provider.
+func (p *btpcliProvider) ListResources(_ context.Context) []func() list.ListResource {
+	return []func() list.ListResource{
+		NewGlobalaccountRoleListResource,
 	}
 }
