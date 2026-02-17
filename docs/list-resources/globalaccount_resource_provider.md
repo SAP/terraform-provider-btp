@@ -3,12 +3,12 @@
 page_title: "btp_globalaccount_resource_provider List Resource - SAP BTP"
 subcategory: ""
 description: |-
-  This list resource allows you to discover all resource provider available within the configured BTP Global Account. It does not require any input configuration filters.
+  This list resource allows you to discover all resource providers available within the configured BTP Global Account. It does not require any input configuration filters.
 ---
 
 # btp_globalaccount_resource_provider (List Resource)
 
-This list resource allows you to discover all resource provider available within the configured BTP Global Account. It does not require any input configuration filters.
+This list resource allows you to discover all resource providers available within the configured BTP Global Account. It does not require any input configuration filters.
 
 ## Example Usage
 
@@ -22,14 +22,14 @@ list "btp_globalaccount_resource_provider" "<label_name>" {
   provider = provider_name
 }
 
-# List block to discover all resource provider in global account
+# List block to discover all resource providers in global account
 # Returns only the resource identities by default.
 list "btp_globalaccount_resource_provider" "all" {
   provider = btp
 }
 
-# List block to discover all resource provider in global account with full resource details
-# Setting include_resource = true returns full resource objects (e.g., description, name)
+# List block to discover all resource providers in global account with full resource details.
+# Setting include_resource = true returns full resource objects (e.g., description, name..)
 list "btp_globalaccount_resource_provider" "with_resource" {
   provider         = btp
   include_resource = true

@@ -71,8 +71,8 @@ func (r *GlobalaccountRoleCollectionListResource) List(
 	if err != nil {
 		var diags diag.Diagnostics
 		diags.AddError(
-			"API Error Reading Resource Role (Global Account)",
-			fmt.Sprintf("Failed to list roles: %s", err),
+			"API Error Reading Resource Role Collection (Global Account)",
+			fmt.Sprintf("Failed to list role collections: %s", err),
 		)
 
 		stream.Results = list.ListResultsStreamDiagnostics(diags)

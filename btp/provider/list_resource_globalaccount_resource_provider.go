@@ -56,11 +56,11 @@ func (r *GlobalaccountResourceProviderListResource) ListResourceConfigSchema(
 	// This list resource takes no input configurations (e.g. filters)
 	// from the HCL, so the schema remains empty.
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This list resource allows you to discover all resource provider available within the configured BTP Global Account. It does not require any input configuration filters.",
+		MarkdownDescription: "This list resource allows you to discover all resource providers available within the configured BTP Global Account. It does not require any input configuration filters.",
 	}
 }
 
-// List streams all global account resource provider from the API
+// List streams all global account resource providers from the API
 func (r *GlobalaccountResourceProviderListResource) List(
 	ctx context.Context,
 	req list.ListRequest,
@@ -72,7 +72,7 @@ func (r *GlobalaccountResourceProviderListResource) List(
 		var diags diag.Diagnostics
 		diags.AddError(
 			"API Error Reading Resource Provider (Global Account)",
-			fmt.Sprintf("Failed to list resource provider: %s", err),
+			fmt.Sprintf("Failed to list resource providers: %s", err),
 		)
 
 		stream.Results = list.ListResultsStreamDiagnostics(diags)
