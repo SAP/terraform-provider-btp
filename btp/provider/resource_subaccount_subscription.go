@@ -476,7 +476,7 @@ func (rs *subaccountSubscriptionResource) CreateStateChange(ctx context.Context,
 	return tfutils.StateChangeConf{
 			Pending: []string{saas_manager_service.StateInProcess},
 			Target:  []string{saas_manager_service.StateSubscribed},
-			Refresh: func() (interface{}, string, error) {
+			Refresh: func() (any, string, error) {
 				subRes, cmdRes, err := rs.cli.Accounts.Subscription.Get(ctx, plan.SubaccountId.ValueString(), technicalAppName, plan.PlanName.ValueString())
 
 				if cmdRes.StatusCode == http.StatusTooManyRequests {
@@ -516,7 +516,7 @@ func (rs *subaccountSubscriptionResource) DeleteStateChange(ctx context.Context,
 	return tfutils.StateChangeConf{
 			Pending: []string{saas_manager_service.StateInProcess},
 			Target:  []string{saas_manager_service.StateNotSubscribed},
-			Refresh: func() (interface{}, string, error) {
+			Refresh: func() (any, string, error) {
 				subRes, cmdRes, err := rs.cli.Accounts.Subscription.Get(ctx, state.SubaccountId.ValueString(), technicalAppName, state.PlanName.ValueString())
 
 				if cmdRes.StatusCode == http.StatusTooManyRequests {
@@ -555,7 +555,7 @@ func (rs *subaccountSubscriptionResource) UpdateStateChange(ctx context.Context,
 	return tfutils.StateChangeConf{
 			Pending: []string{saas_manager_service.StateInProcess},
 			Target:  []string{saas_manager_service.StateSubscribed},
-			Refresh: func() (interface{}, string, error) {
+			Refresh: func() (any, string, error) {
 				subRes, cmdRes, err := rs.cli.Accounts.Subscription.Get(ctx, plan.SubaccountId.ValueString(), plan.AppName.ValueString(), plan.PlanName.ValueString())
 
 				if cmdRes.StatusCode == http.StatusTooManyRequests {

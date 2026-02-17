@@ -305,7 +305,7 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateCreating},
 		Target:  []string{provisioning.StateOK, provisioning.StateCreationFailed},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, _, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, plan.SubaccountId.ValueString(), cliRes.Id)
 
 			if tfutils.IsRetriableErrorForEnvInstance(err) {
@@ -376,7 +376,7 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateUpdating},
 		Target:  []string{provisioning.StateOK, provisioning.StateUpdateFailed},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, _, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, plan.SubaccountId.ValueString(), plan.Id.ValueString())
 
 			if tfutils.IsRetriableErrorForEnvInstance(err) {
@@ -435,7 +435,7 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{provisioning.StateDeleting},
 		Target:  []string{"DELETED", provisioning.StateDeletionFailed},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, comRes, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, state.SubaccountId.ValueString(), cliRes.Id)
 
 			if comRes.StatusCode == http.StatusNotFound {

@@ -24,8 +24,8 @@ type ListedPlatformResponseObject struct {
 	// The description of the platform.
 	Description string `json:"description,omitempty"`
 	// The time the platform was created. <br/>In ISO 8601 format:</br> YYYY-MM-DDThh:mm:ssTZD
-	CreatedAt time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 	// The last time the platform was updated. <br/>In ISO 8601 format.
-	UpdatedAt time.Time            `json:"updated_at,omitempty"`
+	UpdatedAt time.Time            `json:"updated_at"`
 	Labels    *map[string][]string `json:"labels,omitempty"`
 }

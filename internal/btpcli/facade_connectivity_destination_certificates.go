@@ -57,7 +57,7 @@ func (f *connectivityDestinationCertificatesFacade) Create(ctx context.Context, 
 		params["serviceInstance"] = args.ServiceInstanceId
 	}
 
-	_, res, err := doExecute[interface{}](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
+	_, res, err := doExecute[any](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 
 	if err != nil {
 		return destinations.DestinationCertificateResponseObject{}, res, err

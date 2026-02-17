@@ -72,9 +72,7 @@ func BuildDestinationConfigurationJSON(destination subaccountDestinationResource
 		if err != nil {
 			return "", err
 		}
-		for k, v := range extra {
-			config[k] = v
-		}
+		maps.Copy(config, extra)
 	}
 
 	jsonBytes, err := json.Marshal(config)

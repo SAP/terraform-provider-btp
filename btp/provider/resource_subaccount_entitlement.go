@@ -195,7 +195,7 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 	readStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK, cis_entitlements.StateProcessingFailed},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
@@ -312,7 +312,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), isParentGlobalAccount, parentId)
 
@@ -409,7 +409,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{"DELETED"},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
 

@@ -236,7 +236,7 @@ func (rs *subaccountServiceBindingResource) Create(ctx context.Context, req reso
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{servicemanager.StateSucceeded},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, _, err := rs.cli.Services.Binding.GetById(ctx, plan.SubaccountId.ValueString(), cliRes.Id)
 
 			if err != nil {
@@ -310,7 +310,7 @@ func (rs *subaccountServiceBindingResource) Delete(ctx context.Context, req reso
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{"DELETED"},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, comRes, err := rs.cli.Services.Binding.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 
 			if comRes.StatusCode == http.StatusNotFound {

@@ -10,5 +10,5 @@ package saas_manager_service
 
 type ApplicationSubscriptionRequestPayload struct {
 	// Additional subscription parameters determined by the application provider.
-	SubscriptionParams *interface{} `json:"subscriptionParams,omitempty"`
+	SubscriptionParams *any `json:"subscriptionParams,omitempty"`
 }

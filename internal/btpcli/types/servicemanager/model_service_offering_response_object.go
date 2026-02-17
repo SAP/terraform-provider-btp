@@ -41,7 +41,7 @@ type ServiceOfferingResponseObject struct {
 	// The catalog name of the service offering.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The time the service offering was created. <br> In ISO 8601 format:</br> YYYY-MM-DDThh:mm:ssTZD
-	CreatedAt time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 	// The last time the service offering was updated. <br/> In ISO 8601 format.
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

@@ -12,6 +12,9 @@ lefthook:
 build:
 	go build -v ./...
 
+fix:
+	go fix -v ./...
+
 install: build
 	go install -v ./...
 
@@ -30,4 +33,4 @@ test:
 testacc:
 	$(SETENV) TF_ACC=1 && go test -v -cover -tags=all -timeout 120m ./...
 
-.PHONY: build install lint generate fmt test testacc
+.PHONY: build fix install lint generate fmt test testacc

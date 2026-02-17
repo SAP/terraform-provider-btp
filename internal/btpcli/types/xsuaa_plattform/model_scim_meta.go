@@ -15,6 +15,6 @@ import (
 type ScimMeta struct {
 	Attributes   []string  `json:"attributes,omitempty"`
 	Version      int32     `json:"version,omitempty"`
-	Created      time.Time `json:"created,omitempty"`
-	LastModified time.Time `json:"lastModified,omitempty"`
+	Created      time.Time `json:"created"`
+	LastModified time.Time `json:"lastModified"`
 }

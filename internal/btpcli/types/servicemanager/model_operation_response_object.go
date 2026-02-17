@@ -37,11 +37,11 @@ type OperationResponseObject struct {
 	// Whether the operation has reached a checkpoint and can be executed again.
 	Reschedule bool `json:"reschedule,omitempty"`
 	// The time the resource is scheduled for deletion. <br/>In ISO 8601 format:</br> YYYY-MM-DDThh:mm:ssTZD
-	DeletionScheduled time.Time `json:"deletion_scheduled,omitempty"`
+	DeletionScheduled time.Time `json:"deletion_scheduled"`
 	// The time the resource was created. <br/>In ISO 8601 format.
-	CreatedAt time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 	// The last time the resource was updated. <br/>In ISO 8601 format. <br/>Recommended field if \"state\": \"succeeded\" or \"state\": \"failed\".
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at"`
 	// The list of the errors if the operation has failed.
 	// Manually changed from type []ModelError to generic json.RawMessage due to NGPBUG-371222
 	Errors json.RawMessage      `json:"errors,omitempty"`
