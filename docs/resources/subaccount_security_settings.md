@@ -76,4 +76,11 @@ import {
   to = btp_subaccount_security_settings.<resource_name>
   id = "<subaccount_id>"
 }
+
+import {
+to = btp_subaccount_security_settings.<resource_name>
+identity = {
+  subaccount_id = "<subaccount_id>"
+  }
+}
 ```
