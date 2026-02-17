@@ -572,5 +572,7 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 func (p *btpcliProvider) ListResources(_ context.Context) []func() list.ListResource {
 	return []func() list.ListResource{
 		NewGlobalaccountRoleListResource,
+		NewDirectoryEntitlementListResource,
+		NewDirectoryRoleCollectionListResource,
 	}
 }
