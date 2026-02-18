@@ -9,6 +9,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 )
 
 func TestResourceSubaccount(t *testing.T) {
@@ -55,6 +57,45 @@ func TestResourceSubaccount(t *testing.T) {
 					ResourceName:      "btp_subaccount.uut",
 					ImportState:       true,
 					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+	t.Run("happy path with import", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_with_import")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccount("uut", "integration-test-acc-dyn", "eu12", "integration-test-acc-dyn"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "name", "integration-test-acc-dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "description", ""),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "subdomain", "integration-test-acc-dyn"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "created_by", user.Username),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "UNSET"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity(
+							"btp_subaccount.uut",
+							map[string]knownvalue.Check{
+								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
+							},
+						),
+					},
+				},
+				{
+					ResourceName:    "btp_subaccount.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})
