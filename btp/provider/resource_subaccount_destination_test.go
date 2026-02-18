@@ -402,14 +402,14 @@ func hclResourceDestination(resourceName string, displayName string, destType st
 	if len(additionalConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range additionalConfig {
-			configBuilder.WriteString(fmt.Sprintf("		%s = \"%s\"\n", k, v))
+			fmt.Fprintf(&configBuilder, "		%s = \"%s\"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination" "%s" {
 	name           = "%s"
@@ -430,14 +430,14 @@ func hclResourceDestinationTCP(resourceName string, displayName string, destType
 	if len(additionalConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range additionalConfig {
-			configBuilder.WriteString(fmt.Sprintf("		%s = \"%s\"\n", k, v))
+			fmt.Fprintf(&configBuilder, "		%s = \"%s\"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination" "%s" {
 	name           = "%s"
@@ -455,14 +455,14 @@ func hclResourceDestinationLDAP(resourceName string, displayName string, destTyp
 	if len(additionalConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range additionalConfig {
-			configBuilder.WriteString(fmt.Sprintf(`        "%s" = "%s"`+"\n", k, v))
+			fmt.Fprintf(&configBuilder, `        "%s" = "%s"`+"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination" "%s" {
 	name           = "%s"
@@ -479,14 +479,14 @@ func hclResourceDestinationMAIL(resourceName string, displayName string, destTyp
 	if len(additionalConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range additionalConfig {
-			configBuilder.WriteString(fmt.Sprintf(`        "%s" = "%s"`+"\n", k, v))
+			fmt.Fprintf(&configBuilder, `        "%s" = "%s"`+"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination" "%s" {
 	name           = "%s"
@@ -504,14 +504,14 @@ func hclResourceDestinationRFC(resourceName string, displayName string, destType
 	if len(additionalConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range additionalConfig {
-			configBuilder.WriteString(fmt.Sprintf(`        "%s" = "%s"`+"\n", k, v))
+			fmt.Fprintf(&configBuilder, `        "%s" = "%s"`+"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination" "%s" {
 	name           = "%s"
@@ -529,14 +529,14 @@ func hclResourceDestinationWithServiceInstance(resourceName string, displayName 
 	if len(additionalConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range additionalConfig {
-			configBuilder.WriteString(fmt.Sprintf("		%s = \"%s\"\n", k, v))
+			fmt.Fprintf(&configBuilder, "		%s = \"%s\"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`additional_configuration = jsonencode({
 %s  	})`, configBuilder.String())
 	}
 
-	template := ` 
+	template := `
 	data "btp_subaccounts" "all" {}
 	data "btp_subaccount_service_instance" "dest" {
   		subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
