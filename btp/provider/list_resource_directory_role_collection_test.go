@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/list"
@@ -99,8 +100,32 @@ func TestDirectoryRoleCollectionListResource(t *testing.T) {
 		})
 	})
 
+	t.Run("error path - Access forbidden", func(t *testing.T) {
+		notFoundDirectoryID := "00000000-0000-0000-0000-000000000000"
+
+		rec, user := setupVCR(t, "fixtures/list_resource_directory_role_collection_access_forbidden")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Query: true,
+					Config: hclProviderFor(user) + listDirectoryRoleCollectionQueryConfig(
+						"not_found_test",
+						"btp",
+						notFoundDirectoryID,
+					),
+
+					ExpectError: regexp.MustCompile(`Access forbidden due to insufficient authorization|403`),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - configure", func(t *testing.T) {
-		r := NewGlobalaccountRoleCollectionListResource().(list.ListResourceWithConfigure)
+		r := NewDirectoryRoleCollectionListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{
 			ProviderData: struct{}{}, // Wrong type

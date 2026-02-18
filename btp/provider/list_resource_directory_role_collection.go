@@ -57,7 +57,7 @@ func (r *directoryRoleCollectionListType) ListResourceConfigSchema(
 	req list.ListResourceSchemaRequest,
 	resp *list.ListResourceSchemaResponse,
 ) {
-	// This list resource takes the directory ID as input to filter entitlements.
+	// This list resource takes the directory ID as input to filter directory role collections.
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "This list resource allows you to discover all role collections available within a specific BTP Directory. It requires the directory ID as input.",
 		Attributes: map[string]schema.Attribute{
@@ -103,7 +103,7 @@ func (r *directoryRoleCollectionListType) List(
 			result := req.NewListResult(ctx)
 
 			result.Identity.SetAttribute(ctx, path.Root("name"), types.StringValue(value.Name))
-			result.Identity.SetAttribute(ctx, path.Root("directory_id"), filter.DirectoryID.ValueString())
+			result.Identity.SetAttribute(ctx, path.Root("directory_id"), filter.DirectoryID)
 
 			if req.IncludeResource {
 				roles := []directoryRoleCollectionRoleRefType{}

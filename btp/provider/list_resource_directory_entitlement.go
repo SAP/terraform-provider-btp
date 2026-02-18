@@ -102,7 +102,7 @@ func (r *directoryEntitlementListResource) List(
 			for _, servicePlan := range service.ServicePlans {
 				result := req.NewListResult(ctx)
 
-				result.Identity.SetAttribute(ctx, path.Root("directory_id"), filter.DirectoryID.ValueString())
+				result.Identity.SetAttribute(ctx, path.Root("directory_id"), filter.DirectoryID)
 				result.Identity.SetAttribute(ctx, path.Root("service_name"), types.StringValue(service.Name))
 				result.Identity.SetAttribute(ctx, path.Root("plan_name"), types.StringValue(servicePlan.Name))
 
