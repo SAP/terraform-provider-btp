@@ -351,7 +351,7 @@ func hclResourceDestinationGeneric(resourceName string, subaccountName string, d
 	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range destinationConfig {
-			configBuilder.WriteString(fmt.Sprintf("		%s = \"%s\"\n", k, v))
+			fmt.Fprintf(&configBuilder, "		%s = \"%s\"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
@@ -374,7 +374,7 @@ func hclResourceDestinationGenericWithServiceInstance(resourceName string, subac
 	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range destinationConfig {
-			configBuilder.WriteString(fmt.Sprintf("		%s = \"%s\"\n", k, v))
+			fmt.Fprintf(&configBuilder, "		%s = \"%s\"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
@@ -402,7 +402,7 @@ func hclResourceDestinationGenericTCP(resourceName string, subaccountName string
 	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range destinationConfig {
-			configBuilder.WriteString(fmt.Sprintf("		%s = \"%s\"\n", k, v))
+			fmt.Fprintf(&configBuilder, "		%s = \"%s\"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
@@ -425,7 +425,7 @@ func hclResourceDestinationGenericLDAP(resourceName string, subaccountName strin
 	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range destinationConfig {
-			configBuilder.WriteString(fmt.Sprintf(`        "%s" = "%s"`+"\n", k, v))
+			fmt.Fprintf(&configBuilder, `        "%s" = "%s"`+"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
@@ -447,7 +447,7 @@ func hclResourceDestinationGenericMAIL(resourceName string, subaccountName strin
 	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range destinationConfig {
-			configBuilder.WriteString(fmt.Sprintf(`        "%s" = "%s"`+"\n", k, v))
+			fmt.Fprintf(&configBuilder, `        "%s" = "%s"`+"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
@@ -470,7 +470,7 @@ func hclResourceDestinationGenericRFC(resourceName string, subaccountName string
 	if len(destinationConfig) > 0 {
 		var configBuilder strings.Builder
 		for k, v := range destinationConfig {
-			configBuilder.WriteString(fmt.Sprintf(`        "%s" = "%s"`+"\n", k, v))
+			fmt.Fprintf(&configBuilder, `        "%s" = "%s"`+"\n", k, v)
 		}
 
 		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
