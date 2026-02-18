@@ -277,7 +277,7 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
 
 			if err != nil {
@@ -360,7 +360,7 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{"DELETED"},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 
 			entitlement, _, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
 

@@ -389,7 +389,7 @@ func (rs *subaccountServiceBrokerResource) createStateChange(ctx context.Context
 	return &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{servicemanager.StateSucceeded},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, _, err := rs.cli.Services.Broker.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
 
 			if err != nil {

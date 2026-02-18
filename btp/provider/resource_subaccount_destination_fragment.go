@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"maps"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -372,9 +373,7 @@ func buildPayload(name string, rawContent map[string]string) map[string]string {
 		"FragmentName": name,
 	}
 
-	for k, v := range rawContent {
-		payload[k] = v
-	}
+	maps.Copy(payload, rawContent)
 	return payload
 }
 

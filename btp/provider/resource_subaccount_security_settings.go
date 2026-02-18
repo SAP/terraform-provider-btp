@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
@@ -127,6 +128,20 @@ __Further documentation:__
 	}
 }
 
+type subaccountSecuritySettingsResourceIdentityModel struct {
+	SubaccountId types.String `tfsdk:"subaccount_id"`
+}
+
+func (rs *subaccountSecuritySettingsResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"subaccount_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *subaccountSecuritySettingsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state subaccountSecuritySettingsType
 
@@ -165,6 +180,18 @@ func (rs *subaccountSecuritySettingsResource) Read(ctx context.Context, req reso
 
 	diags = resp.State.Set(ctx, &updatedState)
 	resp.Diagnostics.Append(diags...)
+
+	var identity subaccountSecuritySettingsResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = subaccountSecuritySettingsResourceIdentityModel{
+			SubaccountId: updatedState.SubaccountId,
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *subaccountSecuritySettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -223,6 +250,12 @@ func (rs *subaccountSecuritySettingsResource) Create(ctx context.Context, req re
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	identity := subaccountSecuritySettingsResourceIdentityModel{
+		SubaccountId: state.Id,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -328,5 +361,9 @@ func (rs *subaccountSecuritySettingsResource) Delete(ctx context.Context, req re
 }
 
 func (rs *subaccountSecuritySettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), req.ID)...)
+	if req.ID != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), req.ID)...)
+		return
+	}
+	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("subaccount_id"), path.Root("subaccount_id"), req, resp)
 }

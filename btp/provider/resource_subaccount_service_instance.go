@@ -434,7 +434,7 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{"DELETED"},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, cmdRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 
 			if cmdRes.StatusCode == http.StatusTooManyRequests {
@@ -516,7 +516,7 @@ func (rs *subaccountServiceInstanceResource) CreateStateChange(ctx context.Conte
 	return tfutils.StateChangeConf{
 			Pending: []string{servicemanager.StateInProgress},
 			Target:  []string{servicemanager.StateSucceeded},
-			Refresh: func() (interface{}, string, error) {
+			Refresh: func() (any, string, error) {
 				subRes, cmdRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
 
 				if cmdRes.StatusCode == http.StatusTooManyRequests {
@@ -559,7 +559,7 @@ func (rs *subaccountServiceInstanceResource) UpdateStateChange(ctx context.Conte
 	return tfutils.StateChangeConf{
 		Pending: []string{servicemanager.StateInProgress},
 		Target:  []string{servicemanager.StateSucceeded},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, cmdRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), cliRes.Id)
 
 			if cmdRes.StatusCode == http.StatusTooManyRequests {

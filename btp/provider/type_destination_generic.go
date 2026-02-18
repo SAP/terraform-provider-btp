@@ -179,7 +179,7 @@ func destinationGenericDatasourceValueFrom(value connectivity.DestinationRespons
 }
 
 func ValidateFromJSON(jsonStr string) error {
-	var m map[string]interface{}
+	var m map[string]any
 
 	if err := json.Unmarshal([]byte(jsonStr), &m); err != nil {
 		return fmt.Errorf("invalid JSON: %w", err)

@@ -17,7 +17,7 @@ func (s *ServiceManagerLabels) UnmarshalJSON(data []byte) error {
 	for _, match := range matches {
 		valuesMap := make(map[string]struct{})
 
-		for _, val := range strings.Split(match[2], ",") {
+		for val := range strings.SplitSeq(match[2], ",") {
 			valuesMap[strings.TrimSpace(val)] = struct{}{}
 		}
 

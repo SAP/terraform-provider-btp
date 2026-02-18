@@ -12,5 +12,5 @@ type CreateSubscriptionRequestPayload struct {
 	// The name of the subscription plan to a multitenant application
 	PlanName string `json:"planName,omitempty"`
 	// Additional subscription parameters determined by the application provider.
-	SubscriptionParams *interface{} `json:"subscriptionParams,omitempty"`
+	SubscriptionParams *any `json:"subscriptionParams,omitempty"`
 }

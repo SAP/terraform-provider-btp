@@ -272,7 +272,7 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 	createStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateCreating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateCreationFailed, cis.StateCanceled},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid, adminDirectoryId)
 
 			if err != nil {
@@ -379,7 +379,7 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 	deleteStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateDeleting, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateDeletionFailed, cis.StateCanceled, "DELETED"},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, comRes, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid, adminDirectoryId)
 
 			if comRes.StatusCode == http.StatusNotFound || comRes.StatusCode == http.StatusForbidden {
@@ -465,7 +465,7 @@ func (rs *directoryResource) enableDirectory(ctx context.Context, plan directory
 	enableStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateUpdating, cis.StateStarted, cis.StateDeleting, cis.StateCreating},
 		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid, adminDirectoryId)
 
 			if err != nil {
@@ -533,7 +533,7 @@ func (rs *directoryResource) updateDirectory(ctx context.Context, plan directory
 	updateStateConf := &tfutils.StateChangeConf{
 		Pending: []string{cis.StateUpdating, cis.StateStarted},
 		Target:  []string{cis.StateOK, cis.StateUpdateFailed, cis.StateCanceled},
-		Refresh: func() (interface{}, string, error) {
+		Refresh: func() (any, string, error) {
 			subRes, _, err := rs.cli.Accounts.Directory.Get(ctx, cliRes.Guid, adminDirectoryId)
 
 			if err != nil {

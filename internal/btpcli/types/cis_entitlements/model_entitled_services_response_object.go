@@ -10,7 +10,7 @@ package cis_entitlements
 
 type EntitledServicesResponseObject struct {
 	// The application coordinates provided in metadata.
-	ApplicationCoordinates *interface{}                    `json:"applicationCoordinates,omitempty"`
+	ApplicationCoordinates *any                            `json:"applicationCoordinates,omitempty"`
 	BusinessCategory       *BusinessCategoryResponseObject `json:"businessCategory,omitempty"`
 	// Description of the service for customer-facing UIs.
 	Description string `json:"description,omitempty"`

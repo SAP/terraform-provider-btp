@@ -25,8 +25,8 @@ type ServiceBrokerResponseObject struct {
 	// The URL of the service broker.
 	BrokerUrl string `json:"broker_url,omitempty"`
 	// The time the service broker was created. <br/>In ISO 8601 format:</br> YYYY-MM-DDThh:mm:ssTZD
-	CreatedAt time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 	// The last time the service broker was updated. <br/>In ISO 8601 format.
-	UpdatedAt time.Time            `json:"updated_at,omitempty"`
+	UpdatedAt time.Time            `json:"updated_at"`
 	Labels    ServiceManagerLabels `json:"labels,omitempty"`
 }

@@ -11,5 +11,5 @@ package saas_manager_service
 // Custom properties of the application its provider is updating to be passed to its dependent services.
 type UpdateApplicationDependenciesRequestPayload struct {
 	// A JSON object with key-value pairs. Values can further be JSON objects. (nested structure)
-	AppProviderCustomProperties *interface{} `json:"appProviderCustomProperties,omitempty"`
+	AppProviderCustomProperties *any `json:"appProviderCustomProperties,omitempty"`
 }

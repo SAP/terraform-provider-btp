@@ -146,6 +146,12 @@ var replacePlanModifier = func(ctx context.Context, request planmodifier.StringR
 		return
 	}
 
+	if planVal.DestinationConfiguration.IsNull() || stateVal.DestinationConfiguration.IsNull() ||
+		planVal.DestinationConfiguration.IsUnknown() || stateVal.DestinationConfiguration.IsUnknown() ||
+		planVal.DestinationConfiguration.ValueString() == "" || stateVal.DestinationConfiguration.ValueString() == "" {
+		return
+	}
+
 	extractName := func(jsonStr string) (string, error) {
 		var config map[string]any
 		err := json.Unmarshal([]byte(jsonStr), &config)
