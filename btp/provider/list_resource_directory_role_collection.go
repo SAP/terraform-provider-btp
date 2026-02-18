@@ -69,7 +69,7 @@ func (r *directoryRoleCollectionListType) ListResourceConfigSchema(
 	}
 }
 
-// List streams all global account roles from the API
+// List streams directory role collections from the API
 func (r *directoryRoleCollectionListType) List(
 	ctx context.Context,
 	req list.ListRequest,
@@ -87,8 +87,8 @@ func (r *directoryRoleCollectionListType) List(
 	if err != nil {
 		var diags diag.Diagnostics
 		diags.AddError(
-			"API Error Reading Resource Role (Global Account)",
-			fmt.Sprintf("Failed to list roles: %s", err),
+			"API Error Reading Resource Role Collection (Directory)",
+			fmt.Sprintf("Failed to list directory role collections: %s", err),
 		)
 
 		stream.Results = list.ListResultsStreamDiagnostics(diags)

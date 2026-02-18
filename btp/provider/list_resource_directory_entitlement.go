@@ -69,7 +69,7 @@ func (r *directoryEntitlementListResource) ListResourceConfigSchema(
 	}
 }
 
-// List streams all directory entitlements from the API
+// List streams directory entitlements from the API
 func (r *directoryEntitlementListResource) List(
 	ctx context.Context,
 	req list.ListRequest,
@@ -87,8 +87,8 @@ func (r *directoryEntitlementListResource) List(
 	if err != nil {
 		var diags diag.Diagnostics
 		diags.AddError(
-			"API Error Reading Resource Role (Global Account)",
-			fmt.Sprintf("Failed to list roles: %s", err),
+			"API Error Reading Resource Entitlement (Directory)",
+			fmt.Sprintf("Failed to list directory entitlements: %s", err),
 		)
 
 		stream.Results = list.ListResultsStreamDiagnostics(diags)
@@ -107,19 +107,7 @@ func (r *directoryEntitlementListResource) List(
 				result.Identity.SetAttribute(ctx, path.Root("plan_name"), types.StringValue(servicePlan.Name))
 
 				if req.IncludeResource {
-					resDm := &directoryEntitlementType{
-						DirectoryId:          filter.DirectoryID,
-						Id:                   types.StringValue(servicePlan.UniqueIdentifier),
-						ServiceName:          types.StringValue(service.Name),
-						PlanName:             types.StringValue(servicePlan.Name),
-						PlanUniqueIdentifier: types.StringValue(servicePlan.UniqueIdentifier),
-						Amount:               types.Int64Value(int64(servicePlan.Amount)),
-						AutoAssign:           types.BoolValue(servicePlan.AutoAssign),
-						AutoDistributeAmount: types.Int64Value(int64(servicePlan.AutoDistributeAmount)),
-						Category:             types.StringValue(servicePlan.Category),
-						PlanId:               types.StringValue(servicePlan.UniqueIdentifier),
-						Distribute:           types.BoolValue(false),
-					}
+					resDm := directoryEntitlementListValueFrom(service, servicePlan, filter.DirectoryID.ValueString())
 
 					// Set the resource information on the result
 					result.Diagnostics.Append(result.Resource.Set(ctx, resDm)...)
