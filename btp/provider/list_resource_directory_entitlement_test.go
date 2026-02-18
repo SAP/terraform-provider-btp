@@ -110,6 +110,9 @@ func TestDirectoryEntitlementListResource(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_14_0),
+			},
 			Steps: []resource.TestStep{
 				{
 					Query:       true,
