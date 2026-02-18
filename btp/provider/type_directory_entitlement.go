@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis_entitlements"
 )
 
 type directoryEntitlementType struct {
@@ -43,4 +44,24 @@ func directoryEntitlementValueFrom(ctx context.Context, value btpcli.UnfoldedEnt
 	directoryEntitlement.Distribute = types.BoolValue(distribute)
 
 	return directoryEntitlement, diag.Diagnostics{}
+}
+
+func directoryEntitlementListValueFrom(service cis_entitlements.EntitledServicesResponseObject, servicePlan cis_entitlements.ServicePlanResponseObject, directoryId string) *directoryEntitlementType {
+	resDm := &directoryEntitlementType{
+		DirectoryId:          types.StringValue(directoryId),
+		Id:                   types.StringValue(servicePlan.UniqueIdentifier),
+		ServiceName:          types.StringValue(service.Name),
+		PlanName:             types.StringValue(servicePlan.Name),
+		PlanUniqueIdentifier: types.StringValue(servicePlan.UniqueIdentifier),
+		AutoAssign:           types.BoolValue(servicePlan.AutoAssign),
+		AutoDistributeAmount: types.Int64Value(int64(servicePlan.AutoDistributeAmount)),
+		Category:             types.StringValue(servicePlan.Category),
+		PlanId:               types.StringValue(servicePlan.UniqueIdentifier),
+	}
+
+	if isTransferAmountRequired(resDm.Category.ValueString()) {
+		resDm.Amount = types.Int64Value(int64(servicePlan.Amount))
+	}
+
+	return resDm
 }
