@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/list/schema"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -23,7 +25,10 @@ func NewSubaccountServiceBrokerListResource() list.ListResource {
 	return &subaccountServiceBrokerListResource{}
 }
 
-type SubaccountServiceBrokerListResourceFilter struct {
+type subaccountServiceBrokerListResourceFilter struct {
+	SubaccountId types.String `tfsdk:"subaccount_id"`
+	FieldsFilter types.String `tfsdk:"fields_filter"`
+	LabelsFilter types.String `tfsdk:"labels_filter"`
 }
 
 func (r *subaccountServiceBrokerListResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -56,26 +61,62 @@ func (r *subaccountServiceBrokerListResource) ListResourceConfigSchema(
 	req list.ListResourceSchemaRequest,
 	resp *list.ListResourceSchemaResponse,
 ) {
-	// This list resource takes no input configurations (e.g. filters)
-	// from the HCL, so the schema remains empty.
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This list resource allows you to discover all role collections available within the configured BTP Global Account. It does not require any input configuration filters.",
+		MarkdownDescription: "This list resource allows you to discover all service brokers available within the configured subaccount. The results can be filtered using `fields_filter` or `labels_filter`.",
+		Attributes: map[string]schema.Attribute{
+			"subaccount_id": schema.StringAttribute{
+				MarkdownDescription: "The ID of the subaccount.",
+				Required:            true,
+			},
+			"fields_filter": schema.StringAttribute{
+				MarkdownDescription: "Filters the service brokers based on their fields. For example, to display a service broker with the name 'my-service-broker2', use \"name eq 'my-service-broker2'\".",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
+			"labels_filter": schema.StringAttribute{
+				MarkdownDescription: "Filters the service brokers based on the label query. For example, to display a service broker with the label 'country', whose value is 'France', use \"country eq 'France'\".",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
+		},
 	}
 }
 
-// List streams all global account role collections from the API
+// List streams all service brokers for given subaccount from the API
 func (r *subaccountServiceBrokerListResource) List(
 	ctx context.Context,
 	req list.ListRequest,
 	stream *list.ListResultsStream,
 ) {
 
-	cliRes, _, err := r.client.Security.RoleCollection.ListByGlobalAccount(ctx)
+	var (
+		filter                     subaccountServiceBrokerListResourceFilter
+		fieldsFilter, labelsFilter string
+	)
+
+	if diags := req.Config.Get(ctx, &filter); diags.HasError() {
+		stream.Results = list.ListResultsStreamDiagnostics(diags)
+		return
+	}
+
+	if !filter.FieldsFilter.IsNull() {
+		fieldsFilter = filter.FieldsFilter.ValueString()
+	}
+
+	if !filter.LabelsFilter.IsNull() {
+		labelsFilter = filter.LabelsFilter.ValueString()
+	}
+
+	cliRes, _, err := r.client.Services.Broker.List(ctx, filter.SubaccountId.ValueString(), fieldsFilter, labelsFilter)
 	if err != nil {
 		var diags diag.Diagnostics
 		diags.AddError(
-			"API Error Reading Resource Role Collection (Global Account)",
-			fmt.Sprintf("Failed to list role collections: %s", err),
+			"API Error Reading Resource Service Broker (Subaccount)",
+			fmt.Sprintf("Failed to list service brokers: %s", err),
 		)
 
 		stream.Results = list.ListResultsStreamDiagnostics(diags)
@@ -85,32 +126,27 @@ func (r *subaccountServiceBrokerListResource) List(
 
 	stream.Results = func(push func(list.ListResult) bool) {
 
-		for _, value := range cliRes {
+		for _, broker := range cliRes {
 
 			result := req.NewListResult(ctx)
 
-			result.Identity.SetAttribute(ctx, path.Root("name"), types.StringValue(value.Name))
+			result.Identity.SetAttribute(ctx, path.Root("subaccount_id"), filter.SubaccountId)
+			result.Identity.SetAttribute(ctx, path.Root("id"), types.StringValue(broker.Id))
 
 			if req.IncludeResource {
-				resDm := &globalaccountRoleCollectionType{
-					Name:        types.StringValue(value.Name),
-					Description: types.StringValue(value.Description),
-					Id:          types.StringValue(value.Name),
+				resServiceBroker := &subaccountServiceBrokerResourceType{
+					Name:         types.StringValue(broker.Name),
+					Description:  types.StringValue(broker.Description),
+					Id:           types.StringValue(broker.Id),
+					Url:          types.StringValue(broker.BrokerUrl),
+					SubaccountId: filter.SubaccountId,
+					Ready:        types.BoolValue(broker.Ready),
+					CreatedDate:  timeToValue(broker.CreatedAt),
+					LastModified: timeToValue(broker.UpdatedAt),
 				}
-
-				roles := []globalaccountRoleCollectionRoleRefType{}
-				for _, role := range value.RoleReferences {
-					roles = append(roles, globalaccountRoleCollectionRoleRefType{
-						RoleTemplateName:  types.StringValue(role.RoleTemplateName),
-						RoleTemplateAppId: types.StringValue(role.RoleTemplateAppId),
-						Name:              types.StringValue(role.Name),
-					})
-				}
-
-				resDm.Roles = roles
 
 				// Set the resource information on the result
-				result.Diagnostics.Append(result.Resource.Set(ctx, resDm)...)
+				result.Diagnostics.Append(result.Resource.Set(ctx, resServiceBroker)...)
 			}
 
 			if !push(result) {

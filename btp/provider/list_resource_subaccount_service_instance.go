@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/list/schema"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -19,8 +21,14 @@ type subaccountServiceInstanceListResource struct {
 	client *btpcli.ClientFacade
 }
 
+type subaccountServiceInstanceListResourceFilter struct {
+	SubaccountId types.String `tfsdk:"subaccount_id"`
+	FieldsFilter types.String `tfsdk:"fields_filter"`
+	LabelsFilter types.String `tfsdk:"labels_filter"`
+}
+
 func NewSubaccountServiceInstanceListResource() list.ListResource {
-	return &GlobalaccountRoleCollectionListResource{}
+	return &subaccountServiceInstanceListResource{}
 }
 
 func (r *subaccountServiceInstanceListResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -53,26 +61,62 @@ func (r *subaccountServiceInstanceListResource) ListResourceConfigSchema(
 	req list.ListResourceSchemaRequest,
 	resp *list.ListResourceSchemaResponse,
 ) {
-	// This list resource takes no input configurations (e.g. filters)
-	// from the HCL, so the schema remains empty.
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This list resource allows you to discover all role collections available within the configured BTP Global Account. It does not require any input configuration filters.",
+		MarkdownDescription: "This list resource allows you to discover all service instances available within the configured subaccount. The results can be filtered using `fields_filter` or `labels_filter`.",
+		Attributes: map[string]schema.Attribute{
+			"subaccount_id": schema.StringAttribute{
+				MarkdownDescription: "The ID of the subaccount.",
+				Required:            true,
+			},
+			"fields_filter": schema.StringAttribute{
+				MarkdownDescription: "Filters the instances based on their fields. For example, to list all instances that are usable, use \"usable eq 'true'\".",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
+			"labels_filter": schema.StringAttribute{
+				MarkdownDescription: "Filters the instances based on the label query.  For example, to list all instances that are available in a production landscape, use \"landscape eq 'production'\".",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
+		},
 	}
 }
 
-// List streams all global account role collections from the API
+// List streams all service instances for given subaccount from the API
 func (r *subaccountServiceInstanceListResource) List(
 	ctx context.Context,
 	req list.ListRequest,
 	stream *list.ListResultsStream,
 ) {
 
-	cliRes, _, err := r.client.Security.RoleCollection.ListByGlobalAccount(ctx)
+	var (
+		filter                     subaccountServiceInstanceListResourceFilter
+		fieldsFilter, labelsFilter string
+	)
+
+	if diags := req.Config.Get(ctx, &filter); diags.HasError() {
+		stream.Results = list.ListResultsStreamDiagnostics(diags)
+		return
+	}
+
+	if !filter.FieldsFilter.IsNull() {
+		fieldsFilter = filter.FieldsFilter.ValueString()
+	}
+
+	if !filter.LabelsFilter.IsNull() {
+		labelsFilter = filter.LabelsFilter.ValueString()
+	}
+
+	cliRes, _, err := r.client.Services.Instance.List(ctx, filter.SubaccountId.ValueString(), fieldsFilter, labelsFilter)
 	if err != nil {
 		var diags diag.Diagnostics
 		diags.AddError(
-			"API Error Reading Resource Role Collection (Global Account)",
-			fmt.Sprintf("Failed to list role collections: %s", err),
+			"API Error Reading Resource Service Instance (Subaccount)",
+			fmt.Sprintf("Failed to list service instances: %s", err),
 		)
 
 		stream.Results = list.ListResultsStreamDiagnostics(diags)
@@ -82,32 +126,22 @@ func (r *subaccountServiceInstanceListResource) List(
 
 	stream.Results = func(push func(list.ListResult) bool) {
 
-		for _, value := range cliRes {
+		for _, serviceInstance := range cliRes {
 
 			result := req.NewListResult(ctx)
 
-			result.Identity.SetAttribute(ctx, path.Root("name"), types.StringValue(value.Name))
+			result.Identity.SetAttribute(ctx, path.Root("subaccount_id"), filter.SubaccountId)
+			result.Identity.SetAttribute(ctx, path.Root("id"), types.StringValue(serviceInstance.Id))
 
 			if req.IncludeResource {
-				resDm := &globalaccountRoleCollectionType{
-					Name:        types.StringValue(value.Name),
-					Description: types.StringValue(value.Description),
-					Id:          types.StringValue(value.Name),
-				}
+				serviceInstance, diags := subaccountServiceInstanceListValueFrom(ctx, serviceInstance)
 
-				roles := []globalaccountRoleCollectionRoleRefType{}
-				for _, role := range value.RoleReferences {
-					roles = append(roles, globalaccountRoleCollectionRoleRefType{
-						RoleTemplateName:  types.StringValue(role.RoleTemplateName),
-						RoleTemplateAppId: types.StringValue(role.RoleTemplateAppId),
-						Name:              types.StringValue(role.Name),
-					})
-				}
-
-				resDm.Roles = roles
+				result.Diagnostics.Append(diags...)
 
 				// Set the resource information on the result
-				result.Diagnostics.Append(result.Resource.Set(ctx, resDm)...)
+				if !result.Diagnostics.HasError() {
+					result.Diagnostics.Append(result.Resource.Set(ctx, serviceInstance)...)
+				}
 			}
 
 			if !push(result) {
