@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 )
 
 func TestResourceDirectory(t *testing.T) {
@@ -41,6 +43,41 @@ func TestResourceDirectory(t *testing.T) {
 					ResourceName:      "btp_directory.uut",
 					ImportState:       true,
 					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - parent directory import block", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_directory_import_block")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDirectory("uut", "my-new-directory", "This is a new directory"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_directory.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_directory.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_directory.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_directory.uut", "name", "my-new-directory"),
+						resource.TestCheckResourceAttr("btp_directory.uut", "description", "This is a new directory"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity(
+							"btp_directory.uut",
+							map[string]knownvalue.Check{
+								"directory_id": knownvalue.StringRegexp(regexpValidUUID),
+							},
+						),
+					},
+				},
+				{
+					ResourceName:    "btp_directory.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})
