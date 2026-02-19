@@ -62,7 +62,7 @@ func (r *subaccountServiceBrokerListResource) ListResourceConfigSchema(
 	resp *list.ListResourceSchemaResponse,
 ) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This list resource allows you to discover all service brokers available within the configured subaccount. The results can be filtered using `fields_filter` or `labels_filter`.",
+		MarkdownDescription: "This list resource allows you to discover all service brokers available for given subaccount_id. The results can be filtered using `fields_filter` or `labels_filter`.",
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",

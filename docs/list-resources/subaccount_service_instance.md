@@ -3,12 +3,12 @@
 page_title: "btp_subaccount_service_instance List Resource - SAP BTP"
 subcategory: ""
 description: |-
-  This list resource allows you to discover all service instances available within the configured subaccount. The results can be filtered using fields_filter or labels_filter.
+  This list resource allows you to discover all service instances available for given subaccount_id. The results can be filtered using fields_filter or labels_filter.
 ---
 
 # btp_subaccount_service_instance (List Resource)
 
-This list resource allows you to discover all service instances available within the configured subaccount. The results can be filtered using `fields_filter` or `labels_filter`.
+This list resource allows you to discover all service instances available for given subaccount_id. The results can be filtered using `fields_filter` or `labels_filter`.
 
 ## Example Usage
 
