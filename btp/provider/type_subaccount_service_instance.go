@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -48,6 +49,43 @@ func subaccountServiceInstanceValueFrom(ctx context.Context, value servicemanage
 		CreatedDate:          timeToValue(value.CreatedAt),
 		LastModified:         timeToValue(value.UpdatedAt),
 		DashboardUrl:         types.StringValue(value.DashboardUrl),
+	}
+
+	var diags, diagnostics diag.Diagnostics
+
+	//Remove computed labels to avoid state inconsistencies
+	value.Labels = tfutils.RemoveComputedlabels(value.Labels)
+
+	serviceInstance.Labels, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, value.Labels)
+	diagnostics.Append(diags...)
+
+	return serviceInstance, diagnostics
+}
+
+func subaccountServiceInstanceListValueFrom(ctx context.Context, value servicemanager.ServiceInstanceResponseObject) (subaccountServiceInstanceType, diag.Diagnostics) {
+	timeoutAttrTypes := map[string]attr.Type{
+		"create": types.StringType,
+		"delete": types.StringType,
+		"update": types.StringType,
+	}
+
+	serviceInstance := subaccountServiceInstanceType{
+		SubaccountId:         types.StringValue(value.SubaccountId),
+		Id:                   types.StringValue(value.Id),
+		Ready:                types.BoolValue(value.Ready),
+		Name:                 types.StringValue(value.Name),
+		ServicePlanId:        types.StringValue(value.ServicePlanId),
+		PlatformId:           types.StringValue(value.PlatformId),
+		ReferencedInstanceId: types.StringValue(value.ReferencedInstanceId),
+		Shared:               types.BoolValue(value.Shared),
+		Context:              types.StringValue(string(value.Context)),
+		Usable:               types.BoolValue(value.Usable),
+		CreatedDate:          timeToValue(value.CreatedAt),
+		LastModified:         timeToValue(value.UpdatedAt),
+		DashboardUrl:         types.StringValue(value.DashboardUrl),
+		Timeouts: timeouts.Value{
+			Object: types.ObjectNull(timeoutAttrTypes),
+		},
 	}
 
 	var diags, diagnostics diag.Diagnostics
