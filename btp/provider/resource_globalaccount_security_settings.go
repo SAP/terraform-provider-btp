@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
@@ -104,6 +105,20 @@ __Further documentation:__
 	}
 }
 
+type globalaccountSecuritySettingsResourceIdentityModel struct {
+	GlobalaccountSubdomain types.String `tfsdk:"globalaccount_subdomain"`
+}
+
+func (rs *globalaccountSecuritySettingsResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"globalaccount_subdomain": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *globalaccountSecuritySettingsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state globalaccountSecuritySettingsType
 
@@ -131,6 +146,18 @@ func (rs *globalaccountSecuritySettingsResource) Read(ctx context.Context, req r
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
+
+	var identity globalaccountSecuritySettingsResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = globalaccountSecuritySettingsResourceIdentityModel{
+			GlobalaccountSubdomain: state.Id,
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *globalaccountSecuritySettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -167,6 +194,13 @@ func (rs *globalaccountSecuritySettingsResource) Create(ctx context.Context, req
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+
+	identity := globalaccountSecuritySettingsResourceIdentityModel{
+		GlobalaccountSubdomain: state.Id,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -240,5 +274,10 @@ func (rs *globalaccountSecuritySettingsResource) Delete(ctx context.Context, req
 }
 
 func (rs *globalaccountSecuritySettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+	if req.ID != "" {
+		resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+		return
+	}
+	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("globalaccount_subdomain"), req, resp)
+
 }
