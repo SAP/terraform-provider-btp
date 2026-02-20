@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
@@ -170,6 +171,20 @@ __Further documentation:__
 	}
 }
 
+type directoryResourceIdentityModel struct {
+	DirectoryId types.String `tfsdk:"directory_id"`
+}
+
+func (rs *directoryResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"directory_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *directoryResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state directoryType
 
@@ -203,6 +218,18 @@ func (rs *directoryResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
+
+	var identity directoryResourceIdentityModel
+
+	diags = req.Identity.Get(ctx, &identity)
+	if diags.HasError() {
+		identity = directoryResourceIdentityModel{
+			DirectoryId: state.ID,
+		}
+
+		diags = resp.Identity.Set(ctx, identity)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -295,6 +322,12 @@ func (rs *directoryResource) Create(ctx context.Context, req resource.CreateRequ
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	identity := directoryResourceIdentityModel{
+		DirectoryId: plan.ID,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -406,7 +439,11 @@ func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequ
 }
 
 func (rs *directoryResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+	if req.ID != "" {
+		resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+		return
+	}
+	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("directory_id"), req, resp)
 }
 
 func sortDiretoryFeatures(directoryFeatures []string) []string {

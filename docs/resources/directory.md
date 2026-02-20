@@ -109,4 +109,11 @@ import {
   to = btp_directory.<resource_name>
   id = "<directory_id>"
 }
+
+import {
+to = btp_directory.<resource_name>
+identity = {
+  directory_id = "<directory_id>"
+  }
+}
 ```
