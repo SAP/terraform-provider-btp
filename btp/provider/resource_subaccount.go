@@ -135,10 +135,16 @@ __Further documentation:__
 			"created_by": schema.StringAttribute{
 				MarkdownDescription: "The details of the user that created the subaccount.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"last_modified": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
@@ -148,6 +154,7 @@ __Further documentation:__
 				ElementType:         types.StringType,
 				MarkdownDescription: "The features of parent entity of the subaccount.",
 				Computed:            true,
+				// No plan modifier as field can change due to changes on parent level
 			},
 			"state": schema.StringAttribute{
 				MarkdownDescription: "The current state of the subaccount. Possible values are: \n" +
