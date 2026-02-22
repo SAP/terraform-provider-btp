@@ -409,6 +409,17 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
+	identity := subaccountEnvironmentInstanceIdentityModel{
+		SubaccountID: state.SubaccountId,
+		Id:           state.Id,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
+
 }
 
 func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

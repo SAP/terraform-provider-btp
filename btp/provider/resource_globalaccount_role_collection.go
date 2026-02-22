@@ -277,6 +277,16 @@ func (rs *globalaccountRoleCollectionResource) Update(ctx context.Context, req r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
+	identity := GlobalAccountRoleCollectionResourceIdentityModel{
+		Name: state.Name,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
 }
 
 func (rs *globalaccountRoleCollectionResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

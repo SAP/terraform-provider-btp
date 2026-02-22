@@ -64,11 +64,11 @@ func (rs *subaccountDestinationFragmentResource) Schema(_ context.Context, _ res
 
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
-- Subaccount Administrator  
-- Destination Administrator  
+- Subaccount Administrator
+- Destination Administrator
 - Connectivity and Destination Administrator
 
-To learn more about these roles, see the SAP Help documentation:  
+To learn more about these roles, see the SAP Help documentation:
 https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/user-roles?q=role+collection
 
 __Scope:__
@@ -262,6 +262,8 @@ func (rs *subaccountDestinationFragmentResource) Update(ctx context.Context, req
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
 	identity := subaccountDestinationFragmentIdentityModel{
 		SubaccountID:      plan.SubaccountID,
 		Name:              plan.Name,
@@ -270,6 +272,7 @@ func (rs *subaccountDestinationFragmentResource) Update(ctx context.Context, req
 
 	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
 }
 
 func (rs *subaccountDestinationFragmentResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
