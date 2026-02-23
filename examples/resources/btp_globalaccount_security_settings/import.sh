@@ -8,3 +8,10 @@ import {
   to = btp_globalaccount_security_settings.<resource_name>
   id = "<globalaccount_subdomain>"
 }
+
+import {
+to = btp_globalaccount_security_settings.<resource_name>
+identity = {
+  globalaccount_subdomain = "<globalaccount_subdomain>"
+  }
+}
