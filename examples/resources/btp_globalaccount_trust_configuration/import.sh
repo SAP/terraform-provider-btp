@@ -8,3 +8,10 @@ import {
   to = btp_globalaccount_trust_configuration.<resource_name>
   id = "<origin>"
 }
+
+import {
+to = btp_globalaccount_trust_configuration.<resource_name>
+identity = {
+  origin = "<origin>"
+  }
+}

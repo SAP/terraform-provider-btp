@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 )
 
 func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
@@ -54,6 +56,45 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 					ResourceName:      "btp_globalaccount_trust_configuration.uut",
 					ImportState:       true,
 					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+	t.Run("happy path - minimal configuration with import_block", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.import_block")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationMinimal("uut", testIdp),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", testIdp),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", testIdp),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "name", "btpterraform-platform"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Custom Platform Identity Provider"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "origin", "btpterraform-platform"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "id", "btpterraform-platform"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "type", "Platform"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "protocol", "OpenID Connect"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "status", "active"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "read_only", "false"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity(
+							"btp_globalaccount_trust_configuration.uut",
+							map[string]knownvalue.Check{
+								"origin": knownvalue.StringExact("btpterraform-platform"),
+							},
+						),
+					},
+				},
+				{
+					ResourceName:    "btp_globalaccount_trust_configuration.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
 				},
 			},
 		})
