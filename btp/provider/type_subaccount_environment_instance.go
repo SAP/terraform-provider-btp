@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -60,6 +61,58 @@ func subaccountEnvironmentInstanceValueFrom(ctx context.Context, value provision
 		State:           types.StringValue(value.State),
 		TenantId:        types.StringValue(value.TenantId),
 		Type_:           types.StringValue(value.Type_),
+	}
+
+	var diags, diagnostics diag.Diagnostics
+
+	normalized, err := tfutils.NormalizeJSON(value.Parameters)
+	if err != nil {
+		diags.AddError(
+			"Invalid JSON in Environment Instance Parameters",
+			"Could not normalize the JSON string found in the Environment Instance Parameters attribute: "+err.Error(),
+		)
+		diagnostics.Append(diags...)
+		return environmentInstance, diagnostics
+	}
+	environmentInstance.Parameters = jsontypes.NewNormalizedValue(normalized)
+
+	environmentInstance.CustomLabels, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, value.CustomLabels)
+	diagnostics.Append(diags...)
+
+	return environmentInstance, diagnostics
+}
+
+func subaccountEnvironmentInstanceListValueFrom(ctx context.Context, value provisioning.EnvironmentInstanceResponseObject) (subaccountEnvironmentInstanceType, diag.Diagnostics) {
+	timeoutAttrTypes := map[string]attr.Type{
+		"create": types.StringType,
+		"delete": types.StringType,
+		"update": types.StringType,
+	}
+
+	environmentInstance := subaccountEnvironmentInstanceType{
+		Id:              types.StringValue(value.Id),
+		BrokerId:        types.StringValue(value.BrokerId),
+		CreatedDate:     timeToValue(value.CreatedDate.Time()),
+		DashboardUrl:    types.StringValue(value.DashboardUrl),
+		Description:     types.StringValue(value.Description),
+		EnvironmentType: types.StringValue(value.EnvironmentType),
+		Labels:          types.StringValue(value.Labels),
+		LandscapeLabel:  types.StringValue(value.LandscapeLabel),
+		LastModified:    timeToValue(value.ModifiedDate.Time()),
+		Name:            types.StringValue(value.Name),
+		Operation:       types.StringValue(value.Operation),
+		PlanId:          types.StringValue(value.PlanId),
+		PlanName:        types.StringValue(value.PlanName),
+		PlatformId:      types.StringValue(value.PlatformId),
+		ServiceId:       types.StringValue(value.ServiceId),
+		ServiceName:     types.StringValue(value.ServiceName),
+		SubaccountId:    types.StringValue(value.SubaccountGUID),
+		State:           types.StringValue(value.State),
+		TenantId:        types.StringValue(value.TenantId),
+		Type_:           types.StringValue(value.Type_),
+		Timeouts: timeouts.Value{
+			Object: types.ObjectNull(timeoutAttrTypes),
+		},
 	}
 
 	var diags, diagnostics diag.Diagnostics
