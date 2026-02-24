@@ -205,6 +205,10 @@ __Further documentation:__
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"contract_status": schema.StringAttribute{
+				MarkdownDescription: "Shows the contract status of the subaccount.",
+				Computed:            true,
+			},
 		},
 	}
 }
@@ -510,6 +514,12 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		Target:  []string{cis.StateOK, cis.StateDeletionFailed, cis.StateCanceled, "DELETED"},
 		Refresh: func() (any, string, error) {
 			subRes, comRes, err := rs.cli.Accounts.Subaccount.Get(ctx, cliRes.Guid)
+
+			if subRes.ContractStatus == "PENDING_FORCED_DELETION" {
+				// The subaccount is marked for deletion, we remove it from the state
+				// If the pending deletion is revoked, an import of the subaccount is needed
+				return subRes, "DELETED", nil
+			}
 
 			if comRes.StatusCode == http.StatusNotFound {
 				return subRes, "DELETED", nil

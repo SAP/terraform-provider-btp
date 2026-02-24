@@ -47,4 +47,6 @@ type SubaccountResponseObject struct {
 	TechnicalName string `json:"technicalName"`
 	// Whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for non-production purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. * <b>UNSET:</b> Global account or subaccount admin has not set the production-relevancy flag. Default value. * <b>NOT_USED_FOR_PRODUCTION:</b> Subaccount is not used for production purposes. * <b>USED_FOR_PRODUCTION:</b> Subaccount is used for production purposes.
 	UsedForProduction string `json:"usedForProduction"`
+	// Added manually due to change of internal API response, not present in swagger spec
+	ContractStatus string `json:"contractStatus,omitempty"`
 }

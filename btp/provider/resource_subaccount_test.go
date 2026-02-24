@@ -82,6 +82,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "UNSET"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 					ConfigStateChecks: []statecheck.StateCheck{
 						statecheck.ExpectIdentity(
@@ -121,6 +122,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "USED_FOR_PRODUCTION"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 				},
 				{
@@ -137,6 +139,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "USED_FOR_PRODUCTION"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 				},
 				{
@@ -169,6 +172,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "UNSET"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 				},
 				{
@@ -185,6 +189,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "state", "OK"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "USED_FOR_PRODUCTION"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 				},
 			},
@@ -213,6 +218,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "NOT_USED_FOR_PRODUCTION"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "labels.foo.0", "bar"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 				},
 				{
@@ -230,6 +236,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "NOT_USED_FOR_PRODUCTION"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "true"),
 						resource.TestCheckNoResourceAttr("btp_subaccount.uut", "labels"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 				},
 				{
@@ -264,6 +271,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "USED_FOR_PRODUCTION"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "parent_id", "2613212d-a51e-4e7e-858c-7f96c15d67e7"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 				},
 			},
@@ -293,6 +301,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "USED_FOR_PRODUCTION"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "parent_id", "a9546df7-214e-4414-9191-3d6adfc9cb53"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 				},
 			},
@@ -321,6 +330,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "UNSET"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "skip_auto_entitlement", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 				},
 				{
@@ -337,6 +347,7 @@ func TestResourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "usage", "UNSET"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "beta_enabled", "false"),
 						resource.TestCheckResourceAttr("btp_subaccount.uut", "skip_auto_entitlement", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount.uut", "contract_status", "ACTIVE"),
 					),
 				},
 			},

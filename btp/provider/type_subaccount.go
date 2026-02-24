@@ -32,6 +32,7 @@ type subaccountDataSourceType struct {
 	State          types.String `tfsdk:"state"`
 	Subdomain      types.String `tfsdk:"subdomain"`
 	Usage          types.String `tfsdk:"usage"`
+	ContractStatus types.String `tfsdk:"contract_status"`
 }
 
 type subaccountType struct {
@@ -50,22 +51,24 @@ type subaccountType struct {
 	State               types.String `tfsdk:"state"`
 	Subdomain           types.String `tfsdk:"subdomain"`
 	Usage               types.String `tfsdk:"usage"`
+	ContractStatus      types.String `tfsdk:"contract_status"`
 }
 
 func subaccountValueFrom(ctx context.Context, value cis.SubaccountResponseObject) (subaccountType, diag.Diagnostics) {
 	subaccount := subaccountType{
-		ID:           types.StringValue(value.Guid),
-		BetaEnabled:  types.BoolValue(value.BetaEnabled),
-		CreatedBy:    types.StringValue(value.CreatedBy),
-		CreatedDate:  timeToValue(value.CreatedDate.Time()),
-		Description:  types.StringValue(value.Description),
-		LastModified: timeToValue(value.ModifiedDate.Time()),
-		Name:         types.StringValue(value.DisplayName),
-		ParentID:     types.StringValue(value.ParentGUID),
-		Region:       types.StringValue(value.Region),
-		State:        types.StringValue(value.State),
-		Subdomain:    types.StringValue(value.Subdomain),
-		Usage:        types.StringValue(value.UsedForProduction),
+		ID:             types.StringValue(value.Guid),
+		BetaEnabled:    types.BoolValue(value.BetaEnabled),
+		CreatedBy:      types.StringValue(value.CreatedBy),
+		CreatedDate:    timeToValue(value.CreatedDate.Time()),
+		Description:    types.StringValue(value.Description),
+		LastModified:   timeToValue(value.ModifiedDate.Time()),
+		Name:           types.StringValue(value.DisplayName),
+		ParentID:       types.StringValue(value.ParentGUID),
+		Region:         types.StringValue(value.Region),
+		State:          types.StringValue(value.State),
+		Subdomain:      types.StringValue(value.Subdomain),
+		Usage:          types.StringValue(value.UsedForProduction),
+		ContractStatus: types.StringValue(value.ContractStatus),
 	}
 
 	var diags, diagnostics diag.Diagnostics
@@ -81,18 +84,19 @@ func subaccountValueFrom(ctx context.Context, value cis.SubaccountResponseObject
 
 func subaccountListValueFrom(ctx context.Context, value cis.SubaccountResponseObject) (subaccountType, diag.Diagnostics) {
 	subaccount := subaccountType{
-		ID:           types.StringValue(value.Guid),
-		BetaEnabled:  types.BoolValue(value.BetaEnabled),
-		CreatedBy:    types.StringValue(value.CreatedBy),
-		CreatedDate:  timeToValue(value.CreatedDate.Time()),
-		Description:  types.StringValue(value.Description),
-		LastModified: timeToValue(value.ModifiedDate.Time()),
-		Name:         types.StringValue(value.DisplayName),
-		ParentID:     types.StringValue(value.ParentGUID),
-		Region:       types.StringValue(value.Region),
-		State:        types.StringValue(value.State),
-		Subdomain:    types.StringValue(value.Subdomain),
-		Usage:        types.StringValue(value.UsedForProduction),
+		ID:             types.StringValue(value.Guid),
+		BetaEnabled:    types.BoolValue(value.BetaEnabled),
+		CreatedBy:      types.StringValue(value.CreatedBy),
+		CreatedDate:    timeToValue(value.CreatedDate.Time()),
+		Description:    types.StringValue(value.Description),
+		LastModified:   timeToValue(value.ModifiedDate.Time()),
+		Name:           types.StringValue(value.DisplayName),
+		ParentID:       types.StringValue(value.ParentGUID),
+		Region:         types.StringValue(value.Region),
+		State:          types.StringValue(value.State),
+		Subdomain:      types.StringValue(value.Subdomain),
+		Usage:          types.StringValue(value.UsedForProduction),
+		ContractStatus: types.StringValue(value.ContractStatus),
 	}
 
 	var diags, diagnostics diag.Diagnostics
@@ -108,18 +112,19 @@ func subaccountListValueFrom(ctx context.Context, value cis.SubaccountResponseOb
 
 func subaccountDataSourceValueFrom(ctx context.Context, value cis.SubaccountResponseObject) (subaccountDataSourceType, diag.Diagnostics) {
 	subaccount := subaccountDataSourceType{
-		ID:           types.StringValue(value.Guid),
-		BetaEnabled:  types.BoolValue(value.BetaEnabled),
-		CreatedBy:    types.StringValue(value.CreatedBy),
-		CreatedDate:  timeToValue(value.CreatedDate.Time()),
-		Description:  types.StringValue(value.Description),
-		LastModified: timeToValue(value.ModifiedDate.Time()),
-		Name:         types.StringValue(value.DisplayName),
-		ParentID:     types.StringValue(value.ParentGUID),
-		Region:       types.StringValue(value.Region),
-		State:        types.StringValue(value.State),
-		Subdomain:    types.StringValue(value.Subdomain),
-		Usage:        types.StringValue(value.UsedForProduction),
+		ID:             types.StringValue(value.Guid),
+		BetaEnabled:    types.BoolValue(value.BetaEnabled),
+		CreatedBy:      types.StringValue(value.CreatedBy),
+		CreatedDate:    timeToValue(value.CreatedDate.Time()),
+		Description:    types.StringValue(value.Description),
+		LastModified:   timeToValue(value.ModifiedDate.Time()),
+		Name:           types.StringValue(value.DisplayName),
+		ParentID:       types.StringValue(value.ParentGUID),
+		Region:         types.StringValue(value.Region),
+		State:          types.StringValue(value.State),
+		Subdomain:      types.StringValue(value.Subdomain),
+		Usage:          types.StringValue(value.UsedForProduction),
+		ContractStatus: types.StringValue(value.ContractStatus),
 	}
 
 	var diags, diagnostics diag.Diagnostics

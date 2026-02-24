@@ -36,6 +36,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "region", "eu12"),
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "state", "OK"),
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "usage", "NOT_USED_FOR_PRODUCTION"),
+						resource.TestCheckResourceAttr("data.btp_subaccount.test", "contract_status", "ACTIVE"),
 					),
 				},
 			},
@@ -65,6 +66,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "region", "eu12"),
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "state", "OK"),
 						resource.TestCheckResourceAttr("data.btp_subaccount.test", "usage", "NOT_USED_FOR_PRODUCTION"),
+						resource.TestCheckResourceAttr("data.btp_subaccount.test", "contract_status", "ACTIVE"),
 					),
 				},
 			},
@@ -81,7 +83,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderFor(user) + hclDatasourceSubaccountById("test", "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
-					ExpectError: regexp.MustCompile(`404 Not Found: \[no body\] \[Error: 404\]`), // TODO improve error text
+					ExpectError: regexp.MustCompile(`Error: API Error Reading Resource Subaccount`),
 				},
 			},
 		})
