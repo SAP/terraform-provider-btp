@@ -302,9 +302,11 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	// The retryable HTTP client already handles transient network and HTTP errors.
 	// However, the BTP API may still respond with "not ready" or "processing" errors after a successful request.
 	// Keeping this check ensures Terraform continues polling until the resource reaches a stable state.
+	// Update due to change of API response: Even upon CREATE the status might change to "UPDATING" before it reaches the final "OK" state.
+	// Therefore, the pending states now include both "CREATING" and "UPDATING" as well as the target states "OK", "CREATION_FAILED", and "UPDATE_FAILED".
 	createStateConf := &tfutils.StateChangeConf{
-		Pending: []string{provisioning.StateCreating},
-		Target:  []string{provisioning.StateOK, provisioning.StateCreationFailed},
+		Pending: []string{provisioning.StateCreating, provisioning.StateUpdating},
+		Target:  []string{provisioning.StateOK, provisioning.StateCreationFailed, provisioning.StateUpdateFailed},
 		Refresh: func() (any, string, error) {
 			subRes, _, err := rs.cli.Accounts.EnvironmentInstance.Get(ctx, plan.SubaccountId.ValueString(), cliRes.Id)
 
