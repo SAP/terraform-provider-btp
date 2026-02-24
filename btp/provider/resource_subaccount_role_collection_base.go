@@ -54,7 +54,7 @@ func (rs *subaccountRoleCollectionBaseResource) Schema(_ context.Context, _ reso
 ### Conflict of Authority Warning
 > [!CAUTION]
 > Roles can be defined either directly using the **btp_subaccount_role_collection** resource (which manages the collection and roles together), or by using this **btp_subaccount_role_collection_base** resource in combination with **btp_subaccount_role_collection_role** — **but the two methods cannot be used together**.
-> 
+>
 > If both the monolithic resource and the individual base/role resources are used against the same Role Collection, spurious changes and conflicting state updates will occur.
 
 ### Further documentation
@@ -210,6 +210,17 @@ func (rs *subaccountRoleCollectionBaseResource) Update(ctx context.Context, req 
 
 	diags := resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
+
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
+	identity := SubaccountRoleCollectionBaseResourceIdentityModel{
+		SubaccountId: state.SubaccountId,
+		Name:         state.Name,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
 }
 
 func (rs *subaccountRoleCollectionBaseResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

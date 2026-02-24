@@ -388,6 +388,16 @@ func (rs *directoryResource) Update(ctx context.Context, req resource.UpdateRequ
 			return
 		}
 	}
+
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
+	identity := directoryResourceIdentityModel{
+		DirectoryId: state.ID,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
 }
 
 func (rs *directoryResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

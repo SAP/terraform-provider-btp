@@ -357,6 +357,18 @@ func (rs *subaccountSubscriptionResource) Update(ctx context.Context, req resour
 		return
 	}
 
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
+	identity := SubaccountSubscriptionResourceIdentityModel{
+		SubaccountId: state.SubaccountId,
+		AppName:      state.AppName,
+		PlanName:     state.PlanName,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
+
 	updateType := checkForChanges(plan, state)
 
 	switch updateType {

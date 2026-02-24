@@ -217,6 +217,17 @@ func (rs *resourceGlobalaccountProviderResource) Update(ctx context.Context, req
 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
+
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
+	identity := GlobalaccountResourceProviderIdentityModel{
+		TechnicalName: state.TechnicalName,
+		ProviderType:  state.Provider,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
 }
 
 func (rs *resourceGlobalaccountProviderResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
