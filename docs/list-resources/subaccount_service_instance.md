@@ -26,7 +26,7 @@ list "btp_subaccount_service_instance" "<label_name>" {
   }
 }
 
-# List block to discover all service instaces for given subaccount
+# List block to discover all service instances for given subaccount
 # Returns only the resource identities by default.
 list "btp_subaccount_service_instance" "all" {
   provider = btp
@@ -37,7 +37,7 @@ list "btp_subaccount_service_instance" "all" {
   }
 }
 
-# List block to discover all service instaces for given subaccount with full resource details
+# List block to discover all service instances for given subaccount with full resource details
 # Setting include_resource = true returns full resource objects (e.g., platform_id, name..)
 list "btp_subaccount_service_instance" "with_resource" {
   provider         = btp

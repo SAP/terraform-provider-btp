@@ -2,7 +2,7 @@
 # List resources must be defined in .tfquery.hcl files.
 
 # Generic template for a list block
-list "btp_subaccount_service_instance" "<label_name>" {
+list "btp_subaccount_service_binding" "<label_name>" {
   # (Required) Provider instance to use
   provider = provider_name
 
@@ -11,9 +11,9 @@ list "btp_subaccount_service_instance" "<label_name>" {
   }
 }
 
-# List block to discover all service instances for given subaccount
+# List block to discover all service bindings for given subaccount
 # Returns only the resource identities by default.
-list "btp_subaccount_service_instance" "all" {
+list "btp_subaccount_service_binding" "all" {
   provider = btp
 
   # Required
@@ -22,9 +22,9 @@ list "btp_subaccount_service_instance" "all" {
   }
 }
 
-# List block to discover all service instances for given subaccount with full resource details
+# List block to discover all service bindings for given subaccount with full resource details
 # Setting include_resource = true returns full resource objects (e.g., platform_id, name..)
-list "btp_subaccount_service_instance" "with_resource" {
+list "btp_subaccount_service_binding" "with_resource" {
   provider         = btp
   include_resource = true
   config {
@@ -33,7 +33,7 @@ list "btp_subaccount_service_instance" "with_resource" {
   }
 }
 
-list "btp_subaccount_service_instance" "with_fields_filter" {
+list "btp_subaccount_service_binding" "with_fields_filter" {
   provider         = btp
   include_resource = true
 
@@ -46,7 +46,7 @@ list "btp_subaccount_service_instance" "with_fields_filter" {
   }
 }
 
-list "btp_subaccount_service_instance" "with_lables_filter" {
+list "btp_subaccount_service_binding" "with_lables_filter" {
   provider         = btp
   include_resource = true
 
