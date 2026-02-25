@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v6 # v4.0.0
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6.2.0
         with:
           go-version-file: 'go.mod'
@@ -55,7 +55,7 @@ jobs:
     name: Docu Generation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6 # v4.0.0
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6.2.0
         with:
           go-version-file: 'go.mod'
@@ -66,12 +66,28 @@ jobs:
           git diff --compact-summary --exit-code || \
             (echo; echo "Unexpected difference in directories after code generation. Run 'go generate ./...' command and commit."; exit 1)
 
+  gofix:
+    if: github.event.pull_request.draft == false
+    name: Go Fix
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6.2.0
+        with:
+          go-version-file: 'go.mod'
+          cache: false
+      - run: go fix ./...
+      - name: git diff
+        run: |
+          git diff --compact-summary --exit-code || \
+            (echo; echo "Unexpected difference in directories after running 'go fix'. Run 'go fix ./...' command and commit."; exit 1)
+
   fixtureDriftDetect:
     if: github.event.pull_request.draft == false
     name: Fixture Drift Detection
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6 # v4.0.0
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - run: .github/scripts/fixtureDriftDetect.sh btp/provider/fixtures/
@@ -100,12 +116,12 @@ jobs:
           - '1.13.*'
           - '1.14.*'
     steps:
-      - uses: actions/checkout@v6 # v4.0.0
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6.2.0
         with:
           go-version-file: 'go.mod'
           cache: false
-      - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
+      - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
