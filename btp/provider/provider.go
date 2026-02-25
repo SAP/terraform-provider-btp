@@ -578,6 +578,8 @@ func (p *btpcliProvider) ListResources(_ context.Context) []func() list.ListReso
 		NewDirectoryRoleCollectionListResource,
 		NewSubaccountServiceBrokerListResource,
 		NewSubaccountServiceInstanceListResource,
+		NewSubaccountEnvironmentInstanceListResource,
+		NewSubaccountListResource,
 		NewGlobalaccountTrustConfigurationListResource,
 		NewSubaccountTrustConfigurationListResource,
 		NewSubaccountServiceBindingListResource,

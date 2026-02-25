@@ -330,6 +330,17 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 
 	diags = resp.State.Set(ctx, newState)
 	resp.Diagnostics.Append(diags...)
+
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
+	identity := subaccountServiceBrokerIdentityModel{
+		SubaccountID: newState.SubaccountId,
+		Id:           newState.Id,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
 }
 
 func (rs *subaccountServiceBrokerResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

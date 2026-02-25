@@ -6,7 +6,8 @@ description: |-
   Tip:
   You must have the appropriate connectivity and destination permissions, such as:
   Subaccount AdministratorDestination AdministratorConnectivity and Destination Administrator
-  To learn more about these roles, see the SAP Help documentation:https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/user-roles?q=role+collection
+  To learn more about these roles, see the SAP Help documentation:
+  https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/user-roles?q=role+collection
   Scope:
   Subaccount-level fragment: Specify only the 'subaccount_id' and 'name' attribute.Service instance-level fragment: Specify the 'subaccount_id', 'service_instance_id' and 'name' attributes.
   Notes:
@@ -19,11 +20,11 @@ Manages a destination fragment in a SAP BTP subaccount or in the scope of a spec
 
 __Tip:__
 You must have the appropriate connectivity and destination permissions, such as:
-- Subaccount Administrator  
-- Destination Administrator  
+- Subaccount Administrator
+- Destination Administrator
 - Connectivity and Destination Administrator
 
-To learn more about these roles, see the SAP Help documentation:  
+To learn more about these roles, see the SAP Help documentation:
 https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/user-roles?q=role+collection
 
 __Scope:__

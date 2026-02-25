@@ -340,6 +340,8 @@ func (rs *subaccountDestinationGenericResource) Update(ctx context.Context, req 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
 	identity := subaccountDestinationGenericIdentityModel{
 		SubaccountID:      plan.SubaccountID,
 		Name:              types.StringValue(name),
@@ -348,6 +350,7 @@ func (rs *subaccountDestinationGenericResource) Update(ctx context.Context, req 
 
 	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
 
 }
 

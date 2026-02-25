@@ -274,6 +274,17 @@ func (rs *subaccountRoleCollectionResource) Update(ctx context.Context, req reso
 		return
 	}
 
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
+	identity := SubaccountRoleCollectionResourceIdentityModel{
+		SubaccountId: state.SubaccountId,
+		Name:         state.Name,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
+
 	state.Description = types.StringValue(cliRes.Description)
 	state.Roles = []subaccountRoleCollectionRoleRefType{}
 	for _, role := range cliRes.RoleReferences {

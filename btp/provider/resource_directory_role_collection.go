@@ -289,6 +289,17 @@ func (rs *directoryRoleCollectionType) Update(ctx context.Context, req resource.
 		})
 	}
 
+	// WORKAROUND for OpenTofu compatibility
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
+	identity := DirectoryRoleCollectionResourceIdentityModel{
+		DirectoryId: state.DirectoryId,
+		Name:        state.Name,
+	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
+	// END WORKAROUND
+
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {

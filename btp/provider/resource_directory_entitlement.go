@@ -320,6 +320,8 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 		PlanName:    types.StringValue(updatedState.PlanName.ValueString()),
 	}
 
+	// Set Identity for OpenTofu compatibility also during Update
+	// see https://github.com/SAP/terraform-provider-btp/issues/1383
 	diags = (*responseIdentity).Set(ctx, identity)
 	responseDiagnostics.Append(diags...)
 }
