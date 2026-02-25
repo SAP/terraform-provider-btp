@@ -208,7 +208,6 @@ func convertEmptyStringToNull[I any](v reflect.Value) (I, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	for _, field := range v.Fields() {
-		field := field
 		if field.Type() == reflect.TypeFor[types.String]() {
 			strVal := field.Interface().(types.String)
 			if strVal.ValueString() == "" {
