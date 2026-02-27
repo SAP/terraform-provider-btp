@@ -23,7 +23,7 @@ func TestDataSourceDisasterRecoverySubaccountPair(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_disaster_recovery_subaccount_pair.uut", "pair_id", regexpValidUUID),
 						resource.TestCheckResourceAttrSet("data.btp_disaster_recovery_subaccount_pair.uut", "created_by"),
-						resource.TestMatchResourceAttr("data.btp_disaster_recovery_subaccount_pair.uut", "created_at", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("data.btp_disaster_recovery_subaccount_pair.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("data.btp_disaster_recovery_subaccount_pair.uut", "globalaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_disaster_recovery_subaccount_pair.uut", "subaccounts.#", "2"),
 						resource.TestMatchResourceAttr("data.btp_disaster_recovery_subaccount_pair.uut", "subaccounts.0.id", regexpValidUUID),

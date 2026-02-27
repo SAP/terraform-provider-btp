@@ -43,8 +43,8 @@ resource "btp_disaster_recovery_subaccount_pair" "dr_pair" {
 
 ### Read-Only
 
-- `created_at` (String) The timestamp when the subaccount pair was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `created_by` (String) The user who created the subaccount pair.
+- `created_date` (String) The timestamp when the subaccount pair was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `globalaccount_id` (String) The ID of the globalaccount.
 - `pair_id` (String) The ID of the subaccount pair.
 
@@ -53,20 +53,21 @@ resource "btp_disaster_recovery_subaccount_pair" "dr_pair" {
 Import is supported using the following syntax:
 
 ```terraform
-# terraform import btp_disaster_recovery_subaccount_pair.<resource_name> <subaccount_id>
-terraform import btp_disaster_recovery_subaccount_pair.dr_pair dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0
+# terraform import btp_disaster_recovery_subaccount_pair.<resource_name> <subaccount_id> <paired_subaccount_id>
+terraform import btp_disaster_recovery_subaccount_pair.dr_pair dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0 2dc1ecf1-786c-4f92-91f2-26650ab3ad28
 
 # terraform import using id attribute in import block
 import {
   to = btp_disaster_recovery_subaccount_pair.<resource_name>
-  id = "<subaccount_id>"
+  id = "<subaccount_id>,<paired_subaccount_id>"
 }
 
 # terraform import using resource identity
 import {
 to = btp_disaster_recovery_subaccount_pair.<resource_name>
 identity = {
-  subaccount_id = "<subaccount_id>"
+  subaccount_id        = "<subaccount_id>"
+  paired_subaccount_id = "<paired_subaccount_id>"
   }
 }
 ```

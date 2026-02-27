@@ -32,8 +32,8 @@ data "btp_disaster_recovery_subaccount_pair" "dr_pair" {
 
 ### Read-Only
 
-- `created_at` (String) The timestamp when the subaccount pair was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `created_by` (String) The user who created the subaccount pair.
+- `created_date` (String) The timestamp when the subaccount pair was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `globalaccount_id` (String) The ID of the globalaccount.
 - `pair_id` (String) The ID of the subaccount pair.
 - `subaccounts` (Attributes List) The list of subaccounts in the disaster recovery pair. (see [below for nested schema](#nestedatt--subaccounts))

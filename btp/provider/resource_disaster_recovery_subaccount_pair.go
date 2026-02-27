@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -68,7 +69,7 @@ __Further documentation:__
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"created_at": schema.StringAttribute{
+			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The timestamp when the subaccount pair was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
@@ -94,13 +95,17 @@ __Further documentation:__
 }
 
 type DisasterRecoverySubaccountPairResourceIdentityModel struct {
-	SubaccountId types.String `tfsdk:"subaccount_id"`
+	SubaccountId       types.String `tfsdk:"subaccount_id"`
+	PairedSubaccountId types.String `tfsdk:"paired_subaccount_id"`
 }
 
 func (rs *disasterRecoverySubaccountPairResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
 	resp.IdentitySchema = identityschema.Schema{
 		Attributes: map[string]identityschema.Attribute{
 			"subaccount_id": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"paired_subaccount_id": identityschema.StringAttribute{
 				RequiredForImport: true,
 			},
 		},
@@ -133,7 +138,8 @@ func (rs *disasterRecoverySubaccountPairResource) Read(ctx context.Context, req 
 	diags = req.Identity.Get(ctx, &identity)
 	if diags.HasError() {
 		identity = DisasterRecoverySubaccountPairResourceIdentityModel{
-			SubaccountId: data.SubaccountId,
+			SubaccountId:       data.SubaccountId,
+			PairedSubaccountId: data.PairedSubaccountId,
 		}
 
 		diags = resp.Identity.Set(ctx, identity)
@@ -171,7 +177,8 @@ func (rs *disasterRecoverySubaccountPairResource) Create(ctx context.Context, re
 	resp.Diagnostics.Append(diags...)
 
 	identity := DisasterRecoverySubaccountPairResourceIdentityModel{
-		SubaccountId: plan.SubaccountId,
+		SubaccountId:       plan.SubaccountId,
+		PairedSubaccountId: plan.PairedSubaccountId,
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
@@ -211,7 +218,17 @@ func (rs *disasterRecoverySubaccountPairResource) Delete(ctx context.Context, re
 
 func (rs *disasterRecoverySubaccountPairResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	if req.ID != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), types.StringValue(req.ID))...)
+		idParts := strings.Split(req.ID, ",")
+
+		if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: subaccount_id, paired_subaccount_id. Got: %q", req.ID),
+			)
+			return
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), types.StringValue(idParts[0]))...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("paired_subaccount_id"), types.StringValue(idParts[1]))...)
 		return
 	}
 
@@ -221,4 +238,5 @@ func (rs *disasterRecoverySubaccountPairResource) ImportState(ctx context.Contex
 		return
 	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), identityData.SubaccountId)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("paired_subaccount_id"), identityData.PairedSubaccountId)...)
 }

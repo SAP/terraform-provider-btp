@@ -17,7 +17,7 @@ type disasterRecoverySubaccountPairFacade struct {
 
 type SubaccountPairCreateInput struct {
 	SubaccountId     string `btpcli:"subaccount"`
-	WithSubaccountId string `btpcli:"with-subaccount"`
+	WithSubaccountId string `btpcli:"withSubaccount"`
 }
 
 func (f *disasterRecoverySubaccountPairFacade) getCommand() string {

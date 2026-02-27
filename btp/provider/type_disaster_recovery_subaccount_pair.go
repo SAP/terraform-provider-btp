@@ -14,7 +14,7 @@ type DisasterRecoverySubaccountPairType struct {
 	SubaccountId       types.String `tfsdk:"subaccount_id"`
 	PairedSubaccountId types.String `tfsdk:"paired_subaccount_id"`
 	PairId             types.String `tfsdk:"pair_id"`
-	CreatedAt          types.String `tfsdk:"created_at"`
+	CreatedDate        types.String `tfsdk:"created_date"`
 	CreatedBy          types.String `tfsdk:"created_by"`
 	GlobalAccountId    types.String `tfsdk:"globalaccount_id"`
 }
@@ -25,7 +25,7 @@ func disasterRecoverySubaccountPairValueFrom(ctx context.Context, subaccountId t
 		SubaccountId:       subaccountId,
 		PairedSubaccountId: pairedSubaccountId,
 		PairId:             types.StringValue(value.Id),
-		CreatedAt:          types.StringValue(time.Unix(value.CreatedAt, 0).Format(time.RFC3339)),
+		CreatedDate:        types.StringValue(time.Unix(value.CreatedAt, 0).Format(time.RFC3339)),
 		CreatedBy:          types.StringValue(value.CreatedBy),
 		GlobalAccountId:    types.StringValue(value.GlobalAccountId),
 	}, nil
@@ -41,7 +41,7 @@ type subaccountDrMetadataDataSourceType struct {
 type disasterRecoverySubaccountPairDataSourceType struct {
 	SubaccountId    types.String                         `tfsdk:"subaccount_id"`
 	PairId          types.String                         `tfsdk:"pair_id"`
-	CreatedAt       types.String                         `tfsdk:"created_at"`
+	CreatedDate     types.String                         `tfsdk:"created_date"`
 	CreatedBy       types.String                         `tfsdk:"created_by"`
 	GlobalAccountId types.String                         `tfsdk:"globalaccount_id"`
 	Subaccounts     []subaccountDrMetadataDataSourceType `tfsdk:"subaccounts"`
@@ -53,7 +53,7 @@ func disasterRecoverySubaccountPairDataSourceValueFrom(ctx context.Context, suba
 	pairData := disasterRecoverySubaccountPairDataSourceType{
 		SubaccountId:    subaccountId,
 		PairId:          types.StringValue(value.Id),
-		CreatedAt:       types.StringValue(time.Unix(value.CreatedAt, 0).Format(time.RFC3339)),
+		CreatedDate:     types.StringValue(time.Unix(value.CreatedAt, 0).Format(time.RFC3339)),
 		CreatedBy:       types.StringValue(value.CreatedBy),
 		GlobalAccountId: types.StringValue(value.GlobalAccountId),
 	}

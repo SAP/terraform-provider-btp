@@ -45,7 +45,7 @@ You must be assigned to Central Disaster Recovery Administrator in both subaccou
 				MarkdownDescription: "The ID of the subaccount pair.",
 				Computed:            true,
 			},
-			"created_at": schema.StringAttribute{
+			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The timestamp when the subaccount pair was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
 			},
