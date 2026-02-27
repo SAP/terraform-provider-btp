@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -34,18 +33,18 @@ func disasterRecoverySubaccountPairValueFrom(ctx context.Context, subaccountId t
 }
 
 type subaccountDrMetadataDataSourceType struct {
-	SubaccountId types.String `tfsdk:"subaccount_id"`
+	SubaccountId types.String `tfsdk:"id"`
 	Region       types.String `tfsdk:"region"`
 	Subdomain    types.String `tfsdk:"subdomain"`
 }
 
 type disasterRecoverySubaccountPairDataSourceType struct {
-	SubaccountId    types.String `tfsdk:"subaccount_id"`
-	PairId          types.String `tfsdk:"pair_id"`
-	CreatedAt       types.String `tfsdk:"created_at"`
-	CreatedBy       types.String `tfsdk:"created_by"`
-	GlobalAccountId types.String `tfsdk:"globalccount_id"`
-	Subaccounts     types.List   `tfsdk:"subaccounts"`
+	SubaccountId    types.String                         `tfsdk:"subaccount_id"`
+	PairId          types.String                         `tfsdk:"pair_id"`
+	CreatedAt       types.String                         `tfsdk:"created_at"`
+	CreatedBy       types.String                         `tfsdk:"created_by"`
+	GlobalAccountId types.String                         `tfsdk:"globalaccount_id"`
+	Subaccounts     []subaccountDrMetadataDataSourceType `tfsdk:"subaccounts"`
 }
 
 func disasterRecoverySubaccountPairDataSourceValueFrom(ctx context.Context, subaccountId types.String, value cdr.GetSubaccountPairResponse) (disasterRecoverySubaccountPairDataSourceType, diag.Diagnostics) {
@@ -69,15 +68,7 @@ func disasterRecoverySubaccountPairDataSourceValueFrom(ctx context.Context, suba
 		})
 	}
 
-	var diags diag.Diagnostics
-	pairData.Subaccounts, diags = types.ListValueFrom(ctx, types.ObjectType{
-		AttrTypes: map[string]attr.Type{
-			"subaccount_id": types.StringType,
-			"region":        types.StringType,
-			"subdomain":     types.StringType,
-		},
-	}, subaccounts)
-	diagnostics.Append(diags...)
+	pairData.Subaccounts = subaccounts
 
 	return pairData, diagnostics
 }
