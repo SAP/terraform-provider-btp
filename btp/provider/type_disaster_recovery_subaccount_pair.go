@@ -11,72 +11,47 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cdr"
 )
 
-/*
 type DisasterRecoverySubaccountPairType struct {
-	ID                  types.String `tfsdk:"id"`
-	BetaEnabled         types.Bool   `tfsdk:"beta_enabled"`
-	CreatedBy           types.String `tfsdk:"created_by"`
-	CreatedDate         types.String `tfsdk:"created_date"`
-	Description         types.String `tfsdk:"description"`
-	Labels              types.Map    `tfsdk:"labels"`
-	LastModified        types.String `tfsdk:"last_modified"`
-	Name                types.String `tfsdk:"name"`
-	ParentID            types.String `tfsdk:"parent_id"`
-	ParentFeatures      types.Set    `tfsdk:"parent_features"`
-	Region              types.String `tfsdk:"region"`
-	SkipAutoEntitlement types.Bool   `tfsdk:"skip_auto_entitlement"`
-	State               types.String `tfsdk:"state"`
-	Subdomain           types.String `tfsdk:"subdomain"`
-	Usage               types.String `tfsdk:"usage"`
+	SubaccountId       types.String `tfsdk:"subaccount_id"`
+	PairedSubaccountId types.String `tfsdk:"paired_subaccount_id"`
+	PairId             types.String `tfsdk:"pair_id"`
+	CreatedAt          types.String `tfsdk:"created_at"`
+	CreatedBy          types.String `tfsdk:"created_by"`
+	GlobalAccountId    types.String `tfsdk:"globalaccount_id"`
 }
 
-func DisasterRecoverySubaccountPairValueFrom(ctx context.Context, value cis.SubaccountResponseObject) (DisasterRecoverySubaccountPairType, diag.Diagnostics) {
-	subaccount := DisasterRecoverySubaccountPairType{
-		ID:           types.StringValue(value.Guid),
-		BetaEnabled:  types.BoolValue(value.BetaEnabled),
-		CreatedBy:    types.StringValue(value.CreatedBy),
-		CreatedDate:  timeToValue(value.CreatedDate.Time()),
-		Description:  types.StringValue(value.Description),
-		LastModified: timeToValue(value.ModifiedDate.Time()),
-		Name:         types.StringValue(value.DisplayName),
-		ParentID:     types.StringValue(value.ParentGUID),
-		Region:       types.StringValue(value.Region),
-		State:        types.StringValue(value.State),
-		Subdomain:    types.StringValue(value.Subdomain),
-		Usage:        types.StringValue(value.UsedForProduction),
-	}
+func disasterRecoverySubaccountPairValueFrom(ctx context.Context, subaccountId types.String, pairedSubaccountId types.String, value cdr.GetSubaccountPairResponse) (DisasterRecoverySubaccountPairType, diag.Diagnostics) {
 
-	var diags, diagnostics diag.Diagnostics
+	return DisasterRecoverySubaccountPairType{
+		SubaccountId:       subaccountId,
+		PairedSubaccountId: pairedSubaccountId,
+		PairId:             types.StringValue(value.Id),
+		CreatedAt:          types.StringValue(time.Unix(value.CreatedAt, 0).Format(time.RFC3339)),
+		CreatedBy:          types.StringValue(value.CreatedBy),
+		GlobalAccountId:    types.StringValue(value.GlobalAccountId),
+	}, nil
 
-	subaccount.Labels, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, value.Labels)
-	diagnostics.Append(diags...)
-
-	subaccount.ParentFeatures, diags = types.SetValueFrom(ctx, types.StringType, value.ParentFeatures)
-	diagnostics.Append(diags...)
-
-	return subaccount, diagnostics
 }
-*/
 
-type SubaccountDrMetadataDataSourceType struct {
+type subaccountDrMetadataDataSourceType struct {
 	SubaccountId types.String `tfsdk:"subaccount_id"`
 	Region       types.String `tfsdk:"region"`
 	Subdomain    types.String `tfsdk:"subdomain"`
 }
 
-type DisasterRecoverySubaccountPairDataSourceType struct {
+type disasterRecoverySubaccountPairDataSourceType struct {
 	SubaccountId    types.String `tfsdk:"subaccount_id"`
 	PairId          types.String `tfsdk:"pair_id"`
 	CreatedAt       types.String `tfsdk:"created_at"`
 	CreatedBy       types.String `tfsdk:"created_by"`
-	GlobalAccountId types.String `tfsdk:"global_account_id"`
+	GlobalAccountId types.String `tfsdk:"globalccount_id"`
 	Subaccounts     types.List   `tfsdk:"subaccounts"`
 }
 
-func SubaccountPairDataSourceValueFrom(ctx context.Context, subaccountId types.String, value cdr.GetSubaccountPairResponse) (DisasterRecoverySubaccountPairDataSourceType, diag.Diagnostics) {
+func disasterRecoverySubaccountPairDataSourceValueFrom(ctx context.Context, subaccountId types.String, value cdr.GetSubaccountPairResponse) (disasterRecoverySubaccountPairDataSourceType, diag.Diagnostics) {
 	var diagnostics diag.Diagnostics
 
-	pairData := DisasterRecoverySubaccountPairDataSourceType{
+	pairData := disasterRecoverySubaccountPairDataSourceType{
 		SubaccountId:    subaccountId,
 		PairId:          types.StringValue(value.Id),
 		CreatedAt:       types.StringValue(time.Unix(value.CreatedAt, 0).Format(time.RFC3339)),
@@ -85,9 +60,9 @@ func SubaccountPairDataSourceValueFrom(ctx context.Context, subaccountId types.S
 	}
 
 	// Convert subaccounts to list
-	subaccounts := make([]SubaccountDrMetadataDataSourceType, 0, len(value.Subaccounts))
+	subaccounts := make([]subaccountDrMetadataDataSourceType, 0, len(value.Subaccounts))
 	for _, sa := range value.Subaccounts {
-		subaccounts = append(subaccounts, SubaccountDrMetadataDataSourceType{
+		subaccounts = append(subaccounts, subaccountDrMetadataDataSourceType{
 			SubaccountId: types.StringValue(sa.Id),
 			Region:       types.StringValue(sa.Region),
 			Subdomain:    types.StringValue(sa.Subdomain),

@@ -612,6 +612,7 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_subaccount_destination_fragment",
 		"btp_subaccount_destination",
 		"btp_subaccount_destination_generic",
+		"btp_disaster_recovery_subaccount_pair",
 	}
 
 	ctx := context.Background()

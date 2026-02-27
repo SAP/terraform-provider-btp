@@ -35,7 +35,7 @@ func (ds *DisasterRecoverySubaccountPairDataSource) Schema(_ context.Context, _ 
 		MarkdownDescription: `Gets the subaccount pair details for the specified subaccount.
 
 __Tip:__
-You must be assigned to the central .`,
+You must be assigned to Central Disaster Recovery Administrator in both subaccounts.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of a paired subaccount.",
@@ -53,8 +53,8 @@ You must be assigned to the central .`,
 				MarkdownDescription: "The user who created the subaccount pair.",
 				Computed:            true,
 			},
-			"global_account_id": schema.StringAttribute{
-				MarkdownDescription: "The ID of the global account.",
+			"globalaccount_id": schema.StringAttribute{
+				MarkdownDescription: "The ID of the globalaccount.",
 				Computed:            true,
 			},
 
@@ -83,7 +83,7 @@ You must be assigned to the central .`,
 }
 
 func (ds *DisasterRecoverySubaccountPairDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data DisasterRecoverySubaccountPairDataSourceType
+	var data disasterRecoverySubaccountPairDataSourceType
 
 	diags := req.Config.Get(ctx, &data)
 
@@ -101,7 +101,7 @@ func (ds *DisasterRecoverySubaccountPairDataSource) Read(ctx context.Context, re
 		return
 	}
 
-	dataSourceValue, diags := SubaccountPairDataSourceValueFrom(ctx, data.SubaccountId, subaccountPair)
+	dataSourceValue, diags := disasterRecoverySubaccountPairDataSourceValueFrom(ctx, data.SubaccountId, subaccountPair)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
