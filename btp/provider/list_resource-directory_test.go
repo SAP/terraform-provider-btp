@@ -37,12 +37,12 @@ func TestDirectoryListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_directory.directory_list", 11),
+						querycheck.ExpectLength("btp_directory.directory_list", 5),
 
 						querycheck.ExpectIdentity(
 							"btp_directory.directory_list",
 							map[string]knownvalue.Check{
-								"directory_id": knownvalue.StringRegexp(regexpValidUUID),
+								"directory_id": knownvalue.StringExact("14870944-4832-4e76-83f7-d2913661cf6d"),
 							},
 						),
 					},
@@ -57,7 +57,7 @@ func TestDirectoryListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_directory.directory_list", 11),
+						querycheck.ExpectLength("btp_directory.directory_list", 5),
 
 						// Verify full resource data is populated
 						querycheck.ExpectResourceKnownValues(
@@ -124,14 +124,14 @@ func TestDirectoryListResource(t *testing.T) {
 
 func listDirectoryQueryConfig(label, providerName string) string {
 	return fmt.Sprintf(`
-list "btp_subaccount" "%s" {
+list "btp_directory" "%s" {
   provider = "%s"
 }`, label, providerName)
 }
 
 func listDirectoryQueryConfigWithIncludeResource(label, providerName string) string {
 	return fmt.Sprintf(`
-list "btp_subaccount" "%s" {
+list "btp_directory" "%s" {
   provider = "%s"
   include_resource = true
 }`, label, providerName)
