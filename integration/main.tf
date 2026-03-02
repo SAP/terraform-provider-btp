@@ -143,6 +143,13 @@ resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_su
   group_name           = each.value[1]
   origin               = each.value[0]
 }
+resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_subaccount_administrators" {
+  subaccount_id        = btp_subaccount.sa_services_static.id
+  for_each             = local.testing_idps_group_mapping
+  role_collection_name = "Destination Administrator"
+  group_name           = each.value[1]
+  origin               = each.value[0]
+}
 
 resource "btp_subaccount_role_collection_assignment" "srca_sa_security_settings_subaccount_administrators" {
   subaccount_id        = btp_subaccount.sa_security_settings.id
