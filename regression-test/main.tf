@@ -210,7 +210,7 @@ resource "btp_subaccount_role_collection" "sarc_sa_acc_static" {
     },
     {
       name                 = "Destination Administrator"
-      role_template_app_id = "destination-xsappname"
+      role_template_app_id = "destination-xsappname!b6"
       role_template_name   = "Destination_Administrator"
     }
   ]
@@ -256,6 +256,12 @@ resource "btp_subaccount_entitlement" "se_sa_services_static_bas" {
   subaccount_id = btp_subaccount.sa_services_static.id
   service_name  = "sapappstudio"
   plan_name     = "standard-edition"
+}
+
+resource "btp_subaccount_entitlement" "se_sa_services_static_destination" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  service_name  = "destination"
+  plan_name     = "free"
 }
 
 ###
@@ -328,6 +334,9 @@ data "btp_subaccount_service_plan" "ssp_sa_services_static_destination" {
   subaccount_id = btp_subaccount.sa_services_static.id
   name          = "free"
   offering_name = "destination"
+  depends_on = [
+    btp_subaccount_entitlement.se_sa_services_static_destination
+  ]
 }
 
 resource "btp_subaccount_service_instance" "ssi_sa_services_destination" {
@@ -374,7 +383,6 @@ resource "btp_subaccount_destination_generic" "http_dest" {
     "Description"    = "trial destination of basic usecase with service instance"
   })
   depends_on = [
-    btp_subaccount_role_collection.sarc_sa_acc_static,
     btp_subaccount_role_collection_assignment.srca_sa_acc_static_destination_creator
   ]
 }
@@ -390,7 +398,6 @@ resource "btp_subaccount_destination_generic" "destination" {
     "Description"    = "trial destination of basic usecase "
   })
   depends_on = [
-    btp_subaccount_role_collection.sarc_sa_acc_static,
     btp_subaccount_role_collection_assignment.srca_sa_acc_static_destination_creator
   ]
 }
@@ -408,7 +415,6 @@ resource "btp_subaccount_destination_generic" "http_dest_with_destination_config
     "Description"     = "trial destination of basic usecase with addditional variables "
   })
   depends_on = [
-    btp_subaccount_role_collection.sarc_sa_acc_static,
     btp_subaccount_role_collection_assignment.srca_sa_acc_static_destination_creator
   ]
 }
@@ -434,7 +440,6 @@ resource "btp_subaccount_destination_generic" "rfc_destination" {
     "jco.destination.description"           = "RFC destination test"
   })
   depends_on = [
-    btp_subaccount_role_collection.sarc_sa_acc_static,
     btp_subaccount_role_collection_assignment.srca_sa_acc_static_destination_creator
   ]
 }
@@ -453,7 +458,6 @@ resource "btp_subaccount_destination_generic" "ldap_destination" {
     "ldap.password"       = "abc"
   })
   depends_on = [
-    btp_subaccount_role_collection.sarc_sa_acc_static,
     btp_subaccount_role_collection_assignment.srca_sa_acc_static_destination_creator
   ]
 }
@@ -471,7 +475,6 @@ resource "btp_subaccount_destination_generic" "mail_destination" {
     "mail.password"    = "secret"
   })
   depends_on = [
-    btp_subaccount_role_collection.sarc_sa_acc_static,
     btp_subaccount_role_collection_assignment.srca_sa_acc_static_destination_creator
   ]
 }
@@ -487,7 +490,6 @@ resource "btp_subaccount_destination_generic" "tcp_destination" {
     "Description" = "TCP destination example"
   })
   depends_on = [
-    btp_subaccount_role_collection.sarc_sa_acc_static,
     btp_subaccount_role_collection_assignment.srca_sa_acc_static_destination_creator
   ]
 }
