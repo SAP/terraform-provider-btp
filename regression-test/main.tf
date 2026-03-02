@@ -207,11 +207,6 @@ resource "btp_subaccount_role_collection" "sarc_sa_acc_static" {
       name                 = "Subaccount Admin"
       role_template_app_id = "cis-local!b4"
       role_template_name   = "Subaccount_Admin"
-    },
-    {
-      name                 = "Destination Administrator"
-      role_template_app_id = "destination-xsappname!b6"
-      role_template_name   = "Destination_Administrator"
     }
   ]
 }
@@ -332,7 +327,7 @@ resource "btp_subaccount_service_instance" "ssi_sa_services_static_malware_scann
 }
 data "btp_subaccount_service_plan" "ssp_sa_services_static_destination" {
   subaccount_id = btp_subaccount.sa_services_static.id
-  name          = "free"
+  name          = "lite"
   offering_name = "destination"
   depends_on = [
     btp_subaccount_entitlement.se_sa_services_static_destination
