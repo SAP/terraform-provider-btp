@@ -382,21 +382,6 @@ resource "btp_subaccount_destination_generic" "http_dest" {
   ]
 }
 
-resource "btp_subaccount_destination_generic" "destination" {
-  subaccount_id = btp_subaccount.sa_services_static.id
-  destination_configuration = jsonencode({
-    "Name"           = "destination"
-    "Type"           = "HTTP"
-    "ProxyType"      = "Internet"
-    "URL"            = "https://myservice.example.com"
-    "Authentication" = "NoAuthentication"
-    "Description"    = "trial destination of basic usecase "
-  })
-  depends_on = [
-    btp_subaccount_role_collection_assignment.srca_sa_acc_static_destination_creator
-  ]
-}
-
 resource "btp_subaccount_destination_generic" "http_dest_with_destination_configuration_authentication" {
   subaccount_id = btp_subaccount.sa_services_static.id
   destination_configuration = jsonencode({
