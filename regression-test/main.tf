@@ -256,7 +256,7 @@ resource "btp_subaccount_entitlement" "se_sa_services_static_bas" {
 resource "btp_subaccount_entitlement" "se_sa_services_static_destination" {
   subaccount_id = btp_subaccount.sa_services_static.id
   service_name  = "destination"
-  plan_name     = "free"
+  plan_name     = "lite"
 }
 
 ###
