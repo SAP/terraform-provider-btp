@@ -367,8 +367,10 @@ resource "btp_subaccount_destination_generic" "http_dest" {
     "URL"            = "https://myservice.example.com"
     "Authentication" = "NoAuthentication"
     "Description"    = "trial destination of basic usecase with service instance"
-
   })
+  depends_on = [
+    btp_subaccount_role_collection.sarc_sa_acc_static
+  ]
 }
 
 resource "btp_subaccount_destination_generic" "destination" {
@@ -381,6 +383,9 @@ resource "btp_subaccount_destination_generic" "destination" {
     "Authentication" = "NoAuthentication"
     "Description"    = "trial destination of basic usecase "
   })
+  depends_on = [
+    btp_subaccount_role_collection.sarc_sa_acc_static
+  ]
 }
 
 resource "btp_subaccount_destination_generic" "http_dest_with_destination_configuration_authentication" {
@@ -395,6 +400,9 @@ resource "btp_subaccount_destination_generic" "http_dest_with_destination_config
     "Authentication"  = "OAuth2ClientCredentials"
     "Description"     = "trial destination of basic usecase with addditional variables "
   })
+  depends_on = [
+    btp_subaccount_role_collection.sarc_sa_acc_static
+  ]
 }
 
 #subaccount destination rfc type
@@ -417,6 +425,9 @@ resource "btp_subaccount_destination_generic" "rfc_destination" {
     "jco.destination.proxy_type"            = "OnPremise"
     "jco.destination.description"           = "RFC destination test"
   })
+  depends_on = [
+    btp_subaccount_role_collection.sarc_sa_acc_static
+  ]
 }
 
 #subaccount destination ldap type
@@ -432,6 +443,9 @@ resource "btp_subaccount_destination_generic" "ldap_destination" {
     "ldap.user"           = "abc"
     "ldap.password"       = "abc"
   })
+  depends_on = [
+    btp_subaccount_role_collection.sarc_sa_acc_static
+  ]
 }
 
 #subaccount destination mail type
@@ -446,6 +460,9 @@ resource "btp_subaccount_destination_generic" "mail_destination" {
     "mail.user"        = "user@example.com"
     "mail.password"    = "secret"
   })
+  depends_on = [
+    btp_subaccount_role_collection.sarc_sa_acc_static
+  ]
 }
 
 #subaccount destination tcp type
@@ -458,4 +475,7 @@ resource "btp_subaccount_destination_generic" "tcp_destination" {
     "ProxyType"   = "OnPremise"
     "Description" = "TCP destination example"
   })
+  depends_on = [
+    btp_subaccount_role_collection.sarc_sa_acc_static
+  ]
 }
