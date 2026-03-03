@@ -143,6 +143,13 @@ resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_su
   group_name           = each.value[1]
   origin               = each.value[0]
 }
+resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_destination_administrators" {
+  subaccount_id        = btp_subaccount.sa_services_static.id
+  for_each             = local.testing_idps_group_mapping
+  role_collection_name = "Destination Administrator"
+  group_name           = each.value[1]
+  origin               = each.value[0]
+}
 
 resource "btp_subaccount_role_collection_assignment" "srca_sa_security_settings_subaccount_administrators" {
   subaccount_id        = btp_subaccount.sa_security_settings.id
@@ -160,6 +167,11 @@ resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_static_jenny_g
   origin               = local.testing_idps[count.index]
 }
 
+resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_destination_creator" {
+  subaccount_id        = btp_subaccount.sa_services_static.id
+  role_collection_name = "Destination Administrator"
+  user_name            = "jenny.doe@test.com"
+}
 ###
 # directory entitlements
 ###
@@ -241,6 +253,11 @@ resource "btp_subaccount_entitlement" "se_sa_services_static_malware_scanner" {
   service_name  = "malware-scanner"
   plan_name     = "clamav"
 }
+resource "btp_subaccount_entitlement" "se_sa_services_static_destination" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  service_name  = "destination"
+  plan_name     = "lite"
+}
 
 ###
 # subaccount service instances
@@ -281,6 +298,21 @@ resource "btp_subaccount_service_instance" "ssi_sa_services_static_malware_scann
   }
 }
 
+data "btp_subaccount_service_plan" "ssp_sa_services_static_destination" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  name          = "lite"
+  offering_name = "destination"
+  depends_on = [
+    btp_subaccount_entitlement.se_sa_services_static_destination
+  ]
+}
+
+resource "btp_subaccount_service_instance" "ssi_sa_services_destination" {
+  subaccount_id  = btp_subaccount.sa_services_static.id
+  serviceplan_id = data.btp_subaccount_service_plan.ssp_sa_services_static_destination.id
+  name           = "tf-testacc-destination-instance"
+}
+
 ###
 # subaccount service bindings
 ###
@@ -303,3 +335,131 @@ resource "btp_subaccount_service_binding" "binding_sa_services_static_malware_sc
   name                = "test-service-binding-malware-scanner"
 }
 
+
+
+###
+# subaccount destinations
+###
+
+resource "btp_subaccount_destination_generic" "http_dest" {
+  subaccount_id       = btp_subaccount.sa_services_static.id
+  service_instance_id = btp_subaccount_service_instance.ssi_sa_services_destination.id
+  destination_configuration = jsonencode({
+    "Name"           = "destination-with-service-instance"
+    "Type"           = "HTTP"
+    "ProxyType"      = "Internet"
+    "URL"            = "https://myservice.example.com"
+    "Authentication" = "NoAuthentication"
+    "Description"    = "trial destination of basic usecase with service instance"
+  })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
+}
+
+resource "btp_subaccount_destination_generic" "destination" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  destination_configuration = jsonencode({
+    "Name"           = "destination"
+    "Type"           = "HTTP"
+    "ProxyType"      = "Internet"
+    "URL"            = "https://myservice.example.com"
+    "Authentication" = "NoAuthentication"
+    "Description"    = "trial destination of basic usecase "
+  })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
+}
+
+resource "btp_subaccount_destination_generic" "http_dest_with_destination_configuration_authentication" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  destination_configuration = jsonencode({
+    "Name"            = "destination-with-authentication"
+    "Type"            = "HTTP"
+    "clientId"        = "abc"
+    "tokenServiceURL" = "https://myservice.example.com"
+    "ProxyType"       = "Internet"
+    "URL"             = "https://myservice.example.com"
+    "Authentication"  = "OAuth2ClientCredentials"
+    "Description"     = "trial destination of basic usecase with additional variables "
+  })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
+}
+
+#subaccount destination rfc type
+resource "btp_subaccount_destination_generic" "rfc_destination" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  destination_configuration = jsonencode({
+    "Name"                                  = "rfc-destination"
+    "Type"                                  = "RFC"
+    "jco.client.ashost"                     = "va4hci"
+    "jco.client.client"                     = "001"
+    "jco.client.delta"                      = "1"
+    "jco.client.network"                    = "LAN"
+    "jco.client.passwd"                     = "Welcome1"
+    "jco.client.serialization_format"       = "rowBased"
+    "jco.client.sysnr"                      = "00"
+    "jco.client.trace"                      = "0"
+    "jco.client.user"                       = "SAPIPS"
+    "jco.destination.auth_type"             = "CONFIGURED_USER"
+    "jco.destination.pool_check_connection" = "0"
+    "jco.destination.proxy_type"            = "OnPremise"
+    "jco.destination.description"           = "RFC destination test"
+  })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
+}
+
+#subaccount destination ldap type
+resource "btp_subaccount_destination_generic" "ldap_destination" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  destination_configuration = jsonencode({
+    "Name"                = "ldap-destination"
+    "Type"                = "LDAP"
+    "ldap.url"            = "ldap://ldap.example.com:389"
+    "ldap.proxyType"      = "Internet"
+    "ldap.description"    = "LDAP destination test"
+    "ldap.authentication" = "BasicAuthentication"
+    "ldap.user"           = "abc"
+    "ldap.password"       = "abc"
+  })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
+}
+
+#subaccount destination mail type
+resource "btp_subaccount_destination_generic" "mail_destination" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  destination_configuration = jsonencode({
+    "Name"             = "mail-destination"
+    "Type"             = "MAIL"
+    "Authentication"   = "BasicAuthentication"
+    "ProxyType"        = "OnPremise"
+    "mail.description" = "MAIL destination test"
+    "mail.user"        = "user@example.com"
+    "mail.password"    = "secret"
+  })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
+}
+
+#subaccount destination tcp type
+resource "btp_subaccount_destination_generic" "tcp_destination" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  destination_configuration = jsonencode({
+    "Name"        = "tcp-destination"
+    "Type"        = "TCP"
+    "Address"     = "host:1234"
+    "ProxyType"   = "OnPremise"
+    "Description" = "TCP destination example"
+  })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
+}
