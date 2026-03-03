@@ -167,6 +167,11 @@ resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_static_jenny_g
   origin               = local.testing_idps[count.index]
 }
 
+resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_static_destination_creator" {
+  subaccount_id        = btp_subaccount.sa_acc_static.id
+  role_collection_name = "Destination Administrator"
+  user_name            = "jenny.doe@test.com"
+}
 ###
 # directory entitlements
 ###
@@ -248,6 +253,11 @@ resource "btp_subaccount_entitlement" "se_sa_services_static_malware_scanner" {
   service_name  = "malware-scanner"
   plan_name     = "clamav"
 }
+resource "btp_subaccount_entitlement" "se_sa_services_static_destination" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  service_name  = "destination"
+  plan_name     = "lite"
+}
 
 ###
 # subaccount service instances
@@ -290,8 +300,11 @@ resource "btp_subaccount_service_instance" "ssi_sa_services_static_malware_scann
 
 data "btp_subaccount_service_plan" "ssp_sa_services_static_destination" {
   subaccount_id = btp_subaccount.sa_services_static.id
-  name          = "free"
+  name          = "lite"
   offering_name = "destination"
+  depends_on = [
+    btp_subaccount_entitlement.se_sa_services_static_destination
+  ]
 }
 
 resource "btp_subaccount_service_instance" "ssi_sa_services_destination" {
