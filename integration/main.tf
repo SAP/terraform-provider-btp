@@ -143,7 +143,7 @@ resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_su
   group_name           = each.value[1]
   origin               = each.value[0]
 }
-resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_subaccount_administrators" {
+resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_destination_administrators" {
   subaccount_id        = btp_subaccount.sa_services_static.id
   for_each             = local.testing_idps_group_mapping
   role_collection_name = "Destination Administrator"
@@ -167,8 +167,8 @@ resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_static_jenny_g
   origin               = local.testing_idps[count.index]
 }
 
-resource "btp_subaccount_role_collection_assignment" "srca_sa_acc_static_destination_creator" {
-  subaccount_id        = btp_subaccount.sa_acc_static.id
+resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_destination_creator" {
+  subaccount_id        = btp_subaccount.sa_services_static.id
   role_collection_name = "Destination Administrator"
   user_name            = "jenny.doe@test.com"
 }
@@ -351,8 +351,10 @@ resource "btp_subaccount_destination_generic" "http_dest" {
     "URL"            = "https://myservice.example.com"
     "Authentication" = "NoAuthentication"
     "Description"    = "trial destination of basic usecase with service instance"
-
   })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
 }
 
 resource "btp_subaccount_destination_generic" "destination" {
@@ -365,6 +367,9 @@ resource "btp_subaccount_destination_generic" "destination" {
     "Authentication" = "NoAuthentication"
     "Description"    = "trial destination of basic usecase "
   })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
 }
 
 resource "btp_subaccount_destination_generic" "http_dest_with_destination_configuration_authentication" {
@@ -377,8 +382,11 @@ resource "btp_subaccount_destination_generic" "http_dest_with_destination_config
     "ProxyType"       = "Internet"
     "URL"             = "https://myservice.example.com"
     "Authentication"  = "OAuth2ClientCredentials"
-    "Description"     = "trial destination of basic usecase with addditional variables "
+    "Description"     = "trial destination of basic usecase with additional variables "
   })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
 }
 
 #subaccount destination rfc type
@@ -401,6 +409,9 @@ resource "btp_subaccount_destination_generic" "rfc_destination" {
     "jco.destination.proxy_type"            = "OnPremise"
     "jco.destination.description"           = "RFC destination test"
   })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
 }
 
 #subaccount destination ldap type
@@ -416,6 +427,9 @@ resource "btp_subaccount_destination_generic" "ldap_destination" {
     "ldap.user"           = "abc"
     "ldap.password"       = "abc"
   })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
 }
 
 #subaccount destination mail type
@@ -430,6 +444,9 @@ resource "btp_subaccount_destination_generic" "mail_destination" {
     "mail.user"        = "user@example.com"
     "mail.password"    = "secret"
   })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
 }
 
 #subaccount destination tcp type
@@ -442,4 +459,7 @@ resource "btp_subaccount_destination_generic" "tcp_destination" {
     "ProxyType"   = "OnPremise"
     "Description" = "TCP destination example"
   })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
 }
