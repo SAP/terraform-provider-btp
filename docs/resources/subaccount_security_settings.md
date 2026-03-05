@@ -70,7 +70,7 @@ Import is supported using the following syntax:
 
 terraform import btp_subaccount_security_settings.sec_setting '6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f'
 
-#terraform import using id attribute in import block
+# terraform import using id attribute in import block
 
 import {
   to = btp_subaccount_security_settings.<resource_name>
@@ -78,9 +78,9 @@ import {
 }
 
 import {
-to = btp_subaccount_security_settings.<resource_name>
-identity = {
-  subaccount_id = "<subaccount_id>"
+  to = btp_subaccount_security_settings.<resource_name>
+  identity = {
+    subaccount_id = "<subaccount_id>"
   }
 }
 ```

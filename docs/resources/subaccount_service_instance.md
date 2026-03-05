@@ -108,7 +108,7 @@ Import is supported using the following syntax:
 
 terraform import btp_subaccount_service_instance.alert_notification_free 6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f,6a55f158-41b5-4e63-aa77-84089fa0ab98
 
-#terraform import using id attribute in import block
+# terraform import using id attribute in import block
 
 import {
   to = btp_subaccount_service_instance.<resource_name>
@@ -118,14 +118,14 @@ import {
 import {
   to = btp_subaccount_service_instance.<resource_name>
   identity = {
-    subaccount_id = "subaccount_id>"
+    subaccount_id = "<subaccount_id>"
     id            = "<service_instance_id>"
   }
 }
 ```
 
 
-### Restriction
+## Restriction
 
 The import of service instances that can be configured via parameters only works if the corresponding service offering supports the retrieval of these parameters, which means that the `instances_retrievable` parameter of the service offering must be set to `true`.
 
