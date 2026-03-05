@@ -376,6 +376,7 @@ func (p *btpcliProvider) Resources(ctx context.Context) []func() resource.Resour
 		newSubaccountDestinationResource,
 		newSubaccountDestinationCertificateResource,
 		newSubaccountDestinationGenericResource,
+		newDisasterRecoverySubaccountPairResource,
 	}, betaResources...)
 }
 
@@ -475,6 +476,7 @@ func (p *btpcliProvider) DataSources(ctx context.Context) []func() datasource.Da
 		newSubaccountDestinationsGenericDataSource,
 		newSubaccountDestinationsNamesDataSource,
 		newSubaccountDestinationGenericDataSource,
+		newDisasterRecoverySubaccountPairDataSource,
 	}, betaDataSources...)
 }
 

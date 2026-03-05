@@ -29,9 +29,11 @@ const DefaultServerURL string = "https://cli.btp.cloud.sap"
 type BtpClientError struct {
 	Message      string         `json:"error"` // This should always be available
 	Description  string         `json:"description"`
-	BrokerError  *SmBrokerError `json:"broker_error"` // Service Broker/Service Manager specific
-	DestError    *[]DestError   `json:"violations"`   // Destination service specific error details
-	ErrorMessage string         `json:"ErrorMessage"` // Alternate error field used by some services
+	BrokerError  *SmBrokerError `json:"broker_error"`  // Service Broker/Service Manager specific
+	DestError    *[]DestError   `json:"violations"`    // Destination service specific error details
+	ErrorMessage string         `json:"ErrorMessage"`  // Alternate error field used by some services
+	CdrErrorCode string         `json:"error_code"`    // Disaster Recovery specific error code
+	CdrErrorMsg  string         `json:"error_message"` // Disaster Recovery specific error message
 }
 
 // The service broker error
@@ -619,6 +621,11 @@ func handleSpecialErrors(backendError BtpClientError, plainError error) error {
 		if len(errorDetails) > 0 {
 			return fmt.Errorf("%s - %s", backendError.ErrorMessage, strings.Join(errorDetails, " | "))
 		}
+	}
+
+	if backendError.CdrErrorCode != "" || backendError.CdrErrorMsg != "" {
+		// Handle the additional information provided by the Disaster Recovery service
+		return fmt.Errorf("%s: %s", backendError.CdrErrorCode, backendError.CdrErrorMsg)
 	}
 
 	return plainError

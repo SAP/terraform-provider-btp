@@ -612,6 +612,7 @@ func TestProvider_HasResources(t *testing.T) {
 		"btp_subaccount_destination_fragment",
 		"btp_subaccount_destination",
 		"btp_subaccount_destination_generic",
+		"btp_disaster_recovery_subaccount_pair",
 	}
 
 	ctx := context.Background()
@@ -772,6 +773,7 @@ func TestProvider_HasDatasources(t *testing.T) {
 		"btp_subaccount_destination_certificate",
 		"btp_subaccount_destination_certificates",
 		"btp_whoami",
+		"btp_disaster_recovery_subaccount_pair",
 	}
 
 	ctx := context.Background()
