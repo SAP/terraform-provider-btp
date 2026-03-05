@@ -1,0 +1,279 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 114
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.14.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - 36304ac7-c5a2-d67f-7557-e4eccb7627a1
+            X-Cpcli-Format:
+                - json
+        url: https://canary.cli.btp.int.sap/login/v2.97.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 79
+        uncompressed: false
+        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test","refreshToken":null}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "79"
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 05 Mar 2026 04:44:21 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 017cd7d8-ce7e-41c7-731b-204a8acd7e5f
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 2.46064896s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ba268910-81e6-4ac1-9016-cae7ed196889"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.14.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - e9df1357-1f71-a491-8cc8-bec15b7ab11b
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.97.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"applications":[{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"one-mds-master","commercialAppName":"one-mds-master","appId":"one-mds-master!b46510","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"supportsGetParameters":false,"displayName":"SAP Master Data Integration Tenant","description":"Replicate master data between applications via a central master data hub.","category":"Integration","categoryDisplayName":"Integration","globalAccountId":"2342216e-8a13-4aab-894e-11e5280a90f9","tenantId":"ac38918a-900c-4d3c-92f3-398883d3c5e7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Integration"}]},"allowedTargetPlans":[]},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"mdo-one-mds-master","commercialAppName":"mdo-one-mds-master","appId":"mdo-one-mds-master!t46510","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"supportsGetParameters":false,"planDescription":"Used in combination with the SAP Master Data Integration service","displayName":"Master Data Integration (Orchestration)","description":"Master data application that allows master data replication according to predetermined master data distribution models. SAP Master Data Orchestration can only be used in combination with the SAP Master Data Integration service.","shortDescription":"Orchestrate master data distribution.","iconBase64":"PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzM4NjBfMTc1NjIpIj4KPHBhdGggZD0iTTExLjIxMTQgMi45Nzc0NkMxMC45MjY5IDMuMDgyODkgMTAuNjk1MyAzLjI5OTAyIDEwLjU2NzMgMy41NzgzNEw4LjA1NDM3IDkuMDA2NjVDNy45OTEwNCA5LjE0NDk1IDcuOTU1MDcgOS4yOTQ2IDcuOTQ4NTMgOS40NDcwNUM3Ljk0MTk5IDkuNTk5NSA3Ljk2NTAxIDkuNzUxNzcgOC4wMTYyNyA5Ljg5NTE2QzguMDY3NTIgMTAuMDM4NiA4LjE0NjAyIDEwLjE3MDMgOC4yNDcyNyAxMC4yODI4QzguMzQ4NTIgMTAuMzk1MyA4LjQ3MDU0IDEwLjQ4NjQgOC42MDYzNyAxMC41NTA5QzguNzQyMjEgMTAuNjE1NCA4Ljg4OTE5IDEwLjY1MiA5LjAzODk0IDEwLjY1ODdDOS4xODg2OCAxMC42NjU0IDkuMzM4MjUgMTAuNjQxOSA5LjQ3OTEgMTAuNTg5N0M5LjYxOTk0IDEwLjUzNzUgOS43NDkzMiAxMC40NTc2IDkuODU5ODIgMTAuMzU0NUM5Ljk3MDMzIDEwLjI1MTQgMTAuMDU5OCAxMC4xMjcxIDEwLjEyMzEgOS45ODg4M0wxMi42MzYxIDQuNTYwMzdDMTIuNzY0IDQuMjgxMDYgMTIuNzc3NyAzLjk2MTQ3IDEyLjY3NDEgMy42NzE4OEMxMi41NzA2IDMuMzgyMyAxMi4zNTg0IDMuMTQ2NDMgMTIuMDg0MSAzLjAxNjE2QzExLjgwOTcgMi44ODU5NiAxMS40OTU4IDIuODcyMDQgMTEuMjExNCAyLjk3NzQ2WiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzM4NjBfMTc1NjIpIi8+CjxwYXRoIGQ9Ik01LjYwMzM4IDEyLjQ1NTZMNy40ODAzNCA4LjQyNTQ2QzcuNjA4MjQgOC4xNDYxOSA3LjYyMTk2IDcuODI2NjMgNy41MTg1IDcuNTM3MDVDNy40MTUwNCA3LjI0NzQ3IDcuMjAyODYgNy4wMTE1OCA2LjkyODYyIDYuODgxMjVDNi42NTQyOCA2Ljc1MSA2LjM0MDM2IDYuNzM3MDQgNi4wNTU5MSA2Ljg0MjQ0QzUuNzcxNDcgNi45NDc4NCA1LjUzOTc5IDcuMTYzOTcgNS40MTE4NCA3LjQ0MzI5TDMuNTM1MDIgMTEuNDczNEMzLjQ3MTY5IDExLjYxMTcgMy40MzU3MiAxMS43NjEzIDMuNDI5MTkgMTEuOTEzOEMzLjQyMjY1IDEyLjA2NjIgMy40NDU2NyAxMi4yMTg1IDMuNDk2OTIgMTIuMzYxOUMzLjU0ODE4IDEyLjUwNTIgMy42MjY2OCAxMi42MzY5IDMuNzI3OTMgMTIuNzQ5NEMzLjgyOTE4IDEyLjg2MTkgMy45NTEyIDEyLjk1MyA0LjA4NzAyIDEzLjAxNzVDNC4zNjEyOCAxMy4xNDc3IDQuNjc1MTEgMTMuMTYxNiA0Ljk1OTQ4IDEzLjA1NjNDNS4yNDM4NSAxMi45NTA5IDUuNDc1NDYgMTIuNzM0OCA1LjYwMzM4IDEyLjQ1NTZaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfMzg2MF8xNzU2MikiLz4KPHBhdGggZD0iTTIuMjc0NjcgMTEuOTY2MUMyLjI3NDY3IDEyLjYwNTYgMS43NjU0NyAxMy4xMjQxIDEuMTM3MzQgMTMuMTI0MUMwLjUwOTIwMyAxMy4xMjQxIDAgMTIuNjA1NiAwIDExLjk2NjFDMCAxMS4zMjY1IDAuNTA5MjAzIDEwLjgwODEgMS4xMzczNCAxMC44MDgxQzEuNzY1NDcgMTAuODA4MSAyLjI3NDY3IDExLjMyNjUgMi4yNzQ2NyAxMS45NjYxWiIgZmlsbD0idXJsKCNwYWludDJfbGluZWFyXzM4NjBfMTc1NjIpIi8+CjxwYXRoIGQ9Ik03Ljk5NTM2IDEzLjEyNDFDOC42MjM1IDEzLjEyNDEgOS4xMzI3IDEyLjYwNTYgOS4xMzI3IDExLjk2NjFDOS4xMzI3IDExLjMyNjUgOC42MjM1IDEwLjgwODEgNy45OTUzNiAxMC44MDgxQzcuMzY3MjMgMTAuODA4MSA2Ljg1ODAzIDExLjMyNjUgNi44NTgwMyAxMS45NjYxQzYuODU4MDMgMTIuNjA1NiA3LjM2NzIzIDEzLjEyNDEgNy45OTUzNiAxMy4xMjQxWiIgZmlsbD0idXJsKCNwYWludDNfbGluZWFyXzM4NjBfMTc1NjIpIi8+CjxwYXRoIGQ9Ik0xNC44NjI3IDEzLjEyNDFDMTUuNDkwOCAxMy4xMjQxIDE2IDEyLjYwNTYgMTYgMTEuOTY2MUMxNiAxMS4zMjY1IDE1LjQ5MDggMTAuODA4MSAxNC44NjI3IDEwLjgwODFDMTQuMjM0NSAxMC44MDgxIDEzLjcyNTMgMTEuMzI2NSAxMy43MjUzIDExLjk2NjFDMTMuNzI1MyAxMi42MDU2IDE0LjIzNDUgMTMuMTI0MSAxNC44NjI3IDEzLjEyNDFaIiBmaWxsPSJ1cmwoI3BhaW50NF9saW5lYXJfMzg2MF8xNzU2MikiLz4KPHBhdGggZD0iTTEyLjQ2OTkgMTIuNDU1MUwxNC4yMTM2IDguNjI5NTNDMTQuMzQxNCA4LjM1MDQgMTQuMzU1MiA4LjAzMSAxNC4yNTE4IDcuNzQxNTVDMTQuMTQ4NSA3LjQ1MjA5IDEzLjkzNjUgNy4yMTYyNiAxMy42NjI0IDcuMDg1ODlDMTMuNTI2NiA3LjAyMTQgMTMuMzc5NiA2Ljk4NDc4IDEzLjIyOTkgNi45NzgxM0MxMy4wODAyIDYuOTcxNDcgMTIuOTMwNyA2Ljk5NDkxIDEyLjc4OTkgNy4wNDcxQzEyLjY0OSA3LjA5OTI5IDEyLjUxOTcgNy4xNzkyMSAxMi40MDkyIDcuMjgyM0MxMi4yOTg3IDcuMzg1MzkgMTIuMjA5MyA3LjUwOTYzIDEyLjE0NTkgNy42NDc5MkwxMC40MDIyIDExLjQ3MzRDMTAuMjc0NCAxMS43NTI1IDEwLjI2MDYgMTIuMDcxOSAxMC4zNjQgMTIuMzYxNEMxMC40NjczIDEyLjY1MDggMTAuNjc5MyAxMi44ODY2IDEwLjk1MzQgMTMuMDE3QzExLjIyNzYgMTMuMTQ3MiAxMS41NDE1IDEzLjE2MTIgMTEuODI1OSAxMy4wNTU4QzEyLjExMDMgMTIuOTUwNCAxMi4zNDE5IDEyLjczNDQgMTIuNDY5OSAxMi40NTUxWiIgZmlsbD0idXJsKCNwYWludDVfbGluZWFyXzM4NjBfMTc1NjIpIi8+CjxwYXRoIGQ9Ik0yLjkzNTY5IDUuMDg2NzVDMi43NjQzMiA1LjA2ODY3IDIuNTk3NTQgNS4wMTExNiAyLjQ0ODY0IDQuOTE2NDlDMi4xOTE4OCA0Ljc1MzI0IDIuMDA5MzEgNC40OTI4NSAxLjk0MTA2IDQuMTkyNThDMS45MDczNCA0LjA0Mzg5IDEuOTAyNzIgMy44ODk5IDEuOTI3NDUgMy43MzkzOUMxLjk1MjE4IDMuNTg4ODggMi4wMDU3OSAzLjQ0NDgxIDIuMDg1MjEgMy4zMTU0QzIuMTY0NjMgMy4xODU5OCAyLjI2ODMxIDMuMDczNzYgMi4zOTAzMiAyLjk4NTE1QzIuNTEyMzQgMi44OTY1MyAyLjY1MDMgMi44MzMyNSAyLjc5NjMzIDIuNzk4OTNMNC42NjI5NyAyLjM5NzI1QzQuOTU3OTEgMi4zMjc4OSA1LjI2NzgzIDIuMzgwNjQgNS41MjQ1OSAyLjU0Mzg4QzUuNzgxMzQgMi43MDcxMyA1Ljk2MzkxIDIuOTY3NTIgNi4wMzIxNiAzLjI2Nzc5QzYuMDY1ODggMy40MTY0OCA2LjA3MDUgMy41NzA0NyA2LjA0NTc3IDMuNzIwOThDNi4wMjUxNiAzLjg0NjQxIDUuOTg0NDkgMy45NjczNyA1LjkyNTU0IDQuMDc5MTFMMy40MjU0MiA5LjQ3ODM5QzMuMjk3NTMgOS43NTc1NCAzLjA2NiA5Ljk3MzU1IDIuNzgxNzMgMTAuMDc4OUMyLjQ5NzQ2IDEwLjE4NDMgMi4xODM3MiAxMC4xNzA1IDEuOTA5NDkgMTAuMDQwNEMxLjYzNTE3IDkuOTEwMTcgMS40MjI4OSA5LjY3NDMyIDEuMzE5MzUgOS4zODQ3M0MxLjIxNTgxIDkuMDk1MTQgMS4yMjk0OCA4Ljc3NTU0IDEuMzU3MzUgOC40OTYyMUwyLjkzNTY5IDUuMDg2NzVaIiBmaWxsPSJ1cmwoI3BhaW50Nl9saW5lYXJfMzg2MF8xNzU2MikiLz4KPC9nPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzM4NjBfMTc1NjIiIHgxPSIyLjM5ODQ3IiB5MT0iNC40MzU1MyIgeDI9IjguODg5MzIiIHkyPSIxNC42MDE5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwMTk1RkYiLz4KPHN0b3Agb2Zmc2V0PSIwLjk5MTAyOCIgc3RvcC1jb2xvcj0iIzExNDdFOSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXJfMzg2MF8xNzU2MiIgeDE9IjIuMzk4NDciIHkxPSI0LjQzNTUzIiB4Mj0iOC44ODkzMiIgeTI9IjE0LjYwMTkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAxOTVGRiIvPgo8c3RvcCBvZmZzZXQ9IjAuOTkxMDI4IiBzdG9wLWNvbG9yPSIjMTE0N0U5Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQyX2xpbmVhcl8zODYwXzE3NTYyIiB4MT0iMi4zOTg0NyIgeTE9IjQuNDM1NTMiIHgyPSI4Ljg4OTMyIiB5Mj0iMTQuNjAxOSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMDE5NUZGIi8+CjxzdG9wIG9mZnNldD0iMC45OTEwMjgiIHN0b3AtY29sb3I9IiMxMTQ3RTkiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDNfbGluZWFyXzM4NjBfMTc1NjIiIHgxPSIyLjM5ODQ3IiB5MT0iNC40MzU1MyIgeDI9IjguODg5MzIiIHkyPSIxNC42MDE5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwMTk1RkYiLz4KPHN0b3Agb2Zmc2V0PSIwLjk5MTAyOCIgc3RvcC1jb2xvcj0iIzExNDdFOSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50NF9saW5lYXJfMzg2MF8xNzU2MiIgeDE9IjIuMzk4NDciIHkxPSI0LjQzNTUzIiB4Mj0iOC44ODkzMiIgeTI9IjE0LjYwMTkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAxOTVGRiIvPgo8c3RvcCBvZmZzZXQ9IjAuOTkxMDI4IiBzdG9wLWNvbG9yPSIjMTE0N0U5Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQ1X2xpbmVhcl8zODYwXzE3NTYyIiB4MT0iMi4zOTg0NyIgeTE9IjQuNDM1NTMiIHgyPSI4Ljg4OTMyIiB5Mj0iMTQuNjAxOSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMDE5NUZGIi8+CjxzdG9wIG9mZnNldD0iMC45OTEwMjgiIHN0b3AtY29sb3I9IiMxMTQ3RTkiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDZfbGluZWFyXzM4NjBfMTc1NjIiIHgxPSIxLjk3MDQ4IiB5MT0iMy41MzQ5MyIgeDI9IjYuODQzMTMiIHkyPSI2LjU0NTMiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAwQkJGRiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMDhCRkYiLz4KPC9saW5lYXJHcmFkaWVudD4KPGNsaXBQYXRoIGlkPSJjbGlwMF8zODYwXzE3NTYyIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSJ3aGl0ZSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCAwLjAwMjA3NTIpIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg\u003d\u003d","category":"Extension Suite - Development Efficiency","categoryDisplayName":"Extension Suite - Development Efficiency","globalAccountId":"2342216e-8a13-4aab-894e-11e5280a90f9","tenantId":"ac38918a-900c-4d3c-92f3-398883d3c5e7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/docs/SAP_MASTER_DATA_INTEGRATION/8ce78b673ef04cc1bcfeb01c93ef7885/0bed505b149b4ec6af24bf503a45708b.html?locale\u003den-US\u0026version\u003dCLOUD"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"redacted"}],"CFService":{"name":"mdo-one-mds-master","plans":[{"technicalName":"standard","name":"standard","description":"Used in combination with the SAP Master Data Integration service","metadata":{}}]}},"incidentTrackingComponent":"LOD-MDM-ORC","allowedTargetPlans":[]},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"cias","commercialAppName":"cias","appId":"cias!b74866","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"supportsGetParameters":false,"planDescription":"Plan to use the Cloud Integration Automation Service - UI Application","additionalPlanFeatures":[],"displayName":"Cloud Integration Automation","description":"Cloud Integration Automation service provides you a guided workflow to integrate SAP cloud solutions to On-Premise and other SAP Cloud solutions. The guided workflow contains instructions for manual and automated tasks to enable a simpler and faster integration configuration setup.","shortDescription":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions.","iconBase64":"PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzM4NjBfMTc1ODUpIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yLjExNTIzIDMuNTU1NzVDMi4zMTEwMiAyLjE0Mzk5IDMuNDg2MTUgMC43OTE3NDggNS4xNDAxIDAuNzkxNzQ4QzYuNDU1OSAwLjc5MTc0OCA3LjQ0MTAyIDEuNTMzMDkgNy45NzE3MiAyLjYzNTMyQzkuMjk1NjIgMi43NjA5MyAxMC4zOTUzIDMuOTQ4NTggMTAuMzk1MyA1LjQ5NDAyQzEwLjM5NTMgNy4zMjA3MiA4Ljk0NTM4IDguNDMzMjkgNy40MDg1OSA4LjM0NzM0SDIuNDQ5MTVDMS43MDg0MSA4LjM0NzM0IDEuMDc5MzIgOC4xMTU5OCAwLjYzNjIgNy42NTkyN0MwLjE5NjA1MiA3LjIwNTYyIDAgNi41OTIwMyAwIDUuOTQyODlDMCA1LjI0NDM5IDAuMjU0OTQzIDQuNTgyMDIgMC43NDg1NDkgNC4xMjU2OUMxLjExMzQyIDMuNzg4MzggMS41ODMyIDMuNTg3NTUgMi4xMTUyMyAzLjU1NTc1WiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzM4NjBfMTc1ODUpIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMy4yNDk3MiAxMy44NjQ2QzMuMjQ3OTYgMTQuMjgzOSAyLjkwNjk1IDE0LjYyNDkgMi40ODc3IDE0LjYyNjdDMi4wNjg0NSAxNC42Mjg0IDEuNzMwMjggMTQuMjkwMiAxLjczMjA0IDEzLjg3MUwxLjc0NTU0IDEwLjY1MjJDMS43NDczIDEwLjIzMjkgMi4wODgzMSA5Ljg5MTkxIDIuNTA3NTYgOS44OTAxNUw1LjcyNjM5IDkuODc2NjVDNi4xNDU2NCA5Ljg3NDg5IDYuNDgzOCAxMC4yMTMxIDYuNDgyMDQgMTAuNjMyM0M2LjQ4MDI4IDExLjA1MTYgNi4xMzkyNyAxMS4zOTI2IDUuNzIwMDIgMTEuMzk0M0w0LjM5NjQgMTEuMzk5OUw1LjIzODE5IDEyLjI0MTdDNy4zMDMyMiAxNC4zMDY3IDEwLjg1MzYgMTQuMjEzNCAxMi45MzY0IDEyLjEzMDZDMTUuMDE4OCAxMC4wNDgyIDE0Ljk5MjQgNi42NDY1NiAxMi45Mjc0IDQuNTgxNTNDMTIuMzU4OCA0LjA3NjA4IDExLjYwNjcgMy41MDQzNyAxMS42MDY3IDMuNTA0MzdDMTAuOTgwOSAzLjAyNzk4IDExLjQzMDYgMi40MDc1MyAxMS40MzA2IDIuNDA3NTNDMTEuNDMwNiAyLjQwNzUzIDExLjc1OTQgMS45NTUzMiAxMi4zNTg4IDIuMjI2N0MxMi4zNTg4IDIuMjI2NyAxMi45Mjc0IDIuNDQyOTggMTQuMDA1NCAzLjUwNDM2QzE2LjQ4NjkgNS45NDc2NSAxNi42ODMgMTAuNTIyIDE0LjAwNTQgMTMuMTk5NkMxMS4zMjc4IDE1Ljg3NzEgNi44MTYyMiAxNS45NzQ5IDQuMTYxMDEgMTMuMzE5NkwzLjI1NTggMTIuNDE0NEwzLjI0OTcyIDEzLjg2NDZaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfMzg2MF8xNzU4NSkiLz4KPC9nPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzM4NjBfMTc1ODUiIHgxPSIxLjU1ODMiIHkxPSIxLjkyMjMzIiB4Mj0iNi41OTM4OCIgeTI9IjguODQ4NjYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAxOTVGRiIvPgo8c3RvcCBvZmZzZXQ9IjAuOTkxMDI4IiBzdG9wLWNvbG9yPSIjMTE0N0U5Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQxX2xpbmVhcl8zODYwXzE3NTg1IiB4MT0iMi42Njg0NSIgeTE9IjExLjY3OSIgeDI9IjE0LjkwODkiIHkyPSIxNC4yMDIxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwMEJCRkYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDA4QkZGIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMzg2MF8xNzU4NSI+CjxyZWN0IHdpZHRoPSIxNS45OTk5IiBoZWlnaHQ9IjE1Ljk5OTkiIGZpbGw9IndoaXRlIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDAuMDAyMDc1MikiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K","globalAccountId":"772a1555-53bf-4bc2-b4ab-fbc18f972b0b","tenantId":"172e334b-4f52-490b-8c3c-c15c775ea815","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"true","propagateLocale":"true","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Cloud%2520Integration%2520Automation%2520Service/Latest/en-US"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"redacted"}],"CFService":{"name":"cias","plans":[{"technicalName":"oauth2","name":"oauth2","description":"Plan to access Cloud Integration Automation Service APIs","metadata":{"bullets":[]}},{"technicalName":"standard","name":"standard","description":"Plan to use the Cloud Integration Automation Service - UI Application","metadata":{"bullets":[]}}]}},"incidentTrackingComponent":"BC-INS-CIT-RT","allowedTargetPlans":[]},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"content-agent-ui","commercialAppName":"content-agent-ui","appId":"cas-ui-xsuaa-prod!t216","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"supportsGetParameters":false,"displayName":"Content Agent","description":"Content Agent UI","category":"Integration Suite","categoryDisplayName":"Integration Suite","globalAccountId":"d39f31d1-c84d-448e-bc18-d3571e6e2d6c","tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","quota":1,"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Integration Suite"}]},"allowedTargetPlans":[]},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"feature-flags-dashboard","commercialAppName":"feature-flags-dashboard","appId":"feature-flags!b18","planName":"dashboard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"supportsGetParameters":false,"planDescription":"View and manage Feature Flags Service instances.","displayName":"Feature Flags Service","description":"The Feature Flags service allows you to enable or disable new features at runtime without redeploying or restarting the application. You can use feature flags to control code delivery, synchronized rollout, direct shipment, and fast rollback of features.","shortDescription":"Control the rollout of new features.","iconBase64":"PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzM4NjBfMTc1NjcpIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMi40MDM3IDAuMDAyMDc1Mkg2LjQwMzcxQzQuNDE1NDkgMC4wMDIwNzUyIDIuODAzNzEgMS42MTM4NSAyLjgwMzcxIDMuNjAyMDhDMi44MDM3MSA1LjU5MDMgNC40MTU0OSA3LjIwMjA3IDYuNDAzNzEgNy4yMDIwN0gxMi40MDM3QzE0LjM5MTkgNy4yMDIwNyAxNi4wMDM3IDUuNTkwMyAxNi4wMDM3IDMuNjAyMDhDMTYuMDAzNyAxLjYxMzg1IDE0LjM5MTkgMC4wMDIwNzUyIDEyLjQwMzcgMC4wMDIwNzUyWk0xMi40MDM3IDUuNjAyMDlDMTMuNTA4MyA1LjYwMjA5IDE0LjQwMzcgNC43MDY2NSAxNC40MDM3IDMuNjAyMDlDMTQuNDAzNyAyLjQ5NzUyIDEzLjUwODMgMS42MDIwOSAxMi40MDM3IDEuNjAyMDlDMTEuMjk5MSAxLjYwMjA5IDEwLjQwMzcgMi40OTc1MiAxMC40MDM3IDMuNjAyMDlDMTAuNDAzNyA0LjcwNjY1IDExLjI5OTEgNS42MDIwOSAxMi40MDM3IDUuNjAyMDlaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMzg2MF8xNzU2NykiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zLjYwMDQ5IDE2LjAwMkw5LjYwMDU0IDE2LjAwMkMxMS41ODg4IDE2LjAwMiAxMy4yMDA1IDE0LjM5MDMgMTMuMjAwNSAxMi40MDJDMTMuMjAwNSAxMC40MTM4IDExLjU4ODggOC44MDIwNCA5LjYwMDU0IDguODAyMDRIMy42MTY4OUwzLjYwMDQ5IDguODAyQzEuNjEyMTYgOC44MDIgMC4wMDA0ODgyODEgMTAuNDEzOCAwLjAwMDQ4ODI4MSAxMi40MDJDMC4wMDA0ODgyODEgMTQuMzkwMiAxLjYxMjE1IDE2LjAwMiAzLjYwMDQ5IDE2LjAwMlpNNy4yMDA0OSAxMi40MDJDNy4yMDA0OSAxMy4xNDIxIDYuOTc3MTcgMTMuODMgNi41OTQyNCAxNC40MDJIOS42MDA1NEMxMC43MDUxIDE0LjQwMiAxMS42MDA1IDEzLjUwNjYgMTEuNjAwNSAxMi40MDJDMTEuNjAwNSAxMS4yOTc1IDEwLjcwNTEgMTAuNDAyIDkuNjAwNTQgMTAuNDAySDYuNTk0MzJDNi45NzcyMSAxMC45NzQxIDcuMjAwNDkgMTEuNjYyIDcuMjAwNDkgMTIuNDAyWk0zLjYxMjc0IDEwLjQwMkM0LjAxMjg0IDEwLjQwNDQgNC4zODUxIDEwLjUyNDMgNC42OTY3NSAxMC43Mjg5QzQuNTM0IDEwLjYyMjEgNC4zNTQ3MiAxMC41Mzg0IDQuMTYzNTggMTAuNDgyNEM0Ljk5Mzk4IDEwLjcyNTYgNS42MDA0NiAxMS40OTMgNS42MDA0NiAxMi40MDJDNS42MDA0NiAxMy41MDY2IDQuNzA1MDIgMTQuNDAyIDMuNjAwNDYgMTQuNDAyQzIuNDk1ODIgMTQuNDAyIDEuNjAwNDYgMTMuNTA2NiAxLjYwMDQ2IDEyLjQwMkMxLjYwMDQ2IDExLjcwNzMgMS45NTQ2NCAxMS4wOTUzIDIuNDkyMzEgMTAuNzM2OEMyLjUxNDUgMTAuNzIyIDIuNTM3IDEwLjcwNzcgMi41NTk4MSAxMC42OTM3QzIuODYyOTggMTAuNTA4NiAzLjIxOTI3IDEwLjQwMiAzLjYwMDQ5IDEwLjQwMkMzLjYwMzUgMTAuNDAyIDMuNjA2NTcgMTAuNDAyIDMuNjA5NTggMTAuNDAySDMuNjEyNzRaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfMzg2MF8xNzU2NykiLz4KPC9nPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzM4NjBfMTc1NjciIHgxPSI0Ljc4MjQ1IiB5MT0iMS4wNzg3OSIgeDI9IjkuMDIwMjgiIHkyPSI4Ljg1MDg2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwMTk1RkYiLz4KPHN0b3Agb2Zmc2V0PSIwLjk5MTAyOCIgc3RvcC1jb2xvcj0iIzExNDdFOSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXJfMzg2MF8xNzU2NyIgeDE9IjEuOTc1OTgiIHkxPSI5Ljg4MjI0IiB4Mj0iNi4yMTYyNCIgeTI9IjE3LjY1MDYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAwQkJGRiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMDhCRkYiLz4KPC9saW5lYXJHcmFkaWVudD4KPGNsaXBQYXRoIGlkPSJjbGlwMF8zODYwXzE3NTY3Ij4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSJ3aGl0ZSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCAwLjAwMjA3NTIpIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg\u003d\u003d","category":"Foundation / Cross Services","categoryDisplayName":"Foundation / Cross Services","globalAccountId":"1aa6ae00-fe52-1993-65ff-3613845a7961","tenantId":"fflags-cf-eu12","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","inventoryIds":[{"key":"redacted"}],"serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/FEATURE_FLAGS/Cloud/en-US"},{"linkCategory":"discovery_center","title":"Discovery Center","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://discovery-center.cloud.sap/serviceCatalog/feature-flags-service"},{"linkCategory":"support","title":"Support","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/5dd739823b824b539eee47b7860a00be.html"}],"serviceCategories":[{"name":"Foundation / Cross Services"}],"regionInformation":[{"key":"redacted"}],"CFService":{"name":"feature-flags-dashboard","plans":[{"technicalName":"dashboard","name":"dashboard","description":"View and manage Feature Flags Service instances.","metadata":{}}]}},"incidentTrackingComponent":"BC-CP-CF-FEATUREFLG","allowedTargetPlans":[]}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 05 Mar 2026 04:44:22 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 724a9c28-8d46-4fc0-77ba-5e694a8367bc
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 1.138677125s
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 114
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.14.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - 6a337c1f-e1c2-1961-3bd7-84e157494a80
+            X-Cpcli-Format:
+                - json
+        url: https://canary.cli.btp.int.sap/login/v2.97.0
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 79
+        uncompressed: false
+        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test","refreshToken":null}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "79"
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 05 Mar 2026 04:44:23 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 065b3abe-eff6-4666-7f93-5f2684716b28
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 631.532958ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"subaccount":"ba268910-81e6-4ac1-9016-cae7ed196889"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.14.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - 6f80e655-daef-a72a-65f9-a0a007acd4a8
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.97.0/accounts/subscription?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"applications":[{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"one-mds-master","commercialAppName":"one-mds-master","appId":"one-mds-master!b46510","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"supportsGetParameters":false,"displayName":"SAP Master Data Integration Tenant","description":"Replicate master data between applications via a central master data hub.","category":"Integration","categoryDisplayName":"Integration","globalAccountId":"2342216e-8a13-4aab-894e-11e5280a90f9","tenantId":"ac38918a-900c-4d3c-92f3-398883d3c5e7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Integration"}]},"allowedTargetPlans":[]},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"mdo-one-mds-master","commercialAppName":"mdo-one-mds-master","appId":"mdo-one-mds-master!t46510","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"supportsGetParameters":false,"planDescription":"Used in combination with the SAP Master Data Integration service","displayName":"Master Data Integration (Orchestration)","description":"Master data application that allows master data replication according to predetermined master data distribution models. SAP Master Data Orchestration can only be used in combination with the SAP Master Data Integration service.","shortDescription":"Orchestrate master data distribution.","iconBase64":"PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzM4NjBfMTc1NjIpIj4KPHBhdGggZD0iTTExLjIxMTQgMi45Nzc0NkMxMC45MjY5IDMuMDgyODkgMTAuNjk1MyAzLjI5OTAyIDEwLjU2NzMgMy41NzgzNEw4LjA1NDM3IDkuMDA2NjVDNy45OTEwNCA5LjE0NDk1IDcuOTU1MDcgOS4yOTQ2IDcuOTQ4NTMgOS40NDcwNUM3Ljk0MTk5IDkuNTk5NSA3Ljk2NTAxIDkuNzUxNzcgOC4wMTYyNyA5Ljg5NTE2QzguMDY3NTIgMTAuMDM4NiA4LjE0NjAyIDEwLjE3MDMgOC4yNDcyNyAxMC4yODI4QzguMzQ4NTIgMTAuMzk1MyA4LjQ3MDU0IDEwLjQ4NjQgOC42MDYzNyAxMC41NTA5QzguNzQyMjEgMTAuNjE1NCA4Ljg4OTE5IDEwLjY1MiA5LjAzODk0IDEwLjY1ODdDOS4xODg2OCAxMC42NjU0IDkuMzM4MjUgMTAuNjQxOSA5LjQ3OTEgMTAuNTg5N0M5LjYxOTk0IDEwLjUzNzUgOS43NDkzMiAxMC40NTc2IDkuODU5ODIgMTAuMzU0NUM5Ljk3MDMzIDEwLjI1MTQgMTAuMDU5OCAxMC4xMjcxIDEwLjEyMzEgOS45ODg4M0wxMi42MzYxIDQuNTYwMzdDMTIuNzY0IDQuMjgxMDYgMTIuNzc3NyAzLjk2MTQ3IDEyLjY3NDEgMy42NzE4OEMxMi41NzA2IDMuMzgyMyAxMi4zNTg0IDMuMTQ2NDMgMTIuMDg0MSAzLjAxNjE2QzExLjgwOTcgMi44ODU5NiAxMS40OTU4IDIuODcyMDQgMTEuMjExNCAyLjk3NzQ2WiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzM4NjBfMTc1NjIpIi8+CjxwYXRoIGQ9Ik01LjYwMzM4IDEyLjQ1NTZMNy40ODAzNCA4LjQyNTQ2QzcuNjA4MjQgOC4xNDYxOSA3LjYyMTk2IDcuODI2NjMgNy41MTg1IDcuNTM3MDVDNy40MTUwNCA3LjI0NzQ3IDcuMjAyODYgNy4wMTE1OCA2LjkyODYyIDYuODgxMjVDNi42NTQyOCA2Ljc1MSA2LjM0MDM2IDYuNzM3MDQgNi4wNTU5MSA2Ljg0MjQ0QzUuNzcxNDcgNi45NDc4NCA1LjUzOTc5IDcuMTYzOTcgNS40MTE4NCA3LjQ0MzI5TDMuNTM1MDIgMTEuNDczNEMzLjQ3MTY5IDExLjYxMTcgMy40MzU3MiAxMS43NjEzIDMuNDI5MTkgMTEuOTEzOEMzLjQyMjY1IDEyLjA2NjIgMy40NDU2NyAxMi4yMTg1IDMuNDk2OTIgMTIuMzYxOUMzLjU0ODE4IDEyLjUwNTIgMy42MjY2OCAxMi42MzY5IDMuNzI3OTMgMTIuNzQ5NEMzLjgyOTE4IDEyLjg2MTkgMy45NTEyIDEyLjk1MyA0LjA4NzAyIDEzLjAxNzVDNC4zNjEyOCAxMy4xNDc3IDQuNjc1MTEgMTMuMTYxNiA0Ljk1OTQ4IDEzLjA1NjNDNS4yNDM4NSAxMi45NTA5IDUuNDc1NDYgMTIuNzM0OCA1LjYwMzM4IDEyLjQ1NTZaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfMzg2MF8xNzU2MikiLz4KPHBhdGggZD0iTTIuMjc0NjcgMTEuOTY2MUMyLjI3NDY3IDEyLjYwNTYgMS43NjU0NyAxMy4xMjQxIDEuMTM3MzQgMTMuMTI0MUMwLjUwOTIwMyAxMy4xMjQxIDAgMTIuNjA1NiAwIDExLjk2NjFDMCAxMS4zMjY1IDAuNTA5MjAzIDEwLjgwODEgMS4xMzczNCAxMC44MDgxQzEuNzY1NDcgMTAuODA4MSAyLjI3NDY3IDExLjMyNjUgMi4yNzQ2NyAxMS45NjYxWiIgZmlsbD0idXJsKCNwYWludDJfbGluZWFyXzM4NjBfMTc1NjIpIi8+CjxwYXRoIGQ9Ik03Ljk5NTM2IDEzLjEyNDFDOC42MjM1IDEzLjEyNDEgOS4xMzI3IDEyLjYwNTYgOS4xMzI3IDExLjk2NjFDOS4xMzI3IDExLjMyNjUgOC42MjM1IDEwLjgwODEgNy45OTUzNiAxMC44MDgxQzcuMzY3MjMgMTAuODA4MSA2Ljg1ODAzIDExLjMyNjUgNi44NTgwMyAxMS45NjYxQzYuODU4MDMgMTIuNjA1NiA3LjM2NzIzIDEzLjEyNDEgNy45OTUzNiAxMy4xMjQxWiIgZmlsbD0idXJsKCNwYWludDNfbGluZWFyXzM4NjBfMTc1NjIpIi8+CjxwYXRoIGQ9Ik0xNC44NjI3IDEzLjEyNDFDMTUuNDkwOCAxMy4xMjQxIDE2IDEyLjYwNTYgMTYgMTEuOTY2MUMxNiAxMS4zMjY1IDE1LjQ5MDggMTAuODA4MSAxNC44NjI3IDEwLjgwODFDMTQuMjM0NSAxMC44MDgxIDEzLjcyNTMgMTEuMzI2NSAxMy43MjUzIDExLjk2NjFDMTMuNzI1MyAxMi42MDU2IDE0LjIzNDUgMTMuMTI0MSAxNC44NjI3IDEzLjEyNDFaIiBmaWxsPSJ1cmwoI3BhaW50NF9saW5lYXJfMzg2MF8xNzU2MikiLz4KPHBhdGggZD0iTTEyLjQ2OTkgMTIuNDU1MUwxNC4yMTM2IDguNjI5NTNDMTQuMzQxNCA4LjM1MDQgMTQuMzU1MiA4LjAzMSAxNC4yNTE4IDcuNzQxNTVDMTQuMTQ4NSA3LjQ1MjA5IDEzLjkzNjUgNy4yMTYyNiAxMy42NjI0IDcuMDg1ODlDMTMuNTI2NiA3LjAyMTQgMTMuMzc5NiA2Ljk4NDc4IDEzLjIyOTkgNi45NzgxM0MxMy4wODAyIDYuOTcxNDcgMTIuOTMwNyA2Ljk5NDkxIDEyLjc4OTkgNy4wNDcxQzEyLjY0OSA3LjA5OTI5IDEyLjUxOTcgNy4xNzkyMSAxMi40MDkyIDcuMjgyM0MxMi4yOTg3IDcuMzg1MzkgMTIuMjA5MyA3LjUwOTYzIDEyLjE0NTkgNy42NDc5MkwxMC40MDIyIDExLjQ3MzRDMTAuMjc0NCAxMS43NTI1IDEwLjI2MDYgMTIuMDcxOSAxMC4zNjQgMTIuMzYxNEMxMC40NjczIDEyLjY1MDggMTAuNjc5MyAxMi44ODY2IDEwLjk1MzQgMTMuMDE3QzExLjIyNzYgMTMuMTQ3MiAxMS41NDE1IDEzLjE2MTIgMTEuODI1OSAxMy4wNTU4QzEyLjExMDMgMTIuOTUwNCAxMi4zNDE5IDEyLjczNDQgMTIuNDY5OSAxMi40NTUxWiIgZmlsbD0idXJsKCNwYWludDVfbGluZWFyXzM4NjBfMTc1NjIpIi8+CjxwYXRoIGQ9Ik0yLjkzNTY5IDUuMDg2NzVDMi43NjQzMiA1LjA2ODY3IDIuNTk3NTQgNS4wMTExNiAyLjQ0ODY0IDQuOTE2NDlDMi4xOTE4OCA0Ljc1MzI0IDIuMDA5MzEgNC40OTI4NSAxLjk0MTA2IDQuMTkyNThDMS45MDczNCA0LjA0Mzg5IDEuOTAyNzIgMy44ODk5IDEuOTI3NDUgMy43MzkzOUMxLjk1MjE4IDMuNTg4ODggMi4wMDU3OSAzLjQ0NDgxIDIuMDg1MjEgMy4zMTU0QzIuMTY0NjMgMy4xODU5OCAyLjI2ODMxIDMuMDczNzYgMi4zOTAzMiAyLjk4NTE1QzIuNTEyMzQgMi44OTY1MyAyLjY1MDMgMi44MzMyNSAyLjc5NjMzIDIuNzk4OTNMNC42NjI5NyAyLjM5NzI1QzQuOTU3OTEgMi4zMjc4OSA1LjI2NzgzIDIuMzgwNjQgNS41MjQ1OSAyLjU0Mzg4QzUuNzgxMzQgMi43MDcxMyA1Ljk2MzkxIDIuOTY3NTIgNi4wMzIxNiAzLjI2Nzc5QzYuMDY1ODggMy40MTY0OCA2LjA3MDUgMy41NzA0NyA2LjA0NTc3IDMuNzIwOThDNi4wMjUxNiAzLjg0NjQxIDUuOTg0NDkgMy45NjczNyA1LjkyNTU0IDQuMDc5MTFMMy40MjU0MiA5LjQ3ODM5QzMuMjk3NTMgOS43NTc1NCAzLjA2NiA5Ljk3MzU1IDIuNzgxNzMgMTAuMDc4OUMyLjQ5NzQ2IDEwLjE4NDMgMi4xODM3MiAxMC4xNzA1IDEuOTA5NDkgMTAuMDQwNEMxLjYzNTE3IDkuOTEwMTcgMS40MjI4OSA5LjY3NDMyIDEuMzE5MzUgOS4zODQ3M0MxLjIxNTgxIDkuMDk1MTQgMS4yMjk0OCA4Ljc3NTU0IDEuMzU3MzUgOC40OTYyMUwyLjkzNTY5IDUuMDg2NzVaIiBmaWxsPSJ1cmwoI3BhaW50Nl9saW5lYXJfMzg2MF8xNzU2MikiLz4KPC9nPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzM4NjBfMTc1NjIiIHgxPSIyLjM5ODQ3IiB5MT0iNC40MzU1MyIgeDI9IjguODg5MzIiIHkyPSIxNC42MDE5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwMTk1RkYiLz4KPHN0b3Agb2Zmc2V0PSIwLjk5MTAyOCIgc3RvcC1jb2xvcj0iIzExNDdFOSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXJfMzg2MF8xNzU2MiIgeDE9IjIuMzk4NDciIHkxPSI0LjQzNTUzIiB4Mj0iOC44ODkzMiIgeTI9IjE0LjYwMTkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAxOTVGRiIvPgo8c3RvcCBvZmZzZXQ9IjAuOTkxMDI4IiBzdG9wLWNvbG9yPSIjMTE0N0U5Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQyX2xpbmVhcl8zODYwXzE3NTYyIiB4MT0iMi4zOTg0NyIgeTE9IjQuNDM1NTMiIHgyPSI4Ljg4OTMyIiB5Mj0iMTQuNjAxOSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMDE5NUZGIi8+CjxzdG9wIG9mZnNldD0iMC45OTEwMjgiIHN0b3AtY29sb3I9IiMxMTQ3RTkiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDNfbGluZWFyXzM4NjBfMTc1NjIiIHgxPSIyLjM5ODQ3IiB5MT0iNC40MzU1MyIgeDI9IjguODg5MzIiIHkyPSIxNC42MDE5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwMTk1RkYiLz4KPHN0b3Agb2Zmc2V0PSIwLjk5MTAyOCIgc3RvcC1jb2xvcj0iIzExNDdFOSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50NF9saW5lYXJfMzg2MF8xNzU2MiIgeDE9IjIuMzk4NDciIHkxPSI0LjQzNTUzIiB4Mj0iOC44ODkzMiIgeTI9IjE0LjYwMTkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAxOTVGRiIvPgo8c3RvcCBvZmZzZXQ9IjAuOTkxMDI4IiBzdG9wLWNvbG9yPSIjMTE0N0U5Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQ1X2xpbmVhcl8zODYwXzE3NTYyIiB4MT0iMi4zOTg0NyIgeTE9IjQuNDM1NTMiIHgyPSI4Ljg4OTMyIiB5Mj0iMTQuNjAxOSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMDE5NUZGIi8+CjxzdG9wIG9mZnNldD0iMC45OTEwMjgiIHN0b3AtY29sb3I9IiMxMTQ3RTkiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDZfbGluZWFyXzM4NjBfMTc1NjIiIHgxPSIxLjk3MDQ4IiB5MT0iMy41MzQ5MyIgeDI9IjYuODQzMTMiIHkyPSI2LjU0NTMiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAwQkJGRiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMDhCRkYiLz4KPC9saW5lYXJHcmFkaWVudD4KPGNsaXBQYXRoIGlkPSJjbGlwMF8zODYwXzE3NTYyIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSJ3aGl0ZSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCAwLjAwMjA3NTIpIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg\u003d\u003d","category":"Extension Suite - Development Efficiency","categoryDisplayName":"Extension Suite - Development Efficiency","globalAccountId":"2342216e-8a13-4aab-894e-11e5280a90f9","tenantId":"ac38918a-900c-4d3c-92f3-398883d3c5e7","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/docs/SAP_MASTER_DATA_INTEGRATION/8ce78b673ef04cc1bcfeb01c93ef7885/0bed505b149b4ec6af24bf503a45708b.html?locale\u003den-US\u0026version\u003dCLOUD"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"redacted"}],"CFService":{"name":"mdo-one-mds-master","plans":[{"technicalName":"standard","name":"standard","description":"Used in combination with the SAP Master Data Integration service","metadata":{}}]}},"incidentTrackingComponent":"LOD-MDM-ORC","allowedTargetPlans":[]},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"cias","commercialAppName":"cias","appId":"cias!b74866","planName":"standard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"supportsGetParameters":false,"planDescription":"Plan to use the Cloud Integration Automation Service - UI Application","additionalPlanFeatures":[],"displayName":"Cloud Integration Automation","description":"Cloud Integration Automation service provides you a guided workflow to integrate SAP cloud solutions to On-Premise and other SAP Cloud solutions. The guided workflow contains instructions for manual and automated tasks to enable a simpler and faster integration configuration setup.","shortDescription":"Provides guided workflow to integrate SAP Cloud and On-Premise solutions.","iconBase64":"PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzM4NjBfMTc1ODUpIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yLjExNTIzIDMuNTU1NzVDMi4zMTEwMiAyLjE0Mzk5IDMuNDg2MTUgMC43OTE3NDggNS4xNDAxIDAuNzkxNzQ4QzYuNDU1OSAwLjc5MTc0OCA3LjQ0MTAyIDEuNTMzMDkgNy45NzE3MiAyLjYzNTMyQzkuMjk1NjIgMi43NjA5MyAxMC4zOTUzIDMuOTQ4NTggMTAuMzk1MyA1LjQ5NDAyQzEwLjM5NTMgNy4zMjA3MiA4Ljk0NTM4IDguNDMzMjkgNy40MDg1OSA4LjM0NzM0SDIuNDQ5MTVDMS43MDg0MSA4LjM0NzM0IDEuMDc5MzIgOC4xMTU5OCAwLjYzNjIgNy42NTkyN0MwLjE5NjA1MiA3LjIwNTYyIDAgNi41OTIwMyAwIDUuOTQyODlDMCA1LjI0NDM5IDAuMjU0OTQzIDQuNTgyMDIgMC43NDg1NDkgNC4xMjU2OUMxLjExMzQyIDMuNzg4MzggMS41ODMyIDMuNTg3NTUgMi4xMTUyMyAzLjU1NTc1WiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzM4NjBfMTc1ODUpIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMy4yNDk3MiAxMy44NjQ2QzMuMjQ3OTYgMTQuMjgzOSAyLjkwNjk1IDE0LjYyNDkgMi40ODc3IDE0LjYyNjdDMi4wNjg0NSAxNC42Mjg0IDEuNzMwMjggMTQuMjkwMiAxLjczMjA0IDEzLjg3MUwxLjc0NTU0IDEwLjY1MjJDMS43NDczIDEwLjIzMjkgMi4wODgzMSA5Ljg5MTkxIDIuNTA3NTYgOS44OTAxNUw1LjcyNjM5IDkuODc2NjVDNi4xNDU2NCA5Ljg3NDg5IDYuNDgzOCAxMC4yMTMxIDYuNDgyMDQgMTAuNjMyM0M2LjQ4MDI4IDExLjA1MTYgNi4xMzkyNyAxMS4zOTI2IDUuNzIwMDIgMTEuMzk0M0w0LjM5NjQgMTEuMzk5OUw1LjIzODE5IDEyLjI0MTdDNy4zMDMyMiAxNC4zMDY3IDEwLjg1MzYgMTQuMjEzNCAxMi45MzY0IDEyLjEzMDZDMTUuMDE4OCAxMC4wNDgyIDE0Ljk5MjQgNi42NDY1NiAxMi45Mjc0IDQuNTgxNTNDMTIuMzU4OCA0LjA3NjA4IDExLjYwNjcgMy41MDQzNyAxMS42MDY3IDMuNTA0MzdDMTAuOTgwOSAzLjAyNzk4IDExLjQzMDYgMi40MDc1MyAxMS40MzA2IDIuNDA3NTNDMTEuNDMwNiAyLjQwNzUzIDExLjc1OTQgMS45NTUzMiAxMi4zNTg4IDIuMjI2N0MxMi4zNTg4IDIuMjI2NyAxMi45Mjc0IDIuNDQyOTggMTQuMDA1NCAzLjUwNDM2QzE2LjQ4NjkgNS45NDc2NSAxNi42ODMgMTAuNTIyIDE0LjAwNTQgMTMuMTk5NkMxMS4zMjc4IDE1Ljg3NzEgNi44MTYyMiAxNS45NzQ5IDQuMTYxMDEgMTMuMzE5NkwzLjI1NTggMTIuNDE0NEwzLjI0OTcyIDEzLjg2NDZaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfMzg2MF8xNzU4NSkiLz4KPC9nPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzM4NjBfMTc1ODUiIHgxPSIxLjU1ODMiIHkxPSIxLjkyMjMzIiB4Mj0iNi41OTM4OCIgeTI9IjguODQ4NjYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAxOTVGRiIvPgo8c3RvcCBvZmZzZXQ9IjAuOTkxMDI4IiBzdG9wLWNvbG9yPSIjMTE0N0U5Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQxX2xpbmVhcl8zODYwXzE3NTg1IiB4MT0iMi42Njg0NSIgeTE9IjExLjY3OSIgeDI9IjE0LjkwODkiIHkyPSIxNC4yMDIxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwMEJCRkYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDA4QkZGIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMzg2MF8xNzU4NSI+CjxyZWN0IHdpZHRoPSIxNS45OTk5IiBoZWlnaHQ9IjE1Ljk5OTkiIGZpbGw9IndoaXRlIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDAuMDAyMDc1MikiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K","globalAccountId":"772a1555-53bf-4bc2-b4ab-fbc18f972b0b","tenantId":"172e334b-4f52-490b-8c3c-c15c775ea815","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"true","propagateLocale":"true","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/Cloud%2520Integration%2520Automation%2520Service/Latest/en-US"}],"serviceCategories":[{"name":"Integration"}],"regionInformation":[{"key":"redacted"}],"CFService":{"name":"cias","plans":[{"technicalName":"oauth2","name":"oauth2","description":"Plan to access Cloud Integration Automation Service APIs","metadata":{"bullets":[]}},{"technicalName":"standard","name":"standard","description":"Plan to use the Cloud Integration Automation Service - UI Application","metadata":{"bullets":[]}}]}},"incidentTrackingComponent":"BC-INS-CIT-RT","allowedTargetPlans":[]},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"content-agent-ui","commercialAppName":"content-agent-ui","appId":"cas-ui-xsuaa-prod!t216","planName":"free","supportsPlanUpdates":false,"supportsParametersUpdates":false,"supportsGetParameters":false,"displayName":"Content Agent","description":"Content Agent UI","category":"Integration Suite","categoryDisplayName":"Integration Suite","globalAccountId":"d39f31d1-c84d-448e-bc18-d3571e6e2d6c","tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","quota":1,"customerDeveloped":false,"applicationCoordinates":{"propagateTheme":false,"serviceCategories":[{"name":"Integration Suite"}]},"allowedTargetPlans":[]},{"state":"NOT_SUBSCRIBED","authenticationProvider":"XSUAA","appName":"feature-flags-dashboard","commercialAppName":"feature-flags-dashboard","appId":"feature-flags!b18","planName":"dashboard","supportsPlanUpdates":false,"supportsParametersUpdates":false,"supportsGetParameters":false,"planDescription":"View and manage Feature Flags Service instances.","displayName":"Feature Flags Service","description":"The Feature Flags service allows you to enable or disable new features at runtime without redeploying or restarting the application. You can use feature flags to control code delivery, synchronized rollout, direct shipment, and fast rollback of features.","shortDescription":"Control the rollout of new features.","iconBase64":"PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzM4NjBfMTc1NjcpIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMi40MDM3IDAuMDAyMDc1Mkg2LjQwMzcxQzQuNDE1NDkgMC4wMDIwNzUyIDIuODAzNzEgMS42MTM4NSAyLjgwMzcxIDMuNjAyMDhDMi44MDM3MSA1LjU5MDMgNC40MTU0OSA3LjIwMjA3IDYuNDAzNzEgNy4yMDIwN0gxMi40MDM3QzE0LjM5MTkgNy4yMDIwNyAxNi4wMDM3IDUuNTkwMyAxNi4wMDM3IDMuNjAyMDhDMTYuMDAzNyAxLjYxMzg1IDE0LjM5MTkgMC4wMDIwNzUyIDEyLjQwMzcgMC4wMDIwNzUyWk0xMi40MDM3IDUuNjAyMDlDMTMuNTA4MyA1LjYwMjA5IDE0LjQwMzcgNC43MDY2NSAxNC40MDM3IDMuNjAyMDlDMTQuNDAzNyAyLjQ5NzUyIDEzLjUwODMgMS42MDIwOSAxMi40MDM3IDEuNjAyMDlDMTEuMjk5MSAxLjYwMjA5IDEwLjQwMzcgMi40OTc1MiAxMC40MDM3IDMuNjAyMDlDMTAuNDAzNyA0LjcwNjY1IDExLjI5OTEgNS42MDIwOSAxMi40MDM3IDUuNjAyMDlaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMzg2MF8xNzU2NykiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zLjYwMDQ5IDE2LjAwMkw5LjYwMDU0IDE2LjAwMkMxMS41ODg4IDE2LjAwMiAxMy4yMDA1IDE0LjM5MDMgMTMuMjAwNSAxMi40MDJDMTMuMjAwNSAxMC40MTM4IDExLjU4ODggOC44MDIwNCA5LjYwMDU0IDguODAyMDRIMy42MTY4OUwzLjYwMDQ5IDguODAyQzEuNjEyMTYgOC44MDIgMC4wMDA0ODgyODEgMTAuNDEzOCAwLjAwMDQ4ODI4MSAxMi40MDJDMC4wMDA0ODgyODEgMTQuMzkwMiAxLjYxMjE1IDE2LjAwMiAzLjYwMDQ5IDE2LjAwMlpNNy4yMDA0OSAxMi40MDJDNy4yMDA0OSAxMy4xNDIxIDYuOTc3MTcgMTMuODMgNi41OTQyNCAxNC40MDJIOS42MDA1NEMxMC43MDUxIDE0LjQwMiAxMS42MDA1IDEzLjUwNjYgMTEuNjAwNSAxMi40MDJDMTEuNjAwNSAxMS4yOTc1IDEwLjcwNTEgMTAuNDAyIDkuNjAwNTQgMTAuNDAySDYuNTk0MzJDNi45NzcyMSAxMC45NzQxIDcuMjAwNDkgMTEuNjYyIDcuMjAwNDkgMTIuNDAyWk0zLjYxMjc0IDEwLjQwMkM0LjAxMjg0IDEwLjQwNDQgNC4zODUxIDEwLjUyNDMgNC42OTY3NSAxMC43Mjg5QzQuNTM0IDEwLjYyMjEgNC4zNTQ3MiAxMC41Mzg0IDQuMTYzNTggMTAuNDgyNEM0Ljk5Mzk4IDEwLjcyNTYgNS42MDA0NiAxMS40OTMgNS42MDA0NiAxMi40MDJDNS42MDA0NiAxMy41MDY2IDQuNzA1MDIgMTQuNDAyIDMuNjAwNDYgMTQuNDAyQzIuNDk1ODIgMTQuNDAyIDEuNjAwNDYgMTMuNTA2NiAxLjYwMDQ2IDEyLjQwMkMxLjYwMDQ2IDExLjcwNzMgMS45NTQ2NCAxMS4wOTUzIDIuNDkyMzEgMTAuNzM2OEMyLjUxNDUgMTAuNzIyIDIuNTM3IDEwLjcwNzcgMi41NTk4MSAxMC42OTM3QzIuODYyOTggMTAuNTA4NiAzLjIxOTI3IDEwLjQwMiAzLjYwMDQ5IDEwLjQwMkMzLjYwMzUgMTAuNDAyIDMuNjA2NTcgMTAuNDAyIDMuNjA5NTggMTAuNDAySDMuNjEyNzRaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfMzg2MF8xNzU2NykiLz4KPC9nPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzM4NjBfMTc1NjciIHgxPSI0Ljc4MjQ1IiB5MT0iMS4wNzg3OSIgeDI9IjkuMDIwMjgiIHkyPSI4Ljg1MDg2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwMTk1RkYiLz4KPHN0b3Agb2Zmc2V0PSIwLjk5MTAyOCIgc3RvcC1jb2xvcj0iIzExNDdFOSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXJfMzg2MF8xNzU2NyIgeDE9IjEuOTc1OTgiIHkxPSI5Ljg4MjI0IiB4Mj0iNi4yMTYyNCIgeTI9IjE3LjY1MDYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAwQkJGRiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMDhCRkYiLz4KPC9saW5lYXJHcmFkaWVudD4KPGNsaXBQYXRoIGlkPSJjbGlwMF8zODYwXzE3NTY3Ij4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSJ3aGl0ZSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCAwLjAwMjA3NTIpIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg\u003d\u003d","category":"Foundation / Cross Services","categoryDisplayName":"Foundation / Cross Services","globalAccountId":"1aa6ae00-fe52-1993-65ff-3613845a7961","tenantId":"fflags-cf-eu12","quota":1,"customerDeveloped":false,"applicationCoordinates":{"iconFormat":"image/svg+xml","inventoryIds":[{"key":"redacted"}],"serviceDescription":[{"linkCategory":"documentation","title":"Documentation","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/product/FEATURE_FLAGS/Cloud/en-US"},{"linkCategory":"discovery_center","title":"Discovery Center","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://discovery-center.cloud.sap/serviceCatalog/feature-flags-service"},{"linkCategory":"support","title":"Support","propagateTheme":"false","descriptionCategory":"documentation","linkURL":"https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/5dd739823b824b539eee47b7860a00be.html"}],"serviceCategories":[{"name":"Foundation / Cross Services"}],"regionInformation":[{"key":"redacted"}],"CFService":{"name":"feature-flags-dashboard","plans":[{"technicalName":"dashboard","name":"dashboard","description":"View and manage Feature Flags Service instances.","metadata":{}}]}},"incidentTrackingComponent":"BC-CP-CF-FEATUREFLG","allowedTargetPlans":[]}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'
+            Content-Type:
+                - application/json
+            Date:
+                - Thu, 05 Mar 2026 04:44:24 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - bd96154a-5cdb-4b26-4e4d-d2c99c9e0ed1
+            X-Xss-Protection:
+                - "1"
+        status: 200 OK
+        code: 200
+        duration: 933.469833ms
