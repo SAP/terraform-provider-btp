@@ -70,6 +70,7 @@ resource "btp_subaccount" "my_project_on_azure" {
 
 ### Read-Only
 
+- `contract_status` (String) Shows the contract status of the subaccount.
 - `created_by` (String) The details of the user that created the subaccount.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `id` (String) The ID of the subaccount.

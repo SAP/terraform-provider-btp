@@ -145,6 +145,10 @@ You must be assigned to the admin or viewer role of the global account, director
 					getFormattedValueAsTableRow("`USED_FOR_PRODUCTION`", "The subaccount is used for production purposes."),
 				Computed: true,
 			},
+			"contract_status": schema.StringAttribute{
+				MarkdownDescription: "Shows the contract status of the subaccount.",
+				Computed:            true,
+			},
 		},
 	}
 }

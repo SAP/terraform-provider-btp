@@ -34,9 +34,10 @@ var subaccountObjType = types.ObjectType{
 		},
 		"region": types.StringType,
 
-		"state":     types.StringType,
-		"subdomain": types.StringType,
-		"usage":     types.StringType,
+		"state":           types.StringType,
+		"subdomain":       types.StringType,
+		"usage":           types.StringType,
+		"contract_status": types.StringType,
 	},
 }
 
@@ -178,6 +179,10 @@ You must be assigned to the admin or viewer role of the global account, director
 								getFormattedValueAsTableRow("`USED_FOR_PRODUCTION`", "The subaccount is used for production purposes."),
 							Computed: true,
 						},
+						"contract_status": schema.StringAttribute{
+							MarkdownDescription: "Shows the contract status of the subaccount.",
+							Computed:            true,
+						},
 					},
 				},
 				MarkdownDescription: "The subaccounts contained in the global account.",
@@ -212,18 +217,19 @@ func (ds *subaccountsDataSource) Read(ctx context.Context, req datasource.ReadRe
 
 	for _, subaccountRes := range cliRes.Value {
 		c := subaccountDataSourceType{
-			ID:           types.StringValue(subaccountRes.Guid),
-			BetaEnabled:  types.BoolValue(subaccountRes.BetaEnabled),
-			CreatedBy:    types.StringValue(subaccountRes.CreatedBy),
-			CreatedDate:  timeToValue(subaccountRes.CreatedDate.Time()),
-			Description:  types.StringValue(subaccountRes.Description),
-			LastModified: timeToValue(subaccountRes.ModifiedDate.Time()),
-			Name:         types.StringValue(subaccountRes.DisplayName),
-			ParentID:     types.StringValue(subaccountRes.ParentGUID),
-			Region:       types.StringValue(subaccountRes.Region),
-			State:        types.StringValue(subaccountRes.State),
-			Subdomain:    types.StringValue(subaccountRes.Subdomain),
-			Usage:        types.StringValue(subaccountRes.UsedForProduction),
+			ID:             types.StringValue(subaccountRes.Guid),
+			BetaEnabled:    types.BoolValue(subaccountRes.BetaEnabled),
+			CreatedBy:      types.StringValue(subaccountRes.CreatedBy),
+			CreatedDate:    timeToValue(subaccountRes.CreatedDate.Time()),
+			Description:    types.StringValue(subaccountRes.Description),
+			LastModified:   timeToValue(subaccountRes.ModifiedDate.Time()),
+			Name:           types.StringValue(subaccountRes.DisplayName),
+			ParentID:       types.StringValue(subaccountRes.ParentGUID),
+			Region:         types.StringValue(subaccountRes.Region),
+			State:          types.StringValue(subaccountRes.State),
+			Subdomain:      types.StringValue(subaccountRes.Subdomain),
+			Usage:          types.StringValue(subaccountRes.UsedForProduction),
+			ContractStatus: types.StringValue(subaccountRes.ContractStatus),
 		}
 
 		c.Labels, diags = types.MapValueFrom(ctx, types.SetType{ElemType: types.StringType}, subaccountRes.Labels)

@@ -101,7 +101,7 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
 		"subaccount":    subaccountId,
 		"confirm":       "true",
-		"forceDelete":   "true",
+		"forceDelete":   "false",
 	}
 
 	if len(directoryId) > 0 {
@@ -114,10 +114,10 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 	if err == nil {
 		return cisResponse, cmdResponse, nil
 	}
-	// Check if the error is due to the fact that the force-delete option is not available
-	if err != nil && (strings.Contains(err.Error(), "Subaccount cannot be deleted with forceDelete=true due to the global account settings") || strings.Contains(err.Error(), "Subaccount is marked as used for production and cannot be deleted with forceDelete=true")) {
-		// Retry with force-delete disabled
-		requestArgs["forceDelete"] = "false"
+	// Check if the error is due to the fact that a force-delete is required
+	if strings.Contains(err.Error(), "You can't delete subaccounts with active") {
+		// Retry with force-delete enabled
+		requestArgs["forceDelete"] = "true"
 		return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), requestArgs))
 	}
 

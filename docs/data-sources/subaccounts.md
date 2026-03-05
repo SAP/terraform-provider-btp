@@ -44,6 +44,7 @@ data "btp_subaccounts" "filtered" {
 Read-Only:
 
 - `beta_enabled` (Boolean) Shows whether the subaccount can use beta services and applications.
+- `contract_status` (String) Shows the contract status of the subaccount.
 - `created_by` (String) The details of the user that created the subaccount.
 - `created_date` (String) The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - `description` (String) The description of the subaccount.

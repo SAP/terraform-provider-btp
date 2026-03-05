@@ -170,7 +170,7 @@ func TestAccountsSubaccountFacade_Delete(t *testing.T) {
 				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
 				"subaccount":    subaccountId,
 				"confirm":       "true",
-				"forceDelete":   "true",
+				"forceDelete":   "false",
 			})
 
 		}))
@@ -193,7 +193,7 @@ func TestAccountsSubaccountFacade_Delete(t *testing.T) {
 				"globalAccount": "795b53bb-a3f0-4769-adf0-26173282a975",
 				"subaccount":    subaccountId,
 				"confirm":       "true",
-				"forceDelete":   "true",
+				"forceDelete":   "false",
 				"directoryID":   directoryId,
 			})
 
