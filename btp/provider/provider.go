@@ -588,6 +588,6 @@ func (p *btpcliProvider) ListResources(_ context.Context) []func() list.ListReso
 		NewDirectoryListResource,
 		NewDirectoryRoleListResource,
 		NewSubaccountDestinationGenericListResource,
-		NewsubaccountSubscriptionListResource,
+		NewSubaccountSubscriptionListResource,
 	}
 }

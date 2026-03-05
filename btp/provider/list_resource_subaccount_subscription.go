@@ -25,7 +25,7 @@ type subaccountSubscriptionListResourceFilter struct {
 	SubaccountID types.String `tfsdk:"subaccount_id"`
 }
 
-func NewsubaccountSubscriptionListResource() list.ListResource {
+func NewSubaccountSubscriptionListResource() list.ListResource {
 	return &subaccountSubscriptionListResource{}
 }
 

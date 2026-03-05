@@ -128,7 +128,7 @@ func TestSubaccountSubscriptionListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
-		r := NewsubaccountSubscriptionListResource().(list.ListResourceWithConfigure)
+		r := NewSubaccountSubscriptionListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{
 			ProviderData: struct{}{}, // Wrong type

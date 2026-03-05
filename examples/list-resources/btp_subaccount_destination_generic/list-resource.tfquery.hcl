@@ -36,7 +36,7 @@ list "btp_subaccount_destination_generic" "with_resource" {
 
 # List block to discover all destinations for given subaccount and service instance id
 # Returns only the resource identities by default.
-list "btp_subaccount_destination_generic" "all" {
+list "btp_subaccount_destination_generic" "by_service_instance" {
   provider = btp
 
   config {
