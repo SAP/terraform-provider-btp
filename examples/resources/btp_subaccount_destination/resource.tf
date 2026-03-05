@@ -1,4 +1,4 @@
-#subaccount destination with service instance and labels (additional configuration).
+# subaccount destination with service instance and labels (additional configuration).
 resource "btp_subaccount_destination" "destination" {
   name                = "destination"
   type                = "HTTP"
@@ -13,7 +13,7 @@ resource "btp_subaccount_destination" "destination" {
   })
 }
 
-#subaccount destination creation without service instance and labels (additional configuration). 
+# subaccount destination creation without service instance and labels (additional configuration).
 resource "btp_subaccount_destination" "destination-without-service-instance" {
   name           = "destination-without-service-instance"
   type           = "HTTP"
@@ -27,7 +27,7 @@ resource "btp_subaccount_destination" "destination-without-service-instance" {
   })
 }
 
-#subaccount destination creation without service instance and without labels (additional configuration). 
+# subaccount destination creation without service instance and without labels (additional configuration).
 resource "btp_subaccount_destination" "destination-without-additional-configuration" {
   name                = "destination-without-additional-configuration"
   type                = "HTTP"
@@ -39,8 +39,8 @@ resource "btp_subaccount_destination" "destination-without-additional-configurat
   service_instance_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 }
 
-#subaccount destination creation without service instance and without labels (additional configuration). 
-#Note: Auth properties are part of additional configuration.
+# subaccount destination creation without service instance and without labels (additional configuration).
+# Note: Auth properties are part of additional configuration.
 resource "btp_subaccount_destination" "destination-with-additional-configuration" {
   name           = "destination-with-additional-configuration"
   type           = "HTTP"
@@ -57,7 +57,7 @@ resource "btp_subaccount_destination" "destination-with-additional-configuration
   })
 }
 
-#subaccount destination resource with RFC type.
+# subaccount destination resource with RFC type.
 resource "btp_subaccount_destination" "rfc_dest" {
   name          = "rfc_dest"
   type          = "RFC"
@@ -80,7 +80,7 @@ resource "btp_subaccount_destination" "rfc_dest" {
   })
 }
 
-#subaccount destination resource with LDAP type.
+# subaccount destination resource with LDAP type.
 resource "btp_subaccount_destination" "ldap_dest" {
   name          = "ldap_dest"
   type          = "LDAP"
@@ -96,7 +96,7 @@ resource "btp_subaccount_destination" "ldap_dest" {
   })
 }
 
-#subaccount destination resource with MAIL type.
+# subaccount destination resource with MAIL type.
 resource "btp_subaccount_destination" "mail_dest" {
   name          = "mail_dest"
   type          = "MAIL"
@@ -115,7 +115,7 @@ resource "btp_subaccount_destination" "mail_dest" {
   })
 }
 
-#subaccount destination resource with TCP type.
+# subaccount destination resource with TCP type.
 resource "btp_subaccount_destination" "tcp_dest" {
   name          = "tcp_dest"
   type          = "TCP"
