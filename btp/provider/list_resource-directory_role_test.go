@@ -41,15 +41,15 @@ func TestDirectoryRoleListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_directory_role.directory_role_list", 3),
+						querycheck.ExpectLength("btp_directory_role.directory_role_list", 8),
 
 						querycheck.ExpectIdentity(
-							"btp_subaccount_directory_role.directory_role_list",
+							"btp_directory_role.directory_role_list",
 							map[string]knownvalue.Check{
 								"directory_id":       knownvalue.StringExact(directoryID),
-								"name":               knownvalue.StringExact("Auditlog_Auditor"),
-								"role_template_name": knownvalue.StringExact("Auditlog_Auditor"),
-								"app_id":             knownvalue.StringExact("auditlog-management!b3034"),
+								"name":               knownvalue.StringExact("Global Account Admin"),
+								"role_template_name": knownvalue.StringExact("GlobalAccount_Admin"),
+								"app_id":             knownvalue.StringExact("cis-central!b13"),
 							},
 						),
 					},
@@ -64,37 +64,41 @@ func TestDirectoryRoleListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_directory_role.directory_role_list", 3),
+						querycheck.ExpectLength("btp_directory_role.directory_role_list", 8),
 
 						// Verify full resource data is populated
 						querycheck.ExpectResourceKnownValues(
-							"btp_subaccount_directory_role.directory_role_list",
+							"btp_directory_role.directory_role_list",
 							queryfilter.ByResourceIdentity(map[string]knownvalue.Check{
 								"directory_id":       knownvalue.StringExact(directoryID),
-								"name":               knownvalue.StringExact("Auditlog_Auditor"),
-								"role_template_name": knownvalue.StringExact("Auditlog_Auditor"),
-								"app_id":             knownvalue.StringExact("auditlog-management!b3034"),
+								"name":               knownvalue.StringExact("Global Account Admin"),
+								"role_template_name": knownvalue.StringExact("GlobalAccount_Admin"),
+								"app_id":             knownvalue.StringExact("cis-central!b13"),
 							}),
 							[]querycheck.KnownValueCheck{
 								{
 									Path:       tfjsonpath.New("description"),
-									KnownValue: knownvalue.StringExact("Read access to audit logs"),
+									KnownValue: knownvalue.NotNull(),
 								},
 								{
 									Path:       tfjsonpath.New("role_template_name"),
-									KnownValue: knownvalue.StringExact("Auditlog_Auditor"),
+									KnownValue: knownvalue.StringExact("GlobalAccount_Admin"),
 								},
 								{
 									Path:       tfjsonpath.New("app_id"),
-									KnownValue: knownvalue.StringExact("auditlog-management!b3034"),
+									KnownValue: knownvalue.StringExact("cis-central!b13"),
 								},
 								{
 									Path:       tfjsonpath.New("name"),
-									KnownValue: knownvalue.StringExact("Auditlog_Auditor"),
+									KnownValue: knownvalue.StringExact("Global Account Admin"),
 								},
 								{
 									Path:       tfjsonpath.New("read_only"),
 									KnownValue: knownvalue.Bool(true),
+								},
+								{
+									Path:       tfjsonpath.New("scopes"),
+									KnownValue: knownvalue.NotNull(),
 								},
 							},
 						),

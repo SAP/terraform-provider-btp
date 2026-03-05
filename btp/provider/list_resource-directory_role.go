@@ -101,9 +101,9 @@ func (r *directoryRoleListResource) List(
 		for _, dirRole := range cliRes {
 			result := req.NewListResult(ctx)
 
-			result.Identity.SetAttribute(ctx, path.Root("directory_id"), types.StringValue(dirRole.Name))
-			result.Identity.SetAttribute(ctx, path.Root("name"), types.StringValue(dirRole.RoleTemplateName))
-			result.Identity.SetAttribute(ctx, path.Root("role_template_name"), types.StringValue(dirRole.RoleTemplateAppId))
+			result.Identity.SetAttribute(ctx, path.Root("directory_id"), filter.DirectoryID)
+			result.Identity.SetAttribute(ctx, path.Root("name"), types.StringValue(dirRole.Name))
+			result.Identity.SetAttribute(ctx, path.Root("role_template_name"), types.StringValue(dirRole.RoleTemplateName))
 			result.Identity.SetAttribute(ctx, path.Root("app_id"), types.StringValue(dirRole.RoleTemplateAppId))
 
 			if req.IncludeResource {
