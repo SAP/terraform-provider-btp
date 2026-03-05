@@ -19,7 +19,7 @@ You must be assigned to Central Disaster Recovery Administrator in both subaccou
 ```terraform
 # Look up a BTP Disaster Recovery Subaccount Pair by the ID of a paired subaccount
 data "btp_disaster_recovery_subaccount_pair" "dr_pair" {
-  id = "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0"
+  subaccount_id = "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0"
 }
 ```
 

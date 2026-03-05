@@ -8,7 +8,7 @@ description: |-
   Each subaccount can only be paired to one subaccount.
   You can create instance pairs and subscription pairs in paired subaccounts.
   Further documentation:
-  https://help.sap.com/docs/btp/sap-btp-multi-region-guide/how-to-create-multi-region-setup-on-btp"
+  https://help.sap.com/docs/btp/sap-btp-multi-region-guide/how-to-create-multi-region-setup-on-btp
 ---
 
 # btp_disaster_recovery_subaccount_pair (Resource)
@@ -21,12 +21,12 @@ Each subaccount can only be paired to one subaccount.
 You can create instance pairs and subscription pairs in paired subaccounts.
 
 __Further documentation:__
-<https://help.sap.com/docs/btp/sap-btp-multi-region-guide/how-to-create-multi-region-setup-on-btp">
+<https://help.sap.com/docs/btp/sap-btp-multi-region-guide/how-to-create-multi-region-setup-on-btp>
 
 ## Example Usage
 
 ```terraform
-# Create a subacccount pair for SAP BTP Disaster Recovery
+# Create a subaccount pair for SAP BTP Disaster Recovery
 resource "btp_disaster_recovery_subaccount_pair" "dr_pair" {
   subaccount_id        = "dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0"
   paired_subaccount_id = "cc116e9c-3xdd-5f6b-c7gg-db9a197b7ff1"
@@ -53,8 +53,8 @@ resource "btp_disaster_recovery_subaccount_pair" "dr_pair" {
 Import is supported using the following syntax:
 
 ```terraform
-# terraform import btp_disaster_recovery_subaccount_pair.<resource_name> <subaccount_id> <paired_subaccount_id>
-terraform import btp_disaster_recovery_subaccount_pair.dr_pair dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0 2dc1ecf1-786c-4f92-91f2-26650ab3ad28
+# terraform import btp_disaster_recovery_subaccount_pair.<resource_name> '<subaccount_id>,<paired_subaccount_id>'
+terraform import btp_disaster_recovery_subaccount_pair.dr_pair 'dd005d8b-1fee-4e6b-b6ff-cb9a197b7fe0, 2dc1ecf1-786c-4f92-91f2-26650ab3ad28'
 
 # terraform import using id attribute in import block
 import {

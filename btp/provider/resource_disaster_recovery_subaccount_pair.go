@@ -46,7 +46,7 @@ Each subaccount can only be paired to one subaccount.
 You can create instance pairs and subscription pairs in paired subaccounts.
 
 __Further documentation:__
-<https://help.sap.com/docs/btp/sap-btp-multi-region-guide/how-to-create-multi-region-setup-on-btp">`,
+<https://help.sap.com/docs/btp/sap-btp-multi-region-guide/how-to-create-multi-region-setup-on-btp>`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the first subaccount to pair with.",

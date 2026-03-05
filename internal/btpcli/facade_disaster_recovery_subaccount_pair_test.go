@@ -46,8 +46,8 @@ func TestDisasterRecoverySubaccountPairFacade_Create(t *testing.T) {
 			srvCalled = true
 
 			assertCall(t, r, command, ActionCreate, map[string]string{
-				"subaccount":      subaccountId,
-				"with-subaccount": withSubaccountId,
+				"subaccount":     subaccountId,
+				"withSubaccount": withSubaccountId,
 			})
 		}))
 		defer srv.Close()
