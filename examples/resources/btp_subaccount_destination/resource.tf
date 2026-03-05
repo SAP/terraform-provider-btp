@@ -39,7 +39,7 @@ resource "btp_subaccount_destination" "destination-without-additional-configurat
   service_instance_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 }
 
-#subaccount destination creation without service instance and and labels (additional configuration). 
+#subaccount destination creation without service instance and without labels (additional configuration). 
 #Note: Auth properties are part of additional configuration.
 resource "btp_subaccount_destination" "destination-with-additional-configuration" {
   name           = "destination-with-additional-configuration"

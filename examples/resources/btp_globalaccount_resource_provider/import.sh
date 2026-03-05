@@ -2,7 +2,7 @@
 
 terraform import btp_globalaccount_resource_provider.azure AZURE,my_azure_provider
 
-#terraform import using id attribute in import block
+# terraform import using id attribute in import block
 
 import {
   to = btp_globalaccount_resource_provider.<resource_name>
