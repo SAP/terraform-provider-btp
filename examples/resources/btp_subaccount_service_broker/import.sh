@@ -2,7 +2,7 @@
 
 terraform import btp_subaccount_service_broker.my_broker 6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f,6a55f158-41b5-4e63-aa77-84089fa0ab98
 
-#terraform import using id attribute in import block
+# terraform import using id attribute in import block
 
 import {
   to = btp_subaccount_service_broker.<resource_name>
@@ -12,7 +12,7 @@ import {
 import {
   to = btp_subaccount_service_broker.<resource_name>
   identity = {
-    subaccount_id = "subaccount_id>"
+    subaccount_id = "<subaccount_id>"
     id            = "<service_broker_id>"
   }
 }

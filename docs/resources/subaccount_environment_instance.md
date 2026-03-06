@@ -33,7 +33,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   service_name     = "cloudfoundry"
   plan_name        = "standard"
   # ATTENTION: some regions offer multiple environments of a kind and you must explicitly select the target environment in which
-  # the instance shall be created using the parameter landscape label. 
+  # the instance shall be created using the parameter landscape label.
   # available environments can be looked up using the btp_subaccount_environments datasource
   parameters = jsonencode({
     instance_name = "my-cf-org-name"
@@ -42,7 +42,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
 
 
 # creates a cloud foundry environment in a given account
-# in additon add a custom timeout for the create and delete operation
+# in addition add a custom timeout for the create and delete operation
 resource "btp_subaccount_environment_instance" "cloudfoundry" {
   subaccount_id    = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   name             = "my-cf-environment"
@@ -50,7 +50,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   service_name     = "cloudfoundry"
   plan_name        = "standard"
   # ATTENTION: some regions offer multiple environments of a kind and you must explicitly select the target environment in which
-  # the instance shall be created using the parameter landscape label. 
+  # the instance shall be created using the parameter landscape label.
   # available environments can be looked up using the btp_subaccount_environments datasource
   parameters = jsonencode({
     instance_name = "my-cf-org-name"
@@ -64,7 +64,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
 
 
 # creates a cloud foundry environment in a given account
-# and the dedicted target landscape cf-us10
+# and the dedicated target landscape cf-us10
 resource "btp_subaccount_environment_instance" "cloudfoundry" {
   subaccount_id    = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   name             = "my-cf-environment"
@@ -90,7 +90,7 @@ resource "btp_subaccount_environment_instance" "kyma" {
   parameters = jsonencode({
     name          = "my-kyma-environment"
     region        = "us-east-1"
-    machineType   = "mx5.xlarge" #smallest option
+    machineType   = "mx5.xlarge" # smallest option
     autoScalerMin = 3
     autoScalerMax = 20
   })
@@ -171,18 +171,18 @@ Import is supported using the following syntax:
 
 terraform import btp_subaccount_environment_instance.cloudfoundry 6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f,FD9BB73F-F663-4284-A50B-D72EC24FC4E1
 
-#terraform import using id attribute in import block
+# terraform import using id attribute in import block
 
 import {
   to = btp_subaccount_environment_instance.<resource_name>
-  id = "subaccount_id>,<environment_instance_id>"
+  id = "<subaccount_id>,<environment_instance_id>"
 }
 
 import {
   to = btp_subaccount_environment_instance.<resource_name>
   identity = {
     subaccount_id = "<subaccount_id>"
-    id = "<environment_instance_id>"
+    id            = "<environment_instance_id>"
   }
 }
 ```
