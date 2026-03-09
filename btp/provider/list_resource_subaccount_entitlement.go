@@ -58,9 +58,9 @@ func (r *subaccountEntitlementListResource) ListResourceConfigSchema(
 	req list.ListResourceSchemaRequest,
 	resp *list.ListResourceSchemaResponse,
 ) {
-	// This list resource takes the directory ID as input to filter entitlements.
+	// This list resource takes the subaccount ID as input to filter entitlements.
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This list resource allows you to discover all entitlements available within a specific BTP subaccount. It requires the directory ID as input.",
+		MarkdownDescription: "This list resource allows you to discover all entitlements available within a specific BTP subaccount. It requires the subaaccount ID as input.",
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -89,7 +89,17 @@ func (r *subaccountEntitlementListResource) List(
 
 	// Determine the parent of the subaccount
 	// In case of a directory with feature "ENTITLEMENTS" enabled we must hand over the ID in the "List" call
-	subaccountData, _, _ := r.client.Accounts.Subaccount.Get(ctx, filter.SubaccountID.ValueString())
+	subaccountData, _, err := r.client.Accounts.Subaccount.Get(ctx, filter.SubaccountID.ValueString())
+	if err != nil {
+		var diags diag.Diagnostics
+		diags.AddError(
+			"API Error Reading Resource Entitlement (Subaccount)",
+			fmt.Sprintf("Failed to retrieve subaccount details: %s", err),
+		)
+		stream.Results = list.ListResultsStreamDiagnostics(diags)
+		return
+	}
+
 	parentId, isParentGlobalAccount, err := determineParentIdForEntitlement(r.client, ctx, subaccountData.ParentGUID)
 	if err != nil {
 		var diags diag.Diagnostics

@@ -123,6 +123,8 @@ func (r *subaccountDestinationFragmentListResource) List(
 			result.Identity.SetAttribute(ctx, path.Root("service_instance_id"), filter.ServiceInstanceID)
 
 			if req.IncludeResource {
+				delete(fragment.Content, "FragmentName")
+
 				contentValue, diags := types.MapValueFrom(ctx, types.StringType, fragment.Content)
 				result.Diagnostics.Append(diags...)
 
@@ -130,7 +132,7 @@ func (r *subaccountDestinationFragmentListResource) List(
 					SubaccountID:        filter.SubaccountID,
 					Name:                types.StringValue(name),
 					ServiceInstanceID:   filter.ServiceInstanceID,
-					ID:                  types.StringValue(name),
+					ID:                  types.StringValue(fmt.Sprintf("%s,%s,%s", filter.SubaccountID.ValueString(), name, filter.ServiceInstanceID.ValueString())),
 					DestinationFragment: contentValue,
 				}
 

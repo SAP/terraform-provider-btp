@@ -92,7 +92,7 @@ func TestSubaccountDestinationFragmentListResource(t *testing.T) {
 
 	t.Run("error path - bad request", func(t *testing.T) {
 		badRequestSubaccountID := ""
-		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_destionation_fragment_bad_request")
+		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_destination_fragment_bad_request")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

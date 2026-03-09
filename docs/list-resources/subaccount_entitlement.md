@@ -3,12 +3,12 @@
 page_title: "btp_subaccount_entitlement List Resource - SAP BTP"
 subcategory: ""
 description: |-
-  This list resource allows you to discover all entitlements available within a specific BTP subaccount. It requires the directory ID as input.
+  This list resource allows you to discover all entitlements available within a specific BTP subaccount. It requires the subaaccount ID as input.
 ---
 
 # btp_subaccount_entitlement (List Resource)
 
-This list resource allows you to discover all entitlements available within a specific BTP subaccount. It requires the directory ID as input.
+This list resource allows you to discover all entitlements available within a specific BTP subaccount. It requires the subaaccount ID as input.
 
 ## Example Usage
 
