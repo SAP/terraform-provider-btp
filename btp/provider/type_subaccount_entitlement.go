@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis_entitlements"
 )
 
 // Only the category SERVICE and QUOTA_BASED_APPLICATION have a numeric quota (amount)
@@ -74,4 +75,22 @@ func mapSupportedPlatforms(supportedPlatforms []string) []types.String {
 		list = append(list, types.StringValue(platformValue))
 	}
 	return list
+}
+
+func subaccountEntitlementListValueFrom(service cis_entitlements.EntitledServicesResponseObject, servicePlan cis_entitlements.ServicePlanResponseObject, subaccountID string) *subaccountEntitlementType {
+	resEnt := &subaccountEntitlementType{
+		SubaccountId:         types.StringValue(subaccountID),
+		Id:                   types.StringValue(servicePlan.UniqueIdentifier),
+		ServiceName:          types.StringValue(service.Name),
+		PlanName:             types.StringValue(servicePlan.Name),
+		PlanUniqueIdentifier: types.StringValue(servicePlan.UniqueIdentifier),
+		Category:             types.StringValue(servicePlan.Category),
+		PlanId:               types.StringValue(servicePlan.UniqueIdentifier),
+	}
+
+	if isTransferAmountRequired(resEnt.Category.ValueString()) {
+		resEnt.Amount = types.Int64Value(int64(servicePlan.Amount))
+	}
+
+	return resEnt
 }
