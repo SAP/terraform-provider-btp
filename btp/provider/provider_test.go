@@ -651,6 +651,8 @@ func TestProvider_HasListResources(t *testing.T) {
 		"btp_directory_role",
 		"btp_subaccount_destination_generic",
 		"btp_subaccount_subscription",
+		"btp_subaccount_destination_fragment",
+		"btp_subaccount_entitlement",
 	}
 
 	p := New()
