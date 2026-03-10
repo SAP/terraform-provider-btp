@@ -3,12 +3,12 @@
 page_title: "btp_subaccount_role_collection_role List Resource - SAP BTP"
 subcategory: ""
 description: |-
-  This list resource allows you to discover all role collection roles available within the configured BTP subaccount.
+  This list resource allows you to discover all roles within the given role collection in the given subaccount.
 ---
 
 # btp_subaccount_role_collection_role (List Resource)
 
-This list resource allows you to discover all role collection roles available within the configured BTP subaccount.
+This list resource allows you to discover all roles within the given role collection in the given subaccount.
 
 ## Example Usage
 

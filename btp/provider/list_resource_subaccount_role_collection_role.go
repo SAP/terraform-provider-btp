@@ -59,7 +59,7 @@ func (r *subaccountRoleCollectionRoleListResource) ListResourceConfigSchema(
 	resp *list.ListResourceSchemaResponse,
 ) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This list resource allows you to discover all role collection roles available within the configured BTP subaccount.",
+		MarkdownDescription: "This list resource allows you to discover all roles within the given role collection in the given subaccount.",
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
