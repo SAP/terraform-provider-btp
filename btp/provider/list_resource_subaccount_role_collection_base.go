@@ -57,9 +57,9 @@ func (r *subaccountRoleCollectionBaseListType) ListResourceConfigSchema(
 	req list.ListResourceSchemaRequest,
 	resp *list.ListResourceSchemaResponse,
 ) {
-	// This list resource takes the directory ID as input to filter directory role collections.
+	// This list resource takes the subaccount ID as input to filter subaccount role collections.
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This list resource allows you to discover all role collections base available within a specific BTP Directory. It requires the subaccount ID as input.",
+		MarkdownDescription: "This list resource allows you to discover all role collections available within a specific BTP Subaccount. It requires the subaccount ID as input.",
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -69,7 +69,7 @@ func (r *subaccountRoleCollectionBaseListType) ListResourceConfigSchema(
 	}
 }
 
-// List streams directory role collections from the API
+// List streams all subaccount role collections from the API
 func (r *subaccountRoleCollectionBaseListType) List(
 	ctx context.Context,
 	req list.ListRequest,
@@ -87,8 +87,8 @@ func (r *subaccountRoleCollectionBaseListType) List(
 	if err != nil {
 		var diags diag.Diagnostics
 		diags.AddError(
-			"API Error Reading Resource Role Collection (Subaccount)",
-			fmt.Sprintf("Failed to list directory role collections: %s", err),
+			"API Error Reading Resource Role Collection Base (Subaccount)",
+			fmt.Sprintf("Failed to list subaccount role collection base: %s", err),
 		)
 
 		stream.Results = list.ListResultsStreamDiagnostics(diags)
