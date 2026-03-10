@@ -72,7 +72,7 @@ func (r *subaccountRoleListResource) List(ctx context.Context, req list.ListRequ
 	if err != nil {
 		var diags diag.Diagnostics
 		diags.AddError(
-			"API Error Reading Resource subaccount Roles",
+			"API Error Reading Resource Subaccount Roles",
 			fmt.Sprintf("Failed to list subaccount roles: %s", err),
 		)
 		stream.Results = list.ListResultsStreamDiagnostics(diags)
@@ -87,10 +87,19 @@ func (r *subaccountRoleListResource) List(ctx context.Context, req list.ListRequ
 			result.Identity.SetAttribute(ctx, path.Root("role_template_name"), types.StringValue(subaccountRole.RoleTemplateName))
 			result.Identity.SetAttribute(ctx, path.Root("app_id"), types.StringValue(subaccountRole.RoleTemplateAppId))
 			if req.IncludeResource {
-				resDirRole, diags := subaccountRoleFromValue(ctx, subaccountRole)
+				resRole, diags := subaccountRoleFromValue(ctx, subaccountRole)
 				result.Diagnostics.Append(diags...)
+
 				if !result.Diagnostics.HasError() {
-					result.Diagnostics.Append(result.Resource.Set(ctx, resDirRole)...)
+					resRole.SubaccountId = filter.SubaccountID
+					compositeID := fmt.Sprintf("%s,%s,%s,%s",
+						filter.SubaccountID.ValueString(),
+						subaccountRole.Name,
+						subaccountRole.RoleTemplateName,
+						subaccountRole.RoleTemplateAppId,
+					)
+					resRole.Id = types.StringValue(compositeID)
+					result.Diagnostics.Append(result.Resource.Set(ctx, resRole)...)
 				}
 			}
 			if !push(result) {

@@ -76,6 +76,16 @@ func TestSubaccountRoleListResource(t *testing.T) {
 									Path:       tfjsonpath.New("app_id"),
 									KnownValue: knownvalue.StringExact("destination-xsappname!b9"),
 								},
+								{
+									Path:       tfjsonpath.New("subaccount_id"),
+									KnownValue: knownvalue.StringExact("ba268910-81e6-4ac1-9016-cae7ed196889"),
+								},
+								{
+									Path: tfjsonpath.New("id"),
+									KnownValue: knownvalue.StringExact(
+										"ba268910-81e6-4ac1-9016-cae7ed196889,Destination Administrator,Destination_Administrator,destination-xsappname!b9",
+									),
+								},
 							},
 						),
 					},

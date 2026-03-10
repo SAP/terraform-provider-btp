@@ -73,7 +73,7 @@ func (r *subaccountRoleCollectionListType) List(ctx context.Context, req list.Li
 	if err != nil {
 		var diags diag.Diagnostics
 		diags.AddError(
-			"API Error Reading Resource Role Collection (subaccount)",
+			"API Error Reading Resource Subaccount Role Collection",
 			fmt.Sprintf("Failed to list subaccount role collections: %s", err),
 		)
 		stream.Results = list.ListResultsStreamDiagnostics(diags)
