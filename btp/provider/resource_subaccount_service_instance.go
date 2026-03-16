@@ -10,6 +10,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -78,7 +79,31 @@ You must be assigned to the admin or the service administrator role of the subac
 			},
 			"serviceplan_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service plan.",
-				Required:            true,
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("serviceplan_name")),
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
+			"serviceplan_name": schema.StringAttribute{
+				MarkdownDescription: "The name of the service plan.",
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("serviceplan_id")),
+					stringvalidator.AlsoRequires(path.MatchRoot("service_offering_name")),
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
+			"service_offering_name": schema.StringAttribute{
+				MarkdownDescription: "The name of the service offering of the plan.",
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("serviceplan_name")),
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"labels": schema.MapAttribute{
 				ElementType: types.SetType{
@@ -184,6 +209,8 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 		return
 	}
 	timeoutsLocal := state.Timeouts
+	servicePlanNameLocal := state.ServicePlanName
+	serviceOfferingNameLocal := state.ServiceOfferingName
 
 	cliRes, rawRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
@@ -193,6 +220,8 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 
 	newState, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
 	newState.Timeouts = timeoutsLocal
+	newState.ServicePlanName = servicePlanNameLocal
+	newState.ServiceOfferingName = serviceOfferingNameLocal
 
 	// Handle resource import
 	if cliRes.Parameters != "" && state.Parameters.ValueString() == "" {
@@ -228,10 +257,25 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 		return
 	}
 
+	var servicePlanId string
+
+	if plan.ServicePlanName.ValueString() != "" && plan.ServiceOfferingName.ValueString() == "" {
+		cliRes, _, err := rs.cli.Services.Plan.GetByName(ctx, plan.SubaccountId.ValueString(), plan.ServicePlanName.ValueString(), plan.ServiceOfferingName.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
+			return
+		}
+
+		servicePlanId = cliRes.Id
+
+	} else {
+		servicePlanId = plan.ServicePlanId.ValueString()
+	}
+
 	cliReq := btpcli.ServiceInstanceCreateInput{
 		Subaccount:    plan.SubaccountId.ValueString(),
 		Name:          plan.Name.ValueString(),
-		ServicePlanId: plan.ServicePlanId.ValueString(),
+		ServicePlanId: servicePlanId,
 	}
 
 	if !plan.Parameters.IsNull() {
@@ -262,6 +306,8 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
 	state.Timeouts = plan.Timeouts
+	state.ServicePlanName = plan.ServicePlanName
+	state.ServiceOfferingName = plan.ServiceOfferingName
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
@@ -298,6 +344,8 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 		state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 		state.Parameters = plan.Parameters
 		state.Timeouts = plan.Timeouts
+		state.ServicePlanName = plan.ServicePlanName
+		state.ServiceOfferingName = plan.ServiceOfferingName
 		resp.Diagnostics.Append(diags...)
 
 		diags = resp.State.Set(ctx, &state)
@@ -319,11 +367,34 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 		return
 	}
 
+	if plan.ServiceOfferingName.ValueString() != stateCurrent.ServiceOfferingName.ValueString() {
+		resp.Diagnostics.AddError("The Service Offering Name cannot be changed when updating the Resource Service Instance (Subaccount)", fmt.Sprintf("Old Value: %s, New Value: %s", stateCurrent.ServiceOfferingName.ValueString(), plan.ServiceOfferingName.ValueString()))
+		return
+	}
+
+	var servicePlanId string
+
+	servicePlanId = stateCurrent.ServicePlanId.ValueString()
+
+	if plan.ServicePlanId.ValueString() != stateCurrent.ServicePlanId.ValueString() {
+		servicePlanId = plan.ServicePlanId.ValueString()
+	}
+
+	if plan.ServicePlanName.ValueString() != stateCurrent.ServicePlanName.ValueString() {
+		cliRes, _, err := rs.cli.Services.Plan.GetByName(ctx, plan.SubaccountId.ValueString(), plan.ServicePlanName.ValueString(), plan.ServiceOfferingName.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
+			return
+		}
+
+		servicePlanId = cliRes.Id
+	}
+
 	cliReq := btpcli.ServiceInstanceUpdateInput{
 		Subaccount:    plan.SubaccountId.ValueString(),
 		Id:            plan.Id.ValueString(),
 		NewName:       plan.Name.ValueString(),
-		ServicePlanId: plan.ServicePlanId.ValueString(),
+		ServicePlanId: servicePlanId,
 	}
 
 	if !plan.Parameters.IsNull() {
@@ -363,6 +434,8 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
 	state.Timeouts = plan.Timeouts
+	state.ServicePlanName = plan.ServicePlanName
+	state.ServiceOfferingName = plan.ServiceOfferingName
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, state)
@@ -403,6 +476,9 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 		state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 		state.Parameters = plan.Parameters
 		state.Timeouts = plan.Timeouts
+		state.ServicePlanName = plan.ServicePlanName
+		state.ServiceOfferingName = plan.ServiceOfferingName
+
 		resp.Diagnostics.Append(diags...)
 
 		diags = resp.State.Set(ctx, state)
