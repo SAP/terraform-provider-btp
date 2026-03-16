@@ -67,13 +67,15 @@ resource "btp_subaccount_service_instance" "xsuaa_application" {
 ### Required
 
 - `name` (String) The name of the service instance.
-- `serviceplan_id` (String) The ID of the service plan.
 - `subaccount_id` (String) The ID of the subaccount.
 
 ### Optional
 
 - `labels` (Map of Set of String) The set of words or phrases assigned to the service instance.
 - `parameters` (String, Sensitive) The configuration parameters for the service instance.
+- `service_offering_name` (String) The name of the service offering of the plan.
+- `serviceplan_id` (String) The ID of the service plan.
+- `serviceplan_name` (String) The name of the service plan.
 - `shared` (Boolean) The configuration parameter for service instance sharing. Ensure that the instance is created with a plan that supports instance sharing.
 - `timeouts` (Attributes) (see [below for nested schema](#nestedatt--timeouts))
 
