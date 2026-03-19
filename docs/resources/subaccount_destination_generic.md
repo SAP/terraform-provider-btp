@@ -142,17 +142,17 @@ resource "btp_subaccount_destination_generic" "tcp_dest" {
 }
 
 #subaccount destination with BasicAuth, OnPremise-ProxyType and Cloud-Connector Location-ID
-resource "btp_subaccount_destination_generic" "http_dest" {
+resource "btp_subaccount_destination_generic" "http_dest_cc" {
   subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   service_instance_id = "7bb64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   destination_configuration = jsonencode({
-    "Name"                     = "project"
+    "Name"                     = "project_with_cc"
     "Type"                     = "HTTP"
     "ProxyType"                = "OnPremise"
     "URL"                      = "https://myservice.example.com"
     "Authentication"           = "BasicAuthentication"
     "User"                     = "SU01-Username-Tech-user"
-    "Password"                 = "" # Property required, but do not maintain it on your IaC repository. Keep it blank!
+    "Password"                 = "YourPassword" # Property required, but do not maintain it on your IaC repository. Keep it blank!
     "Description"              = "trial destination of onPremise usecase with service instance"
     "CloudConnectorLocationId" = "scc-location"
   })
