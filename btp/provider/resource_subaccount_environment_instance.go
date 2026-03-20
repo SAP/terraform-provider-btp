@@ -318,6 +318,11 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 				return subRes, "", err
 			}
 
+			// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
+			if subRes.State == provisioning.StateCreationFailed || subRes.State == provisioning.StateUpdateFailed {
+				return subRes, "", fmt.Errorf("environment instance is in failed state: %s", subRes.State)
+			}
+
 			return subRes, subRes.State, nil
 		},
 		Timeout:    createTimeout,
@@ -387,6 +392,11 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 
 			if err != nil {
 				return subRes, "", err
+			}
+
+			// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
+			if subRes.State == provisioning.StateUpdateFailed {
+				return subRes, "", fmt.Errorf("environment instance is in failed state: %s", subRes.State)
 			}
 
 			return subRes, subRes.State, nil
@@ -461,6 +471,11 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 
 			if err != nil {
 				return subRes, subRes.State, err
+			}
+
+			// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
+			if subRes.State == provisioning.StateDeletionFailed {
+				return subRes, "", fmt.Errorf("environment instance is in failed state: %s", subRes.State)
 			}
 
 			return subRes, subRes.State, nil
