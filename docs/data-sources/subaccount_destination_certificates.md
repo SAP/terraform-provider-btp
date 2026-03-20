@@ -3,22 +3,21 @@ page_title: "btp_subaccount_destination_certificates Data Source - terraform-pro
 subcategory: ""
 description: |-
   Gets all the destination certificates in a subaccount.
-  	__Tip:__
-  	You must be assigned the Destination Admin or Destination Certificate Administrator role in the subaccount.
-  
-  	__Further Information:__
-  	<https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/use-destination-certificates>
+  Tip:
+  You must be assigned the Destination Admin or Destination Certificate Administrator role in the subaccount.
+  Further Information:
+  https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/use-destination-certificates
 ---
 
 # btp_subaccount_destination_certificates (Data Source)
 
 Gets all the destination certificates in a subaccount.
-		
-		__Tip:__
-		You must be assigned the Destination Admin or Destination Certificate Administrator role in the subaccount.
 
-		__Further Information:__
-		<https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/use-destination-certificates>
+__Tip:__
+You must be assigned the Destination Admin or Destination Certificate Administrator role in the subaccount.
+
+__Further Information:__
+<https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/use-destination-certificates>
 
 ## Example Usage
 
