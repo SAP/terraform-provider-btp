@@ -331,6 +331,12 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 		return
 	}
 
+	// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
+	if updatedRes.(provisioning.EnvironmentInstanceResponseObject).State == provisioning.StateCreationFailed || updatedRes.(provisioning.EnvironmentInstanceResponseObject).State == provisioning.StateUpdateFailed {
+		resp.Diagnostics.AddError("API Error Creating Resource Environment Instance (Subaccount)", fmt.Sprintf("environment instance is in failed state: %s", updatedRes.(provisioning.EnvironmentInstanceResponseObject).State))
+		return
+	}
+
 	plan, diags = subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
 	plan.Parameters = jsontypes.NewNormalizedValue(parameters)
 	plan.Timeouts = timeoutsLocal
@@ -402,6 +408,12 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 		return
 	}
 
+	// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
+	if updatedRes.(provisioning.EnvironmentInstanceResponseObject).State == provisioning.StateUpdateFailed {
+		resp.Diagnostics.AddError("API Error Updating Resource Environment Instance (Subaccount)", fmt.Sprintf("environment instance is in failed state: %s", updatedRes.(provisioning.EnvironmentInstanceResponseObject).State))
+		return
+	}
+
 	state, diags := subaccountEnvironmentInstanceValueFrom(ctx, updatedRes.(provisioning.EnvironmentInstanceResponseObject))
 	// TODO: this temporary workaround ignores the actual "parameters" value which is diverging from the planned state by an additional "status" attribute
 	state.Parameters = plan.Parameters
@@ -470,12 +482,19 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 		MinTimeout: minTimeout,
 	}
 
-	_, err = deleteStateConf.WaitForStateContext(ctx)
+	updatedRes, err := deleteStateConf.WaitForStateContext(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
+	if updatedRes.(provisioning.EnvironmentInstanceResponseObject).State == provisioning.StateDeletionFailed {
+		resp.Diagnostics.AddError("API Error Deleting Resource Environment Instance (Subaccount)", fmt.Sprintf("environment instance is in failed state: %s", updatedRes.(provisioning.EnvironmentInstanceResponseObject).State))
+		return
+	}
+
 }
 
 func (rs *subaccountEnvironmentInstanceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
