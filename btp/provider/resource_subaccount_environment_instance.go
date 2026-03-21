@@ -318,11 +318,6 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 				return subRes, "", err
 			}
 
-			// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
-			if subRes.State == provisioning.StateCreationFailed || subRes.State == provisioning.StateUpdateFailed {
-				return subRes, "", fmt.Errorf("environment instance is in failed state: %s", subRes.State)
-			}
-
 			return subRes, subRes.State, nil
 		},
 		Timeout:    createTimeout,
@@ -333,6 +328,12 @@ func (rs *subaccountEnvironmentInstanceResource) Create(ctx context.Context, req
 	updatedRes, err := createStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
+	if updatedRes.(provisioning.EnvironmentInstanceResponseObject).State == provisioning.StateCreationFailed || updatedRes.(provisioning.EnvironmentInstanceResponseObject).State == provisioning.StateUpdateFailed {
+		resp.Diagnostics.AddError("API Error Creating Resource Environment Instance (Subaccount)", fmt.Sprintf("environment instance is in failed state: %s", updatedRes.(provisioning.EnvironmentInstanceResponseObject).State))
 		return
 	}
 
@@ -394,11 +395,6 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 				return subRes, "", err
 			}
 
-			// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
-			if subRes.State == provisioning.StateUpdateFailed {
-				return subRes, "", fmt.Errorf("environment instance is in failed state: %s", subRes.State)
-			}
-
 			return subRes, subRes.State, nil
 		},
 		Timeout:    updateTimeout,
@@ -409,6 +405,12 @@ func (rs *subaccountEnvironmentInstanceResource) Update(ctx context.Context, req
 	updatedRes, err := updateStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
+	if updatedRes.(provisioning.EnvironmentInstanceResponseObject).State == provisioning.StateUpdateFailed {
+		resp.Diagnostics.AddError("API Error Updating Resource Environment Instance (Subaccount)", fmt.Sprintf("environment instance is in failed state: %s", updatedRes.(provisioning.EnvironmentInstanceResponseObject).State))
 		return
 	}
 
@@ -473,11 +475,6 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 				return subRes, subRes.State, err
 			}
 
-			// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
-			if subRes.State == provisioning.StateDeletionFailed {
-				return subRes, "", fmt.Errorf("environment instance is in failed state: %s", subRes.State)
-			}
-
 			return subRes, subRes.State, nil
 		},
 		Timeout:    deleteTimeout,
@@ -485,12 +482,19 @@ func (rs *subaccountEnvironmentInstanceResource) Delete(ctx context.Context, req
 		MinTimeout: minTimeout,
 	}
 
-	_, err = deleteStateConf.WaitForStateContext(ctx)
+	updatedRes, err := deleteStateConf.WaitForStateContext(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Environment Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+
+	// return an error if the environment instance is in a failed state to avoid inconsistent state in Terraform and to surface the error to the user
+	if updatedRes.(provisioning.EnvironmentInstanceResponseObject).State == provisioning.StateDeletionFailed {
+		resp.Diagnostics.AddError("API Error Deleting Resource Environment Instance (Subaccount)", fmt.Sprintf("environment instance is in failed state: %s", updatedRes.(provisioning.EnvironmentInstanceResponseObject).State))
+		return
+	}
+
 }
 
 func (rs *subaccountEnvironmentInstanceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
