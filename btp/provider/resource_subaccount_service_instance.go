@@ -243,19 +243,13 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 	// In case of import the Service Plan Name and Service Offering Name cannot be retrieved from the API response
 	// They must be fetched via the service_plan_id
 	if newState.ServicePlanName.ValueString() == "" {
-		cliRes, _, err := rs.cli.Services.Plan.GetById(ctx, newState.SubaccountId.ValueString(), newState.ServicePlanId.ValueString())
+		planName, offeringName, err := rs.lookupPlanAndOfferingNames(ctx, newState.SubaccountId.ValueString(), newState.ServicePlanId.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
 			return
 		}
-		newState.ServicePlanName = types.StringValue(cliRes.Name)
-
-		offeringRes, _, err := rs.cli.Services.Offering.GetById(ctx, newState.SubaccountId.ValueString(), cliRes.ServiceOfferingId)
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Resource Service Offering (Subaccount)", fmt.Sprintf("%s", err))
-			return
-		}
-		newState.ServiceOfferingName = types.StringValue(offeringRes.Name)
+		newState.ServicePlanName = types.StringValue(planName)
+		newState.ServiceOfferingName = types.StringValue(offeringName)
 	}
 
 	resp.Diagnostics.Append(diags...)
@@ -303,19 +297,12 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	} else {
 		servicePlanId = plan.ServicePlanId.ValueString()
 
-		cliRes, _, err := rs.cli.Services.Plan.GetById(ctx, plan.SubaccountId.ValueString(), plan.ServicePlanId.ValueString())
+		var err error
+		servicePlanName, serviceOfferingName, err = rs.lookupPlanAndOfferingNames(ctx, plan.SubaccountId.ValueString(), plan.ServicePlanId.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
 			return
 		}
-		servicePlanName = cliRes.Name
-
-		offeringRes, _, err := rs.cli.Services.Offering.GetById(ctx, plan.SubaccountId.ValueString(), cliRes.ServiceOfferingId)
-		if err != nil {
-			resp.Diagnostics.AddError("API Error Reading Resource Service Offering (Subaccount)", fmt.Sprintf("%s", err))
-			return
-		}
-		serviceOfferingName = offeringRes.Name
 	}
 
 	cliReq := btpcli.ServiceInstanceCreateInput{
@@ -726,6 +713,20 @@ func (rs *subaccountServiceInstanceResource) UpdateStateChange(ctx context.Conte
 		Delay:      delay,
 		MinTimeout: minTimeout,
 	}, summary
+}
+
+func (rs *subaccountServiceInstanceResource) lookupPlanAndOfferingNames(ctx context.Context, subaccountId string, servicePlanId string) (string, string, error) {
+	planRes, _, err := rs.cli.Services.Plan.GetById(ctx, subaccountId, servicePlanId)
+	if err != nil {
+		return "", "", err
+	}
+
+	offeringRes, _, err := rs.cli.Services.Offering.GetById(ctx, subaccountId, planRes.ServiceOfferingId)
+	if err != nil {
+		return "", "", err
+	}
+
+	return planRes.Name, offeringRes.Name, nil
 }
 
 func extractDetailedError(errorAsRawJson json.RawMessage, operation string) error {
