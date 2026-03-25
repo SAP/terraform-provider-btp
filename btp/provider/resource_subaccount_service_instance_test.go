@@ -578,15 +578,6 @@ func hclResourceSubaccountServiceInstanceNoServicName(resourceName string, subac
 		}`, resourceName, subaccountId, servicePlanId)
 }
 
-func hclResourceSubaccountServiceInstanceNoPlan(resourceName string, subaccountId string, name string) string {
-
-	return fmt.Sprintf(`
-		resource "btp_subaccount_service_instance" "%s"{
-		    subaccount_id    = "%s"
-			name             = "%s"
-		}`, resourceName, subaccountId, name)
-}
-
 func hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string) string {
 	return fmt.Sprintf(`
 		data "btp_subaccounts" "all" {}

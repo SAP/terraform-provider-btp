@@ -112,7 +112,6 @@ You must be assigned to the admin or the service administrator role of the subac
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"labels": schema.MapAttribute{
@@ -179,6 +178,9 @@ You must be assigned to the admin or the service administrator role of the subac
 			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"last_modified": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
@@ -219,8 +221,6 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 		return
 	}
 	timeoutsLocal := state.Timeouts
-	servicePlanNameLocal := state.ServicePlanName
-	serviceOfferingNameLocal := state.ServiceOfferingName
 
 	cliRes, rawRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 	if err != nil {
@@ -230,8 +230,8 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 
 	newState, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
 	newState.Timeouts = timeoutsLocal
-	newState.ServicePlanName = servicePlanNameLocal
-	newState.ServiceOfferingName = serviceOfferingNameLocal
+	newState.ServicePlanName = state.ServicePlanName
+	newState.ServiceOfferingName = state.ServiceOfferingName
 
 	// Handle resource import
 	if cliRes.Parameters != "" && state.Parameters.ValueString() == "" {
@@ -240,9 +240,8 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 		newState.Parameters = state.Parameters
 	}
 
-	// In case of import the Service Plan Name and Service Offering Name cannot be retrieved from the API response
-	// They must be fetched via the service_plan_id
-	if newState.ServicePlanName.ValueString() == "" {
+	// We are in a refresh phase as state and the new state have a value in the service plan ID
+	if newState.ServicePlanName.ValueString() == "" && state.ServicePlanId.ValueString() != "" && newState.ServicePlanId.ValueString() != "" {
 		planName, offeringName, err := rs.lookupPlanAndOfferingNames(ctx, newState.SubaccountId.ValueString(), newState.ServicePlanId.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
