@@ -215,8 +215,8 @@ func (rs *subaccountTrustConfigurationResource) Read(ctx context.Context, req re
 	diags = req.Identity.Get(ctx, &identity)
 	if diags.HasError() {
 		identity = subaccountTrustConfigurationIdentityModel{
-			SubaccountID: state.SubaccountId,
-			Origin:       state.Id,
+			SubaccountID: updatedState.SubaccountId,
+			Origin:       updatedState.Id,
 		}
 
 		diags = resp.Identity.Set(ctx, identity)

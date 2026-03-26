@@ -191,7 +191,7 @@ func (rs *subaccountServiceBindingResource) Read(ctx context.Context, req resour
 	if diags.HasError() {
 		identity = subaccountServiceBindingIdentityModel{
 			SubaccountID: state.SubaccountId,
-			Id:           state.Id,
+			Id:           updatedState.Id,
 		}
 
 		diags = resp.Identity.Set(ctx, identity)
