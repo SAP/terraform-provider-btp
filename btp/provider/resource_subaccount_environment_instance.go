@@ -258,7 +258,7 @@ func (rs *subaccountEnvironmentInstanceResource) Read(ctx context.Context, req r
 	if diags.HasError() {
 		identity = subaccountEnvironmentInstanceIdentityModel{
 			SubaccountID: state.SubaccountId,
-			Id:           state.Id,
+			Id:           updatedState.Id,
 		}
 
 		diags = resp.Identity.Set(ctx, identity)

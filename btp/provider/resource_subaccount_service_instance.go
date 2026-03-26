@@ -212,7 +212,7 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 	if diags.HasError() {
 		identity = subaccountServiceInstanceIdentityModel{
 			SubaccountID: state.SubaccountId,
-			Id:           state.Id,
+			Id:           newState.Id,
 		}
 
 		diags = resp.Identity.Set(ctx, identity)

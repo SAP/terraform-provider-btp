@@ -210,7 +210,7 @@ func (rs *subaccountServiceBrokerResource) Read(ctx context.Context, req resourc
 	if diags.HasError() {
 		identity = subaccountServiceBrokerIdentityModel{
 			SubaccountID: state.SubaccountId,
-			Id:           state.Id,
+			Id:           newState.Id,
 		}
 
 		diags = resp.Identity.Set(ctx, identity)
