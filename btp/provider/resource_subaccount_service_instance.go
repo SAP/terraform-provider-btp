@@ -112,6 +112,7 @@ You must be assigned to the admin or the service administrator role of the subac
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"labels": schema.MapAttribute{
@@ -240,8 +241,9 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 		newState.Parameters = state.Parameters
 	}
 
-	// We are in a refresh phase as state and the new state have a value in the service plan ID
-	if newState.ServicePlanName.ValueString() == "" && state.ServicePlanId.ValueString() != "" && newState.ServicePlanId.ValueString() != "" {
+	// If no field is set in original state, but the resource exists i.e. th enew state is set we are in an IMPORT phase
+	// Hence, we must set the additional fields
+	if state.ServicePlanId.ValueString() == "" && state.ServicePlanName.ValueString() == "" && state.ServiceOfferingName.ValueString() == "" && newState.ServicePlanId.ValueString() != "" {
 		planName, offeringName, err := rs.lookupPlanAndOfferingNames(ctx, newState.SubaccountId.ValueString(), newState.ServicePlanId.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
@@ -249,6 +251,9 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 		}
 		newState.ServicePlanName = types.StringValue(planName)
 		newState.ServiceOfferingName = types.StringValue(offeringName)
+
+		// We are in an import phase as state and the new state have a value in the service plan ID
+		//	if newState.ServicePlanName.ValueString() == "" && state.ServicePlanId.ValueString() == "" && newState.ServicePlanId.ValueString() != "" {
 	}
 
 	resp.Diagnostics.Append(diags...)
