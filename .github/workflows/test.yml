@@ -53,8 +53,13 @@ jobs:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
       - name: setup gpg
         uses: olafurpg/setup-gpg@v3
+      - name: Set short commit SHA as environment variable
+        id: set_short_sha
+        run: echo "COMMIT_SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
 
       - name: verify
         run: | 
+          cd dist
           ls
-          gpg --help
+          gpg --verify terraform-provider-btp_1.21.1-SNAPSHOT-${{ env.COMMIT_SHORT_SHA }}_SHA256SUMS.sig
+ terraform-provider-btp_v1.21.1-SNAPSHOT-${{ env.COMMIT_SHORT_SHA }}_linux_amd64.zip
