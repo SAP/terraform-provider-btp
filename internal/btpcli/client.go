@@ -548,6 +548,10 @@ func (v2 *v2Client) BtpCliSessionLogin(ctx context.Context, loginReq *BtpCliSess
 		return nil, fmt.Errorf("read BTP CLI session information: %w", err)
 	}
 
+	if res.SessionID == "" {
+		return nil, fmt.Errorf("no active BTP CLI session found (source: %s); please run 'btp login' first", res.Source)
+	}
+
 	v2.session = &Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.IdentityProvider,

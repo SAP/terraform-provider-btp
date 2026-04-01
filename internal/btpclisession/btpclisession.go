@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/zalando/go-keyring"
 )
@@ -187,7 +188,7 @@ func readFromFile(hash string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(data), nil
+	return strings.TrimSpace(string(data)), nil
 }
 
 func cachedSessionPath(hash string) (string, error) {
