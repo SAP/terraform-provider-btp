@@ -543,8 +543,6 @@ func (v2 *v2Client) PasscodeLogin(ctx context.Context, loginReq *PasscodeLoginRe
 }
 
 func (v2 *v2Client) BtpCliSessionLogin(ctx context.Context, loginReq *BtpCliSessionLoginRequest) (*LoginResponse, error) {
-	ctx = v2.initTrace(ctx)
-
 	res, err := btpclisession.ReadSession(loginReq.CliConfigPath)
 	if err != nil {
 		return nil, fmt.Errorf("read BTP CLI session information: %w", err)
