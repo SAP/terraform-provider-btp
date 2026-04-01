@@ -114,7 +114,8 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 	if err == nil {
 		return cisResponse, cmdResponse, nil
 	}
-	// Check if the error is due to the fact that a force-delete is required
+	// Check if the error is due to the fact that a force-delete is required;
+	// error codes: Error: 70015/409, 70012/409, 70010/409, 70011/409 -> Clarification needed as usage of string is not optimal
 	if strings.Contains(err.Error(), "You can't delete subaccounts with active") {
 		// Retry with force-delete enabled
 		requestArgs["forceDelete"] = "true"
