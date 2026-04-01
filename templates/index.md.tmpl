@@ -126,6 +126,22 @@ The parameter that falls into this category is the `idtoken`.
 
 The provider supports login via Single Sign-On (SSO) as well. To enable this you need to set the environment variable `BTP_ENABLE_SSO` to `true`. Additionally, ensure that you run your scripts in a desktop environment. It's important to note that the SSO login feature is not intended for use in containerized environments or CI/CD pipelines.
 
+## Sign On via btp CLI Session (EXPERIMENTAL)
+
+The provider can use the session of the btp CLI to authenticate. The usage flow is as follows:
+
+1. Set the environment variable `USE_BTPCLI_SESSION` to `true`
+2. Login via btp CLI e.g, via `btp login --sso`
+3. Optional: if you have a special path to your btp CLI configuration, set it via environment variable `PATH_TO_CLI_CONFIG`
+4. Configure the provider with the subdomain of the global account subdomain
+5. Execute the terraform command e.g. `terraform plan` or `terraform apply`
+
+You will no be prompted for additional credentials if the btp CLI session is active and valid. The provider will use the session information from the btp CLI to authenticate to SAP BTP and execute the terraform commands.
+
+**Prerequiste**: You need to have the btp CLI installed, be logged in to the btp CLI, and have a valid session. You can log in to the btp CLI using the command `btp login --sso`. For more information see the [official documentation of the btp CLI](https://help.sap.com/docs/btp/sap-business-technology-platform/account-administration-using-sap-btp-command-line-interface-btp-cli).
+
+**Important**: This is an experimental feature and may change in future releases. It is not supported in CI/CD environments. We would like to hear your feedback on the feature. If you want to provide feedback, please contribute to the discussion in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/discussions/1468).
+
 ## Custom User-Agent Information
 
 By default, the underlying BTP client used by the Terraform BTP Provider creates requests with User-Agent headers that include information about Terraform and BTP Terraform provider versions. To add more details to the User-Agent headers, the `BTP_APPEND_USER_AGENT` environment variable can be set, and its value will be directly added to HTTP requests. E.g.,
