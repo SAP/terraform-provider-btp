@@ -274,6 +274,11 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
+	if btpCliSessionLogin && (len(username) > 0 || len(password) > 0) {
+		resp.Diagnostics.AddError(unableToCreateClient, "Cannot provide both BTP CLI session login and username/password")
+		return
+	}
+
 	// Log resolved provider configuration at DEBUG level to aid troubleshooting
 	// and quickly identify basic misconfigurations (e.g. Global Account, IdP,
 	// or CLI server URL) during provider initialization.
