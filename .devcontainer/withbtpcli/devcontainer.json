@@ -1,0 +1,42 @@
+{
+	"name": "Terraform provider for SAP BTP - Development (with BTP CLI env file)",
+	"image": "mcr.microsoft.com/devcontainers/go:dev-1.26",
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		"ghcr.io/devcontainers/features/terraform:1": {
+			"version": "1.14.5"
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/robbert229/devcontainer-features/opentofu:1": {
+			"version": "1.11.5"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {},
+			"extensions": [
+				"golang.go",
+				"HashiCorp.terraform",
+				"ms-vscode.makefile-tools"
+			]
+		},
+		"codespaces": {}
+	},
+	// If you want to use SSO in the devcontainer, you must install the xdg-utils package (see .devcontainer/scripts/install-xdg.sh).
+	// For BTP CLI: curl https://cli.btp.cloud.sap/btpcli-install.sh | bash
+	"postCreateCommand": "cp ./assets/provider-config-local.txt ~/.terraformrc && mkdir ~/.terraform.d && cp ./assets/credentials.tfrc.json.txt ~/.terraform.d/credentials.tfrc.json",
+	"hostRequirements": {
+		"memory": "4gb"
+	},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	"remoteUser": "vscode",
+	// This devcontainer expects a file named .devcontainer/devcontainerbtcli.env to exist.
+	// you should place the following environment variables in that file:
+	// - BTP_USERNAME
+	// - BTP_PASSWORD
+	"runArgs": [
+		"--env-file",
+		".devcontainer/devcontainerbtcli.env"
+	]
+}
