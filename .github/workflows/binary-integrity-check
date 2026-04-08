@@ -1,0 +1,111 @@
+# Terraform Provider binary build and integrity check workflow.
+name: Terraform Provider Binary Integrity Check
+
+# This GitHub action creates a release when a tag that matches the pattern
+# "v*" (e.g. v0.1.0) is created.
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+    paths:
+      - '.github/workflows/**'
+      - 'go.mod'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+      - 'go.mod'
+  workflow_dispatch:
+  workflow_call:
+# Releases need permissions to read and write the repository contents.
+# GitHub considers creating releases and uploading assets as writing contents.
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Allow goreleaser to access older tag information.
+          fetch-depth: 0
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version-file: 'go.mod'
+          cache: false
+        name: Setup Go
+
+      - name: Get last Release Tag
+        id: get_last_release
+        run: |
+          echo "RELEASE_VERSION=$(gh release view --json tagName -q '.tagName | ltrimstr("v")')" >> "$GITHUB_ENV"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set short commit SHA
+        id: set_short_sha
+        run: |
+          echo "COMMIT_SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
+        id: import_gpg
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+      # Make goreleaser build binary from the given commit without publishing it to GitHub releases. 
+      # This will allow us to verify the integrity of the generated binaries by comparing the SHA256 checksums and GPG signatures.
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29 # v7.0.0
+        with:
+          version: v2.14.3
+          args: release --clean --skip=publish --snapshot
+        env:
+          # GitHub sets the GITHUB_TOKEN secret automatically.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+      - name: setup gpg
+        uses: olafurpg/setup-gpg@v3
+      - name: verify-sha256-sums
+        run: |
+          cd dist
+          ls
+          SUMS_FILE="terraform-provider-btp_${{ env.RELEASE_VERSION }}-SNAPSHOT-${{ env.COMMIT_SHORT_SHA }}_SHA256SUMS"
+          for zip in terraform-provider-btp_${{ env.RELEASE_VERSION }}-SNAPSHOT-${{ env.COMMIT_SHORT_SHA }}_*.zip; do
+            echo "Verifying ${zip}..."
+            grep "${zip}" "${SUMS_FILE}" | sha256sum --check --status
+            echo "${zip}: OK"
+          done
+
+      - name: verify-gpg-signatures
+        run: |
+          cd dist
+          ls
+          SUMS_FILE="terraform-provider-btp_${{ env.RELEASE_VERSION }}-SNAPSHOT-${{ env.COMMIT_SHORT_SHA }}_SHA256SUMS"
+          SIG_FILE="${SUMS_FILE}.sig"
+          echo "SHASUM values in ${SUMS_FILE}:"
+          cat "${SUMS_FILE}"
+
+          # Verify the GPG signature of the SHA256SUMS manifest first
+          echo "Verifying GPG signature of ${SUMS_FILE}..."
+          gpg --verify "${SIG_FILE}" "${SUMS_FILE}"
+          echo "Manifest GPG signature OK"
+
+          # Now verify GPG signature of each zip directly
+          for zip in terraform-provider-btp_${{ env.RELEASE_VERSION }}-SNAPSHOT-${{ env.COMMIT_SHORT_SHA }}_*.zip; do
+            echo "Verifying GPG signature of ${zip}..."
+            gpg --verify "${SIG_FILE}" "${zip}"
+            echo "${zip}: OK"
+          done
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf dist 
+          
