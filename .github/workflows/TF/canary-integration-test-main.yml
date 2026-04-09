@@ -1,0 +1,217 @@
+name: Canary Integration Test (Main) - Terraform Provider
+
+# Idea: 
+# 1. Build the provider from the latest pull
+# 2. Setup Terraform
+# 3. Execute the integration test script on canary landscape
+# 4. All changes must apply
+# 5. Destroy the infrastructure
+
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+env:
+  PATH_TO_TFSCRIPT: 'tests/integration-test'
+  DEV_OVERRIDE: 'assets/provider-config-ghaction.txt'
+  TEMP_PLAN_OUTPUT : 'plan-output.tfplan'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  test:
+    name: Canary Integration Test with local provider 
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out Git repository
+      id: checkout_repo
+      uses: actions/checkout@v6
+
+    - name: Setup Go
+      uses: actions/setup-go@v6.4.0
+      with:
+        go-version-file: 'go.mod'
+        cache: false
+
+    - name: Setup Terraform
+      id : setup_terraform
+      uses: hashicorp/setup-terraform@v4
+      with:
+        terraform_wrapper: false
+
+    - name: Install local Terraform provider
+      id: build_provider
+      shell: bash
+      run: |
+        go mod tidy && make install
+
+    - name: Remove init data and place override
+      id: set_to_override
+      shell: bash
+      run: |
+        rm -rf ${{ env.PATH_TO_TFSCRIPT }}/.terraform
+        rm -rf ${{ env.PATH_TO_TFSCRIPT }}/.terraform.lock.hcl 
+        cp ${{ env.DEV_OVERRIDE }} ~/.terraformrc
+
+    - name: Terraform Plan with local provider
+      id: terraform_plan_local
+      shell: bash
+      run: |
+        export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
+        export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
+        export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
+        export BTP_GLOBALACCOUNT=${{ secrets.CANARY_GLOBALACCOUNT }}
+
+        set +e
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} plan \
+          -var-file=canary.tfvars \
+          -out=${{ env.TEMP_PLAN_OUTPUT }} \
+          -no-color \
+          -detailed-exitcode
+
+        EXIT_CODE=$?
+        echo "exitcode=$EXIT_CODE" >> $GITHUB_OUTPUT
+
+        if [ $EXIT_CODE -eq 1 ]; then
+          echo "Error during terraform plan execution"
+          exit 1
+        elif [ $EXIT_CODE -eq 2 ]; then
+          echo "Changes detected in terraform plan"
+        else
+          echo "No changes detected in terraform plan"
+        fi
+
+    - name: Terraform Apply with local provider
+      if: steps.terraform_plan_local.outputs.exitcode == '0' || steps.terraform_plan_local.outputs.exitcode == '2'
+      id: terraform_apply_local
+      shell: bash
+      run: |
+        export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
+        export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
+        export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
+        export BTP_GLOBALACCOUNT=${{ secrets.CANARY_GLOBALACCOUNT }}
+
+        MAX_RETRIES=3
+        RETRY_DELAY=10
+
+        echo "attempts=0" >> $GITHUB_OUTPUT
+
+        for i in $(seq 1 $MAX_RETRIES); do
+          echo "Terraform apply attempt $i..."
+
+          terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply \
+            -auto-approve \
+            -no-color \
+            ${{ env.TEMP_PLAN_OUTPUT }}
+
+          EXIT_CODE=$?
+
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "Terraform apply succeeded"
+            echo "attempts=$i" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Terraform apply failed with exit code $EXIT_CODE"
+
+          if [ $i -lt $MAX_RETRIES ]; then
+            echo "Retrying in $RETRY_DELAY seconds..."
+            sleep $RETRY_DELAY
+          fi
+        done
+
+        echo "attempts=$MAX_RETRIES" >> $GITHUB_OUTPUT
+        echo "Terraform apply failed after retries"
+        exit 1
+    
+    - name: Terraform Destroy with local provider
+      if: always()
+      id: terraform_destroy_local
+      shell: bash
+      run: |
+        export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
+        export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
+        export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
+        export BTP_GLOBALACCOUNT=${{ secrets.CANARY_GLOBALACCOUNT }}
+        ex
+
+        MAX_RETRIES=3
+        RETRY_DELAY=10
+
+        echo "attempts=0" >> $GITHUB_OUTPUT
+
+        for i in $(seq 1 $MAX_RETRIES); do
+          echo "Terraform destroy attempt $i..."
+
+          terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy \
+            -var-file=canary.tfvars \
+            -auto-approve \
+            -no-color
+
+          EXIT_CODE=$?
+
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "Terraform destroy succeeded"
+            echo "attempts=$i" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Terraform destroy failed with exit code $EXIT_CODE"
+
+          if [ $i -lt $MAX_RETRIES ]; then
+            echo "Retrying in $RETRY_DELAY seconds..."
+            sleep $RETRY_DELAY
+          fi
+        done
+
+        echo "attempts=$MAX_RETRIES" >> $GITHUB_OUTPUT
+        echo "Terraform destroy failed after retries"
+        exit 1
+
+    - name: Create Issue on Test Failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+          const failedSteps = [];
+          
+          if ("${{ steps.terraform_plan_local.outcome }}" === "failure") {
+            failedSteps.push("Terraform Plan");
+          }
+          if ("${{ steps.terraform_apply_local.outcome }}" === "failure") {
+            failedSteps.push("Terraform Apply");
+          }
+          if ("${{ steps.terraform_destroy_local.outcome }}" === "failure") {
+            failedSteps.push("Terraform Destroy");
+          }
+
+          const title = `Canary Integration Test (Main) Failed - Terraform Provider`;
+
+          const body = `
+          - **Workflow:** ${context.workflow}
+          - **Run ID:** ${context.runId}
+          - **Branch:** ${context.ref}
+          - **Commit:** ${context.sha}
+          - **Triggered by:** ${context.actor}
+
+          ${failedSteps.length ? failedSteps.map(s => `- ${s}`).join('\n') : 'Unknown'}
+
+          - **Apply Attempts:** ${{ steps.terraform_apply_local.outputs.attempts || 'N/A' }}
+          - **Destroy Attempts:** ${{ steps.terraform_destroy_local.outputs.attempts || 'N/A' }}
+
+          - Please check logs: ${runUrl}
+
+          await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title,
+            body,
+            labels: ["canary", "terraform", "main"]
+          });
