@@ -8,25 +8,25 @@ on:
 jobs:
   canary-main:
     name: Canary Main
-    uses: ./.github/workflows/TF/canary-integration-test-main.yml
+    uses: ./.github/workflows/tf-canary-integration-test-main.yml
     secrets: inherit
 
   canary-stable:
     name: Canary Stable
     needs: canary-main
-    uses: ./.github/workflows/TF/canary-integration-test-stable.yml
+    uses: ./.github/workflows/tf-canary-integration-test-stable.yml
     secrets: inherit
 
   live-main:
     name: Live Main
     needs: canary-stable
-    uses: ./.github/workflows/TF/live-integration-test-main.yml
+    uses: ./.github/workflows/tf-live-integration-test-main.yml
     secrets: inherit
 
   live-stable:
     name: Live Stable
     needs: live-main
-    uses: ./.github/workflows/TF/live-integration-test-stable.yml
+    uses: ./.github/workflows/tf-live-integration-test-stable.yml
     secrets: inherit
 
   failure-handler:
