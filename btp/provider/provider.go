@@ -31,6 +31,7 @@ const x509Flow = "x509Flow"
 const idTokenFlow = "idTokenFlow"
 const ssoFlow = "ssoFlow"
 const assertionFlow = "assertionFlow"
+const btpCliSessionFlow = "btpCliSessionFlow"
 const errorMessagePostfixWithEnv = "If either is already set, ensure the value is not empty."
 const errorMessagePostfixWithoutEnv = "If it is already set, ensure the value is not empty."
 
@@ -191,6 +192,18 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		}
 	}
 
+	btpCliSessionLogin := false
+	btpCliCustomConfigPath := ""
+	enableBTPCliSessionLogin := os.Getenv("USE_BTPCLI_SESSION")
+	if len(strings.TrimSpace(enableBTPCliSessionLogin)) != 0 {
+		btpCliSessionLogin, err = strconv.ParseBool(enableBTPCliSessionLogin)
+		if err != nil {
+			resp.Diagnostics.AddError("unable to convert btp cli session login value", fmt.Sprintf("%s", err))
+			return
+		}
+		btpCliCustomConfigPath = os.Getenv("BTPCLI_CONFIG_PATH")
+	}
+
 	// User may provide an idp to the provider
 	var idp string
 	if config.IdentityProvider.IsUnknown() {
@@ -261,17 +274,23 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
+	if btpCliSessionLogin && (len(username) > 0 || len(password) > 0) {
+		resp.Diagnostics.AddError(unableToCreateClient, "Cannot provide both BTP CLI session login and username/password")
+		return
+	}
+
 	// Log resolved provider configuration at DEBUG level to aid troubleshooting
 	// and quickly identify basic misconfigurations (e.g. Global Account, IdP,
 	// or CLI server URL) during provider initialization.
 	tflog.Debug(ctx, "Initializing SAP BTP provider with resolved configuration as:", map[string]any{
-		"global_account": config.GlobalAccount.ValueString(),
-		"idp":            idp,
-		"cli_server_url": selectedCLIServerURL,
+		"global_account":     config.GlobalAccount.ValueString(),
+		"idp":                idp,
+		"cli_server_url":     selectedCLIServerURL,
+		"use_btpcli_session": btpCliSessionLogin,
 	})
 
 	//Determine and execute the login flow depending on the provided parameters
-	switch authFlow := determineAuthFlow(config, idToken, ssoLogin, assertion); authFlow {
+	switch authFlow := determineAuthFlow(config, idToken, ssoLogin, assertion, btpCliSessionLogin); authFlow {
 	case ssoFlow:
 		if _, err = client.BrowserLogin(ctx, btpcli.NewBrowserLoginRequest(idp, config.GlobalAccount.ValueString())); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
@@ -318,6 +337,13 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		if _, err = client.IdTokenLogin(ctx, btpcli.NewIdTokenLoginRequest(config.GlobalAccount.ValueString(), idToken)); err != nil {
 			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
 		}
+
+	case btpCliSessionFlow:
+		if _, err = client.BtpCliSessionLogin(ctx, btpcli.NewBtpCliSessionLoginRequest(config.GlobalAccount.ValueString(), btpCliCustomConfigPath, idp)); err != nil {
+			resp.Diagnostics.AddError(unableToCreateClient, fmt.Sprintf("%s", err))
+			return
+		}
+
 	default:
 		// No valid login flow
 		resp.Diagnostics.AddError(unableToCreateClient, "No valid login flow found. Please provide either username and password, or an id token, or a client certificate and key.")
@@ -490,7 +516,7 @@ func (p *btpcliProvider) Functions(_ context.Context) []func() function.Function
 	}
 }
 
-func determineAuthFlow(config providerData, idToken string, ssoLogin bool, assertion string) string {
+func determineAuthFlow(config providerData, idToken string, ssoLogin bool, assertion string, btpCliSessionLogin bool) string {
 	if ssoLogin {
 		return ssoFlow
 	} else if len(idToken) > 0 {
@@ -499,6 +525,8 @@ func determineAuthFlow(config providerData, idToken string, ssoLogin bool, asser
 		return x509Flow
 	} else if len(assertion) > 0 {
 		return assertionFlow
+	} else if btpCliSessionLogin {
+		return btpCliSessionFlow
 	} else {
 		return userPasswordFlow
 	}
