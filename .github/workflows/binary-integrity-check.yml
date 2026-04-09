@@ -11,14 +11,21 @@ on:
       - synchronize
       - ready_for_review
     paths:
-      - '.github/workflows/**'
+      - '.github/workflows/binary-integrity-check.yml'
+      - '.github/workflows/release.yml'
+      - '.goreleaser.yml'
       - 'go.mod'
+      - 'go.sum'
+      - '**.go'
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/**'
+      - '.github/workflows/binary-integrity-check.yml'
+      - '.goreleaser.yml'
       - 'go.mod'
+      - 'go.sum'
+      - '**.go'
   workflow_dispatch:
   workflow_call:
 # Releases need permissions to read and write the repository contents.
@@ -72,18 +79,8 @@ jobs:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
       - name: setup gpg
         uses: olafurpg/setup-gpg@v3
-      - name: verify-sha256-sums
-        run: |
-          cd dist
-          ls
-          SUMS_FILE="terraform-provider-btp_${{ env.RELEASE_VERSION }}-SNAPSHOT-${{ env.COMMIT_SHORT_SHA }}_SHA256SUMS"
-          for zip in terraform-provider-btp_${{ env.RELEASE_VERSION }}-SNAPSHOT-${{ env.COMMIT_SHORT_SHA }}_*.zip; do
-            echo "Verifying ${zip}..."
-            grep "${zip}" "${SUMS_FILE}" | sha256sum --check --status
-            echo "${zip}: OK"
-          done
 
-      - name: verify-gpg-signatures
+      - name: Verify GPG signature of the SHA256SUMS manifest
         run: |
           cd dist
           ls
@@ -97,10 +94,14 @@ jobs:
           gpg --verify "${SIG_FILE}" "${SUMS_FILE}"
           echo "Manifest GPG signature OK"
 
-          # Now verify GPG signature of each zip directly
+      - name: Verify SHA256 checksums of the generated binaries
+        run: |
+          cd dist
+          ls
+          SUMS_FILE="terraform-provider-btp_${{ env.RELEASE_VERSION }}-SNAPSHOT-${{ env.COMMIT_SHORT_SHA }}_SHA256SUMS"
           for zip in terraform-provider-btp_${{ env.RELEASE_VERSION }}-SNAPSHOT-${{ env.COMMIT_SHORT_SHA }}_*.zip; do
-            echo "Verifying GPG signature of ${zip}..."
-            gpg --verify "${SIG_FILE}" "${zip}"
+            echo "Verifying ${zip}..."
+            grep "${zip}" "${SUMS_FILE}" | sha256sum --check --status
             echo "${zip}: OK"
           done
 
