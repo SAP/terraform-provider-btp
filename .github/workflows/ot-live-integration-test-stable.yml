@@ -14,7 +14,6 @@ on:
 
 env:
   PATH_TO_TFSCRIPT: 'tests/integration-test'
-  DEV_OVERRIDE: 'assets/provider-config-ghaction.txt'
   TEMP_PLAN_OUTPUT : 'plan-output.tfplan'
 
 permissions:
@@ -124,7 +123,6 @@ jobs:
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.LIVE_BTP_IDP }}
         export BTP_GLOBALACCOUNT=${{ secrets.LIVE_GLOBALACCOUNT }}
-        ex
 
         MAX_RETRIES=3
         RETRY_DELAY=10
@@ -158,47 +156,3 @@ jobs:
         echo "attempts=$MAX_RETRIES" >> $GITHUB_OUTPUT
         echo "Tofu destroy failed after retries"
         exit 1
-
-    - name: Create Issue on Test Failure
-      if: failure()
-      uses: actions/github-script@v7
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-
-          const failedSteps = [];
-          
-          if ("${{ steps.tofu_plan_stable.outcome }}" === "failure") {
-            failedSteps.push("Tofu Plan");
-          }
-          if ("${{ steps.tofu_apply_stable.outcome }}" === "failure") {
-            failedSteps.push("Tofu Apply");
-          }
-          if ("${{ steps.tofu_destroy_stable.outcome }}" === "failure") {
-            failedSteps.push("Tofu Destroy");
-          }
-
-          const title = `Live Integration Test (Stable) Failed - OpenTofu Provider`;
-
-          const body = `
-          - **Workflow:** ${context.workflow}
-          - **Run ID:** ${context.runId}
-          - **Branch:** ${context.ref}
-          - **Commit:** ${context.sha}
-          - **Triggered by:** ${context.actor}
-
-          ${failedSteps.length ? failedSteps.map(s => `- ${s}`).join('\n') : 'Unknown'}
-
-          - **Apply Attempts:** ${{ steps.tofu_apply_stable.outputs.attempts || 'N/A' }}
-          - **Destroy Attempts:** ${{ steps.tofu_destroy_stable.outputs.attempts || 'N/A' }}
-
-          - Please check logs: ${runUrl}
-
-          await github.rest.issues.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            title,
-            body,
-            labels: ["live", "opentofu", "stable"]
-          });
