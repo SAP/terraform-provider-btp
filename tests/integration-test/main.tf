@@ -3,7 +3,7 @@
 ###
 
 locals {
-  prefix_integration_test                                = "integration-test-"
+  prefix_integration_test                                = "tf-integration-test-"
   prefix_integration_test_dir                            = "${local.prefix_integration_test}dir-"
   prefix_integration_test_account                        = "${local.prefix_integration_test}acc-"
   integration_test_account_static                        = "${local.prefix_integration_test_account}static"
@@ -27,7 +27,7 @@ locals {
 
 resource "btp_globalaccount_resource_provider" "grp_aws" {
   technical_name = "tf_test_resource_provider"
-  display_name   = "Test AWS Resource Provider"
+  display_name   = "Integration Test AWS Resource Provider"
   description    = "Description of the resource provider"
   provider_type  = "AWS"
   configuration = jsonencode({

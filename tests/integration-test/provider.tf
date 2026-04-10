@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     btp = {
-      source  = "SAP/btp"
+      source = "SAP/btp"
     }
   }
 }
