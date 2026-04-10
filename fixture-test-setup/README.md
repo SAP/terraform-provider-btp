@@ -1,5 +1,5 @@
 # About
-This directory contains Terraform definitions for setting up a Global Account for integration testing and fixture recording.
+This directory contains Terraform definitions for setting up a Global Account for fixture recording.
 
 # Prerequisite
 - Global Account with:

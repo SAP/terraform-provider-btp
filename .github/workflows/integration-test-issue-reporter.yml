@@ -1,0 +1,61 @@
+name: Create Issue on Integration Test Failure
+
+on:
+  workflow_call:
+    inputs:
+      workflow_name:
+        required: true
+        type: string
+      job_results:
+        required: true
+        type: string
+      labels:
+        required: true
+        type: string
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create failure issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const results = `${{ inputs.job_results }}`;
+
+            if (!results.includes("failure")) {
+              console.log("No failures detected, skipping issue creation.");
+              return;
+            }
+
+            const labels = JSON.parse(`${{ inputs.labels }}`);
+
+            const title = `🚨 ${{
+              inputs.workflow_name
+            }} - Integration Test Failure`;
+
+            const body = `
+            ## Integration Test Failed
+
+            **Workflow Group:** ${{ inputs.workflow_name }}
+
+            **Results:**
+            ${results}
+
+            **Run URL:**
+            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            **Triggered by:** @${{ github.actor }}
+            `;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels
+            });

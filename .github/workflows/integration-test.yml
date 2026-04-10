@@ -1,97 +1,44 @@
-name: Integration Test - Terraform Provider
-
-# Idea: 
-# 1. Build the provider from the latest pull
-# 2. Setup Terraform
-# 3. Execute the integration test script
-# 4. All changes must apply
-# 5. Destroy the infrastructure
-
+name: Integration Test - Terraform (All)
 
 on:
   workflow_dispatch:
-
-env:
-  PATH_TO_TFSCRIPT: 'regression-test'
-  DEV_OVERRIDE: 'assets/provider-config-ghaction.txt'
-  TEMP_PLAN_OUTPUT : 'plan-output.txt'
-
-permissions:
-  contents: read
+  schedule:
+    - cron: '0 2 * * 1,3' # Every Monday and Wednesday at 7:30 AM IST (2:00 AM UTC)
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Check out Git repository
-        id: checkout_repo
-        uses: actions/checkout@v6
-      - name: Setup Go
-        uses: actions/setup-go@v6.4.0
-        with:
-          go-version-file: 'go.mod'
-          cache: false
-      - run: go mod download
-      - run: go mod tidy
-      - run: go build -v .
-      - name: Run linters
-        uses: golangci/golangci-lint-action@v9
-        with:
-          version: latest
-          skip-cache: true
+  canary-main:
+    name: Canary Main
+    uses: ./.github/workflows/tf-canary-integration-test-main.yml
+    secrets: inherit
 
-  test:
-    name: Integration Test for Terraform Provider
-    needs: build
-    runs-on: ubuntu-latest
+  canary-stable:
+    name: Canary Stable
+    needs: canary-main
+    uses: ./.github/workflows/tf-canary-integration-test-stable.yml
+    secrets: inherit
 
-    steps:
-    - name: Check out Git repository
-      id: checkout_repo
-      uses: actions/checkout@v6
+  live-main:
+    name: Live Main
+    needs: canary-stable
+    uses: ./.github/workflows/tf-live-integration-test-main.yml
+    secrets: inherit
 
-    - name: Setup Go
-      uses: actions/setup-go@v6.4.0
-      with:
-        go-version-file: 'go.mod'
-        cache: false
+  live-stable:
+    name: Live Stable
+    needs: live-main
+    uses: ./.github/workflows/tf-live-integration-test-stable.yml
+    secrets: inherit
 
-    - name: Setup Terraform
-      id : setup_terraform
-      uses: hashicorp/setup-terraform@v4
-      with:
-        terraform_wrapper: false
-        terraform_version: latest
-
-    - name: Install local Terraform provider
-      id: build_provider
-      shell: bash
-      run: |
-        go mod tidy && make install
-
-    - name: Remove init data and place override
-      id: set_to_override
-      shell: bash
-      run: |
-        rm -rf .terraform && rm -rf .terraform.lock.hcl && cp ${{ env.DEV_OVERRIDE }} ~/.terraformrc
-
-    - name: Terraform Apply with local provider
-      id: terraform_apply_local
-      shell: bash
-      run: |
-        export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
-        export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        export BTP_IDP=${{ secrets.BTP_IDP }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -auto-approve -no-color
-    
-    - name: Terraform Destroy with local provider
-      if: always()
-      id: terraform_destory
-      shell: bash
-      run: |
-        export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
-        export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        export BTP_IDP=${{ secrets.BTP_IDP }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -auto-approve -no-color
+  failure-handler:
+    name: Handle Failures
+    needs: [canary-main, canary-stable, live-main, live-stable]
+    if: always()
+    uses: ./.github/workflows/integration-test-issue-reporter.yml
+    with:
+      workflow_name: "Terraform Integration Tests"
+      job_results: |
+        canary-main: ${{ needs.canary-main.result }}
+        canary-stable: ${{ needs.canary-stable.result }}
+        live-main: ${{ needs.live-main.result }}
+        live-stable: ${{ needs.live-stable.result }}
+      labels: '["integration-test","terraform","failure"]'
