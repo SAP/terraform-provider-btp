@@ -1,8 +1,8 @@
-name: Live Integration Test (Stable) - Terraform Provider
+name: Live Integration Test (Stable) - OpenTofu Provider
 
 # Idea: 
-# 1. Build the provider from the stable version using terraform init
-# 2. Setup Terraform
+# 1. Build the provider from the stable version using tofu init
+# 2. Setup OpenTofu
 # 3. Execute the integration test script on live landscape
 # 4. All changes must apply
 # 5. Destroy the infrastructure
@@ -30,21 +30,21 @@ jobs:
       id: checkout_repo
       uses: actions/checkout@v6
 
-    - name: Setup Terraform
-      id : setup_terraform
-      uses: hashicorp/setup-terraform@v4
+    - name: Setup OpenTofu
+      id : setup_opentofu
+      uses: opentofu/setup-opentofu@v2
       with:
-        terraform_wrapper: false
-        terraform_version: latest
+        tofu_wrapper: false
+        tofu_version: latest
 
-    - name: Terraform Init with stable provider
-      id: terraform_init
+    - name: Tofu Init with stable provider
+      id: tofu_init
       shell: bash
       run: |
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} init -no-color
-    
-    - name: Terraform Plan with stable provider
-      id: terraform_plan_stable
+        tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} init -no-color
+
+    - name: Tofu Plan with stable provider
+      id: tofu_plan_stable
       shell: bash
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
@@ -53,7 +53,7 @@ jobs:
         export BTP_GLOBALACCOUNT=${{ secrets.LIVE_GLOBALACCOUNT }}
 
         set +e
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} plan \
+        tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} plan \
           -var-file=live.tfvars \
           -out=${{ env.TEMP_PLAN_OUTPUT }} \
           -no-color \
@@ -63,17 +63,17 @@ jobs:
         echo "exitcode=$EXIT_CODE" >> $GITHUB_OUTPUT
 
         if [ $EXIT_CODE -eq 1 ]; then
-          echo "Error during terraform plan execution"
+          echo "Error during tofu plan execution"
           exit 1
         elif [ $EXIT_CODE -eq 2 ]; then
-          echo "Changes detected in terraform plan"
+          echo "Changes detected in tofu plan"
         else
-          echo "No changes detected in terraform plan"
+          echo "No changes detected in tofu plan"
         fi
 
-    - name: Terraform Apply with stable provider
-      if: steps.terraform_plan_stable.outputs.exitcode == '0' || steps.terraform_plan_stable.outputs.exitcode == '2'
-      id: terraform_apply_stable
+    - name: Tofu Apply with stable provider
+      if: steps.tofu_plan_stable.outputs.exitcode == '0' || steps.tofu_plan_stable.outputs.exitcode == '2'
+      id: tofu_apply_stable
       shell: bash
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
@@ -87,9 +87,9 @@ jobs:
         echo "attempts=0" >> $GITHUB_OUTPUT
 
         for i in $(seq 1 $MAX_RETRIES); do
-          echo "Terraform apply attempt $i..."
+          echo "Tofu apply attempt $i..."
 
-          terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply \
+          tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} apply \
             -auto-approve \
             -no-color \
             ${{ env.TEMP_PLAN_OUTPUT }}
@@ -97,12 +97,12 @@ jobs:
           EXIT_CODE=$?
 
           if [ $EXIT_CODE -eq 0 ]; then
-            echo "Terraform apply succeeded"
+            echo "Tofu apply succeeded"
             echo "attempts=$i" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "Terraform apply failed with exit code $EXIT_CODE"
+          echo "Tofu apply failed with exit code $EXIT_CODE"
 
           if [ $i -lt $MAX_RETRIES ]; then
             echo "Retrying in $RETRY_DELAY seconds..."
@@ -111,12 +111,12 @@ jobs:
         done
 
         echo "attempts=$MAX_RETRIES" >> $GITHUB_OUTPUT
-        echo "Terraform apply failed after retries"
+        echo "Tofu apply failed after retries"
         exit 1
     
-    - name: Terraform Destroy with stable provider
+    - name: Tofu Destroy with stable provider
       if: always()
-      id: terraform_destroy_stable
+      id: tofu_destroy_stable
       shell: bash
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
@@ -130,9 +130,9 @@ jobs:
         echo "attempts=0" >> $GITHUB_OUTPUT
 
         for i in $(seq 1 $MAX_RETRIES); do
-          echo "Terraform destroy attempt $i..."
+          echo "Tofu destroy attempt $i..."
 
-          terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy \
+          tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy \
             -var-file=live.tfvars \
             -auto-approve \
             -no-color
@@ -140,12 +140,12 @@ jobs:
           EXIT_CODE=$?
 
           if [ $EXIT_CODE -eq 0 ]; then
-            echo "Terraform destroy succeeded"
+            echo "Tofu destroy succeeded"
             echo "attempts=$i" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "Terraform destroy failed with exit code $EXIT_CODE"
+          echo "Tofu destroy failed with exit code $EXIT_CODE"
 
           if [ $i -lt $MAX_RETRIES ]; then
             echo "Retrying in $RETRY_DELAY seconds..."
@@ -154,5 +154,5 @@ jobs:
         done
 
         echo "attempts=$MAX_RETRIES" >> $GITHUB_OUTPUT
-        echo "Terraform destroy failed after retries"
+        echo "Tofu destroy failed after retries"
         exit 1
