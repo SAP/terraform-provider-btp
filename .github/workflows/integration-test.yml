@@ -33,7 +33,7 @@ jobs:
     name: Handle Failures
     needs: [canary-main, canary-stable, live-main, live-stable]
     if: always()
-    uses: ./.github/workflows/common-failure-handler.yml
+    uses: ./.github/workflows/integration-test-issue-reporter.yml
     with:
       workflow_name: "Terraform Integration Tests"
       job_results: |
