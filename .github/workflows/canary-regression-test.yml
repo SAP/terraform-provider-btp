@@ -1,0 +1,22 @@
+name: Daily Canary Regression Test
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 7:30 AM IST
+  workflow_dispatch:
+
+jobs:
+
+  regression_v1_10_0:
+    name: Regression Test (v1.10.0)
+    uses: ./.github/workflows/schema-regression-test.yml
+    with:
+      path_to_tfscript: tests/regression-test
+    secrets: inherit
+
+  regression_v1_21_3:
+    name: Regression Test (v1.21.3)
+    uses: ./.github/workflows/schema-regression-test.yml
+    with:
+      path_to_tfscript: tests/regression-test/subscriptions
+    secrets: inherit

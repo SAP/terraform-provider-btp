@@ -1,0 +1,7 @@
+cli_server                         = "https://canary.cli.btp.int.sap"
+region                             = "eu12"
+testing_idp                        = "iasproviderdevblr.accounts400.ondemand.com"
+subaccount_subdomain_extension     = "canary-main"
+globalaccount_role_template_app_id = "cis-central!b13"
+directory_role_template_app_id     = "cis-central!b13"
+subaccount_role_template_app_id    = "cis-local!b2"
