@@ -92,9 +92,10 @@ jobs:
           echo "Tofu apply attempt $i..."
 
           tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} apply \
+            -var globalaccount=${{ secrets.CANARY_GLOBALACCOUNT }} \
+            -var-file=canary.tfvars \
             -auto-approve \
-            -no-color \
-            ${{ env.TEMP_PLAN_OUTPUT }}
+            -no-color
 
           EXIT_CODE=$?
 
