@@ -247,27 +247,10 @@ resource "btp_subaccount_entitlement" "se_sa_services_static_malware_scanner" {
   plan_name     = "clamav"
 }
 
-resource "btp_subaccount_entitlement" "se_sa_services_static_bas" {
-  subaccount_id = btp_subaccount.sa_services_static.id
-  service_name  = "sapappstudio"
-  plan_name     = "standard-edition"
-}
-
 resource "btp_subaccount_entitlement" "se_sa_services_static_destination" {
   subaccount_id = btp_subaccount.sa_services_static.id
   service_name  = "destination"
   plan_name     = "lite"
-}
-
-###
-# subaccount subscriptions
-###
-
-resource "btp_subaccount_subscription" "sas_sa_services_static_bas" {
-  subaccount_id = btp_subaccount.sa_services_static.id
-  app_name      = "sapappstudio"
-  plan_name     = "standard-edition"
-  depends_on    = [btp_subaccount_entitlement.se_sa_services_static_bas]
 }
 
 ###
