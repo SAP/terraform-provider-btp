@@ -9,11 +9,17 @@ name: Regression Test - OpenTofu
 
 on:
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      PATH_TO_TFSCRIPT:
+        description: 'Path to the terraform script to execute the regression test with'
+        required: true
+        type: string
 
 env:
-  PATH_TO_TFSCRIPT: 'regression-test'
+  PATH_TO_TFSCRIPT: ${{ inputs.PATH_TO_TFSCRIPT }}
   DEV_OVERRIDE: 'assets/provider-config-ghaction.txt'
-  TEMP_PLAN_OUTPUT : 'plan-output.txt'
+  TEMP_PLAN_OUTPUT : 'plan-output.tfplan'
 
 permissions:
   contents: read
@@ -42,14 +48,79 @@ jobs:
       run: |
         tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} init -no-color
 
-    - name: tofu Apply with stable provider
-      id: tofu_apply
+    - name: Tofu Plan with stable provider
+      id: tofu_plan_stable
       shell: bash
       run: |
+        set +e
+
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        export BTP_IDP=${{ secrets.BTP_IDP }}
-        tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} apply -var globalaccount=${{ secrets.GLOBALACCOUNT }} -auto-approve -no-color
+        export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
+
+        tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} plan \
+          -var globalaccount=${{ secrets.CANARY_GLOBALACCOUNT }} \
+          -var-file=canary.tfvars \
+          -out=${{ env.TEMP_PLAN_OUTPUT }} \
+          -no-color \
+          -detailed-exitcode
+
+        EXIT_CODE=$?
+        echo "exitcode=$EXIT_CODE" >> $GITHUB_OUTPUT
+
+        if [ $EXIT_CODE -eq 1 ]; then
+          echo "Error during tofu plan execution"
+          exit 1
+        elif [ $EXIT_CODE -eq 2 ]; then
+          echo "Changes detected in tofu plan"
+        else
+          echo "No changes detected in tofu plan"
+        fi
+
+    - name: Tofu Apply with stable provider
+      if: steps.tofu_plan_stable.outputs.exitcode == '0' || steps.tofu_plan_stable.outputs.exitcode == '2'
+      id: tofu_apply_stable
+      shell: bash
+      run: |
+        set +e
+
+        export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
+        export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
+        export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
+
+        MAX_RETRIES=3
+        RETRY_DELAY=10
+
+        echo "attempts=0" >> $GITHUB_OUTPUT
+
+        for i in $(seq 1 $MAX_RETRIES); do
+          echo "Tofu apply attempt $i..."
+
+          tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} apply \
+            -var globalaccount=${{ secrets.CANARY_GLOBALACCOUNT }} \
+            -var-file=canary.tfvars \
+            -auto-approve \
+            -no-color
+
+          EXIT_CODE=$?
+
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "Tofu apply succeeded"
+            echo "attempts=$i" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Tofu apply failed with exit code $EXIT_CODE"
+
+          if [ $i -lt $MAX_RETRIES ]; then
+            echo "Retrying in $RETRY_DELAY seconds..."
+            sleep $RETRY_DELAY
+          fi
+        done
+
+        echo "attempts=$MAX_RETRIES" >> $GITHUB_OUTPUT
+        echo "Tofu apply failed after retries"
+        exit 1
 
     - name: Setup Go
       uses: actions/setup-go@v6.4.0
@@ -67,7 +138,9 @@ jobs:
       id: set_to_override
       shell: bash
       run: |
-        rm -rf .terraform && rm -rf .terraform.lock.hcl && cp ${{ env.DEV_OVERRIDE }} ~/.terraformrc
+        rm -rf ${{ env.PATH_TO_TFSCRIPT }}/.terraform
+        rm -rf ${{ env.PATH_TO_TFSCRIPT }}/.terraform.lock.hcl 
+        cp ${{ env.DEV_OVERRIDE }} ~/.terraformrc
 
     - name: Check for deviations in tofu plan
       id: execute_deviation_check
@@ -75,16 +148,22 @@ jobs:
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        export BTP_IDP=${{ secrets.BTP_IDP }}
-        tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} plan -var globalaccount=${{ secrets.GLOBALACCOUNT }} -no-color -detailed-exitcode
+        export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
 
+        tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} plan \
+          -var globalaccount=${{ secrets.CANARY_GLOBALACCOUNT }} \
+          -var-file=canary.tfvars \
+          -no-color \
+          -detailed-exitcode
 
     - name: Remove init data and override
       if: always()
       id: remove_override
       shell: bash
       run: |
-        rm -rf .terraform && rm -rf .terraform.lock.hcl && rm -rf ~/.terraformrc
+        rm -rf ${{ env.PATH_TO_TFSCRIPT }}/.terraform
+        rm -rf ${{ env.PATH_TO_TFSCRIPT }}/.terraform.lock.hcl 
+        cp ${{ env.DEV_OVERRIDE }} ~/.terraformrc
 
     - name: Tofu Init with stable provider
       if: always()
@@ -95,13 +174,48 @@ jobs:
 
     - name: Tofu Destroy with stable provider
       if: always()
-      id: tofu_destroy
+      id: tofu_destroy_stable
       shell: bash
       run: |
+        set +e
+        
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        export BTP_IDP=${{ secrets.BTP_IDP }}
-        tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy -var globalaccount='${{ secrets.GLOBALACCOUNT }}' -auto-approve -no-color
+        export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
+
+        MAX_RETRIES=3
+        RETRY_DELAY=10
+
+        echo "attempts=0" >> $GITHUB_OUTPUT
+
+        for i in $(seq 1 $MAX_RETRIES); do
+          echo "Tofu destroy attempt $i..."
+
+          tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy \
+            -var globalaccount=${{ secrets.CANARY_GLOBALACCOUNT }} \
+            -var-file=canary.tfvars \
+            -auto-approve \
+            -no-color
+
+          EXIT_CODE=$?
+
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "Tofu destroy succeeded"
+            echo "attempts=$i" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Tofu destroy failed with exit code $EXIT_CODE"
+
+          if [ $i -lt $MAX_RETRIES ]; then
+            echo "Retrying in $RETRY_DELAY seconds..."
+            sleep $RETRY_DELAY
+          fi
+        done
+
+        echo "attempts=$MAX_RETRIES" >> $GITHUB_OUTPUT
+        echo "Tofu destroy failed after retries"
+        exit 1
 
     - name: State deviation - find existing issue for deviation
       id: find_deviation_issue
@@ -117,11 +231,11 @@ jobs:
       uses: peter-evans/create-issue-from-file@v6
       if: ${{ steps.execute_deviation_check.outcome == 'failure' }}
       with:
-        title: State deviation found
+        title: Regression Test Failed - State deviation found
         # If issue number is empty a new issue gets created
         issue-number: ${{ steps.find_deviation_issue.outputs.issue-number }}
         content-filepath: ${{ env.TEMP_PLAN_OUTPUT }}
-        labels: state deviation, automated issue
+        labels: state deviation, automated issue, canary, opentofu
 
     - name: Cleanup plan output
       id: execute_plan_cleanup
