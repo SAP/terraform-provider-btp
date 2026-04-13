@@ -47,11 +47,12 @@ jobs:
       id: terraform_plan_stable
       shell: bash
       run: |
+        set +e
+
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.LIVE_BTP_IDP }}
 
-        set +e
         terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} plan \
           -var globalaccount=${{ secrets.LIVE_GLOBALACCOUNT }} \
           -var-file=live.tfvars \
@@ -76,6 +77,8 @@ jobs:
       id: terraform_apply_stable
       shell: bash
       run: |
+        set +e
+
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.LIVE_BTP_IDP }}
@@ -118,6 +121,8 @@ jobs:
       id: terraform_destroy_stable
       shell: bash
       run: |
+        set +e
+        
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.LIVE_BTP_IDP }}

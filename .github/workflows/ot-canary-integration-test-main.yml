@@ -61,11 +61,12 @@ jobs:
       id: tofu_plan_local
       shell: bash
       run: |
+        set +e
+
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
 
-        set +e
         tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} plan \
           -var globalaccount=${{ secrets.CANARY_GLOBALACCOUNT }} \
           -var-file=canary.tfvars \
@@ -90,6 +91,8 @@ jobs:
       id: tofu_apply_local
       shell: bash
       run: |
+        set +e
+
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
@@ -132,6 +135,8 @@ jobs:
       id: tofu_destroy_local
       shell: bash
       run: |
+        set +e
+        
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
