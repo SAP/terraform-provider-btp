@@ -64,10 +64,10 @@ jobs:
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
-        export BTP_GLOBALACCOUNT=${{ secrets.CANARY_GLOBALACCOUNT }}
 
         set +e
         tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} plan \
+          -var globalaccount=${{ secrets.CANARY_GLOBALACCOUNT }} \
           -var-file=canary.tfvars \
           -out=${{ env.TEMP_PLAN_OUTPUT }} \
           -no-color \
@@ -93,7 +93,6 @@ jobs:
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
-        export BTP_GLOBALACCOUNT=${{ secrets.CANARY_GLOBALACCOUNT }}
 
         MAX_RETRIES=3
         RETRY_DELAY=10
@@ -136,7 +135,6 @@ jobs:
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.CANARY_BTP_IDP }}
-        export BTP_GLOBALACCOUNT=${{ secrets.CANARY_GLOBALACCOUNT }}
 
         MAX_RETRIES=3
         RETRY_DELAY=10
@@ -147,6 +145,7 @@ jobs:
           echo "Tofu destroy attempt $i..."
 
           tofu -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy \
+            -var globalaccount=${{ secrets.CANARY_GLOBALACCOUNT }} \
             -var-file=canary.tfvars \
             -auto-approve \
             -no-color

@@ -64,10 +64,10 @@ jobs:
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.LIVE_BTP_IDP }}
-        export BTP_GLOBALACCOUNT=${{ secrets.LIVE_GLOBALACCOUNT }}
 
         set +e
         terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} plan \
+          -var globalaccount=${{ secrets.LIVE_GLOBALACCOUNT }} \
           -var-file=live.tfvars \
           -out=${{ env.TEMP_PLAN_OUTPUT }} \
           -no-color \
@@ -93,7 +93,6 @@ jobs:
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.LIVE_BTP_IDP }}
-        export BTP_GLOBALACCOUNT=${{ secrets.LIVE_GLOBALACCOUNT }}
 
         MAX_RETRIES=3
         RETRY_DELAY=10
@@ -136,7 +135,6 @@ jobs:
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.LIVE_BTP_IDP }}
-        export BTP_GLOBALACCOUNT=${{ secrets.LIVE_GLOBALACCOUNT }}
 
         MAX_RETRIES=3
         RETRY_DELAY=10
@@ -147,6 +145,7 @@ jobs:
           echo "Terraform destroy attempt $i..."
 
           terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} destroy \
+            -var globalaccount=${{ secrets.LIVE_GLOBALACCOUNT }} \
             -var-file=live.tfvars \
             -auto-approve \
             -no-color
