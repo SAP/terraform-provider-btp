@@ -106,9 +106,10 @@ jobs:
           echo "Terraform apply attempt $i..."
 
           terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} apply \
+            -var globalaccount=${{ secrets.LIVE_GLOBALACCOUNT }} \
+            -var-file=live.tfvars \
             -auto-approve \
-            -no-color \
-            ${{ env.TEMP_PLAN_OUTPUT }}
+            -no-color
 
           EXIT_CODE=$?
 
@@ -136,7 +137,7 @@ jobs:
       shell: bash
       run: |
         set +e
-        
+
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         export BTP_IDP=${{ secrets.LIVE_BTP_IDP }}
