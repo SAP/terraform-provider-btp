@@ -12,6 +12,7 @@ import (
 	"testing"
 	"unicode"
 
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -816,4 +817,22 @@ func TestProvider_HasFunctions(t *testing.T) {
 	}
 
 	assert.ElementsMatch(t, expectedFunctions, registeredFunctions)
+}
+
+func TestProvider_HasActions(t *testing.T) {
+	expectedActions := []string{
+		"btp_restore_subaccount",
+	}
+
+	ctx := context.Background()
+	registeredActions := []string{}
+
+	for _, actionEntry := range NewWithActions().Actions(ctx) {
+		var resp action.MetadataResponse
+
+		actionEntry().Metadata(ctx, action.MetadataRequest{}, &resp)
+		registeredActions = append(registeredActions, resp.TypeName)
+	}
+
+	assert.ElementsMatch(t, expectedActions, registeredActions)
 }
