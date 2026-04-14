@@ -2,6 +2,7 @@ package btpcli
 
 import (
 	"context"
+	"slices"
 	"strings"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
@@ -114,9 +115,17 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 	if err == nil {
 		return cisResponse, cmdResponse, nil
 	}
-	// Check if the error is due to the fact that a force-delete is required;
-	// error codes: Error: 70015/409, 70012/409, 70010/409, 70011/409 -> Clarification needed as usage of string is not optimal
-	if strings.Contains(err.Error(), "You can't delete subaccounts with active") {
+	// Check if the error is due to the fact that a force-deletion is required:
+	// Valid error codes that indicate a failed deletion due to active resources:
+	// 70010 - ACTIVE_SUBSCRIPTIONS_INSTANCES
+	// 70011 - ACTIVE_SERVICE_INSTANCES
+	// 70012 - ACTIVE_SUBSCRIPTIONS
+	// 70013 - ACTIVE_INSTANCES
+	// 70014 - ACTIVE_SERVICE_MANAGER_RESOURCES
+	// 70015 - ACTIVE_ENVIRONMENT_INSTANCES
+	pendingDeletionErrorCodes := []string{"70010", "70011", "70012", "70013", "70014", "70015"}
+
+	if slices.ContainsFunc(pendingDeletionErrorCodes, func(code string) bool { return strings.Contains(err.Error(), code) }) {
 		// Retry with force-delete enabled
 		requestArgs["forceDelete"] = "true"
 		return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), requestArgs))

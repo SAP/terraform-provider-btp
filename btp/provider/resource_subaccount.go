@@ -515,7 +515,7 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		Refresh: func() (any, string, error) {
 			subRes, comRes, err := rs.cli.Accounts.Subaccount.Get(ctx, cliRes.Guid)
 
-			if subRes.ContractStatus == "SUSPENDED" || subRes.ContractStatus == "PENDING_FORCED_DELETION" {
+			if subRes.ContractStatus == "PENDING_FORCED_DELETION" {
 				// The subaccount is marked for deletion, we remove it from the state
 				// If the pending deletion is revoked, an import of the subaccount is needed
 				return subRes, "DELETED", nil
@@ -543,7 +543,7 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	if stateRes.(cis.SubaccountResponseObject).ContractStatus == "SUSPENDED" || stateRes.(cis.SubaccountResponseObject).ContractStatus == "PENDING_FORCED_DELETION" {
+	if stateRes.(cis.SubaccountResponseObject).ContractStatus == "PENDING_FORCED_DELETION" {
 		resp.Diagnostics.AddWarning("Subaccount pending deletion", "The subaccount is pending deletion. It is removed from the state file to avoid inconsistencies.")
 	}
 }
