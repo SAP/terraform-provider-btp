@@ -123,7 +123,7 @@ func (f *accountsSubaccountFacade) Delete(ctx context.Context, subaccountId stri
 	// 70013 - ACTIVE_INSTANCES
 	// 70014 - ACTIVE_SERVICE_MANAGER_RESOURCES
 	// 70015 - ACTIVE_ENVIRONMENT_INSTANCES
-	pendingDeletionErrorCodes := []string{"70010", "70011", "70012", "70013", "70014", "70015"}
+	pendingDeletionErrorCodes := []string{"70010/409", "70011/409", "70012/409", "70013/409", "70014/409", "70015/409"}
 
 	if slices.ContainsFunc(pendingDeletionErrorCodes, func(code string) bool { return strings.Contains(err.Error(), code) }) {
 		// Retry with force-delete enabled
