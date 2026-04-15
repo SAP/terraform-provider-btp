@@ -830,7 +830,7 @@ func TestProvider_HasActions(t *testing.T) {
 	for _, actionEntry := range NewWithActions().Actions(ctx) {
 		var resp action.MetadataResponse
 
-		actionEntry().Metadata(ctx, action.MetadataRequest{}, &resp)
+		actionEntry().Metadata(ctx, action.MetadataRequest{ProviderTypeName: "btp"}, &resp)
 		registeredActions = append(registeredActions, resp.TypeName)
 	}
 

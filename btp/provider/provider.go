@@ -365,6 +365,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	resp.DataSourceData = client
 	resp.ResourceData = client
 	resp.ListResourceData = client
+	resp.ActionData = client
 }
 
 // Resources - Defines provider resources

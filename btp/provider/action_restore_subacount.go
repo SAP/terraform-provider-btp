@@ -10,7 +10,6 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/action/schema"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -69,30 +68,6 @@ func (a *RestoreSubaccountAction) Configure(ctx context.Context, req action.Conf
 	a.cli = cli
 }
 
-func (a RestoreSubaccountAction) ValidateConfig(ctx context.Context, req action.ValidateConfigRequest, resp *action.ValidateConfigResponse) {
-	var data RestoreSubaccountActionModel
-
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Validate that subaccount with given ID still exists
-	cliRes, _, err := a.cli.Accounts.Subaccount.Get(ctx, data.SubaccountId.ValueString())
-
-	if err != nil {
-		resp.Diagnostics.AddAttributeError(path.Root("subaccount_id"), "API Error Reading Subaccount", fmt.Sprintf("%s", err))
-		return
-	}
-
-	if cliRes.ContractStatus != "PENDING_FORCED_DELETION" {
-		resp.Diagnostics.AddAttributeError(path.Root("subaccount_id"), "No pending deletion", fmt.Sprintf("The subacount with ID %s is not restorable as it is not in the pending deletion state", data.SubaccountId.ValueString()))
-		return
-	}
-
-}
-
 func (a *RestoreSubaccountAction) Invoke(ctx context.Context, req action.InvokeRequest, resp *action.InvokeResponse) {
 	var data RestoreSubaccountActionModel
 
@@ -101,7 +76,22 @@ func (a *RestoreSubaccountAction) Invoke(ctx context.Context, req action.InvokeR
 		return
 	}
 
-	_, _, err := a.cli.Accounts.Subaccount.Restore(ctx, data.SubaccountId.ValueString())
+	// Do validations: ValidateConfig cannot be used as the CLI facade is not yet initialized
+	// Validate that subaccount with given ID still exists
+	cliRes, _, err := a.cli.Accounts.Subaccount.Get(ctx, data.SubaccountId.ValueString())
+
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Reading Subaccount", fmt.Sprintf("%s", err))
+		return
+	}
+
+	// Validate that the subaccount is still in pending deletion state
+	if cliRes.ContractStatus != "PENDING_FORCED_DELETION" {
+		resp.Diagnostics.AddError("No pending deletion", fmt.Sprintf("The subacount with ID %s is not restorable as it is not in the pending deletion state", data.SubaccountId.ValueString()))
+		return
+	}
+
+	_, _, err = a.cli.Accounts.Subaccount.Restore(ctx, data.SubaccountId.ValueString())
 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Restoring Resource Subaccount", fmt.Sprintf("%s", err))
@@ -125,6 +115,9 @@ func (a *RestoreSubaccountAction) Invoke(ctx context.Context, req action.InvokeR
 		MinTimeout: 5 * time.Second,
 	}
 
+	resp.SendProgress(action.InvokeProgressEvent{
+		Message: "Waiting for subaccount to be restored...",
+	})
 	restoreRes, err := restoreStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Restoring Resource Subaccount", fmt.Sprintf("%s", err))
@@ -133,4 +126,8 @@ func (a *RestoreSubaccountAction) Invoke(ctx context.Context, req action.InvokeR
 	if restoreRes.(cis.SubaccountResponseObject).ContractStatus == "PENDING_FORCED_DELETION" {
 		resp.Diagnostics.AddError("API Error Restoring Resource Subaccount", fmt.Sprintf("%s", err))
 	}
+
+	resp.SendProgress(action.InvokeProgressEvent{
+		Message: "Subaccount restored successfully.",
+	})
 }

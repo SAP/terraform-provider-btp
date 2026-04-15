@@ -20,7 +20,7 @@ const (
 	ActionUnshare     Action = "unshare"
 	ActionUnsubscribe Action = "unsubscribe"
 	ActionUpdate      Action = "update"
-	ActionRestore     Action = "cancel-pending-deletion"
+	ActionRestore     Action = "restore"
 )
 
 // NewAddRequest creates a new add request
