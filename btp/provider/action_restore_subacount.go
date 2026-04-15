@@ -3,10 +3,14 @@ package provider
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/cis"
+	"github.com/SAP/terraform-provider-btp/internal/tfutils"
 	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/action/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -30,7 +34,13 @@ func (a *RestoreSubaccountAction) Metadata(ctx context.Context, req action.Metad
 
 func (a *RestoreSubaccountAction) Schema(ctx context.Context, req action.SchemaRequest, resp *action.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Restores a subacount that is in pending deletion.",
+		MarkdownDescription: `Cancels the pending deletion of the specified subaccount and restores it to an active state.
+
+__Tip:__
+You must be assigned to the global account or directory admin role.
+
+_Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -59,6 +69,30 @@ func (a *RestoreSubaccountAction) Configure(ctx context.Context, req action.Conf
 	a.cli = cli
 }
 
+func (a RestoreSubaccountAction) ValidateConfig(ctx context.Context, req action.ValidateConfigRequest, resp *action.ValidateConfigResponse) {
+	var data RestoreSubaccountActionModel
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Validate that subaccount with given ID still exists
+	cliRes, _, err := a.cli.Accounts.Subaccount.Get(ctx, data.SubaccountId.ValueString())
+
+	if err != nil {
+		resp.Diagnostics.AddAttributeError(path.Root("subaccount_id"), "API Error Reading Subaccount", fmt.Sprintf("%s", err))
+		return
+	}
+
+	if cliRes.ContractStatus != "PENDING_FORCED_DELETION" {
+		resp.Diagnostics.AddAttributeError(path.Root("subaccount_id"), "No pending deletion", fmt.Sprintf("The subacount with ID %s is not restorable as it is not in the pending deletion state", data.SubaccountId.ValueString()))
+		return
+	}
+
+}
+
 func (a *RestoreSubaccountAction) Invoke(ctx context.Context, req action.InvokeRequest, resp *action.InvokeResponse) {
 	var data RestoreSubaccountActionModel
 
@@ -67,43 +101,36 @@ func (a *RestoreSubaccountAction) Invoke(ctx context.Context, req action.InvokeR
 		return
 	}
 
-	// Execute the restore command
+	_, _, err := a.cli.Accounts.Subaccount.Restore(ctx, data.SubaccountId.ValueString())
 
-	// Execute the polling for the contractState of the subaccount to change
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Restoring Resource Subaccount", fmt.Sprintf("%s", err))
+		return
+	}
 
-	/*
-		done := make(chan bool)
-		// Long running API operation in a goroutine
-		go func() {
-			httpReq, _ := http.NewRequest(
-				http.MethodPut,
-				"http://example.com/api/do_thing",
-				bytes.NewBuffer([]byte(`{"fake": "data"}`)),
-			)
+	restoreStateConf := &tfutils.StateChangeConf{
+		Pending: []string{cis.StateUpdating, cis.StateStarted},
+		Target:  []string{cis.StateOK},
+		Refresh: func() (any, string, error) {
+			subRes, _, err := a.cli.Accounts.Subaccount.Get(ctx, data.SubaccountId.ValueString())
 
-			httpResp, err := a.cli.Do(httpReq)
 			if err != nil {
-				resp.Diagnostics.AddError(
-					"HTTP PUT Error",
-					"Error updating data. Please report this issue to the provider developers.",
-				)
+				return subRes, "", err
 			}
-			done <- true
-		}()
 
-		ticker := time.NewTicker(10 * time.Second) // Send message back to practitioner every 10 seconds
-		defer ticker.Stop()
+			return subRes, subRes.State, nil
+		},
+		Timeout:    10 * time.Minute,
+		Delay:      5 * time.Second,
+		MinTimeout: 5 * time.Second,
+	}
 
-		for {
-			select {
-			case <-done:
-				return
-			case <-ticker.C:
-				// Once this function is called, the message will be displayed in Terraform
-				resp.SendProgress(action.InvokeProgressEvent{
-					Message: "Waiting for HTTP request to finish...",
-				})
-			}
-		}
-	*/
+	restoreRes, err := restoreStateConf.WaitForStateContext(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Restoring Resource Subaccount", fmt.Sprintf("%s", err))
+	}
+
+	if restoreRes.(cis.SubaccountResponseObject).ContractStatus == "PENDING_FORCED_DELETION" {
+		resp.Diagnostics.AddError("API Error Restoring Resource Subaccount", fmt.Sprintf("%s", err))
+	}
 }

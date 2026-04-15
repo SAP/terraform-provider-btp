@@ -3,12 +3,22 @@
 page_title: "btp_restore_subaccount Action - SAP BTP"
 subcategory: ""
 description: |-
-  Restores a subacount that is in pending deletion.
+  Cancels the pending deletion of the specified subaccount and restores it to an active state.
+  Tip:
+  You must be assigned to the global account or directory admin role.
+  Further documentation:_
+  https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
 # btp_restore_subaccount (Action)
 
-Restores a subacount that is in pending deletion.
+Cancels the pending deletion of the specified subaccount and restores it to an active state.
+
+__Tip:__
+You must be assigned to the global account or directory admin role.
+
+_Further documentation:__
+<https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>
 
 ## Example Usage
 
