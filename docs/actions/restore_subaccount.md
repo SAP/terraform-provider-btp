@@ -6,7 +6,7 @@ description: |-
   Cancels the pending deletion of the specified subaccount and restores it to an active state.
   Tip:
   You must be assigned to the global account or directory admin role.
-  Further documentation:_
+  Further documentation:
   https://help.sap.com/docs/btp/sap-business-technology-platform/account-model
 ---
 
@@ -17,7 +17,7 @@ Cancels the pending deletion of the specified subaccount and restores it to an a
 __Tip:__
 You must be assigned to the global account or directory admin role.
 
-_Further documentation:__
+__Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>
 
 ## Example Usage

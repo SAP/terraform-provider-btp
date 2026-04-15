@@ -38,7 +38,7 @@ func (a *RestoreSubaccountAction) Schema(ctx context.Context, req action.SchemaR
 __Tip:__
 You must be assigned to the global account or directory admin role.
 
-_Further documentation:__
+__Further documentation:__
 <https://help.sap.com/docs/btp/sap-business-technology-platform/account-model>`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
@@ -87,7 +87,7 @@ func (a *RestoreSubaccountAction) Invoke(ctx context.Context, req action.InvokeR
 
 	// Validate that the subaccount is still in pending deletion state
 	if cliRes.ContractStatus != "PENDING_FORCED_DELETION" {
-		resp.Diagnostics.AddError("No pending deletion", fmt.Sprintf("The subacount with ID %s is not restorable as it is not in the pending deletion state", data.SubaccountId.ValueString()))
+		resp.Diagnostics.AddError("No pending deletion", fmt.Sprintf("The subaccount with ID %s is not restorable as it is not in the pending deletion state", data.SubaccountId.ValueString()))
 		return
 	}
 
@@ -121,10 +121,18 @@ func (a *RestoreSubaccountAction) Invoke(ctx context.Context, req action.InvokeR
 	restoreRes, err := restoreStateConf.WaitForStateContext(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Restoring Resource Subaccount", fmt.Sprintf("%s", err))
+		return
 	}
 
 	if restoreRes.(cis.SubaccountResponseObject).ContractStatus == "PENDING_FORCED_DELETION" {
-		resp.Diagnostics.AddError("API Error Restoring Resource Subaccount", fmt.Sprintf("%s", err))
+		resp.Diagnostics.AddError(
+			"API Error Restoring Resource Subaccount",
+			fmt.Sprintf(
+				"subaccount with ID %s is still in pending deletion state after restore completed",
+				data.SubaccountId.ValueString(),
+			),
+		)
+		return
 	}
 
 	resp.SendProgress(action.InvokeProgressEvent{

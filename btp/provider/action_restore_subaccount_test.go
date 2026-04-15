@@ -29,7 +29,7 @@ func TestActionRestoreSubaccount(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config: hclProviderFor(user) + hclActionRestoreSubaccount("integration-test-pending-deletion"),
-					// Post-apply is not needed as Action checks post conditons internally!
+					// Post-apply is not needed as Action checks post conditions internally!
 				},
 			},
 		})
@@ -48,7 +48,7 @@ func TestActionRestoreSubaccount(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderFor(user) + hclActionRestoreSubaccount("integration-test-services-static"),
-					ExpectError: regexp.MustCompile(`No pending deletion: The subacount with ID`),
+					ExpectError: regexp.MustCompile(`No pending deletion: The subaccount with ID`),
 				},
 			},
 		})
