@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -48,6 +49,14 @@ func NewWithFunctions() provider.ProviderWithFunctions {
 }
 
 func NewWithFunctionsAndClient(httpClient *http.Client) provider.ProviderWithFunctions {
+	return &btpcliProvider{httpClient: httpClient}
+}
+
+func NewWithActions() provider.ProviderWithActions {
+	return NewWithActionsAndClient(http.DefaultClient)
+}
+
+func NewWithActionsAndClient(httpClient *http.Client) provider.ProviderWithActions {
 	return &btpcliProvider{httpClient: httpClient}
 }
 
@@ -356,6 +365,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	resp.DataSourceData = client
 	resp.ResourceData = client
 	resp.ListResourceData = client
+	resp.ActionData = client
 }
 
 // Resources - Defines provider resources
@@ -516,6 +526,43 @@ func (p *btpcliProvider) Functions(_ context.Context) []func() function.Function
 	}
 }
 
+// ListResources defines the ListResources implemented in the provider.
+func (p *btpcliProvider) ListResources(_ context.Context) []func() list.ListResource {
+	return []func() list.ListResource{
+		NewGlobalaccountRoleListResource,
+		NewGlobalaccountResourceProviderListResource,
+		NewGlobalaccountRoleCollectionListResource,
+		NewDirectoryEntitlementListResource,
+		NewDirectoryRoleCollectionListResource,
+		NewSubaccountServiceBrokerListResource,
+		NewSubaccountServiceInstanceListResource,
+		NewSubaccountEnvironmentInstanceListResource,
+		NewSubaccountListResource,
+		NewGlobalaccountTrustConfigurationListResource,
+		NewSubaccountTrustConfigurationListResource,
+		NewSubaccountServiceBindingListResource,
+		NewSubaccountSecuritySettingsListResource,
+		NewGlobalaccountSecuritySettingsListResource,
+		NewDirectoryListResource,
+		NewDirectoryRoleListResource,
+		NewSubaccountDestinationGenericListResource,
+		NewSubaccountSubscriptionListResource,
+		NewSubaccountRoleCollectionListResource,
+		NewSubaccountRoleListResource,
+		NewSubaccountDestinationFragmentListResource,
+		NewSubaccountEntitlementListResource,
+		NewSubaccountRoleCollectionRoleListResource,
+		NewSubaccountRoleCollectionBaseListResource,
+	}
+}
+
+// ActionsResources defines the Terraform Actions implemented in the provider.
+func (p *btpcliProvider) Actions(_ context.Context) []func() action.Action {
+	return []func() action.Action{
+		NewRestoreSubaccountAction,
+	}
+}
+
 func determineAuthFlow(config providerData, idToken string, ssoLogin bool, assertion string, btpCliSessionLogin bool) string {
 	if ssoLogin {
 		return ssoFlow
@@ -595,35 +642,5 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 				"Set the tls_client_certificate value in the configuration. "+
 				errorMessagePostfixWithoutEnv,
 		)
-	}
-}
-
-// ListResources defines the ListResources implemented in the provider.
-func (p *btpcliProvider) ListResources(_ context.Context) []func() list.ListResource {
-	return []func() list.ListResource{
-		NewGlobalaccountRoleListResource,
-		NewGlobalaccountResourceProviderListResource,
-		NewGlobalaccountRoleCollectionListResource,
-		NewDirectoryEntitlementListResource,
-		NewDirectoryRoleCollectionListResource,
-		NewSubaccountServiceBrokerListResource,
-		NewSubaccountServiceInstanceListResource,
-		NewSubaccountEnvironmentInstanceListResource,
-		NewSubaccountListResource,
-		NewGlobalaccountTrustConfigurationListResource,
-		NewSubaccountTrustConfigurationListResource,
-		NewSubaccountServiceBindingListResource,
-		NewSubaccountSecuritySettingsListResource,
-		NewGlobalaccountSecuritySettingsListResource,
-		NewDirectoryListResource,
-		NewDirectoryRoleListResource,
-		NewSubaccountDestinationGenericListResource,
-		NewSubaccountSubscriptionListResource,
-		NewSubaccountRoleCollectionListResource,
-		NewSubaccountRoleListResource,
-		NewSubaccountDestinationFragmentListResource,
-		NewSubaccountEntitlementListResource,
-		NewSubaccountRoleCollectionRoleListResource,
-		NewSubaccountRoleCollectionBaseListResource,
 	}
 }

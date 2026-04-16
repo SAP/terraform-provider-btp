@@ -20,6 +20,7 @@ const (
 	ActionUnshare     Action = "unshare"
 	ActionUnsubscribe Action = "unsubscribe"
 	ActionUpdate      Action = "update"
+	ActionRestore     Action = "restore"
 )
 
 // NewAddRequest creates a new add request
@@ -105,4 +106,9 @@ func NewUnsubscribeRequest(command string, args any) *CommandRequest {
 // NewUpdateRequest creates a new update request
 func NewUpdateRequest(command string, args any) *CommandRequest {
 	return NewCommandRequest(ActionUpdate, command, args)
+}
+
+// NewRestoreRequest creates a new restore request
+func NewRestoreRequest(command string, args any) *CommandRequest {
+	return NewCommandRequest(ActionRestore, command, args)
 }

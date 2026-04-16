@@ -159,3 +159,11 @@ func (f *accountsSubaccountFacade) Unsubscribe(ctx context.Context, subaccountId
 		"confirm":    "true",
 	}))
 }
+
+func (f *accountsSubaccountFacade) Restore(ctx context.Context, subaccountId string) (cis.SubaccountResponseObject, CommandResponse, error) {
+	params := map[string]string{
+		"subaccount": subaccountId,
+	}
+
+	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewRestoreRequest(f.getCommand(), params))
+}
