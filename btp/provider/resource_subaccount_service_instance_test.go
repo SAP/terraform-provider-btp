@@ -71,8 +71,57 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("happy path - simple service creation wo parameters by name", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters_by_name")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlanName("uut", "integration-test-services-static", "tf-test-audit-log", "default", "auditlog-management"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-audit-log"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "default"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "auditlog-management"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
+					),
+				},
+				{
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlanName("uut", "integration-test-services-static", "TF-TEST-AUDIT-LOG", "default", "auditlog-management"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "TF-TEST-AUDIT-LOG"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "default"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "auditlog-management"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
+					),
+				},
+				{
+					ResourceName:      "btp_subaccount_service_instance.uut",
+					ImportStateIdFunc: getServiceInstanceIdForImport("btp_subaccount_service_instance.uut"),
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			},
+		})
+	})
+
 	t.Run("happy path - simple service creation with import", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters_with import")
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters_with_import")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -89,6 +138,8 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "TF-TEST-AUDIT-LOG"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "default"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "auditlog-management"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
 					),
 					ConfigStateChecks: []statecheck.StateCheck{
@@ -129,6 +180,8 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-xsuaa"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "application"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "xsuaa"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
 					),
 				},
@@ -161,6 +214,8 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-audit-log"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "default"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "auditlog-management"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "timeouts.create", "15m"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "timeouts.update", "15m"),
@@ -184,6 +239,8 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "TF-TEST-AUDIT-LOG"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "default"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "auditlog-management"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "platform_id", "service-manager"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "timeouts.create", "15m"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "timeouts.update", "15m"),
@@ -203,7 +260,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlan("uut", "integration-test-services-static", "tf-test-malware-scanner", "clamav", "malware-scanner"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlan("uut", "integration-test-services-static", "tf-test-audit-log", "default", "auditlog-management"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
@@ -211,12 +268,14 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-malware-scanner"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-audit-log"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "default"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "auditlog-management"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "labels.foo.0", "bar"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlan("uut", "integration-test-services-static", "TF-TEST-MALWARE-SCANNER", "clamav", "malware-scanner"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlan("uut", "integration-test-services-static", "TF-TEST-AUDIT-LOG", "default", "auditlog-management"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
@@ -224,7 +283,9 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "TF-TEST-MALWARE-SCANNER"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "TF-TEST-AUDIT-LOG"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "default"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "auditlog-management"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "labels.foo.0", "bar"),
 					),
 				},
@@ -247,7 +308,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlan("uut", "integration-test-services-static", "tf-test-malware-scanner", "clamav", "malware-scanner"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlan("uut", "integration-test-services-static", "tf-test-audit-log", "default", "auditlog-management"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
@@ -255,12 +316,14 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-malware-scanner"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-audit-log"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "default"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "auditlog-management"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "labels.foo.0", "bar"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithLabelsChangedBySubaccountByPlan("uut", "integration-test-services-static", "TF-TEST-MALWARE-SCANNER", "clamav", "malware-scanner"),
+					Config: hclProviderFor(user) + hclResourceSubaccountServiceInstanceWithLabelsChangedBySubaccountByPlan("uut", "integration-test-services-static", "TF-TEST-AUDIT-LOG", "default", "auditlog-management"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "subaccount_id", regexpValidUUID),
@@ -268,7 +331,9 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "created_date", regexpValidRFC3999Format),
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
-						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "TF-TEST-MALWARE-SCANNER"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "TF-TEST-AUDIT-LOG"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "default"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "auditlog-management"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "labels.foo.0", "BAR"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "labels.bar.0", "foo"),
 					),
@@ -295,6 +360,8 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destination"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "lite"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "destination"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "shared", "true"),
 					),
 				},
@@ -320,6 +387,8 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destination"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "lite"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "destination"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "shared", "true"),
 					),
 				},
@@ -333,6 +402,8 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_service_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "usable", "true"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "name", "tf-test-destination"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "serviceplan_name", "lite"),
+						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "service_offering_name", "destination"),
 						resource.TestCheckResourceAttr("btp_subaccount_service_instance.uut", "shared", "false"),
 					),
 				},
@@ -361,19 +432,6 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 				{
 					Config:      hclResourceSubaccountServiceInstanceNoServicName("uut", "00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000"),
 					ExpectError: regexp.MustCompile(`The argument "name" is required, but no definition was found`),
-				},
-			},
-		})
-	})
-
-	t.Run("error path - service plan ID", func(t *testing.T) {
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclResourceSubaccountServiceInstanceNoPlan("uut", "this-is-not-a-uuid", "tf-test-audit-log"),
-					ExpectError: regexp.MustCompile(`The argument "serviceplan_id" is required, but no definition was found`),
 				},
 			},
 		})
@@ -546,15 +604,6 @@ func hclResourceSubaccountServiceInstanceNoServicName(resourceName string, subac
 		}`, resourceName, subaccountId, servicePlanId)
 }
 
-func hclResourceSubaccountServiceInstanceNoPlan(resourceName string, subaccountId string, name string) string {
-
-	return fmt.Sprintf(`
-		resource "btp_subaccount_service_instance" "%s"{
-		    subaccount_id    = "%s"
-			name             = "%s"
-		}`, resourceName, subaccountId, name)
-}
-
 func hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlan(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string) string {
 	return fmt.Sprintf(`
 		data "btp_subaccounts" "all" {}
@@ -569,6 +618,19 @@ func hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlan(resourceNa
 		    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
 			name             = "%[3]s"
 			serviceplan_id   = [for ssp in data.btp_subaccount_service_plans.all.values : ssp.id if ssp.name == "%[4]s" && ssp.serviceoffering_id == data.btp_subaccount_service_offering.so.id][0]
+			labels           = {"foo" = ["bar"]}
+		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName)
+}
+
+func hclResourceSubaccountServiceInstanceWithLabelsBySubaccountByPlanName(resourceName string, subaccountName string, name string, servicePlanName string, serviceOfferingName string) string {
+	return fmt.Sprintf(`
+		data "btp_subaccounts" "all" {}
+
+		resource "btp_subaccount_service_instance" "%[1]s" {
+		    subaccount_id    = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%[2]s"][0]
+			name             = "%[3]s"
+			serviceplan_name   = "%[4]s"
+			service_offering_name = "%[5]s"
 			labels           = {"foo" = ["bar"]}
 		}`, resourceName, subaccountName, name, servicePlanName, serviceOfferingName)
 }

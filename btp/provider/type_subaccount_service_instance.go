@@ -20,6 +20,8 @@ type subaccountServiceInstanceType struct {
 	Parameters           jsontypes.Normalized `tfsdk:"parameters"`
 	Ready                types.Bool           `tfsdk:"ready"`
 	ServicePlanId        types.String         `tfsdk:"serviceplan_id"`
+	ServicePlanName      types.String         `tfsdk:"serviceplan_name"`
+	ServiceOfferingName  types.String         `tfsdk:"service_offering_name"`
 	PlatformId           types.String         `tfsdk:"platform_id"`
 	ReferencedInstanceId types.String         `tfsdk:"referenced_instance_id"`
 	Shared               types.Bool           `tfsdk:"shared"`
