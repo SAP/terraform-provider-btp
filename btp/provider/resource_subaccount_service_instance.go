@@ -83,6 +83,7 @@ You must be assigned to the admin or the service administrator role of the subac
 				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.MatchRoot("serviceplan_name")),
+					stringvalidator.ConflictsWith(path.MatchRoot("service_offering_name")),
 					stringvalidator.LengthAtLeast(1),
 				},
 				PlanModifiers: []planmodifier.String{
@@ -108,6 +109,7 @@ You must be assigned to the admin or the service administrator role of the subac
 				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("serviceplan_name")),
+					stringvalidator.ConflictsWith(path.MatchRoot("serviceplan_id")),
 					stringvalidator.LengthAtLeast(1),
 				},
 				PlanModifiers: []planmodifier.String{
@@ -241,9 +243,8 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 		newState.Parameters = state.Parameters
 	}
 
-	// If no field is set in original state, but the resource exists i.e. th enew state is set we are in an IMPORT phase
-	// Hence, we must set the additional fields
-	if state.ServicePlanId.ValueString() == "" && state.ServicePlanName.ValueString() == "" && state.ServiceOfferingName.ValueString() == "" && newState.ServicePlanId.ValueString() != "" {
+	// Update plan and offering name during a refresh
+	if state.ServicePlanName.ValueString() == "" && state.ServiceOfferingName.ValueString() == "" {
 		planName, offeringName, err := rs.lookupPlanAndOfferingNames(ctx, newState.SubaccountId.ValueString(), newState.ServicePlanId.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
@@ -251,9 +252,6 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 		}
 		newState.ServicePlanName = types.StringValue(planName)
 		newState.ServiceOfferingName = types.StringValue(offeringName)
-
-		// We are in an import phase as state and the new state have a value in the service plan ID
-		//	if newState.ServicePlanName.ValueString() == "" && state.ServicePlanId.ValueString() == "" && newState.ServicePlanId.ValueString() != "" {
 	}
 
 	resp.Diagnostics.Append(diags...)
