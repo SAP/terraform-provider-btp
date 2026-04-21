@@ -131,7 +131,7 @@ import {
 
 As of release 1.22.0 it is possible to use `service_offering_name` and `serviceplan_name` instead of `serviceplan_id` when creating a service instance. This is more user friendly as the names are more descriptive than the id. This will allow you to get rid of data sources that are used to get the service plan id and can cause side effects during the planning phase i.e. make the plan hard to interpret.
 
-In the following section you find addtional informaion on the move to the new setup and what to consider during imports.
+In the following section you find additional information on the move to the new setup and what to consider during imports.
 
 ### Move to new setup
 
@@ -185,5 +185,5 @@ data "btp_subaccount_service_offering" "by_name" {
 
 ### Generation of resource configuration
 
-As of release 1.22.0 you will run into an error when generate the resource configuration e.g., via `terraform plan -generate-config-out="generated_resources.tf"` stating that the generated resource configuration is invalid as `serviceplan_id` and `service_offering_name` and `serviceplan_name` cannot be used at the same time.
+As of release 1.22.0 you will run into an error when generating the resource configuration e.g., via `terraform plan -generate-config-out="generated_resources.tf"` stating that the generated resource configuration is invalid as `serviceplan_id` and `service_offering_name` and `serviceplan_name` cannot be used at the same time.
 This cannot be mitigated from the provider side. However, as the resource configuration gets generated you can remove either the `serviceplan_id` or the combination of `service_offering_name` and `serviceplan_name` from the generated resource configuration to make it work. We recommend to remove the `serviceplan_id` and move to the new setup with `service_offering_name` and `serviceplan_name`. You can then trigger the import without issues.
