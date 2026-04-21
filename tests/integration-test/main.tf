@@ -304,6 +304,9 @@ resource "btp_subaccount_service_instance" "ssi_sa_services_static_alert_notific
   subaccount_id  = btp_subaccount.sa_services_static.id
   serviceplan_id = data.btp_subaccount_service_plan.ssp_sa_services_static_alert_notification_free.id
   name           = "tf-testacc-alertnotification-instance"
+  depends_on = [
+    btp_subaccount_entitlement.se_sa_services_static_alert_notification
+  ]
 }
 
 data "btp_subaccount_service_plan" "ssp_sa_services_static_malware_scanner_default" {
@@ -324,6 +327,9 @@ resource "btp_subaccount_service_instance" "ssi_sa_services_static_malware_scann
       "testvalue"
     ]
   }
+  depends_on = [ 
+    btp_subaccount_entitlement.se_sa_services_static_malware_scanner
+   ]
 }
 
 data "btp_subaccount_service_plan" "ssp_sa_services_static_destination" {
@@ -339,6 +345,9 @@ resource "btp_subaccount_service_instance" "ssi_sa_services_destination" {
   subaccount_id  = btp_subaccount.sa_services_static.id
   serviceplan_id = data.btp_subaccount_service_plan.ssp_sa_services_static_destination.id
   name           = "tf-testacc-destination-instance"
+  depends_on = [ 
+    btp_subaccount_entitlement.se_sa_services_static_destination
+   ]
 }
 ###
 # subaccount service bindings
