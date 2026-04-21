@@ -52,6 +52,23 @@ jobs:
             **Triggered by:** @${{ github.actor }}
             `;
 
+            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+
+            const { data: existingIssues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100
+            });
+
+            const duplicate = existingIssues.find(issue => 
+              issue.title === title && issue.body.includes(runUrl)
+            );
+            if (duplicate) {
+              console.log(`Duplicate issue found (#${duplicate.number}), skipping creation.`);
+              return;
+            }
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
