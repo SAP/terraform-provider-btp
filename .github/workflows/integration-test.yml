@@ -6,39 +6,25 @@ on:
     - cron: '0 2 * * 1,3' # Every Monday and Wednesday at 7:30 AM IST (2:00 AM UTC)
 
 jobs:
-  canary-main:
-    name: Canary Main
-    uses: ./.github/workflows/tf-canary-integration-test-main.yml
-    secrets: inherit
 
   canary-stable:
     name: Canary Stable
-    needs: canary-main
     uses: ./.github/workflows/tf-canary-integration-test-stable.yml
     secrets: inherit
 
   live-main:
     name: Live Main
-    needs: canary-stable
     uses: ./.github/workflows/tf-live-integration-test-main.yml
-    secrets: inherit
-
-  live-stable:
-    name: Live Stable
-    needs: live-main
-    uses: ./.github/workflows/tf-live-integration-test-stable.yml
     secrets: inherit
 
   failure-handler:
     name: Handle Failures
-    needs: [canary-main, canary-stable, live-main, live-stable]
+    needs: [canary-stable, live-main]
     if: always()
     uses: ./.github/workflows/integration-test-issue-reporter.yml
     with:
       workflow_name: "Terraform Integration Tests"
       job_results: |
-        canary-main: ${{ needs.canary-main.result }}
         canary-stable: ${{ needs.canary-stable.result }}
         live-main: ${{ needs.live-main.result }}
-        live-stable: ${{ needs.live-stable.result }}
       labels: '["integration-test","terraform","failure"]'

@@ -52,7 +52,8 @@ jobs:
             **Triggered by:** @${{ github.actor }}
             `;
 
-            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+            const runId = `${{ github.run_id }}`;
+            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${runId} `;
 
             const { data: existingIssues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -61,9 +62,15 @@ jobs:
               per_page: 100
             });
 
-            const duplicate = existingIssues.find(issue => 
-              issue.title === title && issue.body.includes(runUrl)
-            );
+            console.log(`Checking for duplicates. Current runId: ${runId}`);
+            console.log(`Existing open issues: ${existingIssues.length}`);
+
+            const duplicate = existingIssues.find(issue => {
+              if (issue.title !== title) return false;
+              const existingRunId = issue.body.match(/runs\/(\d+)/)?.[1];
+              console.log(`Comparing with issue #${issue.number}, runId: ${existingRunId}`);
+              return existingRunId === runId;
+            });
             if (duplicate) {
               console.log(`Duplicate issue found (#${duplicate.number}), skipping creation.`);
               return;
