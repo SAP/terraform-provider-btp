@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the official Terraform Provider for SAP Business Technology Platform (SAP BTP). It uses the HashiCorp Terraform Plugin Framework (v6) to expose SAP BTP resources and data sources.
+This is the official Terraform Provider for SAP Business Technology Platform (SAP BTP). It uses the HashiCorp Terraform Plugin Framework to expose SAP BTP resources, data sources, list resources, provider functions, and actions.
 
 ## Essential Commands
 
@@ -39,6 +39,11 @@ Development setup:
 - Do NOT run `terraform init` when using dev overrides
 - Verify setup: `cd examples/provider/ && terraform validate`
 
+Pre-commit hooks (via Lefthook):
+- `make lefthook` - Install Lefthook and register the pre-commit hooks
+- Hooks run automatically on commit: `go fmt`, `golangci-lint --fix`, `terraform fmt`
+- Install once after cloning: `make lefthook`
+
 ## Architecture
 
 ### Code Organization
@@ -50,6 +55,8 @@ Development setup:
 │   ├── resource_<scope>_<entity>.go # Resource implementations (CRUD)
 │   ├── datasource_<scope>_<entity>.go # Data source implementations (read-only)
 │   ├── list_resource_<scope>_<entity>.go # List resources (Terraform 1.14+, read-only lists)
+│   ├── function_<name>.go           # Provider functions (pure transformation helpers)
+│   ├── action_<name>.go             # Terraform actions (imperative operations)
 │   ├── type_<scope>_<entity>.go    # Type models for schema translation
 │   ├── *_test.go                   # Tests (paired with implementations)
 │   └── helper*.go                  # Shared utilities
@@ -61,8 +68,10 @@ Development setup:
 ├── docs/                           # Generated documentation (DO NOT EDIT MANUALLY)
 ├── templates/                      # Doc generation templates
 ├── examples/                       # Terraform configuration examples
-├── integration/                    # Integration test scenarios
-└── regression-test/                # Regression test scenarios
+├── tests/
+│   ├── integration-test/           # Integration test scenarios
+│   └── regression-test/            # Regression test scenarios
+└── regression-test/                # Regression test scenarios (legacy location)
 ```
 
 ### Naming Conventions
@@ -71,6 +80,8 @@ Files:
 - Resources: `resource_<scope>_<entity>.go` (e.g., `resource_subaccount_service_instance.go`)
 - Data sources: `datasource_<scope>_<entity>.go` (e.g., `datasource_globalaccount_entitlements.go`)
 - List resources: `list_resource_<scope>_<entity>.go` (e.g., `list_resource_subaccount.go`)
+- Provider functions: `function_<name>.go` (e.g., `function_extract_cf_api_url.go`)
+- Actions: `action_<name>.go` (e.g., `action_restore_subaccount.go`)
 - Types: `type_<scope>_<entity>.go` or camelCase for hierarchical types (e.g., `type_directoryHierarchy.go`)
 - Tests: Add `_test.go` suffix to match implementation file
 
@@ -95,6 +106,12 @@ Scopes: `globalaccount`, `directory`, `subaccount`
   - Must match managed resource TypeName (e.g., `btp_subaccount`)
   - Implement `ListResourceConfigSchema()` and `List()` methods
   - Support filtering via schema attributes
+- **Provider Functions**: Copy an analogous `function_*.go` file, implement `function.Function` interface
+  - Pure transformation helpers (e.g., parse Cloud Foundry or Kyma environment labels)
+  - No side effects; implement `Metadata()`, `Definition()`, and `Run()` methods
+- **Actions**: Copy an analogous `action_*.go` file, implement `action.Action` interface
+  - Imperative operations that don't map to standard CRUD (e.g., restore a subaccount)
+  - Implement `Metadata()`, `Schema()`, `Run()`, and `ConfigValidators()` methods
 - Include comprehensive schema with validators, plan modifiers, and timeouts
 - Add corresponding `_test.go` with happy path + error cases + import test
 
@@ -113,7 +130,7 @@ Scopes: `globalaccount`, `directory`, `subaccount`
 
 ## Development Workflow
 
-1. Start with similar existing resource/datasource/list_resource as template
+1. Start with similar existing resource/datasource/list_resource/function/action as template
 2. Implement schema with proper types, validators, descriptions
 3. Add CRUD/List logic delegating to `internal/btpcli`
 4. Write tests in `*_test.go` with VCR fixtures
@@ -156,8 +173,8 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 - Unit tests: Fast, use VCR recordings where possible
 - Acceptance tests: Slower, may require live BTP account
-- Integration tests: In `integration/` folder, full Terraform scenarios
-- Regression tests: In `regression-test/` folder
+- Integration tests: In `tests/integration-test/` folder, full Terraform scenarios
+- Regression tests: In `tests/regression-test/` and `regression-test/` folders
 
 VCR setup in tests:
 ```go
