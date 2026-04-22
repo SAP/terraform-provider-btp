@@ -46,14 +46,14 @@ jobs:
             **Results:**
             ${results}
 
+            const runId = `${{ github.run_id }}`;
+            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${runId} `;
+
             **Run URL:**
-            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            runUrl
 
             **Triggered by:** @${{ github.actor }}
             `;
-
-            const runId = `${{ github.run_id }}`;
-            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${runId} `;
 
             const { data: existingIssues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
