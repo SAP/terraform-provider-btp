@@ -26,7 +26,50 @@ Import is supported using the following syntax:
 {{- end }}
 
 
-## Restriction
+## Usage of `service_offering_name` and `serviceplan_name` instead of `serviceplan_id`
+
+As of release 1.22.0 it is possible to use `service_offering_name` and `serviceplan_name` instead of `serviceplan_id` when creating a service instance. This is more user friendly as the names are more descriptive than the id. This will allow you to get rid of data sources that are used to get the service plan id and can cause side effects during the planning phase i.e. make the plan hard to interpret.
+
+In the following section you find additional information on the move to the new setup and what to consider during imports.
+
+### Move to new setup
+
+We walk through the changes that are necessary to move from using `serviceplan_id` to `service_offering_name` and `serviceplan_name` with an example. The same changes need to be applied for all resources where you want to move to the new setup.
+
+Assume that we have the following code snippet as a part of our configuration to create a subaccount service instance using `serviceplan_id`:
+
+```terraform
+data "btp_subaccount_service_plan" "alert_notification__free" {
+  subaccount_id = btp_subaccount.this.id
+  name          = "free"
+  offering_name = "alert-notification"
+}
+
+resource "btp_subaccount_service_instance" "alert_notification_free" {
+  subaccount_id  = btp_subaccount.this.id
+  serviceplan_id = data.btp_subaccount_service_plan.alert_notification__free.id
+  name           = "my-alert-notification-instance-new"
+}
+```
+To make the transition to the new setup we need to do the following changes:
+
+1. Update the provider version to version 1.22.0 or later in the required_providers block
+2. Execute a `terraform refresh` to update the state with the new attributes `service_offering_name` and `serviceplan_name`
+3. Change the code snippet to use `service_offering_name` and `serviceplan_name` instead of `serviceplan_id` and remove the data source as it is not needed anymore. The updated code snippet should look like this:
+
+   ```terraform
+   resource "btp_subaccount_service_instance" "alert_notification_free" {
+     subaccount_id         = btp_subaccount.this.id
+     service_offering_name = "alert-notification"
+     serviceplan_name      = "free"
+     name                 = "my-alert-notification-instance-new"
+   }
+   ```
+4. Execute a `terraform plan` to see that there are no changes planned as we are still referencing the same service instance just with different attributes. If there are changes planned, please check that the values for `service_offering_name` and `serviceplan_name` are correct and match the existing service instance.
+
+## Restrictions
+
+### Import of a service instance with parameters
 
 The import of service instances that can be configured via parameters only works if the corresponding service offering supports the retrieval of these parameters, which means that the `instances_retrievable` parameter of the service offering must be set to `true`.
 
@@ -38,3 +81,8 @@ data "btp_subaccount_service_offering" "by_name" {
   name          = <name of the service offering>
 }
 ```
+
+### Generation of resource configuration
+
+As of release 1.22.0 you will run into an error when generating the resource configuration e.g., via `terraform plan -generate-config-out="generated_resources.tf"` stating that the generated resource configuration is invalid as `serviceplan_id` and `service_offering_name` and `serviceplan_name` cannot be used at the same time.
+This cannot be mitigated from the provider side. However, as the resource configuration gets generated you can remove either the `serviceplan_id` or the combination of `service_offering_name` and `serviceplan_name` from the generated resource configuration to make it work. We recommend to remove the `serviceplan_id` and move to the new setup with `service_offering_name` and `serviceplan_name`. You can then trigger the import without issues.

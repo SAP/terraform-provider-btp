@@ -10,6 +10,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -76,9 +77,43 @@ You must be assigned to the admin or the service administrator role of the subac
 				MarkdownDescription: "The name of the service instance.",
 				Required:            true,
 			},
+			// We cannot use the plan modifier use state for unknown for serviceplan_id and serviceplan_name as
+			// the computed values might change when either ID or plan name changes.
 			"serviceplan_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service plan.",
-				Required:            true,
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("serviceplan_name")),
+					stringvalidator.ConflictsWith(path.MatchRoot("service_offering_name")),
+					stringvalidator.LengthAtLeast(1),
+					stringvalidator.AtLeastOneOf(path.MatchRoot("service_offering_name"), path.MatchRoot("serviceplan_name")),
+				},
+			},
+			"serviceplan_name": schema.StringAttribute{
+				MarkdownDescription: "The name of the service plan.",
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.ConflictsWith(path.MatchRoot("serviceplan_id")),
+					stringvalidator.AlsoRequires(path.MatchRoot("service_offering_name")),
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
+			"service_offering_name": schema.StringAttribute{
+				MarkdownDescription: "The name of the service offering of the plan.",
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("serviceplan_name")),
+					stringvalidator.ConflictsWith(path.MatchRoot("serviceplan_id")),
+					stringvalidator.LengthAtLeast(1),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+					//If the offering chnages a new service instance needs to be created
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"labels": schema.MapAttribute{
 				ElementType: types.SetType{
@@ -144,6 +179,9 @@ You must be assigned to the admin or the service administrator role of the subac
 			"created_date": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"last_modified": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
@@ -193,12 +231,25 @@ func (rs *subaccountServiceInstanceResource) Read(ctx context.Context, req resou
 
 	newState, diags := subaccountServiceInstanceValueFrom(ctx, cliRes)
 	newState.Timeouts = timeoutsLocal
+	newState.ServicePlanName = state.ServicePlanName
+	newState.ServiceOfferingName = state.ServiceOfferingName
 
 	// Handle resource import
 	if cliRes.Parameters != "" && state.Parameters.ValueString() == "" {
 		newState.Parameters = jsontypes.NewNormalizedValue(cliRes.Parameters)
 	} else {
 		newState.Parameters = state.Parameters
+	}
+
+	// Update plan and offering name during a refresh
+	if state.ServicePlanName.ValueString() == "" && state.ServiceOfferingName.ValueString() == "" {
+		planName, offeringName, err := rs.lookupPlanAndOfferingNames(ctx, newState.SubaccountId.ValueString(), newState.ServicePlanId.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
+			return
+		}
+		newState.ServicePlanName = types.StringValue(planName)
+		newState.ServiceOfferingName = types.StringValue(offeringName)
 	}
 
 	resp.Diagnostics.Append(diags...)
@@ -228,10 +279,36 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 		return
 	}
 
+	var servicePlanId string
+	var servicePlanName string
+	var serviceOfferingName string
+
+	if plan.ServicePlanName.ValueString() != "" && plan.ServiceOfferingName.ValueString() != "" {
+		cliRes, _, err := rs.cli.Services.Plan.GetByName(ctx, plan.SubaccountId.ValueString(), plan.ServicePlanName.ValueString(), plan.ServiceOfferingName.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
+			return
+		}
+
+		servicePlanId = cliRes.Id
+		servicePlanName = plan.ServicePlanName.ValueString()
+		serviceOfferingName = plan.ServiceOfferingName.ValueString()
+
+	} else {
+		servicePlanId = plan.ServicePlanId.ValueString()
+
+		var err error
+		servicePlanName, serviceOfferingName, err = rs.lookupPlanAndOfferingNames(ctx, plan.SubaccountId.ValueString(), plan.ServicePlanId.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
+			return
+		}
+	}
+
 	cliReq := btpcli.ServiceInstanceCreateInput{
 		Subaccount:    plan.SubaccountId.ValueString(),
 		Name:          plan.Name.ValueString(),
-		ServicePlanId: plan.ServicePlanId.ValueString(),
+		ServicePlanId: servicePlanId,
 	}
 
 	if !plan.Parameters.IsNull() {
@@ -262,6 +339,8 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 	state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
 	state.Timeouts = plan.Timeouts
+	state.ServicePlanName = types.StringValue(servicePlanName)
+	state.ServiceOfferingName = types.StringValue(serviceOfferingName)
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &state)
@@ -298,6 +377,9 @@ func (rs *subaccountServiceInstanceResource) Create(ctx context.Context, req res
 		state, diags = subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 		state.Parameters = plan.Parameters
 		state.Timeouts = plan.Timeouts
+		state.ServicePlanName = types.StringValue(servicePlanName)
+		state.ServiceOfferingName = types.StringValue(serviceOfferingName)
+
 		resp.Diagnostics.Append(diags...)
 
 		diags = resp.State.Set(ctx, &state)
@@ -319,11 +401,46 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 		return
 	}
 
+	if plan.ServiceOfferingName.ValueString() != stateCurrent.ServiceOfferingName.ValueString() {
+		resp.Diagnostics.AddError("The Service Offering Name cannot be changed when updating the Resource Service Instance (Subaccount)", fmt.Sprintf("Old Value: %s, New Value: %s", stateCurrent.ServiceOfferingName.ValueString(), plan.ServiceOfferingName.ValueString()))
+		return
+	}
+
+	servicePlanId := stateCurrent.ServicePlanId.ValueString()
+	servicePlanName := stateCurrent.ServicePlanName.ValueString()
+	serviceOfferingName := stateCurrent.ServiceOfferingName.ValueString()
+	err := error(nil)
+
+	// Before checking that the service plan ID has changed we must check if it is configured in the plan.
+	// This is necessary as we cannot use a plan modifier for the service plan ID
+	if plan.ServicePlanId.ValueString() != "" && plan.ServicePlanId.ValueString() != stateCurrent.ServicePlanId.ValueString() {
+		servicePlanId = plan.ServicePlanId.ValueString()
+
+		servicePlanName, serviceOfferingName, err = rs.lookupPlanAndOfferingNames(ctx, plan.SubaccountId.ValueString(), plan.ServicePlanId.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
+			return
+		}
+	}
+
+	// Before checking that the service plan name has changed we must check if it is configured in the plan.
+	// This is necessary as we cannot use a plan modifier for the service plan name
+	if plan.ServicePlanName.ValueString() != "" && plan.ServicePlanName.ValueString() != stateCurrent.ServicePlanName.ValueString() {
+		cliRes, _, err := rs.cli.Services.Plan.GetByName(ctx, plan.SubaccountId.ValueString(), plan.ServicePlanName.ValueString(), plan.ServiceOfferingName.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Service Plan (Subaccount)", fmt.Sprintf("%s", err))
+			return
+		}
+		servicePlanName = plan.ServicePlanName.ValueString()
+		serviceOfferingName = plan.ServiceOfferingName.ValueString()
+		servicePlanId = cliRes.Id
+	}
+
 	cliReq := btpcli.ServiceInstanceUpdateInput{
 		Subaccount:    plan.SubaccountId.ValueString(),
 		Id:            plan.Id.ValueString(),
 		NewName:       plan.Name.ValueString(),
-		ServicePlanId: plan.ServicePlanId.ValueString(),
+		ServicePlanId: servicePlanId,
 	}
 
 	if !plan.Parameters.IsNull() {
@@ -363,6 +480,9 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 	state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 	state.Parameters = plan.Parameters
 	state.Timeouts = plan.Timeouts
+	state.ServicePlanName = types.StringValue(servicePlanName)
+	state.ServiceOfferingName = types.StringValue(serviceOfferingName)
+
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, state)
@@ -403,6 +523,9 @@ func (rs *subaccountServiceInstanceResource) Update(ctx context.Context, req res
 		state, diags := subaccountServiceInstanceValueFrom(ctx, updatedRes.(servicemanager.ServiceInstanceResponseObject))
 		state.Parameters = plan.Parameters
 		state.Timeouts = plan.Timeouts
+		state.ServicePlanName = types.StringValue(servicePlanName)
+		state.ServiceOfferingName = types.StringValue(serviceOfferingName)
+
 		resp.Diagnostics.Append(diags...)
 
 		diags = resp.State.Set(ctx, state)
@@ -594,6 +717,20 @@ func (rs *subaccountServiceInstanceResource) UpdateStateChange(ctx context.Conte
 		Delay:      delay,
 		MinTimeout: minTimeout,
 	}, summary
+}
+
+func (rs *subaccountServiceInstanceResource) lookupPlanAndOfferingNames(ctx context.Context, subaccountId string, servicePlanId string) (string, string, error) {
+	planRes, _, err := rs.cli.Services.Plan.GetById(ctx, subaccountId, servicePlanId)
+	if err != nil {
+		return "", "", err
+	}
+
+	offeringRes, _, err := rs.cli.Services.Offering.GetById(ctx, subaccountId, planRes.ServiceOfferingId)
+	if err != nil {
+		return "", "", err
+	}
+
+	return planRes.Name, offeringRes.Name, nil
 }
 
 func extractDetailedError(errorAsRawJson json.RawMessage, operation string) error {
