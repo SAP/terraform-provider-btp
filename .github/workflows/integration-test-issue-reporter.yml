@@ -46,8 +46,7 @@ jobs:
             **Results:**
             ${results}
 
-            const runId = "${{ github.run_id }}";
-            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${runId}`;
+            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
 
             **Run URL:**
             ${runUrl}
@@ -62,14 +61,11 @@ jobs:
               per_page: 100
             });
 
-            console.log(`Checking for duplicates. Current runId: ${runId}`);
-            console.log(`Existing open issues: ${existingIssues.length}`);
-
             const duplicate = existingIssues.find(issue => {
               if (issue.title !== title) return false;
               const existingRunId = issue.body.match(/runs\/(\d+)/)?.[1];
               console.log(`Comparing with issue #${issue.number}, runId: ${existingRunId}`);
-              return existingRunId === runId;
+              return existingRunId === ${{ github.run_id }};
             });
             if (duplicate) {
               console.log(`Duplicate issue found (#${duplicate.number}), skipping creation.`);
