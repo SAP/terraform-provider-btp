@@ -5,6 +5,10 @@ on:
   schedule:
     - cron: '0 2 * * 1,3' # Every Monday and Wednesday at 7:30 AM IST (2:00 AM UTC)
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   canary-main:
     name: Canary Main
@@ -29,11 +33,11 @@ jobs:
     uses: ./.github/workflows/tf-live-integration-test-stable.yml
     secrets: inherit
 
-  failure-handler:
-    name: Handle Failures
+  report-failure:
+    name: Report any failure in workflow
     needs: [canary-main, canary-stable, live-main, live-stable]
     if: always()
-    uses: ./.github/workflows/integration-test-issue-reporter.yml
+    uses: ./.github/workflows/create-issue-on-failure.yml
     with:
       workflow_name: "Terraform Integration Tests"
       job_results: |
@@ -42,3 +46,4 @@ jobs:
         live-main: ${{ needs.live-main.result }}
         live-stable: ${{ needs.live-stable.result }}
       labels: '["integration-test","terraform","failure"]'
+      test_type: "integration"
