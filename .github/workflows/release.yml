@@ -29,6 +29,8 @@ jobs:
   call-workflow-binary-integrity-check:
     uses: ./.github/workflows/binary-integrity-check.yml
     secrets: inherit
+    with:
+      RELEASE_VERSION: ${{ github.ref_name }} # Pass the tag name as the release version to the binary integrity check workflow.
   goreleaser:
     runs-on: ubuntu-latest
     needs:

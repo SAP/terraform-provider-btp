@@ -27,7 +27,17 @@ on:
       - 'go.sum'
       - '**.go'
   workflow_dispatch:
+    inputs:
+      RELEASE_VERSION:
+        description: 'Release version to use (e.g. 1.22.0). If omitted, the latest release tag is fetched automatically.'
+        required: false
+        type: string
   workflow_call:
+    inputs:
+      RELEASE_VERSION:
+        description: 'Release version to use. If omitted, the latest release tag is fetched automatically.'
+        required: false
+        type: string
 # Releases need permissions to read and write the repository contents.
 # GitHub considers creating releases and uploading assets as writing contents.
 permissions:
@@ -37,6 +47,8 @@ permissions:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_VERSION: ${{ inputs.RELEASE_VERSION || '' }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -50,6 +62,7 @@ jobs:
 
       - name: Get last Release Tag
         id: get_last_release
+        if: env.RELEASE_VERSION == ''
         run: |
           echo "RELEASE_VERSION=$(gh release view --json tagName -q '.tagName | ltrimstr("v")')" >> "$GITHUB_ENV"
         env:
