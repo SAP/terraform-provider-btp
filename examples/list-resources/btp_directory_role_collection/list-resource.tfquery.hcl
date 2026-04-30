@@ -31,6 +31,6 @@ list "btp_directory_role_collection" "with_resource" {
 
   # Required
   config {
-    directory_id   = "<directory_id>"
+    directory_id = "<directory_id>"
   }
 }

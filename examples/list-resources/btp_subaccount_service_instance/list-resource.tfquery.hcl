@@ -6,7 +6,7 @@ list "btp_subaccount_service_instance" "<label_name>" {
   # (Required) Provider instance to use
   provider = provider_name
 
-   config {
+  config {
     # Provider specific filters
   }
 }
@@ -28,8 +28,8 @@ list "btp_subaccount_service_instance" "with_resource" {
   provider         = btp
   include_resource = true
   config {
-  # Required  
-  subaccount_id = "<subaccount_id>"
+    # Required  
+    subaccount_id = "<subaccount_id>"
   }
 }
 
@@ -38,11 +38,11 @@ list "btp_subaccount_service_instance" "with_fields_filter" {
   include_resource = true
 
   config {
-  # Required  
-  subaccount_id = "<subaccount_id>"
+    # Required  
+    subaccount_id = "<subaccount_id>"
 
-  # Optional
-  fields_filter = "ready eq 'true'"
+    # Optional
+    fields_filter = "ready eq 'true'"
   }
 }
 
@@ -51,11 +51,11 @@ list "btp_subaccount_service_instance" "with_lables_filter" {
   include_resource = true
 
   config {
-  # Required  
-  subaccount_id = "<subaccount_id>"
+    # Required  
+    subaccount_id = "<subaccount_id>"
 
-  # Optional
-  labels_filter = "cred_revision eq '0'"
+    # Optional
+    labels_filter = "cred_revision eq '0'"
 
   }
 }

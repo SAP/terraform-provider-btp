@@ -6,7 +6,7 @@ list "btp_subaccount_entitlement" "<label_name>" {
   # (Required) Provider instance to use
   provider = provider_name
 
-   config {
+  config {
     # Provider specific filters
   }
 }
@@ -28,7 +28,7 @@ list "btp_subaccount_entitlement" "with_resource" {
   provider         = btp
   include_resource = true
   config {
-  # Required  
-  subaccount_id = "<subaccount_id>"
+    # Required  
+    subaccount_id = "<subaccount_id>"
   }
 }
