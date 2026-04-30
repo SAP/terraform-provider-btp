@@ -6,7 +6,7 @@ list "btp_subaccount_role_collection_role" "<label_name>" {
   # (Required) Provider instance to use
   provider = provider_name
 
-   config {
+  config {
     # Provider specific filters
   }
 }
@@ -30,9 +30,9 @@ list "btp_subaccount_role_collection_role" "with_resource" {
   include_resource = true
 
   config {
-  # Required  
-  subaccount_id = "<subaccount_id>"
-  name          = "<name>"
+    # Required  
+    subaccount_id = "<subaccount_id>"
+    name          = "<name>"
 
   }
 }

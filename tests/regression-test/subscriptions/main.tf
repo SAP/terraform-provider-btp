@@ -3,9 +3,9 @@
 ###
 
 locals {
-  prefix_regression_test                                = "tf-regression-test-"
-  regression_test_services_static                       = "${local.prefix_regression_test}services-static"
-  regression_test_services_static_extended              = "${local.regression_test_services_static}-${var.subaccount_subdomain_extension}"
+  prefix_regression_test                   = "tf-regression-test-"
+  regression_test_services_static          = "${local.prefix_regression_test}services-static"
+  regression_test_services_static_extended = "${local.regression_test_services_static}-${var.subaccount_subdomain_extension}"
 }
 
 ###

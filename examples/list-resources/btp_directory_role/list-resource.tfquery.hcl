@@ -6,7 +6,7 @@ list "btp_directory_role" "<label_name>" {
   # (Required) Provider instance to use
   provider = provider_name
 
-   config {
+  config {
     # Provider specific filters
   }
 }
@@ -28,7 +28,7 @@ list "btp_directory_role" "with_resource" {
   provider         = btp
   include_resource = true
   config {
-  # Required  
-  directory_id = "<directory_id>"
+    # Required  
+    directory_id = "<directory_id>"
   }
 }

@@ -6,7 +6,7 @@ list "btp_globalaccount_trust_configuration" "<label_name>" {
   # (Required) Provider instance to use
   provider = provider_name
 
-   config {
+  config {
     # Provider specific filters
   }
 }

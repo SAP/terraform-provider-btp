@@ -21,7 +21,7 @@ list "btp_subaccount" "<label_name>" {
   # (Required) Provider instance to use
   provider = provider_name
 
-   config {
+  config {
     # Provider specific filters
   }
 }
@@ -42,10 +42,10 @@ list "btp_subaccount" "with_resource" {
 
 # List block to discover all subaccounts within a region.
 list "btp_subaccount" "with_region_filter" {
-  provider         = btp
+  provider = btp
   config {
-  # Optional  
-  region = "eu12"
+    # Optional  
+    region = "eu12"
 
   }
 }
@@ -55,8 +55,8 @@ list "btp_subaccount" "with_region_filter" {
   include_resource = true
 
   config {
-  # Optional
-  labels_filter = "my-label=my-value"
+    # Optional
+    labels_filter = "my-label=my-value"
   }
 }
 ```

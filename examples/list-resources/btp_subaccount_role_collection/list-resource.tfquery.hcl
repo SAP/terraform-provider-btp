@@ -31,6 +31,6 @@ list "btp_subaccount_role_collection" "with_resource" {
 
   # Required
   config {
-    subaccount_id   = "<subaccount_id>"
+    subaccount_id = "<subaccount_id>"
   }
 }
