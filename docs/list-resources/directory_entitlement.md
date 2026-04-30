@@ -46,7 +46,7 @@ list "btp_directory_entitlement" "with_resource" {
 
   # Required
   config {
-    directory_id   = "<directory_id>"
+    directory_id = "<directory_id>"
   }
 }
 ```
