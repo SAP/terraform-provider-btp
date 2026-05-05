@@ -57,8 +57,15 @@ To switch to the new configuration, execute the following steps:
 
 1. Update the provider version to 1.22.0 or later in your Terraform configuration.
 2. Execute the command `terraform init -upgrade` to update the provider.
-3. Execute the command `terraform refresh` to refresh the state. This will populate the new attributes `service_offering_name` and `serviceplan_name` in the state based on the existing configuration.
-4. Update the resource configuration of `btp_subaccount_service_instance` to use the new attributes `service_offering_name` and `serviceplan_name` instead of `serviceplan_id` and remove the data source `btp_subaccount_service_plan`. The updated configuration should look like this:
+3. Execute the command `terraform plan --refresh-only` to plan a refresh of the state. This will populate the new attributes `service_offering_name` and `serviceplan_name` in the state based on the existing configuration. You will see a output like this for the resource `btp_subaccount_service_instance`:
+
+   ![screenshot of output of terraform plan --refresh-only](../assets/service-instance-plan-refresh.png)
+
+4. Execute the command `terraform apply --refresh-only` to apply the refresh. This will update the state with the new attributes `service_offering_name` and `serviceplan_name`. You will see a output like this for the resource `btp_subaccount_service_instance`:
+
+   ![screenshot of output of terraform apply](../assets/service-instance-apply-refresh.png)
+
+5. Update the resource configuration of `btp_subaccount_service_instance` to use the new attributes `service_offering_name` and `serviceplan_name` instead of `serviceplan_id` and remove the data source `btp_subaccount_service_plan`. The updated configuration should look like this:
 
    ```terraform
    terraform {
