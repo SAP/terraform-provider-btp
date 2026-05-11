@@ -33,12 +33,6 @@ resource "btp_subaccount_role_collection_assignment" "srca_sa_services_static_de
 # subaccount entitlements
 ###
 
-resource "btp_subaccount_entitlement" "se_sa_services_static_bas" {
-  subaccount_id = btp_subaccount.sa_services_static.id
-  service_name  = "sapappstudio"
-  plan_name     = "standard-edition"
-}
-
 resource "btp_subaccount_entitlement" "se_sa_services_static_destination" {
   subaccount_id = btp_subaccount.sa_services_static.id
   service_name  = "destination"
@@ -49,11 +43,10 @@ resource "btp_subaccount_entitlement" "se_sa_services_static_destination" {
 # subaccount subscriptions
 ###
 
-resource "btp_subaccount_subscription" "sas_sa_services_static_bas" {
+resource "btp_subaccount_subscription" "sas_sa_services_static_feature_flags" {
   subaccount_id = btp_subaccount.sa_services_static.id
-  app_name      = "sapappstudio"
-  plan_name     = "standard-edition"
-  depends_on    = [btp_subaccount_entitlement.se_sa_services_static_bas]
+  app_name      = "feature-flags-dashboard"
+  plan_name     = "dashboard"
 }
 
 ###
