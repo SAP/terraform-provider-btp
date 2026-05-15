@@ -4,10 +4,13 @@ name: REUSE Compliance Check
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   compliance-check:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
-    - name: REUSE Compliance Check
-      uses: fsfe/reuse-action@v6
+      - uses: actions/checkout@v6
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v6

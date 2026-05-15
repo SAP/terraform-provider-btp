@@ -6,12 +6,16 @@ name: Terraform Provider Pre-Release Check
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   call-workflow-test:
     uses: ./.github/workflows/test.yml
     secrets: inherit
   call-workflow-regression-test:
-    uses: ./.github/workflows/schema-regression-test.yml  
+    uses: ./.github/workflows/schema-regression-test.yml
     secrets: inherit
     with:
       path_to_tfscript: tests/regression-test
