@@ -167,3 +167,16 @@ func (f *accountsSubaccountFacade) Restore(ctx context.Context, subaccountId str
 
 	return doExecute[cis.SubaccountResponseObject](f.cliClient, ctx, NewRestoreRequest(f.getCommand(), params))
 }
+
+func (f *accountsSubaccountFacade) AddMeAsAdmin(ctx context.Context, subaccountId string) (CommandResponse, error) {
+	res, err := f.cliClient.Execute(ctx, NewUpdateRequest(f.getCommand(), map[string]string{
+		"globalAccount": f.cliClient.GetGlobalAccountSubdomain(),
+		"subaccount":    subaccountId,
+		"addMeAsAdmin":  "true",
+	}))
+	if err != nil {
+		return res, err
+	}
+	_ = res.Body.Close()
+	return res, nil
+}
