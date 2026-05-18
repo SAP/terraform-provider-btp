@@ -60,7 +60,10 @@ func (r *subaccountSubscriptionListResource) ListResourceConfigSchema(
 	resp *list.ListResourceSchemaResponse,
 ) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This list resource allows you to discover all subscriptions available for given subaccount.",
+		MarkdownDescription: `This list resource allows you to discover all subscriptions available for given subaccount.
+
+__Note:__
+Subscriptions in the state "IN_PROCESS" and "NOT_SUBSCRIBED" are omitted.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -101,6 +104,11 @@ func (r *subaccountSubscriptionListResource) List(
 	stream.Results = func(push func(list.ListResult) bool) {
 
 		for _, sub := range cliRes {
+
+			// Omit entries which are in the state "IN_PROCESS" and "NOT_SUBSCRIBED"
+			if sub.State == "IN_PROCESS" || sub.State == "NOT_SUBSCRIBED" {
+				continue
+			}
 
 			result := req.NewListResult(ctx)
 

@@ -19,7 +19,7 @@ import (
 func TestSubaccountSubscriptionListResource(t *testing.T) {
 	t.Parallel()
 
-	subaccountID := "ba268910-81e6-4ac1-9016-cae7ed196889"
+	subaccountID := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
 
 	t.Run("happy path", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_subscription")
@@ -41,14 +41,14 @@ func TestSubaccountSubscriptionListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_subscription.subscription_list", 5),
+						querycheck.ExpectLength("btp_subaccount_subscription.subscription_list", 2),
 
 						querycheck.ExpectIdentity(
 							"btp_subaccount_subscription.subscription_list",
 							map[string]knownvalue.Check{
-								"app_name":      knownvalue.StringExact("feature-flags-dashboard"),
+								"app_name":      knownvalue.StringExact("SAPLaunchpadSMS"),
 								"subaccount_id": knownvalue.StringExact(subaccountID),
-								"plan_name":     knownvalue.StringExact("dashboard"),
+								"plan_name":     knownvalue.StringExact("free"),
 							},
 						),
 					},
@@ -63,32 +63,32 @@ func TestSubaccountSubscriptionListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_subscription.subscription_list", 5),
+						querycheck.ExpectLength("btp_subaccount_subscription.subscription_list", 2),
 
 						// Verify full resource data is populated
 						querycheck.ExpectResourceKnownValues(
 							"btp_subaccount_subscription.subscription_list",
 							queryfilter.ByResourceIdentity(map[string]knownvalue.Check{
-								"app_name":      knownvalue.StringExact("feature-flags-dashboard"),
+								"app_name":      knownvalue.StringExact("SAPLaunchpadSMS"),
 								"subaccount_id": knownvalue.StringExact(subaccountID),
-								"plan_name":     knownvalue.StringExact("dashboard"),
+								"plan_name":     knownvalue.StringExact("free"),
 							}),
 							[]querycheck.KnownValueCheck{
 								{
 									Path:       tfjsonpath.New("app_id"),
-									KnownValue: knownvalue.StringExact("feature-flags!b18"),
+									KnownValue: knownvalue.StringExact("ab2dc547-eb19-4689-adbb-1dfa5f9da6fd"),
 								},
 								{
 									Path:       tfjsonpath.New("app_name"),
-									KnownValue: knownvalue.StringExact("feature-flags-dashboard"),
+									KnownValue: knownvalue.StringExact("SAPLaunchpadSMS"),
 								},
 								{
 									Path:       tfjsonpath.New("commercial_app_name"),
-									KnownValue: knownvalue.StringExact("feature-flags-dashboard"),
+									KnownValue: knownvalue.StringExact("SAPLaunchpad"),
 								},
 								{
 									Path:       tfjsonpath.New("category"),
-									KnownValue: knownvalue.StringExact("Foundation / Cross Services"),
+									KnownValue: knownvalue.StringExact("SaaS Applications"),
 								},
 								{
 									Path:       tfjsonpath.New("description"),
@@ -96,7 +96,7 @@ func TestSubaccountSubscriptionListResource(t *testing.T) {
 								},
 								{
 									Path:       tfjsonpath.New("state"),
-									KnownValue: knownvalue.StringExact("NOT_SUBSCRIBED"),
+									KnownValue: knownvalue.StringExact("SUBSCRIBED"),
 								},
 							},
 						),
