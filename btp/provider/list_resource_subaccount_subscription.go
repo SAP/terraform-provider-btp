@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/saas_manager_service"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -106,7 +107,7 @@ func (r *subaccountSubscriptionListResource) List(
 		for _, sub := range cliRes {
 
 			// Omit entries which are in the state "IN_PROCESS" and "NOT_SUBSCRIBED"
-			if sub.State == "IN_PROCESS" || sub.State == "NOT_SUBSCRIBED" {
+			if sub.State == saas_manager_service.StateInProcess || sub.State == saas_manager_service.StateNotSubscribed {
 				continue
 			}
 
