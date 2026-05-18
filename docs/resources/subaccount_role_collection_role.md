@@ -7,8 +7,8 @@ description: |-
   Prerequisites
   You must be assigned to the admin role of the subaccount.A role collection container must already exist. This can be managed via the btp_subaccount_role_collection_base resource.
   Conflict of Authority Warning
-  [!CAUTION]
-  Roles within a collection can be managed either using the **btp_subaccount_role_collection** resource (which manages the entire set of roles) or by using individual **btp_subaccount_role_collection_role** resources in combination with **btp_subaccount_role_collection_base** — **but the two methods cannot be used together**.If you use this resource to add a role to a collection that is also managed by a monolithic **btp_subaccount_role_collection** resource, the two resources will fight for control over the roles list, leading to "flapping" during terraform apply and unexpected deletions.
+  Roles within a collection can be managed either using the btp_subaccount_role_collection resource (which manages the entire set of roles) or by using individual btp_subaccount_role_collection_role resources in combination with btp_subaccount_role_collection_base — but the two methods cannot be used together.
+  If you use this resource to add a role to a collection that is also managed by a monolithic btp_subaccount_role_collection resource, the two resources will fight for control over the roles list, leading to "flapping" during terraform apply and unexpected deletions.
   Further documentation
   For more details on role collections and roles, see the official SAP BTP documentation https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts.
 ---
@@ -24,10 +24,9 @@ This resource is used to assign individual roles to a role collection container.
 * A role collection container must already exist. This can be managed via the **btp_subaccount_role_collection_base** resource.
 
 ### Conflict of Authority Warning
-> [!CAUTION]
-> Roles within a collection can be managed either using the **btp_subaccount_role_collection** resource (which manages the entire set of roles) or by using individual **btp_subaccount_role_collection_role** resources in combination with **btp_subaccount_role_collection_base** — **but the two methods cannot be used together**.
-> 
-> If you use this resource to add a role to a collection that is also managed by a monolithic **btp_subaccount_role_collection** resource, the two resources will fight for control over the roles list, leading to "flapping" during terraform apply and unexpected deletions.
+Roles within a collection can be managed either using the **btp_subaccount_role_collection** resource (which manages the entire set of roles) or by using individual **btp_subaccount_role_collection_role** resources in combination with **btp_subaccount_role_collection_base** — **but the two methods cannot be used together**.
+
+If you use this resource to add a role to a collection that is also managed by a monolithic **btp_subaccount_role_collection** resource, the two resources will fight for control over the roles list, leading to "flapping" during terraform apply and unexpected deletions.
 
 ### Further documentation
 For more details on role collections and roles, see the [official SAP BTP documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts).
