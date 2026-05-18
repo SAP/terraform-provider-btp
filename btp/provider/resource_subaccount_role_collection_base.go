@@ -52,10 +52,9 @@ func (rs *subaccountRoleCollectionBaseResource) Schema(_ context.Context, _ reso
 * You must be assigned to the **admin role** of the subaccount.
 
 ### Conflict of Authority Warning
-> [!CAUTION]
-> Roles can be defined either directly using the **btp_subaccount_role_collection** resource (which manages the collection and roles together), or by using this **btp_subaccount_role_collection_base** resource in combination with **btp_subaccount_role_collection_role** — **but the two methods cannot be used together**.
->
-> If both the monolithic resource and the individual base/role resources are used against the same Role Collection, spurious changes and conflicting state updates will occur.
+Roles can be defined either directly using the **btp_subaccount_role_collection** resource (which manages the collection and roles together), or by using this **btp_subaccount_role_collection_base** resource in combination with **btp_subaccount_role_collection_role** — **but the two methods cannot be used together**.
+
+If both the monolithic resource and the individual base/role resources are used against the same Role Collection, spurious changes and conflicting state updates will occur.
 
 ### Further documentation
 For more details on role collections and roles, see the [official SAP BTP documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts).`,
