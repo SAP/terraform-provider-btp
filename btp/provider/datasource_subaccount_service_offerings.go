@@ -80,8 +80,9 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 				MarkdownDescription: "Lists services to be consumed in a Cloud Foundry or Kubernetes-native way. Valid values are: \n " +
 					getFormattedValueAsTableRow("value", "description") +
 					getFormattedValueAsTableRow("---", "---") +
-					getFormattedValueAsTableRow("`cloudfoundry`", "Cloud Foundry") +
-					getFormattedValueAsTableRow("`kubernetes`", "Kubernetes"),
+					getFormattedValueAsTableRow("`sapbtp`", "Service offerings associated with SAP BTP") +
+					getFormattedValueAsTableRow("`cloudfoundry`", "Service offerings associated with Cloud Foundry") +
+					getFormattedValueAsTableRow("`kubernetes`", "Service offerings associated with Kubernetes"),
 				Optional: true,
 			},
 			"fields_filter": schema.StringAttribute{
