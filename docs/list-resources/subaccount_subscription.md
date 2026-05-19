@@ -4,11 +4,16 @@ page_title: "btp_subaccount_subscription List Resource - SAP BTP"
 subcategory: ""
 description: |-
   This list resource allows you to discover all subscriptions available for given subaccount.
+  Note:
+  Subscriptions in the state "IN_PROCESS" and "NOT_SUBSCRIBED" are omitted.
 ---
 
 # btp_subaccount_subscription (List Resource)
 
 This list resource allows you to discover all subscriptions available for given subaccount.
+
+__Note:__
+Subscriptions in the state "IN_PROCESS" and "NOT_SUBSCRIBED" are omitted.
 
 ## Example Usage
 

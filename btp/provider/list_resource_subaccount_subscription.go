@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/saas_manager_service"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -60,7 +61,10 @@ func (r *subaccountSubscriptionListResource) ListResourceConfigSchema(
 	resp *list.ListResourceSchemaResponse,
 ) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This list resource allows you to discover all subscriptions available for given subaccount.",
+		MarkdownDescription: `This list resource allows you to discover all subscriptions available for given subaccount.
+
+__Note:__
+Subscriptions in the state "IN_PROCESS" and "NOT_SUBSCRIBED" are omitted.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
@@ -101,6 +105,11 @@ func (r *subaccountSubscriptionListResource) List(
 	stream.Results = func(push func(list.ListResult) bool) {
 
 		for _, sub := range cliRes {
+
+			// Omit entries which are in the state "IN_PROCESS" and "NOT_SUBSCRIBED"
+			if sub.State == saas_manager_service.StateInProcess || sub.State == saas_manager_service.StateNotSubscribed {
+				continue
+			}
 
 			result := req.NewListResult(ctx)
 
