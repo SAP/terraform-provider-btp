@@ -5,7 +5,7 @@ subcategory: ""
 description: |-
   Assigns the currently authenticated user as an administrator of the specified subaccount.
   Notes:
-  This action can be used to grant yourself administrator permissions to a subaccount via Terraform in analogy to the btp CLI command "btp update accounts/subaccount <subaccount_id> --add-me-as-admin".Be aware that the execution of the action does not result in any changes to the Terraform state. It is recommended to use this action only in exceptional cases.For a consistent setup we recommend using the resource "btp_subaccount_role_collection_assignment" https://registry.terraform.io/providers/SAP/btp/latest/docs/resources/subaccount_role_collection_assignment.
+  This action can be used to grant yourself administrator permissions to a subaccount via Terraform in analogy to the btp CLI command "btp update accounts/subaccount subaccount_id --add-me-as-admin".Be aware that the execution of the action does not result in any changes to the Terraform state. It is recommended to use this action only in exceptional cases.For a consistent setup we recommend using the resource "btp_subaccount_role_collection_assignment" https://registry.terraform.io/providers/SAP/btp/latest/docs/resources/subaccount_role_collection_assignment.
   Tip:
   You must be assigned to the global account admin role.
   Further documentation:
@@ -18,7 +18,7 @@ Assigns the currently authenticated user as an administrator of the specified su
 
 
 __Notes:__
-- This action can be used to grant yourself administrator permissions to a subaccount via Terraform in analogy to the btp CLI command "btp update accounts/subaccount <subaccount_id> --add-me-as-admin".
+- This action can be used to grant yourself administrator permissions to a subaccount via Terraform in analogy to the btp CLI command "btp update accounts/subaccount subaccount_id --add-me-as-admin".
 - Be aware that the execution of the action does not result in any changes to the Terraform state. It is recommended to use this action only in exceptional cases.
 - For a consistent setup we recommend using the resource ["btp_subaccount_role_collection_assignment"](https://registry.terraform.io/providers/SAP/btp/latest/docs/resources/subaccount_role_collection_assignment).
 
