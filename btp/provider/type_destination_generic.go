@@ -93,8 +93,10 @@ func destinationGenericResourceValueFrom(value connectivity.DestinationResponse,
 		SubaccountID: subaccountID,
 	}
 
-	tmp := make(map[string]string)
-	maps.Copy(tmp, value.DestinationConfiguration)
+	tmp := make(map[string]any)
+	for k, v := range value.DestinationConfiguration {
+		tmp[k] = v
+	}
 
 	destination.CreationTime = types.StringValue(creationTime)
 	destination.ModificationTime = types.StringValue(modifyTime)
@@ -144,14 +146,20 @@ func destinationGenericDatasourceValueFrom(value connectivity.DestinationRespons
 		SubaccountID: subaccountID,
 	}
 
-	tmp := make(map[string]string)
-	maps.Copy(tmp, value.DestinationConfiguration)
+	tmp := make(map[string]any)
+	for k, v := range value.DestinationConfiguration {
+		tmp[k] = v
+	}
 
 	extract := func(key string) string {
 		if v, ok := tmp[key]; ok {
 			delete(tmp, key)
-			return v
+
+			if strVal, ok := v.(string); ok {
+				return strVal
+			}
 		}
+
 		return ""
 	}
 	destination.CreationTime = types.StringValue(creationTime)
@@ -234,57 +242,4 @@ func ValidateFromJSON(jsonStr string) error {
 		return nil // intentionally no validation for unknown types
 	}
 	return nil
-}
-
-// This function add the masked fields which are not fetched in read operation
-func MergeGenericDestinationConfig(
-	plannedConfig jsontypes.Normalized,
-	responseConfig jsontypes.Normalized,
-) (jsontypes.Normalized, error) {
-
-	if plannedConfig.IsNull() {
-		return responseConfig, nil
-	}
-
-	if responseConfig.IsNull() {
-		return plannedConfig, nil
-	}
-
-	plannedMap := make(map[string]any)
-	responseMap := make(map[string]any)
-
-	if !plannedConfig.IsUnknown() {
-		if err := json.Unmarshal([]byte(plannedConfig.ValueString()), &plannedMap); err != nil {
-			return jsontypes.Normalized{}, err
-		}
-	}
-
-	if !responseConfig.IsUnknown() {
-		if err := json.Unmarshal([]byte(responseConfig.ValueString()), &responseMap); err != nil {
-			return jsontypes.Normalized{}, err
-		}
-	}
-
-	for k, plannedVal := range plannedMap {
-		responseVal, exists := responseMap[k]
-
-		if !exists {
-			responseMap[k] = plannedVal
-			continue
-		}
-
-		// Preserve sensitive masked values
-		if strVal, ok := responseVal.(string); ok {
-			if strVal == "" || strVal == "<redacted>" {
-				responseMap[k] = plannedVal
-			}
-		}
-	}
-
-	mergedJSON, err := json.Marshal(responseMap)
-	if err != nil {
-		return jsontypes.Normalized{}, err
-	}
-
-	return jsontypes.NewNormalizedValue(string(mergedJSON)), nil
 }

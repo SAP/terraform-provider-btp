@@ -213,10 +213,10 @@ func (rs *subaccountDestinationGenericResource) Read(ctx context.Context, req re
 	data, diags = destinationGenericResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID, data.Name.ValueString())
 	resp.Diagnostics.Append(diags...)
 
-	data.DestinationConfiguration, err = MergeGenericDestinationConfig(planDestinationConfiguration, data.DestinationConfiguration)
-	if err != nil {
-		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
-		return
+	if !planDestinationConfiguration.IsNull() &&
+		!planDestinationConfiguration.IsUnknown() &&
+		planDestinationConfiguration.ValueString() != "" {
+		data.DestinationConfiguration = planDestinationConfiguration
 	}
 
 	id := data.SubaccountID.ValueString() + "," + data.Name.ValueString() + "," + data.ServiceInstanceID.ValueString()
