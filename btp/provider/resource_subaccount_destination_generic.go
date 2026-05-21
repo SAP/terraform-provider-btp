@@ -271,24 +271,21 @@ func (rs *subaccountDestinationGenericResource) Create(ctx context.Context, req 
 		return
 	}
 
-	plan, diags = destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
+	state, diags := destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
 	resp.Diagnostics.Append(diags...)
-	plan.DestinationConfiguration, err = MergeGenericDestinationConfig(planDestinationConfiguration, plan.DestinationConfiguration)
-	if err != nil {
-		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
-		return
-	}
 
-	id := plan.SubaccountID.ValueString() + "," + name + "," + plan.ServiceInstanceID.ValueString()
-	plan.ID = types.StringValue(id)
+	state.DestinationConfiguration = planDestinationConfiguration
 
-	diags = resp.State.Set(ctx, &plan)
+	id := state.SubaccountID.ValueString() + "," + name + "," + state.ServiceInstanceID.ValueString()
+	state.ID = types.StringValue(id)
+
+	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 
 	identity := subaccountDestinationGenericIdentityModel{
-		SubaccountID:      plan.SubaccountID,
+		SubaccountID:      state.SubaccountID,
 		Name:              types.StringValue(name),
-		ServiceInstanceID: plan.ServiceInstanceID,
+		ServiceInstanceID: state.ServiceInstanceID,
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
@@ -326,26 +323,23 @@ func (rs *subaccountDestinationGenericResource) Update(ctx context.Context, req 
 		return
 	}
 
-	plan, diags = destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
+	state, diags := destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
 	resp.Diagnostics.Append(diags...)
-	plan.DestinationConfiguration, err = MergeGenericDestinationConfig(planDestinationConfiguration, plan.DestinationConfiguration)
-	if err != nil {
-		resp.Diagnostics.AddError(ErrApiMergingDestinationConfiguration, fmt.Sprintf("%s", err))
-		return
-	}
 
-	id := plan.SubaccountID.ValueString() + "," + name + "," + plan.ServiceInstanceID.ValueString()
-	plan.ID = types.StringValue(id)
+	state.DestinationConfiguration = planDestinationConfiguration
 
-	diags = resp.State.Set(ctx, &plan)
+	id := state.SubaccountID.ValueString() + "," + name + "," + state.ServiceInstanceID.ValueString()
+	state.ID = types.StringValue(id)
+
+	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 
 	// WORKAROUND for OpenTofu compatibility
 	// see https://github.com/SAP/terraform-provider-btp/issues/1383
 	identity := subaccountDestinationGenericIdentityModel{
-		SubaccountID:      plan.SubaccountID,
+		SubaccountID:      state.SubaccountID,
 		Name:              types.StringValue(name),
-		ServiceInstanceID: plan.ServiceInstanceID,
+		ServiceInstanceID: state.ServiceInstanceID,
 	}
 
 	diags = resp.Identity.Set(ctx, identity)

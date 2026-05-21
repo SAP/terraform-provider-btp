@@ -237,7 +237,11 @@ func ValidateFromJSON(jsonStr string) error {
 }
 
 // This function add the masked fields which are not fetched in read operation
-func MergeGenericDestinationConfig(plannedConfig jsontypes.Normalized, responseConfig jsontypes.Normalized) (jsontypes.Normalized, error) {
+func MergeGenericDestinationConfig(
+	plannedConfig jsontypes.Normalized,
+	responseConfig jsontypes.Normalized,
+) (jsontypes.Normalized, error) {
+
 	if plannedConfig.IsNull() {
 		return responseConfig, nil
 	}
@@ -246,8 +250,8 @@ func MergeGenericDestinationConfig(plannedConfig jsontypes.Normalized, responseC
 		return plannedConfig, nil
 	}
 
-	plannedMap := make(map[string]string)
-	responseMap := make(map[string]string)
+	plannedMap := make(map[string]any)
+	responseMap := make(map[string]any)
 
 	if !plannedConfig.IsUnknown() {
 		if err := json.Unmarshal([]byte(plannedConfig.ValueString()), &plannedMap); err != nil {
@@ -263,10 +267,17 @@ func MergeGenericDestinationConfig(plannedConfig jsontypes.Normalized, responseC
 
 	for k, plannedVal := range plannedMap {
 		responseVal, exists := responseMap[k]
-		// Some values are not returned by the API or are masked with <redacted>
-		// To achieve consistency between state and plan we take the planned value in those cases
-		if !exists || responseVal == "" || responseVal == "<redacted>" {
+
+		if !exists {
 			responseMap[k] = plannedVal
+			continue
+		}
+
+		// Preserve sensitive masked values
+		if strVal, ok := responseVal.(string); ok {
+			if strVal == "" || strVal == "<redacted>" {
+				responseMap[k] = plannedVal
+			}
 		}
 	}
 
