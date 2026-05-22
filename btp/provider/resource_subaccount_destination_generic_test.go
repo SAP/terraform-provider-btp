@@ -95,6 +95,57 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 
+	t.Run("regression sensitive destination fields remain stable", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_sensitive_regression")
+		defer stopQuietly(rec)
+
+		config := hclProviderFor(user) +
+			hclResourceDestinationGeneric(
+				"res_sensitive",
+				"integration-test-destination",
+				map[string]string{
+					"Name":           "res_sensitive",
+					"Type":           "HTTP",
+					"URL":            "https://myservice.example.com",
+					"ProxyType":      "Internet",
+					"Authentication": "BasicAuthentication",
+					"User":           "test-user",
+					"Password":       "SuperSecretPassword",
+					"Description":    "regression test for masked secrets",
+				},
+			)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: config,
+
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr(
+							"btp_subaccount_destination_generic.res_sensitive",
+							"subaccount_id",
+							regexpValidUUID,
+						),
+
+						resource.TestCheckResourceAttr(
+							"btp_subaccount_destination_generic.res_sensitive",
+							"destination_configuration",
+							"{\"Authentication\":\"BasicAuthentication\",\"Description\":\"regression test for masked secrets\",\"Name\":\"res_sensitive\",\"Password\":\"SuperSecretPassword\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice.example.com\",\"User\":\"test-user\"}",
+						),
+					),
+				},
+
+				{
+					Config:             config,
+					PlanOnly:           true,
+					ExpectNonEmptyPlan: false,
+				},
+			},
+		})
+	})
+
 	t.Run("happy path HTTP destination update", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http_update")
 		defer stopQuietly(rec)
