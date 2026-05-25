@@ -10,6 +10,10 @@ name: Canary Integration Test (Stable) - OpenTofu Provider
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 
 env:
   PATH_TO_TFSCRIPT: "tests/integration-test"
@@ -23,6 +27,9 @@ jobs:
   test:
     name: Canary Integration Test with stable provider
     runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ inputs.environment }}
 
     steps:
       - name: Check out Git repository
