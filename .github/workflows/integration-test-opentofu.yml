@@ -13,23 +13,31 @@ jobs:
   canary-main:
     name: Canary Main
     uses: ./.github/workflows/ot-canary-integration-test-main.yml
+    with:
+      environment: canary
     secrets: inherit
 
   canary-stable:
     name: Canary Stable
     needs: canary-main
     uses: ./.github/workflows/ot-canary-integration-test-stable.yml
+    with:
+      environment: canary
     secrets: inherit
 
   live-main:
     name: Live Main
     uses: ./.github/workflows/ot-live-integration-test-main.yml
+    with:
+      environment: live
     secrets: inherit
 
   live-stable:
     name: Live Stable
     needs: live-main
     uses: ./.github/workflows/ot-live-integration-test-stable.yml
+    with:
+      environment: live
     secrets: inherit
 
   report-failure:

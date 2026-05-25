@@ -10,6 +10,10 @@ name: Live Integration Test (Stable) - Terraform Provider
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 
 env:
   PATH_TO_TFSCRIPT: "tests/integration-test"
@@ -25,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
 
     environment:
-      name: live
+      name: ${{ inputs.environment }}
 
     steps:
       - name: Check out Git repository
