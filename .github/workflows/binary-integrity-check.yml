@@ -47,6 +47,8 @@ permissions:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    environment: 
+      name: btp
     env:
       RELEASE_VERSION: ${{ inputs.RELEASE_VERSION || '' }}
     steps:

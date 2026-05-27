@@ -10,10 +10,6 @@ name: Live Integration Test (Main) - Terraform Provider
 on:
   workflow_dispatch:
   workflow_call:
-    inputs:
-      environment:
-        required: true
-        type: string
 
 env:
   PATH_TO_TFSCRIPT: "tests/integration-test"
@@ -27,11 +23,10 @@ permissions:
 jobs:
   test:
     name: Live Integration Test with local provider
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     environment:
-      name: ${{ inputs.environment }}
+      name: btp
 
     steps:
       - name: Check out Git repository

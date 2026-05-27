@@ -15,9 +15,6 @@ on:
         description: "Path to the terraform script to execute the regression test with"
         required: true
         type: string
-      environment:
-        required: true
-        type: string
 
 env:
   PATH_TO_TFSCRIPT: ${{ inputs.PATH_TO_TFSCRIPT }}
@@ -34,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
 
     environment:
-      name: ${{ inputs.environment }}
+      name: btp
 
     steps:
       - name: Check out Git repository
