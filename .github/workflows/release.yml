@@ -33,6 +33,8 @@ jobs:
   #     RELEASE_VERSION: ${github.ref_name} # Pass the tag name (without 'v' prefix) as the release version to the binary integrity check workflow.
   goreleaser:
     runs-on: ubuntu-latest
+    environment: 
+      name: btp
     needs:
       - call-workflow-test
       - call-workflow-regression-test
