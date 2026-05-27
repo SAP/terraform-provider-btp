@@ -1,5 +1,5 @@
 # Contributing to an SAP Open Source Project
-
+Sample
 ## General Remarks
 
 You are welcome to contribute content (code, documentation etc.) to this open source project.
