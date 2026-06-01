@@ -4,11 +4,13 @@
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/terraform:1": {
-			"version": "1.14.5"
+			"version": "1.15.5",
+			"tflint": "none",
+			"terragrunt": "none"
 		},
 		"ghcr.io/devcontainers/features/github-cli:1": {},
 		"ghcr.io/robbert229/devcontainer-features/opentofu:1": {
-			"version": "1.11.5"
+			"version": "1.12.1"
 		}
 	},
 	"customizations": {
@@ -24,7 +26,7 @@
 	},
 	// If you want to use SSO in the devcontainer, you must install the xdg-utils package (see .devcontainer/scripts/install-xdg.sh).
 	// For BTP CLI: curl https://cli.btp.cloud.sap/btpcli-install.sh | bash
-	"postCreateCommand": "cp ./assets/provider-config-local.txt ~/.terraformrc && mkdir ~/.terraform.d && cp ./assets/credentials.tfrc.json.txt ~/.terraform.d/credentials.tfrc.json",
+	"postCreateCommand": "cp ./assets/provider-config-local.txt ~/.terraformrc && mkdir ~/.terraform.d && cp ./assets/credentials.tfrc.json.txt ~/.terraform.d/credentials.tfrc.json && bash ./.devcontainer/scripts/install-tflint.sh",
 	"hostRequirements": {
 		"memory": "4gb"
 	},
