@@ -54,7 +54,7 @@ func subaccountSecuritySettingsValueFrom(ctx context.Context, value xsuaa_settin
 		iframeDomainsList = strings.Fields(value.IframeDomains)
 	}
 
-	if len(value.Links.HomeRedirect) > 0 {
+	if value.Links != nil && len(value.Links.HomeRedirect) > 0 {
 		tenantSettings.HomeRedirectUrl = types.StringValue(value.Links.HomeRedirect)
 	} else {
 		tenantSettings.HomeRedirectUrl = types.StringNull()
@@ -108,7 +108,7 @@ func subaccountSecuritySettingsDataSourceValueFrom(ctx context.Context, value xs
 		iframeDomainsList = strings.Fields(value.IframeDomains)
 	}
 
-	if len(value.Links.HomeRedirect) > 0 {
+	if value.Links != nil && len(value.Links.HomeRedirect) > 0 {
 		tenantSettings.HomeRedirectUrl = types.StringValue(value.Links.HomeRedirect)
 	} else {
 		tenantSettings.HomeRedirectUrl = types.StringNull()
