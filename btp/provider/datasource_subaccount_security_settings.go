@@ -76,6 +76,18 @@ __Further documentation:__
 				ElementType:         types.StringType,
 				Computed:            true,
 			},
+			"use_idp_user_name_in_tokens": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the user name from the identity provider is used in the tokens.",
+				Computed:            true,
+			},
+			"auto_rotate_signing_key": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the signing key for access tokens is rotated automatically.",
+				Computed:            true,
+			},
+			"home_redirect_url": schema.StringAttribute{
+				MarkdownDescription: "The URL to which users are redirected. To avoid open redirect attacks, we recommend that you redirect to a safe and valid URL when users log out.",
+				Computed:            true,
+			},
 		},
 	}
 }

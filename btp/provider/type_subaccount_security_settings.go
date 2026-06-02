@@ -15,10 +15,13 @@ type subaccountSecuritySettingsType struct {
 	CustomEmailDomains                types.Set    `tfsdk:"custom_email_domains"`
 	DefaultIdentityProvider           types.String `tfsdk:"default_identity_provider"`
 	TreatUsersWithSameEmailAsSameUser types.Bool   `tfsdk:"treat_users_with_same_email_as_same_user"`
+	HomeRedirectUrl                   types.String `tfsdk:"home_redirect_url"`
 	AccessTokenValidity               types.Int64  `tfsdk:"access_token_validity"`
 	RefreshTokenValidity              types.Int64  `tfsdk:"refresh_token_validity"`
 	IframeDomains                     types.String `tfsdk:"iframe_domains"`
 	IframeDomainsList                 types.List   `tfsdk:"iframe_domains_list"`
+	UseIdpUserNameInTokens            types.Bool   `tfsdk:"use_idp_user_name_in_tokens"`
+	AutoRotateSigningKey              types.Bool   `tfsdk:"auto_rotate_signing_key"`
 }
 
 func subaccountSecuritySettingsValueFrom(ctx context.Context, value xsuaa_settings.TenantSettingsResp, transferIframestring bool) (tenantSettings subaccountSecuritySettingsType, diags diag.Diagnostics) {
@@ -50,7 +53,16 @@ func subaccountSecuritySettingsValueFrom(ctx context.Context, value xsuaa_settin
 	if value.IframeDomains != "" {
 		iframeDomainsList = strings.Fields(value.IframeDomains)
 	}
+
+	if len(value.Links.HomeRedirect) > 0 {
+		tenantSettings.HomeRedirectUrl = types.StringValue(value.Links.HomeRedirect)
+	} else {
+		tenantSettings.HomeRedirectUrl = types.StringNull()
+	}
+
 	tenantSettings.IframeDomainsList, _ = types.ListValueFrom(ctx, types.StringType, iframeDomainsList)
+	tenantSettings.UseIdpUserNameInTokens = types.BoolValue(value.UseIdpUserNameInTokens)
+	tenantSettings.AutoRotateSigningKey = types.BoolValue(value.RotateSigningKeyAutomatically)
 
 	return
 }
@@ -63,7 +75,10 @@ type subaccountSecuritySettingsDataSourceType struct {
 	AccessTokenValidity               types.Int64  `tfsdk:"access_token_validity"`
 	RefreshTokenValidity              types.Int64  `tfsdk:"refresh_token_validity"`
 	IframeDomains                     types.String `tfsdk:"iframe_domains"`
-	IframDomainsList                  types.List   `tfsdk:"iframe_domains_list"`
+	IframeDomainsList                 types.List   `tfsdk:"iframe_domains_list"`
+	UseIdpUserNameInTokens            types.Bool   `tfsdk:"use_idp_user_name_in_tokens"`
+	AutoRotateSigningKey              types.Bool   `tfsdk:"auto_rotate_signing_key"`
+	HomeRedirectUrl                   types.String `tfsdk:"home_redirect_url"`
 }
 
 func subaccountSecuritySettingsDataSourceValueFrom(ctx context.Context, value xsuaa_settings.TenantSettingsResp) (tenantSettings subaccountSecuritySettingsDataSourceType, diags diag.Diagnostics) {
@@ -93,7 +108,15 @@ func subaccountSecuritySettingsDataSourceValueFrom(ctx context.Context, value xs
 		iframeDomainsList = strings.Fields(value.IframeDomains)
 	}
 
-	tenantSettings.IframDomainsList, _ = types.ListValueFrom(ctx, types.StringType, iframeDomainsList)
+	if len(value.Links.HomeRedirect) > 0 {
+		tenantSettings.HomeRedirectUrl = types.StringValue(value.Links.HomeRedirect)
+	} else {
+		tenantSettings.HomeRedirectUrl = types.StringNull()
+	}
+
+	tenantSettings.IframeDomainsList, _ = types.ListValueFrom(ctx, types.StringType, iframeDomainsList)
+	tenantSettings.UseIdpUserNameInTokens = types.BoolValue(value.UseIdpUserNameInTokens)
+	tenantSettings.AutoRotateSigningKey = types.BoolValue(value.RotateSigningKeyAutomatically)
 
 	return
 }

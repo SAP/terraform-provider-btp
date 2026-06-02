@@ -39,6 +39,8 @@ type SecuritySettingsUpdateInput struct {
 	HomeRedirect                      string   `btpcli:"homeRedirect"`
 	AccessTokenValidity               int      `btpcli:"accessTokenValidity"`
 	RefreshTokenValidity              int      `btpcli:"refreshTokenValidity"`
+	UseIdpUserNameInTokens            bool     `btpcli:"useIdpUserNameInTokens"`
+	AutoRotateSigningKey              bool     `btpcli:"rotateSigningKeyAutomatically"`
 }
 
 func (f *securitySettingsFacade) UpdateByGlobalAccount(ctx context.Context, args SecuritySettingsUpdateInput) (xsuaa_settings.TenantSettingsResp, CommandResponse, error) {

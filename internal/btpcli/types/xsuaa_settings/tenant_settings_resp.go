@@ -31,4 +31,10 @@ type TenantSettingsResp struct {
 
 	// Indicates whether the fallback at logon is enabled or not that if the logon ID provided in the token of the identity provider is unknown, the service attempts to log on the user with the e-mail address from the token. When false, the service attempts to create a missing user if user creation at logon is allowed. Note that before you can switch this parameter from false to true again, ensure that e-mail addresses are unique among your shadow users.
 	TreatUsersWithSameEmailAsSameUser bool `json:"treatUsersWithSameEmailAsSameUser,omitempty"`
+
+	// Indicates whether the user name from the identity provider is used in the tokens.
+	UseIdpUserNameInTokens bool `json:"useIdpUserNameInTokens,omitempty"`
+
+	// Indicates whether the signing key for access tokens is rotated automatically.
+	RotateSigningKeyAutomatically bool `json:"rotateSigningKeyAutomatically,omitempty"`
 }

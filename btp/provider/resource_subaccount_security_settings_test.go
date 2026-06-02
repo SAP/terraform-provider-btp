@@ -21,7 +21,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettings("uut", "integration-test-security-settings", "terraformint-platform", 3601, 3602, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettings("uut", "integration-test-security-settings", "terraformint-platform", 3601, 3602, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test", true, true, "https://www.sap.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "access_token_validity", "3601"),
@@ -33,10 +33,13 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.1", "domain2.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "auto_rotate_signing_key", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "use_idp_user_name_in_tokens", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "home_redirect_url", "https://www.sap.com"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettings("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "https://iframedomain.test https://updated.iframedomain.test"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettings("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "https://iframedomain.test https://updated.iframedomain.test", false, false, "https://www.sap.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "access_token_validity", "4000"),
@@ -48,6 +51,9 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test https://updated.iframedomain.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "2"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.1", "https://updated.iframedomain.test"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "auto_rotate_signing_key", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "use_idp_user_name_in_tokens", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "home_redirect_url", "https://www.sap.com"),
 					),
 				},
 			},
@@ -62,7 +68,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 3601, 3602, true, "[\"domain1.test\"]", "[\"https://iframedomainlist.test\"]"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 3601, 3602, true, "[\"domain1.test\"]", "[\"https://iframedomainlist.test\"]", true, true, "https://www.sap.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "access_token_validity", "3601"),
@@ -73,6 +79,9 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "1"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.0", "https://iframedomainlist.test"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "auto_rotate_signing_key", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "use_idp_user_name_in_tokens", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "home_redirect_url", "https://www.sap.com"),
 					),
 					ConfigStateChecks: []statecheck.StateCheck{
 						statecheck.ExpectIdentity(
@@ -100,7 +109,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "[\"https://iframedomainlist.test\"]"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "[\"https://iframedomainlist.test\"]", true, true, "https://www.sap.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "access_token_validity", "4000"),
@@ -112,10 +121,13 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckNoResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "1"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.0", "https://iframedomainlist.test"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "auto_rotate_signing_key", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "use_idp_user_name_in_tokens", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "home_redirect_url", "https://www.sap.com"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "[\"https://iframedomainlist.test\",\"https://updated.iframedomainlist.test\"]"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "[\"https://iframedomainlist.test\",\"https://updated.iframedomainlist.test\"]", true, true, "https://www.sap.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "access_token_validity", "4000"),
@@ -128,6 +140,9 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "2"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.0", "https://iframedomainlist.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.1", "https://updated.iframedomainlist.test"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "auto_rotate_signing_key", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "use_idp_user_name_in_tokens", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "home_redirect_url", "https://www.sap.com"),
 					),
 				},
 				{
@@ -149,7 +164,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettings("uut", "integration-test-security-settings", "terraformint-platform", 3601, 3602, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettings("uut", "integration-test-security-settings", "terraformint-platform", 3601, 3602, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test", true, true, "https://www.sap.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "access_token_validity", "3601"),
@@ -161,11 +176,14 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.1", "domain2.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "1"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "auto_rotate_signing_key", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "use_idp_user_name_in_tokens", "true"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "home_redirect_url", "https://www.sap.com"),
 					),
 				},
 
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettings("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", ""),
+					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettings("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "", false, false, "https://www.sap.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "access_token_validity", "4000"),
@@ -176,6 +194,9 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.#", "1"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains", ""),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "0"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "auto_rotate_signing_key", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "use_idp_user_name_in_tokens", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "home_redirect_url", "https://www.sap.com"),
 					),
 				},
 			},
@@ -191,7 +212,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 3601, 3602, false, "[\"domain1.test\"]", "[\"https://iframedomainlist.test\",\"https://updated.iframedomainlist.test\"]"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 3601, 3602, false, "[\"domain1.test\"]", "[\"https://iframedomainlist.test\",\"https://updated.iframedomainlist.test\"]", false, false, "https://www.sap.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "access_token_validity", "3601"),
@@ -202,11 +223,14 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckNoResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "2"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "auto_rotate_signing_key", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "use_idp_user_name_in_tokens", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "home_redirect_url", "https://www.sap.com"),
 					),
 				},
 
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "[]"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSecuritySettingsWithIFrameDomainsList("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "[]", false, false, "https://www.sap.com"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_security_settings.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "access_token_validity", "4000"),
@@ -217,6 +241,9 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "custom_email_domains.#", "1"),
 						resource.TestCheckNoResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains"),
 						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "iframe_domains_list.#", "0"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "auto_rotate_signing_key", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "use_idp_user_name_in_tokens", "false"),
+						resource.TestCheckResourceAttr("btp_subaccount_security_settings.uut", "home_redirect_url", "https://www.sap.com"),
 					),
 				},
 			},
@@ -228,7 +255,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountSecuritySettings("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", " "),
+					Config:      hclResourceSubaccountSecuritySettings("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", " ", false, false, "https://www.sap.com"),
 					ExpectError: regexp.MustCompile(`Attribute iframe_domains The attribute iframe_domains must be empty`),
 				},
 			},
@@ -241,7 +268,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountSecuritySettingsWithIFrameDomainsListAndIframeDomains("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "https://iframedomain.test", "[\"https://iframedomain.test\"]"),
+					Config:      hclResourceSubaccountSecuritySettingsWithIFrameDomainsListAndIframeDomains("uut", "integration-test-security-settings", "terraformint-platform", 4000, 3602, false, "[\"domain1.test\"]", "https://iframedomain.test", "[\"https://iframedomain.test\"]", false, false, "https://www.sap.com"),
 					ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
 				},
 			},
@@ -249,7 +276,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 	})
 }
 
-func hclResourceSubaccountSecuritySettings(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomains string) string {
+func hclResourceSubaccountSecuritySettings(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomains string, autoRotateSigningKey bool, useIdpUserNameInTokens bool, homeRedirectURL string) string {
 	template := `
 data "btp_subaccounts" "all" {}
 resource "btp_subaccount_security_settings" "%s" {
@@ -265,11 +292,14 @@ resource "btp_subaccount_security_settings" "%s" {
     custom_email_domains = %v
 
 		iframe_domains = "%s"
+		use_idp_user_name_in_tokens = %v
+  auto_rotate_signing_key = %v
+  home_redirect_url = "%s"
 }`
-	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains)
+	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains, useIdpUserNameInTokens, autoRotateSigningKey, homeRedirectURL)
 }
 
-func hclResourceSubaccountSecuritySettingsWithIFrameDomainsListAndIframeDomains(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomains string, iFrameDomainsList string) string {
+func hclResourceSubaccountSecuritySettingsWithIFrameDomainsListAndIframeDomains(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomains string, iFrameDomainsList string, autoRotateSigningKey bool, useIdpUserNameInTokens bool, homeRedirectURL string) string {
 	template := `
 data "btp_subaccounts" "all" {}
 resource "btp_subaccount_security_settings" "%s" {
@@ -286,11 +316,14 @@ resource "btp_subaccount_security_settings" "%s" {
 
 		iframe_domains = "%s"
 		iframe_domains_list = %v
+		use_idp_user_name_in_tokens = %v
+		  auto_rotate_signing_key = %v
+		    home_redirect_url = "%s"
 }`
-	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains, iFrameDomainsList)
+	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains, iFrameDomainsList, useIdpUserNameInTokens, autoRotateSigningKey, homeRedirectURL)
 }
 
-func hclResourceSubaccountSecuritySettingsWithIFrameDomainsList(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomainsList string) string {
+func hclResourceSubaccountSecuritySettingsWithIFrameDomainsList(resourceName string, subaccountName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomainsList string, autoRotateSigningKey bool, useIdpUserNameInTokens bool, homeRedirectURL string) string {
 	template := `
 data "btp_subaccounts" "all" {}
 resource "btp_subaccount_security_settings" "%s" {
@@ -305,8 +338,11 @@ resource "btp_subaccount_security_settings" "%s" {
 
     custom_email_domains = %v
 		iframe_domains_list = %v
+		use_idp_user_name_in_tokens = %v
+		  auto_rotate_signing_key = %v
+		    home_redirect_url = "%s"
 }`
-	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomainsList)
+	return fmt.Sprintf(template, resourceName, subaccountName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomainsList, useIdpUserNameInTokens, autoRotateSigningKey, homeRedirectURL)
 }
 
 func getSecuritySettingsImportStateId(resourceName string) resource.ImportStateIdFunc {
