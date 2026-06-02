@@ -67,6 +67,14 @@ __Further documentation:__
 				MarkdownDescription: "The new domains of the iframe. Enter as string. To provide multiple domains, separate them by spaces.",
 				Computed:            true,
 			},
+			"use_idp_user_name_in_tokens": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the user name from the identity provider is used in the tokens.",
+				Computed:            true,
+			},
+			"auto_rotate_signing_key": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the signing key for access tokens is rotated automatically.",
+				Computed:            true,
+			},
 		},
 	}
 }

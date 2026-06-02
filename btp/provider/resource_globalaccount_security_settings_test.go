@@ -20,7 +20,7 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "terraformint-platform", 4500, 4500, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "terraformint-platform", 4500, 4500, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test", true, true),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "access_token_validity", "4500"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "refresh_token_validity", "4500"),
@@ -29,10 +29,12 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.1", "domain2.test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "auto_rotate_signing_key", "true"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "use_idp_user_name_in_tokens", "true"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "terraformint-platform", 4500, 4500, false, "[\"domain1.test\"]", "https://iframedomain.test https://updated.iframedomain.test"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "terraformint-platform", 4500, 4500, false, "[\"domain1.test\"]", "https://iframedomain.test https://updated.iframedomain.test", false, false),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "access_token_validity", "4500"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "refresh_token_validity", "4500"),
@@ -40,6 +42,8 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.#", "1"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test https://updated.iframedomain.test"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "auto_rotate_signing_key", "false"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "use_idp_user_name_in_tokens", "false"),
 					),
 				},
 				{
@@ -59,7 +63,7 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "terraformint-platform", 4500, 4500, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "terraformint-platform", 4500, 4500, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test", true, true),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "access_token_validity", "4500"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "refresh_token_validity", "4500"),
@@ -68,6 +72,8 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.1", "domain2.test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "auto_rotate_signing_key", "true"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "use_idp_user_name_in_tokens", "true"),
 					),
 					ConfigStateChecks: []statecheck.StateCheck{
 						statecheck.ExpectIdentity(
@@ -96,7 +102,7 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "terraformint-platform", 4500, 4500, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test"),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "terraformint-platform", 4500, 4500, true, "[\"domain1.test\",\"domain2.test\"]", "https://iframedomain.test", true, true),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "access_token_validity", "4500"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "refresh_token_validity", "4500"),
@@ -105,16 +111,20 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.0", "domain1.test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.1", "domain2.test"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "iframe_domains", "https://iframedomain.test"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "auto_rotate_signing_key", "true"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "use_idp_user_name_in_tokens", "true"),
 					),
 				},
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "sap.default", 4500, 4500, false, "[]", ""),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountSecuritySettings("uut", "sap.default", 4500, 4500, false, "[]", "", false, false),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "access_token_validity", "4500"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "refresh_token_validity", "4500"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "treat_users_with_same_email_as_same_user", "false"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "custom_email_domains.#", "0"),
 						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "iframe_domains", ""),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "auto_rotate_signing_key", "false"),
+						resource.TestCheckResourceAttr("btp_globalaccount_security_settings.uut", "use_idp_user_name_in_tokens", "false"),
 					),
 				},
 				{
@@ -132,7 +142,7 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceGlobalaccountSecuritySettings("uut", "sap.default", 4500, 4500, false, "[]", " "),
+					Config:      hclResourceGlobalaccountSecuritySettings("uut", "sap.default", 4500, 4500, false, "[]", " ", false, false),
 					ExpectError: regexp.MustCompile(`Attribute iframe_domains The attribute iframe_domains must be empty`),
 				},
 			},
@@ -140,7 +150,7 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 	})
 }
 
-func hclResourceGlobalaccountSecuritySettings(resourceName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomains string) string {
+func hclResourceGlobalaccountSecuritySettings(resourceName string, defaultIdp string, accessTokenValidity int, refreshTokenValidity int, treatUsersWithSameEmailAsSameUser bool, customEmailDomains string, iFrameDomains string, autoRotateSigningKey bool, useIdpUserNameInTokens bool) string {
 	template := `
 resource "btp_globalaccount_security_settings" "%s" {
     default_identity_provider = "%s"
@@ -153,7 +163,9 @@ resource "btp_globalaccount_security_settings" "%s" {
     custom_email_domains = %v
 
 		iframe_domains = "%s"
+		auto_rotate_signing_key = %v
+		use_idp_user_name_in_tokens = %v
 }`
 
-	return fmt.Sprintf(template, resourceName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains)
+	return fmt.Sprintf(template, resourceName, defaultIdp, accessTokenValidity, refreshTokenValidity, treatUsersWithSameEmailAsSameUser, customEmailDomains, iFrameDomains, autoRotateSigningKey, useIdpUserNameInTokens)
 }

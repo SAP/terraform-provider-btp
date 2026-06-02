@@ -14,6 +14,8 @@ type globalaccountSecuritySettingsType struct {
 	TreatUsersWithSameEmailAsSameUser types.Bool   `tfsdk:"treat_users_with_same_email_as_same_user"`
 	AccessTokenValidity               types.Int64  `tfsdk:"access_token_validity"`
 	RefreshTokenValidity              types.Int64  `tfsdk:"refresh_token_validity"`
+	UseIdpUserNameInTokens            types.Bool   `tfsdk:"use_idp_user_name_in_tokens"`
+	AutoRotateSigningKey              types.Bool   `tfsdk:"auto_rotate_signing_key"`
 	IframeDomains                     types.String `tfsdk:"iframe_domains"`
 	Id                                types.String `tfsdk:"id"`
 }
@@ -39,6 +41,8 @@ func globalaccountSecuritySettingsValueFrom(ctx context.Context, value xsuaa_set
 	}
 
 	tenantSettings.IframeDomains = types.StringValue(value.IframeDomains)
+	tenantSettings.UseIdpUserNameInTokens = types.BoolValue(value.UseIdpUserNameInTokens)
+	tenantSettings.AutoRotateSigningKey = types.BoolValue(value.RotateSigningKeyAutomatically)
 
 	return
 }
@@ -50,6 +54,8 @@ type globalaccountSecuritySettingsDataSourceType struct {
 	AccessTokenValidity               types.Int64  `tfsdk:"access_token_validity"`
 	RefreshTokenValidity              types.Int64  `tfsdk:"refresh_token_validity"`
 	IframeDomains                     types.String `tfsdk:"iframe_domains"`
+	UseIdpUserNameInTokens            types.Bool   `tfsdk:"use_idp_user_name_in_tokens"`
+	AutoRotateSigningKey              types.Bool   `tfsdk:"auto_rotate_signing_key"`
 }
 
 func globalaccountSecuritySettingsDataSourceValueFrom(ctx context.Context, value xsuaa_settings.TenantSettingsResp) (tenantSettings globalaccountSecuritySettingsDataSourceType, diags diag.Diagnostics) {
@@ -73,6 +79,8 @@ func globalaccountSecuritySettingsDataSourceValueFrom(ctx context.Context, value
 	}
 
 	tenantSettings.IframeDomains = types.StringValue(value.IframeDomains)
+	tenantSettings.UseIdpUserNameInTokens = types.BoolValue(value.UseIdpUserNameInTokens)
+	tenantSettings.AutoRotateSigningKey = types.BoolValue(value.RotateSigningKeyAutomatically)
 
 	return
 }

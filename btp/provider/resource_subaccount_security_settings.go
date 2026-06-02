@@ -124,6 +124,21 @@ __Further documentation:__
 					),
 				},
 			},
+			"use_idp_user_name_in_tokens": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the user name from the identity provider is used in the tokens.",
+				Optional:            true,
+				Computed:            true,
+			},
+			"auto_rotate_signing_key": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the signing key for access tokens is rotated automatically.",
+				Optional:            true,
+				Computed:            true,
+			},
+			"home_redirect_url": schema.StringAttribute{
+				MarkdownDescription: "The URL to which users are redirected. To avoid open redirect attacks, we recommend that you redirect to a safe and valid URL when users log out.",
+				Computed:            true,
+				Optional:            true,
+			},
 		},
 	}
 }
@@ -227,6 +242,9 @@ func (rs *subaccountSecuritySettingsResource) Create(ctx context.Context, req re
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
 		RefreshTokenValidity:              int(plan.RefreshTokenValidity.ValueInt64()),
 		IFrame:                            iFrameDomains,
+		UseIdpUserNameInTokens:            plan.UseIdpUserNameInTokens.ValueBool(),
+		AutoRotateSigningKey:              plan.AutoRotateSigningKey.ValueBool(),
+		HomeRedirect:                      plan.HomeRedirectUrl.ValueString(),
 	})
 
 	if err != nil {
@@ -312,6 +330,9 @@ func (rs *subaccountSecuritySettingsResource) Update(ctx context.Context, req re
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
 		RefreshTokenValidity:              int(plan.RefreshTokenValidity.ValueInt64()),
 		IFrame:                            iFrameDomain,
+		UseIdpUserNameInTokens:            plan.UseIdpUserNameInTokens.ValueBool(),
+		AutoRotateSigningKey:              plan.AutoRotateSigningKey.ValueBool(),
+		HomeRedirect:                      plan.HomeRedirectUrl.ValueString(),
 	})
 
 	if err != nil {
@@ -362,6 +383,9 @@ func (rs *subaccountSecuritySettingsResource) Delete(ctx context.Context, req re
 		AccessTokenValidity:               -1,
 		RefreshTokenValidity:              -1,
 		IFrame:                            " ", // The string should be empty, however to do the update the value must be " " (space)
+		UseIdpUserNameInTokens:            false,
+		AutoRotateSigningKey:              false,
+		HomeRedirect:                      "", // The string should be empty, however to do the update the value must be "" (empty string)
 	})
 
 	if err != nil {

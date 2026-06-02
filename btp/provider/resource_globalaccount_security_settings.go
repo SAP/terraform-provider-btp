@@ -101,6 +101,16 @@ __Further documentation:__
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"use_idp_user_name_in_tokens": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the user name from the identity provider is used in the tokens.",
+				Optional:            true,
+				Computed:            true,
+			},
+			"auto_rotate_signing_key": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the signing key for access tokens is rotated automatically.",
+				Optional:            true,
+				Computed:            true,
+			},
 		},
 	}
 }
@@ -180,6 +190,8 @@ func (rs *globalaccountSecuritySettingsResource) Create(ctx context.Context, req
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
 		RefreshTokenValidity:              int(plan.RefreshTokenValidity.ValueInt64()),
 		IFrame:                            plan.IframeDomains.ValueString(),
+		UseIdpUserNameInTokens:            plan.UseIdpUserNameInTokens.ValueBool(),
+		AutoRotateSigningKey:              plan.AutoRotateSigningKey.ValueBool(),
 	})
 
 	if err != nil {
@@ -234,6 +246,8 @@ func (rs *globalaccountSecuritySettingsResource) Update(ctx context.Context, req
 		AccessTokenValidity:               int(plan.AccessTokenValidity.ValueInt64()),
 		RefreshTokenValidity:              int(plan.RefreshTokenValidity.ValueInt64()),
 		IFrame:                            iFrameDomain,
+		UseIdpUserNameInTokens:            plan.UseIdpUserNameInTokens.ValueBool(),
+		AutoRotateSigningKey:              plan.AutoRotateSigningKey.ValueBool(),
 	})
 
 	if err != nil {
@@ -277,6 +291,8 @@ func (rs *globalaccountSecuritySettingsResource) Delete(ctx context.Context, req
 		AccessTokenValidity:               -1,
 		RefreshTokenValidity:              -1,
 		IFrame:                            " ", // The string should be empty, however to do the update the value must be " " (space)
+		UseIdpUserNameInTokens:            false,
+		AutoRotateSigningKey:              false,
 	})
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Security Settings (Global Account)", fmt.Sprintf("%s", err))

@@ -76,6 +76,8 @@ func TestSecuritySettingsFacade_UpdateByGlobalAccount(t *testing.T) {
 				"homeRedirect":                      "my-new-redirect",
 				"accessTokenValidity":               "3600",
 				"refreshTokenValidity":              "3600",
+				"rotateSigningKeyAutomatically":     "false",
+				"useIdpUserNameInTokens":            "false",
 			})
 		}))
 		defer srv.Close()
@@ -116,6 +118,8 @@ func TestSecuritySettingsFacade_UpdateBySubaccount(t *testing.T) {
 				"homeRedirect":                      "my-new-redirect",
 				"accessTokenValidity":               "3600",
 				"refreshTokenValidity":              "3600",
+				"rotateSigningKeyAutomatically":     "false",
+				"useIdpUserNameInTokens":            "false",
 			})
 		}))
 		defer srv.Close()
@@ -128,6 +132,8 @@ func TestSecuritySettingsFacade_UpdateBySubaccount(t *testing.T) {
 			HomeRedirect:                      "my-new-redirect",
 			AccessTokenValidity:               3600,
 			RefreshTokenValidity:              3600,
+			AutoRotateSigningKey:              false,
+			UseIdpUserNameInTokens:            false,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
