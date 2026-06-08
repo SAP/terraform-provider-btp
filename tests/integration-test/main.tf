@@ -68,11 +68,13 @@ resource "btp_globalaccount_role_collection_assignment" "grca_gaa" {
 # global account trust configuration
 ###
 
-resource "btp_globalaccount_trust_configuration" "gtc_idp_testing" {
-  identity_provider = var.testing_idp
-  name              = split(".", var.testing_idp)[0]
-  description       = "Custom Platform Identity Provider for Test Cases"
-}
+// The resource btp_globalaccount_trust_configuration is currently not used in the integration tests, since the creation of a custom identity provider is not possible in the live environment.
+
+# resource "btp_globalaccount_trust_configuration" "gtc_idp_testing" {
+#   identity_provider = var.testing_idp
+#   name              = split(".", var.testing_idp)[0]
+#   description       = "Custom Platform Identity Provider for Test Cases"
+# }
 
 ###
 # directories
