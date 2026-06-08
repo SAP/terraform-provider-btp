@@ -14,10 +14,10 @@ variable "region" {
   description = "The region where the project account shall be created in."
 }
 
-variable "testing_idp" {
-  description = "The IDP used for testing. Contains test users and should not be used for other purposes. URL must not contain a protocol prefix. Must not be part of trusted_idps."
-  type        = string
-}
+# variable "testing_idp" {
+#   description = "The IDP used for testing. Contains test users and should not be used for other purposes. URL must not contain a protocol prefix. Must not be part of trusted_idps."
+#   type        = string
+# }
 
 variable "subaccount_subdomain_extension" {
   type        = string
