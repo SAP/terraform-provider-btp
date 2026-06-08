@@ -1,6 +1,6 @@
 cli_server                         = "https://cli.btp.cloud.sap"
 region                             = "us10"
-testing_idp                        = "terraformeds2.accounts.ondemand.com"
+# testing_idp                        = "terraformeds2.accounts.ondemand.com"
 subaccount_subdomain_extension     = "live-main"
 globalaccount_role_template_app_id = "cis-central!b14"
 directory_role_template_app_id     = "cis-central!b14"
