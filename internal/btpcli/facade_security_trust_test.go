@@ -182,6 +182,9 @@ func TestSecurityTrustFacade_CreateBySubaccount(t *testing.T) {
 	description := "this is a description for the ias tenant"
 	origin := "custom-origin-platform"
 	domain := "custom-domain"
+	linkTextForUserLogon := "link-text"
+	availableForUserLogon := true
+	autoCreateShadowUsers := false
 
 	t.Run("constructs the CLI params correctly - minimal", func(t *testing.T) {
 		var srvCalled bool
@@ -217,16 +220,22 @@ func TestSecurityTrustFacade_CreateBySubaccount(t *testing.T) {
 				"description":  description,
 				"origin":       origin,
 				"domain":       domain,
+				"linkText":     linkTextForUserLogon,
+				"userLogon":    strconv.FormatBool(availableForUserLogon),
+				"shadowUsers":  strconv.FormatBool(autoCreateShadowUsers),
 			})
 		}))
 		defer srv.Close()
 
 		_, res, err := uut.Security.Trust.CreateBySubaccount(context.TODO(), subaccountId, TrustConfigurationCreateInput{
-			IdentityProvider: idp,
-			Name:             &name,
-			Description:      &description,
-			Origin:           &origin,
-			Domain:           &domain,
+			IdentityProvider:      idp,
+			Name:                  &name,
+			Description:           &description,
+			Origin:                &origin,
+			Domain:                &domain,
+			LinkText:              &linkTextForUserLogon,
+			AvailableForUserLogon: &availableForUserLogon,
+			AutoCreateShadowUsers: &autoCreateShadowUsers,
 		})
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {

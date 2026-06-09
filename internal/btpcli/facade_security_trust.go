@@ -46,11 +46,14 @@ func (f *securityTrustFacade) GetBySubaccount(ctx context.Context, subaccountId 
 }
 
 type TrustConfigurationCreateInput struct {
-	IdentityProvider string  `btpcli:"iasTenantUrl"`
-	Name             *string `btpcli:"name"`
-	Description      *string `btpcli:"description"`
-	Origin           *string `btpcli:"origin"`
-	Domain           *string `btpcli:"domain"`
+	IdentityProvider      string  `btpcli:"iasTenantUrl"`
+	Name                  *string `btpcli:"name"`
+	Description           *string `btpcli:"description"`
+	Origin                *string `btpcli:"origin"`
+	Domain                *string `btpcli:"domain"`
+	LinkText              *string `btpcli:"linkText"`    // subaccount only
+	AvailableForUserLogon *bool   `btpcli:"userLogon"`   // subaccount only
+	AutoCreateShadowUsers *bool   `btpcli:"shadowUsers"` // subaccount only
 }
 
 func (f *securityTrustFacade) CreateByGlobalAccount(ctx context.Context, args TrustConfigurationCreateInput) (xsuaa_trust.ModifyTrustConfigurationResponseObject, CommandResponse, error) {

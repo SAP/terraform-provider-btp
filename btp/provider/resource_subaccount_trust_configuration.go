@@ -263,28 +263,36 @@ func (rs *subaccountTrustConfigurationResource) Create(ctx context.Context, req 
 		cliCreateReq.Origin = &origin
 	}
 
+	if !plan.LinkText.IsUnknown() {
+		linkText := plan.LinkText.ValueString()
+		cliCreateReq.LinkText = &linkText
+	}
+
+	availableForUserLogon := plan.AvailableForUserLogon.ValueBool()
+	cliCreateReq.AvailableForUserLogon = &availableForUserLogon
+	autoCreateShadowUsers := plan.AutoCreateShadowUsers.ValueBool()
+	cliCreateReq.AutoCreateShadowUsers = &autoCreateShadowUsers
+
 	createRes, _, err := rs.cli.Security.Trust.CreateBySubaccount(ctx, plan.SubaccountId.ValueString(), cliCreateReq)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Trust Configuration (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
 
-	availableForUserLogon := plan.AvailableForUserLogon.ValueBool()
-	autoCreateShadowUsers := plan.AutoCreateShadowUsers.ValueBool()
+	// Status cannot be set via create request, so we need to update the trust configuration after creation
+	// We transfer all values to avoid side effects of empty values for optional fields in the update request.
 	status := plan.Status.ValueString()
 	cliUpdateReq := btpcli.TrustConfigurationUpdateInput{
 		OriginKey: createRes.OriginKey,
 		// TODO: remove repeating domain and idp, see NGPBUG-364505
 		IdentityProvider:      &cliCreateReq.IdentityProvider,
+		Name:                  cliCreateReq.Name,
+		Description:           cliCreateReq.Description,
 		Domain:                cliCreateReq.Domain,
+		LinkText:              cliCreateReq.LinkText,
 		AvailableForUserLogon: &availableForUserLogon,
 		AutoCreateShadowUsers: &autoCreateShadowUsers,
 		Status:                &status,
-	}
-
-	if !plan.LinkText.IsUnknown() {
-		linkText := plan.LinkText.ValueString()
-		cliUpdateReq.LinkText = &linkText
 	}
 
 	updateRes, _, err := rs.cli.Security.Trust.UpdateBySubaccount(ctx, plan.SubaccountId.ValueString(), cliUpdateReq)
