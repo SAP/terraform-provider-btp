@@ -29,7 +29,7 @@ on:
   workflow_dispatch:
     inputs:
       RELEASE_VERSION:
-        description: "Release version to use (e.g. 1.23.0). If omitted, the latest release tag is fetched automatically."
+        description: "Release version to use (e.g. 1.23.1). If omitted, the latest release tag is fetched automatically."
         required: false
         type: string
   workflow_call:
@@ -47,7 +47,7 @@ permissions:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
-    environment: 
+    environment:
       name: btp
     env:
       RELEASE_VERSION: ${{ inputs.RELEASE_VERSION || '' }}
