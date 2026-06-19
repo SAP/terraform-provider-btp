@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.2.0
         with:
           go-version-file: "go.mod"
@@ -55,7 +55,7 @@ jobs:
     name: Docu Generation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85
         with:
           terraform_version: ${{ env.LATEST_TF_VERSION }}
@@ -75,7 +75,7 @@ jobs:
     name: Go Fix
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.2.0
         with:
           go-version-file: "go.mod"
@@ -91,7 +91,7 @@ jobs:
     name: Fixture Drift Detection
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - run: .github/scripts/fixtureDriftDetect.sh btp/provider/fixtures/
@@ -121,7 +121,7 @@ jobs:
           - "1.14.*"
           - "1.15.*"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.2.0
         with:
           go-version-file: "go.mod"
@@ -160,7 +160,7 @@ jobs:
     environment: 
       name: btp
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - uses: actions/download-artifact@v8
