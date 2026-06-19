@@ -104,6 +104,7 @@ func (ds *directoryEntitlementDataSource) Read(ctx context.Context, req datasour
 		data.DirectoryId.ValueString(),
 		data.ServiceName.ValueString(),
 		data.PlanName.ValueString(),
+		data.PlanUniqueIdentifier.ValueString(),
 	)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Directory Entitlement", err.Error())

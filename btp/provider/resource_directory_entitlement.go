@@ -189,7 +189,7 @@ func (rs *directoryEntitlementResource) Read(ctx context.Context, req resource.R
 		return
 	}
 
-	entitlement, rawRes, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+	entitlement, rawRes, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.PlanUniqueIdentifier.ValueString())
 
 	if err != nil {
 		handleReadErrors(ctx, rawRes, entitlement, resp, err, "Resource Entitlement (Directory)")
@@ -278,7 +278,7 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 		Pending: []string{cis_entitlements.StateStarted, cis_entitlements.StateProcessing},
 		Target:  []string{cis_entitlements.StateOK},
 		Refresh: func() (any, string, error) {
-			entitlement, _, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString())
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, plan.DirectoryId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.PlanUniqueIdentifier.ValueString())
 
 			if err != nil {
 				return nil, "", err
@@ -336,13 +336,14 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 
 	var err error
 	if !hasPlanQuotaDir(state) {
-		_, err = rs.cli.Accounts.Entitlement.DisableInDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.Distribute.ValueBool(), state.AutoAssign.ValueBool())
+		_, err = rs.cli.Accounts.Entitlement.DisableInDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.Distribute.ValueBool(), state.AutoAssign.ValueBool(), state.PlanUniqueIdentifier.ValueString())
 	} else {
 
 		dirAssignmentInput := btpcli.DirectoryAssignmentInput{
 			DirectoryId:          state.DirectoryId.ValueString(),
 			ServiceName:          state.ServiceName.ValueString(),
 			ServicePlanName:      state.PlanName.ValueString(),
+			PlanUniqueIdentifier: state.PlanUniqueIdentifier.ValueString(),
 			Amount:               0,
 			Distribute:           false,
 			AutoAssign:           false,
@@ -364,7 +365,7 @@ func (rs *directoryEntitlementResource) Delete(ctx context.Context, req resource
 		Target:  []string{"DELETED"},
 		Refresh: func() (any, string, error) {
 
-			entitlement, _, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(ctx, state.DirectoryId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.PlanUniqueIdentifier.ValueString())
 
 			if reflect.ValueOf(entitlement).IsNil() {
 				return entitlement, "DELETED", nil

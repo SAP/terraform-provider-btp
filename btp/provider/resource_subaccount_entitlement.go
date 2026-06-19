@@ -197,7 +197,7 @@ func (rs *subaccountEntitlementResource) Read(ctx context.Context, req resource.
 		Target:  []string{cis_entitlements.StateOK, cis_entitlements.StateProcessingFailed},
 		Refresh: func() (any, string, error) {
 
-			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.PlanUniqueIdentifier.ValueString(), isParentGlobalAccount, parentId)
 
 			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return nil, cis_entitlements.StateProcessing, nil
@@ -314,7 +314,7 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 		Target:  []string{cis_entitlements.StateOK},
 		Refresh: func() (any, string, error) {
 
-			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), isParentGlobalAccount, parentId)
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, plan.SubaccountId.ValueString(), plan.ServiceName.ValueString(), plan.PlanName.ValueString(), plan.PlanUniqueIdentifier.ValueString(), isParentGlobalAccount, parentId)
 
 			if tfutils.IsRetriableErrorForEntitlement(err) {
 				return nil, cis_entitlements.StateProcessing, nil
@@ -388,7 +388,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 	}
 
 	if !hasPlanQuota(state) {
-		_, err = rs.cli.Accounts.Entitlement.DisableInSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString())
+		_, err = rs.cli.Accounts.Entitlement.DisableInSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.PlanUniqueIdentifier.ValueString())
 	} else {
 		_, err = rs.cli.Accounts.Entitlement.AssignToSubaccount(ctx, directoryId, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.PlanUniqueIdentifier.ValueString(), 0)
 	}
@@ -413,7 +413,7 @@ func (rs *subaccountEntitlementResource) Delete(ctx context.Context, req resourc
 		Target:  []string{"DELETED"},
 		Refresh: func() (any, string, error) {
 
-			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), isParentGlobalAccount, parentId)
+			entitlement, _, err := rs.cli.Accounts.Entitlement.GetAssignedBySubaccount(ctx, state.SubaccountId.ValueString(), state.ServiceName.ValueString(), state.PlanName.ValueString(), state.PlanUniqueIdentifier.ValueString(), isParentGlobalAccount, parentId)
 
 			if reflect.ValueOf(entitlement).IsNil() {
 				return entitlement, "DELETED", nil

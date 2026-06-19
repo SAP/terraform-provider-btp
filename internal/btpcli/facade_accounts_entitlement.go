@@ -115,7 +115,7 @@ func (f *accountsEntitlementFacade) EnableInSubaccount(ctx context.Context, dire
 	return res, err
 }
 
-func (f *accountsEntitlementFacade) DisableInSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string) (CommandResponse, error) {
+func (f *accountsEntitlementFacade) DisableInSubaccount(ctx context.Context, directoryId string, subaccountId string, serviceName string, servicePlanName string, planUniqueIdentifier string) (CommandResponse, error) {
 
 	params := map[string]string{
 		"globalAccount":   f.cliClient.GetGlobalAccountSubdomain(),
@@ -127,6 +127,10 @@ func (f *accountsEntitlementFacade) DisableInSubaccount(ctx context.Context, dir
 
 	if len(directoryId) > 0 {
 		params["directoryID"] = directoryId
+	}
+
+	if planUniqueIdentifier != "" {
+		params["planUniqueIdentifier"] = planUniqueIdentifier
 	}
 
 	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), params))
@@ -145,7 +149,7 @@ type UnfoldedEntitlement struct {
 	Plan    cis_entitlements.ServicePlanResponseObject
 }
 
-func (f *accountsEntitlementFacade) GetAssignedBySubaccount(ctx context.Context, subaccountId, serviceName string, servicePlanName string, isParentGlobalAccount bool, parentId string) (*UnfoldedAssignment, CommandResponse, error) {
+func (f *accountsEntitlementFacade) GetAssignedBySubaccount(ctx context.Context, subaccountId, serviceName string, servicePlanName string, planUniqueIdentifier string, isParentGlobalAccount bool, parentId string) (*UnfoldedAssignment, CommandResponse, error) {
 	var cliRes cis_entitlements.EntitledAndAssignedServicesResponseObject
 	var comRes CommandResponse
 	var err error
@@ -165,7 +169,7 @@ func (f *accountsEntitlementFacade) GetAssignedBySubaccount(ctx context.Context,
 			continue
 		}
 
-		servicePlan, assignment := f.searchPlansAndAssignments(assignedService.ServicePlans, servicePlanName, subaccountEntityType, subaccountId)
+		servicePlan, assignment := f.searchPlansAndAssignments(assignedService.ServicePlans, servicePlanName, planUniqueIdentifier, subaccountEntityType, subaccountId)
 		if assignment != nil {
 			return &UnfoldedAssignment{
 				Service:    assignedService,
@@ -178,9 +182,12 @@ func (f *accountsEntitlementFacade) GetAssignedBySubaccount(ctx context.Context,
 	return nil, comRes, nil
 }
 
-func (f *accountsEntitlementFacade) searchPlansAndAssignments(servicePlans []cis_entitlements.AssignedServicePlanResponseObject, servicePlanName string, entityType string, entityId string) (*cis_entitlements.AssignedServicePlanResponseObject, *cis_entitlements.AssignedServicePlanSubaccountDto) {
+func (f *accountsEntitlementFacade) searchPlansAndAssignments(servicePlans []cis_entitlements.AssignedServicePlanResponseObject, servicePlanName string, planUniqueIdentifier string, entityType string, entityId string) (*cis_entitlements.AssignedServicePlanResponseObject, *cis_entitlements.AssignedServicePlanSubaccountDto) {
 	for _, servicePlan := range servicePlans {
 		if servicePlan.Name != servicePlanName {
+			continue
+		}
+		if planUniqueIdentifier != "" && servicePlan.UniqueIdentifier != planUniqueIdentifier {
 			continue
 		}
 
@@ -193,11 +200,15 @@ func (f *accountsEntitlementFacade) searchPlansAndAssignments(servicePlans []cis
 	return nil, nil
 }
 
-func (f *accountsEntitlementFacade) searchPlansForEntitlement(servicePlans []cis_entitlements.ServicePlanResponseObject, servicePlanName string, entityType string, entityId string) *cis_entitlements.ServicePlanResponseObject {
+func (f *accountsEntitlementFacade) searchPlansForEntitlement(servicePlans []cis_entitlements.ServicePlanResponseObject, servicePlanName string, planUniqueIdentifier string, entityType string, entityId string) *cis_entitlements.ServicePlanResponseObject {
 	for _, servicePlan := range servicePlans {
-		if servicePlan.Name == servicePlanName {
-			return &servicePlan
+		if servicePlan.Name != servicePlanName {
+			continue
 		}
+		if planUniqueIdentifier != "" && servicePlan.UniqueIdentifier != planUniqueIdentifier {
+			continue
+		}
+		return &servicePlan
 	}
 	return nil
 }
@@ -240,8 +251,8 @@ func (f *accountsEntitlementFacade) EnableInDirectory(ctx context.Context, direc
 	return res, err
 }
 
-func (f *accountsEntitlementFacade) DisableInDirectory(ctx context.Context, directoryId string, serviceName string, servicePlanName string, distribute bool, autoAssign bool) (CommandResponse, error) {
-	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), map[string]string{
+func (f *accountsEntitlementFacade) DisableInDirectory(ctx context.Context, directoryId string, serviceName string, servicePlanName string, distribute bool, autoAssign bool, planUniqueIdentifier string) (CommandResponse, error) {
+	params := map[string]string{
 		"globalAccount":   f.cliClient.GetGlobalAccountSubdomain(),
 		"directory":       directoryId,
 		"serviceName":     serviceName,
@@ -249,12 +260,18 @@ func (f *accountsEntitlementFacade) DisableInDirectory(ctx context.Context, dire
 		"enable":          "false",
 		"distribute":      strconv.FormatBool(distribute),
 		"autoAssign":      strconv.FormatBool(autoAssign),
-	}))
+	}
+
+	if planUniqueIdentifier != "" {
+		params["planUniqueIdentifier"] = planUniqueIdentifier
+	}
+
+	_, res, err := doExecute[cis_entitlements.EntitlementAssignmentResponseObject](f.cliClient, ctx, NewAssignRequest(f.getCommand(), params))
 
 	return res, err
 }
 
-func (f *accountsEntitlementFacade) GetEntitledByDirectory(ctx context.Context, directoryId, serviceName string, servicePlanName string) (*UnfoldedEntitlement, CommandResponse, error) {
+func (f *accountsEntitlementFacade) GetEntitledByDirectory(ctx context.Context, directoryId, serviceName string, servicePlanName string, planUniqueIdentifier string) (*UnfoldedEntitlement, CommandResponse, error) {
 	cliRes, comRes, err := f.ListByDirectory(ctx, directoryId)
 
 	if err != nil {
@@ -266,7 +283,7 @@ func (f *accountsEntitlementFacade) GetEntitledByDirectory(ctx context.Context, 
 			continue
 		}
 
-		servicePlan := f.searchPlansForEntitlement(entitledService.ServicePlans, servicePlanName, directoryEntityType, directoryId)
+		servicePlan := f.searchPlansForEntitlement(entitledService.ServicePlans, servicePlanName, planUniqueIdentifier, directoryEntityType, directoryId)
 		if servicePlan != nil {
 			return &UnfoldedEntitlement{
 				Service: entitledService,
