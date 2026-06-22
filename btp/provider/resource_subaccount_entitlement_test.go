@@ -24,7 +24,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana", "hana-cloud-hana"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -33,6 +33,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "hana-cloud-hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_unique_identifier", "hana-cloud-hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},
@@ -58,7 +59,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			},
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana", "hana-cloud-hana"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -95,7 +96,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementBySubaccount("uut", "integration-test-acc-entitlements-stacked", "hana-cloud", "hana"),
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount("uut", "integration-test-acc-entitlements-stacked", "hana-cloud", "hana", "hana-cloud-hana"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_entitlement.uut", "created_date", regexpValidRFC3999Format),
@@ -104,6 +105,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_name", "hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_id", "hana-cloud-hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "plan_unique_identifier", "hana-cloud-hana"),
 						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "state", "OK"),
 					),
 				},
@@ -259,6 +261,34 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 			},
 		})
 	})
+	t.Run("happy path - plan unique identifier with duplicate plan names (issue 1587)", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.plan_unique_identifier.duplicate_plans")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					// Regression test for issue #1587: two resources with the same
+					// service_name+plan_name but different plan_unique_identifier.
+					// Verifies that each resource resolves and deletes the correct plan variant.
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementDuplicatePlansBySubaccount("integration-test-acc-static", "hana-cloud", "hana", "hana-cloud-hana", "hana-cloud-hana-sap_eu-de-1"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.hana_1", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.hana_1", "plan_name", "hana"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.hana_1", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.hana_1", "plan_unique_identifier", "hana-cloud-hana"),
+						resource.TestMatchResourceAttr("btp_subaccount_entitlement.hana_2", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.hana_2", "plan_name", "hana"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.hana_2", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.hana_2", "plan_unique_identifier", "hana-cloud-hana-sap_eu-de-1"),
+					),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - zero amount", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -319,6 +349,25 @@ resource "btp_subaccount_entitlement" "%s" {
   amount				  = %s
 }
 `, resourceName, subaccountId, serviceName, planName, planUniqueIdentifier, amount)
+}
+
+func hclResourceSubaccountEntitlementDuplicatePlansBySubaccount(subaccountName, serviceName, planName, planUniqueIdentifier1, planUniqueIdentifier2 string) string {
+	return fmt.Sprintf(`
+data "btp_subaccounts" "all" {}
+resource "btp_subaccount_entitlement" "hana_1" {
+  subaccount_id          = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+  service_name           = "%s"
+  plan_name              = "%s"
+  plan_unique_identifier = "%s"
+}
+resource "btp_subaccount_entitlement" "hana_2" {
+  subaccount_id          = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+  service_name           = "%s"
+  plan_name              = "%s"
+  plan_unique_identifier = "%s"
+}
+`, subaccountName, serviceName, planName, planUniqueIdentifier1,
+		subaccountName, serviceName, planName, planUniqueIdentifier2)
 }
 
 func getImportStateIdForSubaccountEntitlement(resourceName string, serviceName string, planName string) resource.ImportStateIdFunc {
