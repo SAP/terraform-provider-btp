@@ -156,12 +156,12 @@ func cliServerRequestMatcher(t *testing.T) func(r *http.Request, i cassette.Requ
 			return false
 		}
 
-		bytes, err := io.ReadAll(r.Body)
+		bodyBytes, err := io.ReadAll(r.Body)
 		if err != nil {
 			t.Fatal("Unable to read body from request")
 		}
-		requestBody := string(bytes)
-		return requestBody == i.Body
+		r.Body = io.NopCloser(strings.NewReader(string(bodyBytes)))
+		return string(bodyBytes) == i.Body
 	}
 }
 
