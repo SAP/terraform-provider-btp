@@ -350,30 +350,6 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 	})
 }
 
-func hclResourceDirectoryEntitlementByDirectory(resourceName string, directoryName string, serviceName string, planName string) string {
-	template := `
-data "btp_directories" "all" {}
-resource "btp_directory_entitlement" "%s" {
-    directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
-    service_name = "%s"
-    plan_name    = "%s"
-}`
-	return fmt.Sprintf(template, resourceName, directoryName, serviceName, planName)
-}
-
-func hclResourceDirectoryEntitlementWithFlagsByDirectory(resourceName string, directoryName string, serviceName string, planName string, distribute string, autoAssign string, autoDistributeAmount string) string {
-	template := `
-data "btp_directories" "all" {}
-resource "btp_directory_entitlement" "%s" {
-    directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
-    service_name           = "%s"
-    plan_name              = "%s"
-	distribute             = "%s"
-	auto_assign            = "%s"
-	auto_distribute_amount = "%s"
-}`
-	return fmt.Sprintf(template, resourceName, directoryName, serviceName, planName, distribute, autoAssign, autoDistributeAmount)
-}
 
 func hclResourceDirectoryEntitlementWithAmountByDirectory(resourceName string, directoryName string, serviceName string, planName string, amount string) string {
 	return fmt.Sprintf(`
