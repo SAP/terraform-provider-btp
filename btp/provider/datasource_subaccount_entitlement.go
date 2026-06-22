@@ -66,7 +66,8 @@ You must be assigned to the admin or viewer role of the subaccount. Additionally
 				Computed:            true,
 			},
 			"plan_unique_identifier": schema.StringAttribute{
-				MarkdownDescription: "The unique identifier of the entitled service plan.",
+				MarkdownDescription: "The unique identifier of the entitled service plan. When multiple plans share the same plan_name, specify this to select a specific variant.",
+				Optional:            true,
 				Computed:            true,
 			},
 			"quota_assigned": schema.Float64Attribute{
@@ -111,6 +112,7 @@ func (ds *subaccountEntitlementDataSource) Read(ctx context.Context, req datasou
 	subaccountId := data.SubaccountId.ValueString()
 	serviceName := data.ServiceName.ValueString()
 	planFilter := data.PlanName.ValueString()
+	uidFilter := data.PlanUniqueIdentifier.ValueString()
 
 	subaccountData, _, err := ds.cli.Accounts.Subaccount.Get(ctx, subaccountId)
 	if err != nil {
@@ -143,6 +145,9 @@ func (ds *subaccountEntitlementDataSource) Read(ctx context.Context, req datasou
 
 		for _, plan := range service.ServicePlans {
 			if planFilter != "" && plan.Name != planFilter {
+				continue
+			}
+			if uidFilter != "" && plan.UniqueIdentifier != uidFilter {
 				continue
 			}
 
