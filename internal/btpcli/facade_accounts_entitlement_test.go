@@ -249,7 +249,7 @@ func TestAccountsEntitlementFacade_DisableInSubaccount(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.DisableInSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName)
+		res, err := uut.Accounts.Entitlement.DisableInSubaccount(context.TODO(), directoryId, subaccountId, serviceName, planName, "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -407,7 +407,7 @@ func TestAccountsEntitlementFacade_DisableInDirectory(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		res, err := uut.Accounts.Entitlement.DisableInDirectory(context.TODO(), directoryId, serviceName, planName, false, false)
+		res, err := uut.Accounts.Entitlement.DisableInDirectory(context.TODO(), directoryId, serviceName, planName, false, false, "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -436,7 +436,7 @@ func TestAccountsEntitlementFacade_GetAssignedBySubaccount(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Accounts.Entitlement.GetAssignedBySubaccount(context.TODO(), subaccountId, serviceName, planName, false, "")
+		_, res, err := uut.Accounts.Entitlement.GetAssignedBySubaccount(context.TODO(), subaccountId, serviceName, planName, "", false, "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -464,7 +464,7 @@ func TestAccountsEntitlementFacade_GetEntitledByDirectory(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Accounts.Entitlement.GetEntitledByDirectory(context.TODO(), directoryId, serviceName, planName)
+		_, res, err := uut.Accounts.Entitlement.GetEntitledByDirectory(context.TODO(), directoryId, serviceName, planName, "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)

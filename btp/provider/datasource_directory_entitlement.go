@@ -63,8 +63,9 @@ func (ds *directoryEntitlementDataSource) Schema(_ context.Context, _ datasource
 				MarkdownDescription: "The name of the entitled service plan.",
 			},
 			"plan_unique_identifier": schema.StringAttribute{
+				Optional:            true,
 				Computed:            true,
-				MarkdownDescription: "The unique identifier of the entitled service plan.",
+				MarkdownDescription: "The unique identifier of the entitled service plan. When multiple plans share the same plan_name, specify this to select a specific variant.",
 			},
 			"plan_id": schema.StringAttribute{
 				Computed:            true,
@@ -104,6 +105,7 @@ func (ds *directoryEntitlementDataSource) Read(ctx context.Context, req datasour
 		data.DirectoryId.ValueString(),
 		data.ServiceName.ValueString(),
 		data.PlanName.ValueString(),
+		data.PlanUniqueIdentifier.ValueString(),
 	)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Directory Entitlement", err.Error())
