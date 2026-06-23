@@ -137,13 +137,6 @@ resource "btp_directory_role_collection_assignment" "drca_dir_se_static_jenny_di
 ###
 # directory entitlements
 ###
-resource "btp_directory_entitlement" "de_dir_entitlements_hana_cloud" {
-  directory_id           = btp_directory.dir_entitlements.id
-  service_name           = "hana-cloud"
-  plan_name              = "hana"
-  plan_unique_identifier = "hana-cloud-hana"
-}
-
 resource "btp_directory_entitlement" "de_dir_se_static_alert_notification" {
   directory_id = btp_directory.dir_se_static.id
   service_name = "alert-notification"
