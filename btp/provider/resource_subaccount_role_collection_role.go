@@ -48,21 +48,15 @@ func (rs *subaccountRoleCollectionRoleResource) Configure(_ context.Context, req
 
 func (rs *subaccountRoleCollectionRoleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: `Creates a role collection role in a subaccount. 
-
-This resource is used to assign individual roles to a role collection container.
-
-### Prerequisites
-* You must be assigned to the **admin role** of the subaccount.
-* A role collection container must already exist. This can be managed via the **btp_subaccount_role_collection_base** resource.
-
-### Conflict of Authority Warning
-Roles within a collection can be managed either using the **btp_subaccount_role_collection** resource (which manages the entire set of roles) or by using individual **btp_subaccount_role_collection_role** resources in combination with **btp_subaccount_role_collection_base** — **but the two methods cannot be used together**.
-
-If you use this resource to add a role to a collection that is also managed by a monolithic **btp_subaccount_role_collection** resource, the two resources will fight for control over the roles list, leading to "flapping" during terraform apply and unexpected deletions.
-
-### Further documentation
-For more details on role collections and roles, see the [official SAP BTP documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts).`,
+		MarkdownDescription: "Creates a role collection role in a subaccount.\n\n" +
+			"This resource is used to assign individual roles to a role collection container.\n\n" +
+			"### Prerequisites\n" +
+			"* You must be assigned to the **admin role** of the subaccount.\n" +
+			"* A role collection container must already exist. This can be managed via the `btp_subaccount_role_collection_base` resource.\n\n" +
+			"~> **Warning:** Roles within a collection can be managed either using the `btp_subaccount_role_collection` resource (which manages the entire set of roles) or by using individual `btp_subaccount_role_collection_role` resources in combination with `btp_subaccount_role_collection_base` — **but the two methods cannot be used together**. " +
+			"If you use this resource to add a role to a collection that is also managed by a monolithic `btp_subaccount_role_collection` resource, the two resources will fight for control over the roles list, leading to \"flapping\" during terraform apply and unexpected deletions.\n\n" +
+			"### Further documentation\n" +
+			"For more details on role collections and roles, see the [official SAP BTP documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/role-collections-and-roles-in-global-accounts-directories-and-subaccounts).",
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
