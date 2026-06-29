@@ -263,7 +263,6 @@ func TestSecurityTrustFacade_UpdateByGlobalAccount(t *testing.T) {
 				"globalAccount": globalAccountId,
 				"originKey":     originKey,
 				"name":          name,
-				"refreshTrust":  "true",
 			})
 		}))
 		defer srv.Close()
@@ -289,7 +288,6 @@ func TestSecurityTrustFacade_UpdateByGlobalAccount(t *testing.T) {
 				"name":          name,
 				"description":   description,
 				"domain":        domain,
-				"refreshTrust":  "true",
 			})
 		}))
 		defer srv.Close()
@@ -334,7 +332,6 @@ func TestSecurityTrustFacade_UpdateBySubaccount(t *testing.T) {
 				"userLogon":    strconv.FormatBool(availableForUserLogon),
 				"shadowUsers":  strconv.FormatBool(autoCreateShadowUsers),
 				"status":       status,
-				"refreshTrust": "true",
 			})
 		}))
 		defer srv.Close()
@@ -368,7 +365,6 @@ func TestSecurityTrustFacade_UpdateBySubaccount(t *testing.T) {
 				"userLogon":    strconv.FormatBool(availableForUserLogon),
 				"shadowUsers":  strconv.FormatBool(autoCreateShadowUsers),
 				"status":       status,
-				"refreshTrust": "true",
 			})
 		}))
 		defer srv.Close()
