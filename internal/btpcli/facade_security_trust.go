@@ -100,7 +100,7 @@ func (f *securityTrustFacade) UpdateByGlobalAccount(ctx context.Context, args Tr
 	}
 
 	params["globalAccount"] = f.cliClient.GetGlobalAccountSubdomain()
-	params["refreshTrust"] = "true"
+	// refreshTrust is intentionally not set on update
 
 	return doExecute[xsuaa_trust.TrustConfigurationResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
 }
@@ -113,7 +113,7 @@ func (f *securityTrustFacade) UpdateBySubaccount(ctx context.Context, subaccount
 	}
 
 	params["subaccount"] = subaccountId
-	params["refreshTrust"] = "true"
+	// refreshTrust is intentionally not set on update
 
 	return doExecute[xsuaa_trust.TrustConfigurationResponseObject](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
 }
