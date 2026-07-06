@@ -122,11 +122,11 @@ For details on the configuration we refer to the following blog post [Bye-Bye Cr
 Some parameters offered by the provider configuration are for SAP-internal use only. They are not in scope of this documentation.
 The parameter that falls into this category is the `idtoken`.
 
-## Single Sign On
+## Single Sign On (Deprecated)
 
-The provider supports login via Single Sign-On (SSO) as well. To enable this you need to set the environment variable `BTP_ENABLE_SSO` to `true`. Additionally, ensure that you run your scripts in a desktop environment. It's important to note that the SSO login feature is not intended for use in containerized environments or CI/CD pipelines.
+The support for Single Sign-On (SSO) via the environment variable `BTP_ENABLE_SSO` is deprecated. Use the btp CLI session login instead.
 
-## Sign On via btp CLI Session (EXPERIMENTAL)
+## Sign On via btp CLI Session
 
 The provider can use the session of the btp CLI to authenticate. The usage flow is as follows:
 
@@ -140,7 +140,7 @@ You will not be prompted for additional credentials if the btp CLI session is ac
 
 **Prerequisite**: You need to have the btp CLI installed, be logged in to the btp CLI, and have a valid session. You can log in to the btp CLI using the command `btp login --sso`. For more information see the [official documentation of the btp CLI](https://help.sap.com/docs/btp/sap-business-technology-platform/account-administration-using-sap-btp-command-line-interface-btp-cli).
 
-**Important**: This is an experimental feature and may change in future releases. It is not supported in CI/CD environments. We would like to hear your feedback on the feature. If you want to provide feedback, please contribute to the discussion in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/discussions/1468).
+**Important**: It is not supported in CI/CD environments.
 
 ## Custom User-Agent Information
 

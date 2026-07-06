@@ -195,6 +195,7 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	enableSSO := os.Getenv("BTP_ENABLE_SSO")
 	if len(strings.TrimSpace(enableSSO)) != 0 {
 		ssoLogin, err = strconv.ParseBool(enableSSO)
+		resp.Diagnostics.AddWarning("deprecated authentication flow", "Do not use SSO login, use the login via the btp CLI session instead.")
 		if err != nil {
 			resp.Diagnostics.AddError("unable to convert sso value", fmt.Sprintf("%s", err))
 			return
