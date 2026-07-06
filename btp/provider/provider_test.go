@@ -858,6 +858,7 @@ func TestResolveWithEnv(t *testing.T) {
 		{"explicit wins over env (warning)", types.StringValue("explicit"), "from-env", true, "explicit", true, true},
 		{"empty explicit overrides env (no fallback, no warning)", types.StringValue(""), "from-env", true, "", true, false},
 		{"explicit + whitespace-only env, no warning", types.StringValue("explicit"), "   ", true, "explicit", true, false},
+		{"null cfg + whitespace-only env treated as unset", types.StringNull(), "   ", true, "", false, false},
 	}
 
 	for _, tc := range cases {
@@ -886,13 +887,13 @@ func TestResolveWithEnv(t *testing.T) {
 
 func TestDropCrossFlowEnvSwitches(t *testing.T) {
 	cases := []struct {
-		name             string
-		explicitAnyFlow  bool
-		btpCliSessionIn  bool
-		ssoIn            bool
-		wantBtpCliOut    bool
-		wantSsoOut       bool
-		wantWarnings     int
+		name            string
+		explicitAnyFlow bool
+		btpCliSessionIn bool
+		ssoIn           bool
+		wantBtpCliOut   bool
+		wantSsoOut      bool
+		wantWarnings    int
 	}{
 		{"no explicit flow — switches kept", false, true, true, true, true, 0},
 		{"explicit flow drops btpcli session with warning", true, true, false, false, false, 1},

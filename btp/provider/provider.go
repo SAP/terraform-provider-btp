@@ -272,11 +272,6 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	if btpCliSessionLogin && (len(username) > 0 || len(password) > 0) {
-		resp.Diagnostics.AddError(unableToCreateClient, "Cannot provide both BTP CLI session login and username/password")
-		return
-	}
-
 	// Log resolved provider configuration at DEBUG level to aid troubleshooting
 	// and quickly identify basic misconfigurations (e.g. Global Account, IdP,
 	// or CLI server URL) during provider initialization.
@@ -558,13 +553,14 @@ func (p *btpcliProvider) Actions(_ context.Context) []func() action.Action {
 // Explicit attribute wins over env (including an explicit empty string,
 // which means "no credential, do not fall back"); a warning is emitted when
 // both are set. Only a null attribute falls through to the env var.
+// Whitespace-only env values are treated as unset.
 func resolveWithEnv(cfg types.String, envName, attrName string, resp *provider.ConfigureResponse) (string, bool) {
-	envVal := os.Getenv(envName)
+	envVal := strings.TrimSpace(os.Getenv(envName))
 	if cfg.IsNull() {
 		return envVal, false
 	}
 	explicit := cfg.ValueString()
-	if len(explicit) > 0 && len(strings.TrimSpace(envVal)) > 0 {
+	if len(explicit) > 0 && len(envVal) > 0 {
 		resp.Diagnostics.AddWarning(
 			"Conflicting authentication configuration",
 			fmt.Sprintf("Both the provider attribute %q and the environment variable %q are set. The explicit provider attribute takes precedence; %q is ignored.", attrName, envName, envName),
