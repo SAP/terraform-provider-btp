@@ -117,6 +117,17 @@ Be aware that the JWT token can be sourced via the environment variable `BTP_ASS
 
 For details on the configuration we refer to the following blog post [Bye-Bye Credentials! Automate BTP & Cloud Foundry Setup with Terraform using Github Actions and Github OIDC](https://dev.to/vipinvkmenon/bye-bye-credentials-automate-btp-cloud-foundry-setup-with-terraform-using-github-actions-and-3m07).
 
+### Authentication Flow Precedence
+
+The provider resolves authentication values from two sources: explicit provider attributes (set in the `provider "btp" {}` block) and environment variables. The following rules apply:
+
+1. **Explicit attributes take precedence over environment variables.** If both are set for the same parameter (for example `username` and `BTP_USERNAME`), the explicit attribute is used and the environment variable is ignored. A warning is emitted naming the attribute that wins and the environment variable that was overridden.
+2. **Explicit attributes select the authentication flow.** When any authentication attribute is set explicitly (`username`/`password`, `idtoken`, `assertion`, or the `tls_client_*` attributes), environment variables that belong to a *different* flow are ignored. For example, if `assertion` is set explicitly, values sourced from `BTP_USERNAME`, `BTP_PASSWORD`, or `BTP_IDTOKEN` are dropped and a warning is emitted for each.
+3. **Environment variables alone select the flow.** If no authentication attribute is set explicitly, the flow is chosen based solely on which environment variables are present.
+4. **`idp` is a modifier, not a flow selector.** It can be combined with any flow and is subject only to rule 1 (explicit `idp` wins over `BTP_IDP`).
+
+The environment variables recognized by the provider are `BTP_USERNAME`, `BTP_PASSWORD`, `BTP_IDTOKEN`, `BTP_ASSERTION`, and `BTP_IDP`. The `tls_client_*` attributes have no environment-variable fallback and must be set explicitly.
+
 ### SAP Internal Authentication Parameters
 
 Some parameters offered by the provider configuration are for SAP-internal use only. They are not in scope of this documentation.
