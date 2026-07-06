@@ -548,9 +548,9 @@ func (p *btpcliProvider) Actions(_ context.Context) []func() action.Action {
 
 // resolveWithEnv returns the value and whether it came from the explicit
 // provider attribute (true) or from the env var / defaulted (false).
-// Explicit attribute wins over env; a warning is emitted when both are set.
-// ponytail: null == "not provided"; explicit empty string still falls through
-// to env with no warning (matches prior behavior).
+// Explicit attribute wins over env (including an explicit empty string,
+// which means "no credential, do not fall back"); a warning is emitted when
+// both are set. Only a null attribute falls through to the env var.
 func resolveWithEnv(cfg types.String, envName, attrName string, resp *provider.ConfigureResponse) (string, bool) {
 	envVal := os.Getenv(envName)
 	if cfg.IsNull() {
@@ -562,10 +562,6 @@ func resolveWithEnv(cfg types.String, envName, attrName string, resp *provider.C
 			"Conflicting authentication configuration",
 			fmt.Sprintf("Both the provider attribute %q and the environment variable %q are set. The explicit provider attribute takes precedence; %q is ignored.", attrName, envName, envName),
 		)
-	}
-	if len(explicit) == 0 {
-		// Explicit but empty — same fallthrough as null; treat as env-sourced.
-		return envVal, false
 	}
 	return explicit, true
 }

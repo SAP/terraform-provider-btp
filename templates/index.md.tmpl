@@ -126,7 +126,7 @@ The provider resolves authentication values from two sources: explicit provider 
 3. **Environment variables alone select the flow.** If no authentication attribute is set explicitly, the flow is chosen based solely on which environment variables are present.
 4. **`idp` is a modifier, not a flow selector.** It can be combined with any flow and is subject only to rule 1 (explicit `idp` wins over `BTP_IDP`).
 
-The environment variables recognized by the provider are `BTP_USERNAME`, `BTP_PASSWORD`, `BTP_IDTOKEN`, `BTP_ASSERTION`, and `BTP_IDP`. The `tls_client_*` attributes have no environment-variable fallback and must be set explicitly.
+The authentication credential environment variables recognized by the provider are `BTP_USERNAME`, `BTP_PASSWORD`, `BTP_IDTOKEN`, `BTP_ASSERTION`, and `BTP_IDP`. The `tls_client_*` attributes have no environment-variable fallback and must be set explicitly. Additional flow-control environment variables (`BTP_ENABLE_SSO`, `USE_BTPCLI_SESSION`, `BTPCLI_CONFIG_PATH`) are documented in the sections above.
 
 ### SAP Internal Authentication Parameters
 

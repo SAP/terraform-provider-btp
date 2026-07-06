@@ -856,7 +856,7 @@ func TestResolveWithEnv(t *testing.T) {
 		{"null cfg + env set", types.StringNull(), "from-env", true, "from-env", false, false},
 		{"explicit only", types.StringValue("explicit"), "", false, "explicit", true, false},
 		{"explicit wins over env (warning)", types.StringValue("explicit"), "from-env", true, "explicit", true, true},
-		{"empty explicit + env set falls through, no warning", types.StringValue(""), "from-env", true, "from-env", false, false},
+		{"empty explicit overrides env (no fallback, no warning)", types.StringValue(""), "from-env", true, "", true, false},
 		{"explicit + whitespace-only env, no warning", types.StringValue("explicit"), "   ", true, "explicit", true, false},
 	}
 
