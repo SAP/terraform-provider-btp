@@ -18,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	testingResource "github.com/hashicorp/terraform-plugin-testing/helper/resource"
 
@@ -836,4 +837,189 @@ func TestProvider_HasActions(t *testing.T) {
 	}
 
 	assert.ElementsMatch(t, expectedActions, registeredActions)
+}
+
+func TestResolveWithEnv(t *testing.T) {
+	const envName = "BTP_TEST_RESOLVE"
+	const attrName = "test_attr"
+
+	cases := []struct {
+		name         string
+		cfg          types.String
+		env          string
+		setEnv       bool
+		wantValue    string
+		wantExplicit bool
+		wantWarning  bool
+	}{
+		{"null cfg + no env", types.StringNull(), "", false, "", false, false},
+		{"null cfg + env set", types.StringNull(), "from-env", true, "from-env", false, false},
+		{"explicit only", types.StringValue("explicit"), "", false, "explicit", true, false},
+		{"explicit wins over env (warning)", types.StringValue("explicit"), "from-env", true, "explicit", true, true},
+		{"empty explicit + env set falls through, no warning", types.StringValue(""), "from-env", true, "from-env", false, false},
+		{"explicit + whitespace-only env, no warning", types.StringValue("explicit"), "   ", true, "explicit", true, false},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if tc.setEnv {
+				t.Setenv(envName, tc.env)
+			} else {
+				t.Setenv(envName, "")
+			}
+
+			resp := &provider.ConfigureResponse{}
+			got, explicit := resolveWithEnv(tc.cfg, envName, attrName, resp)
+
+			if got != tc.wantValue {
+				t.Errorf("value: got %q, want %q", got, tc.wantValue)
+			}
+			if explicit != tc.wantExplicit {
+				t.Errorf("explicit flag: got %v, want %v", explicit, tc.wantExplicit)
+			}
+			if hasWarn := resp.Diagnostics.WarningsCount() > 0; hasWarn != tc.wantWarning {
+				t.Errorf("warning: got %v, want %v (diags=%v)", hasWarn, tc.wantWarning, resp.Diagnostics)
+			}
+		})
+	}
+}
+
+func TestDropCrossFlowEnvValues(t *testing.T) {
+	// Covers explicit-vs-env cross-flow conflicts in both directions.
+	// A resolved value is "explicit" when it came from the provider attribute;
+	// otherwise it was env-sourced (or empty).
+	cases := []struct {
+		name             string
+		explicitX509     bool
+		username         string
+		usernameExplicit bool
+		password         string
+		passwordExplicit bool
+		idToken          string
+		idTokenExplicit  bool
+		assertion        string
+		assertionExpl    bool
+		wantUsername     string
+		wantPassword     string
+		wantIdToken      string
+		wantAssertion    string
+		wantWarnings     int
+	}{
+		{
+			name:          "nothing explicit — envs kept",
+			username:      "env-u",
+			password:      "env-p",
+			idToken:       "env-idt",
+			assertion:     "env-as",
+			wantUsername:  "env-u",
+			wantPassword:  "env-p",
+			wantIdToken:   "env-idt",
+			wantAssertion: "env-as",
+			wantWarnings:  0,
+		},
+		{
+			// The bug-report case: explicit user/pw, but env sets assertion + idtoken.
+			name:             "explicit user/pw drops env idtoken + assertion",
+			username:         "explicit-u",
+			usernameExplicit: true,
+			password:         "explicit-p",
+			passwordExplicit: true,
+			idToken:          "env-idt",
+			assertion:        "env-as",
+			wantUsername:     "explicit-u",
+			wantPassword:     "explicit-p",
+			wantIdToken:      "",
+			wantAssertion:    "",
+			wantWarnings:     2,
+		},
+		{
+			// The reverse case the user asked about: explicit assertion, env user/pw.
+			name:          "explicit assertion drops env user/pw + idtoken",
+			username:      "env-u",
+			password:      "env-p",
+			idToken:       "env-idt",
+			assertion:     "explicit-as",
+			assertionExpl: true,
+			wantUsername:  "",
+			wantPassword:  "",
+			wantIdToken:   "",
+			wantAssertion: "explicit-as",
+			wantWarnings:  3,
+		},
+		{
+			name:            "explicit idtoken drops env user/pw + assertion",
+			username:        "env-u",
+			password:        "env-p",
+			idToken:         "explicit-idt",
+			idTokenExplicit: true,
+			assertion:       "env-as",
+			wantUsername:    "",
+			wantPassword:    "",
+			wantIdToken:     "explicit-idt",
+			wantAssertion:   "",
+			wantWarnings:    3,
+		},
+		{
+			name:          "explicit x509 drops env user/pw + idtoken + assertion",
+			explicitX509:  true,
+			username:      "env-u",
+			password:      "env-p",
+			idToken:       "env-idt",
+			assertion:     "env-as",
+			wantUsername:  "",
+			wantPassword:  "",
+			wantIdToken:   "",
+			wantAssertion: "",
+			wantWarnings:  4,
+		},
+		{
+			// Only username explicit — user/pw flow is selected; env idtoken/assertion drop.
+			name:             "explicit username only drops env idtoken + assertion, env password kept",
+			username:         "explicit-u",
+			usernameExplicit: true,
+			password:         "env-p",
+			idToken:          "env-idt",
+			assertion:        "env-as",
+			wantUsername:     "explicit-u",
+			wantPassword:     "env-p",
+			wantIdToken:      "",
+			wantAssertion:    "",
+			wantWarnings:     2,
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			cfg := providerData{}
+			if tc.explicitX509 {
+				cfg.TLSClientKey = types.StringValue("key")
+			}
+
+			resp := &provider.ConfigureResponse{}
+			username, password, idToken, assertion := dropCrossFlowEnvValues(
+				cfg,
+				tc.username, tc.usernameExplicit,
+				tc.password, tc.passwordExplicit,
+				tc.idToken, tc.idTokenExplicit,
+				tc.assertion, tc.assertionExpl,
+				resp,
+			)
+
+			if username != tc.wantUsername {
+				t.Errorf("username: got %q, want %q", username, tc.wantUsername)
+			}
+			if password != tc.wantPassword {
+				t.Errorf("password: got %q, want %q", password, tc.wantPassword)
+			}
+			if idToken != tc.wantIdToken {
+				t.Errorf("idToken: got %q, want %q", idToken, tc.wantIdToken)
+			}
+			if assertion != tc.wantAssertion {
+				t.Errorf("assertion: got %q, want %q", assertion, tc.wantAssertion)
+			}
+			if got := resp.Diagnostics.WarningsCount(); got != tc.wantWarnings {
+				t.Errorf("warnings: got %d, want %d (diags=%v)", got, tc.wantWarnings, resp.Diagnostics)
+			}
+		})
+	}
 }
