@@ -258,6 +258,13 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		resp,
 	)
 
+	// Same precedence rule for env-only flow-control switches: an explicit auth
+	// flow beats USE_BTPCLI_SESSION / BTP_ENABLE_SSO with a warning, rather than
+	// erroring out below. tls_client_* participates as a flow selector too.
+	explicitAnyFlow := usernameExplicit || passwordExplicit || idTokenExplicit || assertionExplicit ||
+		!config.TLSClientKey.IsNull() || !config.TLSClientCertificate.IsNull() || !config.IdentityProviderURL.IsNull()
+	btpCliSessionLogin, ssoLogin = dropCrossFlowEnvSwitches(explicitAnyFlow, btpCliSessionLogin, ssoLogin, resp)
+
 	//Check for conflicts between the different auth flows
 	//This can happen if the user provides the values via ENV variables as the schema validation will not catch this
 	if len(idToken) > 0 && (len(username) > 0 || len(password) > 0) {
@@ -616,6 +623,31 @@ func dropCrossFlowEnvValues(
 		assertion = ""
 	}
 	return username, password, idToken, assertion
+}
+
+// dropCrossFlowEnvSwitches applies the "explicit wins" precedence rule to the
+// env-only flow selectors USE_BTPCLI_SESSION and BTP_ENABLE_SSO. When an
+// explicit auth flow was picked, either switch being on is downgraded from
+// hard error to a warning and the switch is turned off.
+func dropCrossFlowEnvSwitches(explicitAnyFlow, btpCliSessionLogin, ssoLogin bool, resp *provider.ConfigureResponse) (bool, bool) {
+	if !explicitAnyFlow {
+		return btpCliSessionLogin, ssoLogin
+	}
+	if btpCliSessionLogin {
+		resp.Diagnostics.AddWarning(
+			"Conflicting authentication configuration",
+			`An authentication flow was selected via explicit provider attributes, but the environment variable "USE_BTPCLI_SESSION" is also set. The explicit configuration takes precedence; "USE_BTPCLI_SESSION" is ignored.`,
+		)
+		btpCliSessionLogin = false
+	}
+	if ssoLogin {
+		resp.Diagnostics.AddWarning(
+			"Conflicting authentication configuration",
+			`An authentication flow was selected via explicit provider attributes, but the environment variable "BTP_ENABLE_SSO" is also set. The explicit configuration takes precedence; "BTP_ENABLE_SSO" is ignored.`,
+		)
+		ssoLogin = false
+	}
+	return btpCliSessionLogin, ssoLogin
 }
 
 func determineAuthFlow(config providerData, idToken string, ssoLogin bool, assertion string, btpCliSessionLogin bool) string {

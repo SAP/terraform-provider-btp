@@ -884,6 +884,40 @@ func TestResolveWithEnv(t *testing.T) {
 	}
 }
 
+func TestDropCrossFlowEnvSwitches(t *testing.T) {
+	cases := []struct {
+		name             string
+		explicitAnyFlow  bool
+		btpCliSessionIn  bool
+		ssoIn            bool
+		wantBtpCliOut    bool
+		wantSsoOut       bool
+		wantWarnings     int
+	}{
+		{"no explicit flow — switches kept", false, true, true, true, true, 0},
+		{"explicit flow drops btpcli session with warning", true, true, false, false, false, 1},
+		{"explicit flow drops sso with warning", true, false, true, false, false, 1},
+		{"explicit flow drops both with two warnings", true, true, true, false, false, 2},
+		{"explicit flow, no env switches — no warnings", true, false, false, false, false, 0},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			resp := &provider.ConfigureResponse{}
+			gotBtpCli, gotSso := dropCrossFlowEnvSwitches(tc.explicitAnyFlow, tc.btpCliSessionIn, tc.ssoIn, resp)
+			if gotBtpCli != tc.wantBtpCliOut {
+				t.Errorf("btpCliSessionLogin: got %v, want %v", gotBtpCli, tc.wantBtpCliOut)
+			}
+			if gotSso != tc.wantSsoOut {
+				t.Errorf("ssoLogin: got %v, want %v", gotSso, tc.wantSsoOut)
+			}
+			if got := resp.Diagnostics.WarningsCount(); got != tc.wantWarnings {
+				t.Errorf("warnings: got %d, want %d (diags=%v)", got, tc.wantWarnings, resp.Diagnostics)
+			}
+		})
+	}
+}
+
 func TestDropCrossFlowEnvValues(t *testing.T) {
 	// Covers explicit-vs-env cross-flow conflicts in both directions.
 	// A resolved value is "explicit" when it came from the provider attribute;
