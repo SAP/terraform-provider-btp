@@ -350,7 +350,6 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 	})
 }
 
-
 func hclResourceDirectoryEntitlementWithAmountByDirectory(resourceName string, directoryName string, serviceName string, planName string, amount string) string {
 	return fmt.Sprintf(`
 	data "btp_directories" "all" {}

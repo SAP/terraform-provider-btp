@@ -199,6 +199,9 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 			resp.Diagnostics.AddError("unable to convert sso value", fmt.Sprintf("%s", err))
 			return
 		}
+		if ssoLogin {
+			resp.Diagnostics.AddWarning("deprecated authentication flow", "Do not use SSO login, use the login via the btp CLI session instead.")
+		}
 	}
 
 	btpCliSessionLogin := false
@@ -213,78 +216,59 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		btpCliCustomConfigPath = os.Getenv("BTPCLI_CONFIG_PATH")
 	}
 
-	// User may provide an idp to the provider
-	var idp string
+	// Explicit provider attributes take precedence over the corresponding ENV
+	// variable. When both are set, resolveWithEnv emits a warning naming the
+	// attribute that wins and the env var that is ignored.
 	if config.IdentityProvider.IsUnknown() {
 		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as identity provider")
 		return
 	}
-
-	if config.IdentityProvider.IsNull() {
-		idp = os.Getenv("BTP_IDP")
-	} else {
-		idp = config.IdentityProvider.ValueString()
-	}
-
-	// User may provide an id token to the provider instead of username and password (see below)
-	var idToken string
 	if config.IdToken.IsUnknown() {
 		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as id token")
 		return
 	}
-	//BTP_ASSERTION
 	if config.Assertion.IsUnknown() {
 		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as assertion")
 		return
 	}
-	var assertion string
-	if config.Assertion.IsNull() {
-		assertion = os.Getenv("BTP_ASSERTION")
-	} else {
-		assertion = config.Assertion.ValueString()
-	}
-
-	if config.IdToken.IsNull() {
-		idToken = os.Getenv("BTP_IDTOKEN")
-	} else {
-		idToken = config.IdToken.ValueString()
-	}
-
-	// User must provide a username to the provider unless an id token is given
-	var username string
 	if config.Username.IsUnknown() {
 		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as username")
 		return
 	}
-
-	if config.Username.IsNull() {
-		username = os.Getenv("BTP_USERNAME")
-	} else {
-		username = config.Username.ValueString()
-	}
-
-	// User must provide a password to the provider unless an id token is given
-	var password string
 	if config.Password.IsUnknown() {
 		resp.Diagnostics.AddWarning(unableToCreateClient, "Cannot use unknown value as password")
 		return
 	}
 
-	if config.Password.IsNull() {
-		password = os.Getenv("BTP_PASSWORD")
-	} else {
-		password = config.Password.ValueString()
-	}
+	idp, _ := resolveWithEnv(config.IdentityProvider, "BTP_IDP", "idp", resp)
+	assertion, assertionExplicit := resolveWithEnv(config.Assertion, "BTP_ASSERTION", "assertion", resp)
+	idToken, idTokenExplicit := resolveWithEnv(config.IdToken, "BTP_IDTOKEN", "idtoken", resp)
+	username, usernameExplicit := resolveWithEnv(config.Username, "BTP_USERNAME", "username", resp)
+	password, passwordExplicit := resolveWithEnv(config.Password, "BTP_PASSWORD", "password", resp)
+
+	// Cross-flow conflict: when the user picked a flow via any explicit attribute,
+	// values sourced from env vars that belong to *other* flows must be dropped
+	// with a warning (schema ConflictsWith only covers explicit-vs-explicit).
+	username, password, idToken, assertion = dropCrossFlowEnvValues(
+		config,
+		username, usernameExplicit,
+		password, passwordExplicit,
+		idToken, idTokenExplicit,
+		assertion, assertionExplicit,
+		resp,
+	)
+
+	// Same precedence rule for env-only flow-control switches: an explicit auth
+	// flow beats USE_BTPCLI_SESSION / BTP_ENABLE_SSO with a warning, rather than
+	// erroring out below. tls_client_* participates as a flow selector too.
+	explicitAnyFlow := usernameExplicit || passwordExplicit || idTokenExplicit || assertionExplicit ||
+		!config.TLSClientKey.IsNull() || !config.TLSClientCertificate.IsNull() || !config.IdentityProviderURL.IsNull()
+	btpCliSessionLogin, ssoLogin = dropCrossFlowEnvSwitches(explicitAnyFlow, btpCliSessionLogin, ssoLogin, resp)
 
 	//Check for conflicts between the different auth flows
-	//This can happen if the user proivdes the values via ENV variables as the schema validation will not catch this
+	//This can happen if the user provides the values via ENV variables as the schema validation will not catch this
 	if len(idToken) > 0 && (len(username) > 0 || len(password) > 0) {
 		resp.Diagnostics.AddError(unableToCreateClient, "Cannot provide both id token and username/password")
-		return
-	}
-
-	if btpCliSessionLogin && (len(username) > 0 || len(password) > 0) {
-		resp.Diagnostics.AddError(unableToCreateClient, "Cannot provide both BTP CLI session login and username/password")
 		return
 	}
 
@@ -562,6 +546,104 @@ func (p *btpcliProvider) Actions(_ context.Context) []func() action.Action {
 		NewRestoreSubaccountAction,
 		NewAddMeAsSubaccountAdminAction,
 	}
+}
+
+// resolveWithEnv returns the value and whether it came from the explicit
+// provider attribute (true) or from the env var / defaulted (false).
+// Explicit attribute wins over env (including an explicit empty string,
+// which means "no credential, do not fall back"); a warning is emitted when
+// both are set. Only a null attribute falls through to the env var.
+// Whitespace-only env values are treated as unset.
+func resolveWithEnv(cfg types.String, envName, attrName string, resp *provider.ConfigureResponse) (string, bool) {
+	envVal := strings.TrimSpace(os.Getenv(envName))
+	if cfg.IsNull() {
+		return envVal, false
+	}
+	explicit := cfg.ValueString()
+	if len(explicit) > 0 && len(envVal) > 0 {
+		resp.Diagnostics.AddWarning(
+			"Conflicting authentication configuration",
+			fmt.Sprintf("Both the provider attribute %q and the environment variable %q are set. The explicit provider attribute takes precedence; %q is ignored.", attrName, envName, envName),
+		)
+	}
+	return explicit, true
+}
+
+// dropCrossFlowEnvValues drops env-sourced auth values that belong to a
+// different flow than the one the user picked via explicit attributes.
+// Schema ConflictsWith already covers explicit-vs-explicit; this covers
+// explicit-vs-env in either direction (e.g. explicit assertion + env
+// BTP_USERNAME, or explicit username + env BTP_ASSERTION).
+// x509 has no env fallback, so its explicit fields only participate as
+// flow selectors.
+// ponytail: idp is a modifier (works with any flow), not touched here.
+func dropCrossFlowEnvValues(
+	cfg providerData,
+	username string, usernameExplicit bool,
+	password string, passwordExplicit bool,
+	idToken string, idTokenExplicit bool,
+	assertion string, assertionExplicit bool,
+	resp *provider.ConfigureResponse,
+) (string, string, string, string) {
+	explicitUserPw := usernameExplicit || passwordExplicit
+	explicitX509 := !cfg.TLSClientKey.IsNull() || !cfg.TLSClientCertificate.IsNull() || !cfg.IdentityProviderURL.IsNull()
+
+	warn := func(envName string) {
+		resp.Diagnostics.AddWarning(
+			"Conflicting authentication configuration",
+			fmt.Sprintf("An authentication flow was selected via explicit provider attributes, but the environment variable %q is also set. The explicit configuration takes precedence; %q is ignored.", envName, envName),
+		)
+	}
+
+	// user/pw flow not explicitly picked, but env values leak in while another
+	// flow was picked explicitly — drop env-sourced user/pw.
+	otherThanUserPw := idTokenExplicit || assertionExplicit || explicitX509
+	if !explicitUserPw && otherThanUserPw {
+		if !usernameExplicit && len(username) > 0 {
+			warn("BTP_USERNAME")
+			username = ""
+		}
+		if !passwordExplicit && len(password) > 0 {
+			warn("BTP_PASSWORD")
+			password = ""
+		}
+	}
+	otherThanIdToken := explicitUserPw || assertionExplicit || explicitX509
+	if !idTokenExplicit && otherThanIdToken && len(idToken) > 0 {
+		warn("BTP_IDTOKEN")
+		idToken = ""
+	}
+	otherThanAssertion := explicitUserPw || idTokenExplicit || explicitX509
+	if !assertionExplicit && otherThanAssertion && len(assertion) > 0 {
+		warn("BTP_ASSERTION")
+		assertion = ""
+	}
+	return username, password, idToken, assertion
+}
+
+// dropCrossFlowEnvSwitches applies the "explicit wins" precedence rule to the
+// env-only flow selectors USE_BTPCLI_SESSION and BTP_ENABLE_SSO. When an
+// explicit auth flow was picked, either switch being on is downgraded from
+// hard error to a warning and the switch is turned off.
+func dropCrossFlowEnvSwitches(explicitAnyFlow, btpCliSessionLogin, ssoLogin bool, resp *provider.ConfigureResponse) (bool, bool) {
+	if !explicitAnyFlow {
+		return btpCliSessionLogin, ssoLogin
+	}
+	if btpCliSessionLogin {
+		resp.Diagnostics.AddWarning(
+			"Conflicting authentication configuration",
+			`An authentication flow was selected via explicit provider attributes, but the environment variable "USE_BTPCLI_SESSION" is also set. The explicit configuration takes precedence; "USE_BTPCLI_SESSION" is ignored.`,
+		)
+		btpCliSessionLogin = false
+	}
+	if ssoLogin {
+		resp.Diagnostics.AddWarning(
+			"Conflicting authentication configuration",
+			`An authentication flow was selected via explicit provider attributes, but the environment variable "BTP_ENABLE_SSO" is also set. The explicit configuration takes precedence; "BTP_ENABLE_SSO" is ignored.`,
+		)
+		ssoLogin = false
+	}
+	return btpCliSessionLogin, ssoLogin
 }
 
 func determineAuthFlow(config providerData, idToken string, ssoLogin bool, assertion string, btpCliSessionLogin bool) string {

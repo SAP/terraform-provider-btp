@@ -146,16 +146,27 @@ Be aware that the JWT token can be sourced via the environment variable `BTP_ASS
 
 For details on the configuration we refer to the following blog post [Bye-Bye Credentials! Automate BTP & Cloud Foundry Setup with Terraform using Github Actions and Github OIDC](https://dev.to/vipinvkmenon/bye-bye-credentials-automate-btp-cloud-foundry-setup-with-terraform-using-github-actions-and-3m07).
 
+### Authentication Flow Precedence
+
+The provider resolves authentication values from two sources: explicit provider attributes (set in the `provider "btp" {}` block) and environment variables. The following rules apply:
+
+1. **Explicit attributes take precedence over environment variables.** If both are set for the same parameter (for example `username` and `BTP_USERNAME`), the explicit attribute is used and the environment variable is ignored. A warning is emitted naming the attribute that wins and the environment variable that was overridden.
+2. **Explicit attributes select the authentication flow.** When any authentication attribute is set explicitly (`username`/`password`, `idtoken`, `assertion`, or the `tls_client_*` attributes), environment variables that belong to a *different* flow are ignored. For example, if `assertion` is set explicitly, values sourced from `BTP_USERNAME`, `BTP_PASSWORD`, or `BTP_IDTOKEN` are dropped and a warning is emitted for each.
+3. **Environment variables alone select the flow.** If no authentication attribute is set explicitly, the flow is chosen based solely on which environment variables are present.
+4. **`idp` is a modifier, not a flow selector.** It can be combined with any flow and is subject only to rule 1 (explicit `idp` wins over `BTP_IDP`).
+
+The authentication credential environment variables recognized by the provider are `BTP_USERNAME`, `BTP_PASSWORD`, `BTP_IDTOKEN`, `BTP_ASSERTION`, and `BTP_IDP`. The `tls_client_*` attributes have no environment-variable fallback and must be set explicitly. Additional flow-control environment variables (`BTP_ENABLE_SSO`, `USE_BTPCLI_SESSION`, `BTPCLI_CONFIG_PATH`) are documented in the sections above.
+
 ### SAP Internal Authentication Parameters
 
 Some parameters offered by the provider configuration are for SAP-internal use only. They are not in scope of this documentation.
 The parameter that falls into this category is the `idtoken`.
 
-## Single Sign On
+## Single Sign On (Deprecated)
 
-The provider supports login via Single Sign-On (SSO) as well. To enable this you need to set the environment variable `BTP_ENABLE_SSO` to `true`. Additionally, ensure that you run your scripts in a desktop environment. It's important to note that the SSO login feature is not intended for use in containerized environments or CI/CD pipelines.
+The support for Single Sign-On (SSO) via the environment variable `BTP_ENABLE_SSO` is deprecated. Use the btp CLI session login instead.
 
-## Sign On via btp CLI Session (EXPERIMENTAL)
+## Sign On via btp CLI Session
 
 The provider can use the session of the btp CLI to authenticate. The usage flow is as follows:
 
@@ -169,7 +180,7 @@ You will not be prompted for additional credentials if the btp CLI session is ac
 
 **Prerequisite**: You need to have the btp CLI installed, be logged in to the btp CLI, and have a valid session. You can log in to the btp CLI using the command `btp login --sso`. For more information see the [official documentation of the btp CLI](https://help.sap.com/docs/btp/sap-business-technology-platform/account-administration-using-sap-btp-command-line-interface-btp-cli).
 
-**Important**: This is an experimental feature and may change in future releases. It is not supported in CI/CD environments. We would like to hear your feedback on the feature. If you want to provide feedback, please contribute to the discussion in the [Terraform provider repository](https://github.com/SAP/terraform-provider-btp/discussions/1468).
+**Important**: It is not supported in CI/CD environments.
 
 ## Custom User-Agent Information
 
