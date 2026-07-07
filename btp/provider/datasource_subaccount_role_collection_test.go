@@ -61,6 +61,26 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 			},
 		})
 	})
+	t.Run("happy path - with user assignments", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_role_collection_with_user_assignments")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclDatasourceSubaccountRoleCollectionWithUserAssignments("uut", "integration-test-acc-static", "Subaccount Viewer"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("data.btp_subaccount_role_collection.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "name", "Subaccount Viewer"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "show_user_assignments", "true"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collection.uut", "user_assignments.#", "1"),
+					),
+				},
+			},
+		})
+	})
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -135,6 +155,17 @@ data "btp_subaccount_role_collection" "%s" {
     subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
     name          = "%s"
 	show_attribute_mappings = true
+}`
+	return fmt.Sprintf(template, resourceName, subaccountName, name)
+}
+
+func hclDatasourceSubaccountRoleCollectionWithUserAssignments(resourceName string, subaccountName string, name string) string {
+	template := `
+data "btp_subaccounts" "all" {}
+data "btp_subaccount_role_collection" "%s" {
+    subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+    name          = "%s"
+    show_user_assignments = true
 }`
 	return fmt.Sprintf(template, resourceName, subaccountName, name)
 }

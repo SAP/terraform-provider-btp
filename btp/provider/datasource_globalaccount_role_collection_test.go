@@ -57,7 +57,25 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 			},
 		})
 	})
+	t.Run("happy path - with user assignments", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_exists_with_user_assignments")
+		defer stopQuietly(rec)
 
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclDatasourceGlobalaccountRoleCollectionWithUserAssignments("uut", "Global Account Administrator"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "name", "Global Account Administrator"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "show_user_assignments", "true"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "user_assignments.#", "14"),
+					),
+				},
+			},
+		})
+	})
 	t.Run("error path - role collection not available", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_not_available")
 		defer stopQuietly(rec)
@@ -116,9 +134,18 @@ func hclDatasourceGlobalaccountRoleCollection(resourceName string, name string) 
 }
 
 func hclDatasourceGlobalaccountRoleCollectionWithAttributeMappings(resourceName string, name string) string {
-	template := `data "btp_globalaccount_role_collection" "%s" { 
-	name = "%s" 
+	template := `data "btp_globalaccount_role_collection" "%s" {
+	name = "%s"
 	show_attribute_mappings = true
+	}`
+
+	return fmt.Sprintf(template, resourceName, name)
+}
+
+func hclDatasourceGlobalaccountRoleCollectionWithUserAssignments(resourceName string, name string) string {
+	template := `data "btp_globalaccount_role_collection" "%s" {
+	name = "%s"
+	show_user_assignments = true
 	}`
 
 	return fmt.Sprintf(template, resourceName, name)

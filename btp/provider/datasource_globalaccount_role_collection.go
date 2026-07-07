@@ -33,6 +33,15 @@ type globalaccountRoleCollectionAttributeMappingsType struct {
 	Value            types.String `tfsdk:"value"`
 }
 
+type globalaccountRoleCollectionUserAssignmentType struct {
+	/* OUTPUT */
+	Username   types.String `tfsdk:"username"`
+	Email      types.String `tfsdk:"email"`
+	GivenName  types.String `tfsdk:"given_name"`
+	FamilyName types.String `tfsdk:"family_name"`
+	Origin     types.String `tfsdk:"origin"`
+}
+
 type globalaccountRoleCollectionDataSourceConfig struct {
 	Id types.String `tfsdk:"id"`
 
@@ -43,6 +52,8 @@ type globalaccountRoleCollectionDataSourceConfig struct {
 	Roles                 []globalaccountRoleCollectionRoleType              `tfsdk:"roles"`
 	ShowAttributeMappings types.Bool                                         `tfsdk:"show_attribute_mappings"`
 	AttributeMappings     []globalaccountRoleCollectionAttributeMappingsType `tfsdk:"attribute_mappings"`
+	ShowUserAssignments   types.Bool                                         `tfsdk:"show_user_assignments"`
+	UserAssignments       []globalaccountRoleCollectionUserAssignmentType    `tfsdk:"user_assignments"`
 }
 
 type globalaccountRoleCollectionDataSource struct {
@@ -142,6 +153,38 @@ You must be assigned to the admin or viewer role of the global account.`,
 					},
 				},
 			},
+			"show_user_assignments": schema.BoolAttribute{
+				MarkdownDescription: "If set to true, the data source will also return all users (including those assigned via groups) who have been granted this role collection.",
+				Optional:            true,
+			},
+			"user_assignments": schema.SetNestedAttribute{
+				MarkdownDescription: "List of all users who have been granted this role collection, including those assigned via groups.",
+				Computed:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"username": schema.StringAttribute{
+							MarkdownDescription: "The username of the user.",
+							Computed:            true,
+						},
+						"email": schema.StringAttribute{
+							MarkdownDescription: "The email address of the user.",
+							Computed:            true,
+						},
+						"given_name": schema.StringAttribute{
+							MarkdownDescription: "The given name of the user.",
+							Computed:            true,
+						},
+						"family_name": schema.StringAttribute{
+							MarkdownDescription: "The family name of the user.",
+							Computed:            true,
+						},
+						"origin": schema.StringAttribute{
+							MarkdownDescription: "The identity provider origin of the user.",
+							Computed:            true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -192,7 +235,25 @@ func (ds *globalaccountRoleCollectionDataSource) Read(ctx context.Context, req d
 				IdentityProvider: types.StringValue(am.IdentityProvider),
 				Attribute:        types.StringValue(am.AttributeName),
 				Operator:         types.StringValue(am.ComparisonOperator),
-				Value:            types.StringValue(am.SamlAttributeValue),
+				Value:            types.StringValue(am.AttributeValue),
+			})
+		}
+	}
+
+	if data.ShowUserAssignments.ValueBool() {
+		userAssignments, _, err := ds.cli.Security.RoleCollection.GetUserAssignmentsByGlobalAccount(ctx, data.Name.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Role Collection User Assignments (Global Account)", fmt.Sprintf("%s", err))
+			return
+		}
+		data.UserAssignments = []globalaccountRoleCollectionUserAssignmentType{}
+		for _, u := range userAssignments {
+			data.UserAssignments = append(data.UserAssignments, globalaccountRoleCollectionUserAssignmentType{
+				Username:   types.StringValue(u.Username),
+				Email:      types.StringValue(u.Email),
+				GivenName:  types.StringValue(u.GivenName),
+				FamilyName: types.StringValue(u.FamilyName),
+				Origin:     types.StringValue(u.Origin),
 			})
 		}
 	}
