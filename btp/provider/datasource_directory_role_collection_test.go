@@ -58,6 +58,26 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			},
 		})
 	})
+	t.Run("happy path - with user assignments", func(t *testing.T) {
+		rec, user := setupVCR(t, "fixtures/datasource_directory_role_collection_with_user_assignments")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclDatasourceDirectoryRoleCollectionWithUserAssignments("uut", "integration-test-dir-se-static", "Directory Viewer"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("data.btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "name", "Directory Viewer"),
+						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "show_user_assignments", "true"),
+						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "user_assignments.#", "4"),
+					),
+				},
+			},
+		})
+	})
 	t.Run("error path - directory not security enabled", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/datasource_directory_role_collection.not_security_enabled")
 		defer stopQuietly(rec)
@@ -158,6 +178,17 @@ data "btp_directory_role_collection" "%s" {
     directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
     name         = "%s"
 	show_attribute_mappings = true
+}`
+	return fmt.Sprintf(template, resourceName, directoryName, name)
+}
+
+func hclDatasourceDirectoryRoleCollectionWithUserAssignments(resourceName string, directoryName string, name string) string {
+	template := `
+data "btp_directories" "all" {}
+data "btp_directory_role_collection" "%s" {
+    directory_id = [for dir in data.btp_directories.all.values : dir.id if dir.name == "%s"][0]
+    name         = "%s"
+    show_user_assignments = true
 }`
 	return fmt.Sprintf(template, resourceName, directoryName, name)
 }

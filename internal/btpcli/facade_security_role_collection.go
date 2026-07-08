@@ -2,6 +2,7 @@ package btpcli
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_authz"
 )
@@ -325,4 +326,46 @@ func (f *securityRoleCollectionFacade) UnassignAttributeByGlobalaccount(ctx cont
 		"attributeValue":     attributeValue,
 		"origin":             origin,
 	}))
+}
+
+func (f *securityRoleCollectionFacade) fetchUserAssignmentPages(ctx context.Context, params map[string]string) ([]xsuaa_authz.UserReference, CommandResponse, error) {
+	var allUsers []xsuaa_authz.UserReference
+	var lastResp CommandResponse
+	for page := 1; ; page++ {
+		params["page"] = fmt.Sprintf("%d", page)
+		result, cmdResp, err := doExecute[xsuaa_authz.UserAssignmentsPage](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+		lastResp = cmdResp
+		if err != nil {
+			return nil, lastResp, err
+		}
+		allUsers = append(allUsers, result.Items...)
+		if page >= result.TotalPages {
+			break
+		}
+	}
+	return allUsers, lastResp, nil
+}
+
+func (f *securityRoleCollectionFacade) GetUserAssignmentsBySubaccount(ctx context.Context, subaccountId string, roleCollectionName string) ([]xsuaa_authz.UserReference, CommandResponse, error) {
+	return f.fetchUserAssignmentPages(ctx, map[string]string{
+		"subaccount":          subaccountId,
+		"roleCollectionName":  roleCollectionName,
+		"showUserAssignments": "true",
+	})
+}
+
+func (f *securityRoleCollectionFacade) GetUserAssignmentsByDirectory(ctx context.Context, directoryId string, roleCollectionName string) ([]xsuaa_authz.UserReference, CommandResponse, error) {
+	return f.fetchUserAssignmentPages(ctx, map[string]string{
+		"directory":           directoryId,
+		"roleCollectionName":  roleCollectionName,
+		"showUserAssignments": "true",
+	})
+}
+
+func (f *securityRoleCollectionFacade) GetUserAssignmentsByGlobalAccount(ctx context.Context, roleCollectionName string) ([]xsuaa_authz.UserReference, CommandResponse, error) {
+	return f.fetchUserAssignmentPages(ctx, map[string]string{
+		"globalAccount":       f.cliClient.GetGlobalAccountSubdomain(),
+		"roleCollectionName":  roleCollectionName,
+		"showUserAssignments": "true",
+	})
 }
