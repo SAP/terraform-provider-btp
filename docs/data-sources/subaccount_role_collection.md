@@ -89,5 +89,7 @@ Read-Only:
 - `email` (String) The email address of the user.
 - `family_name` (String) The family name of the user.
 - `given_name` (String) The given name of the user.
+- `id` (String) The unique ID of the user in the identity provider.
 - `origin` (String) The identity provider origin of the user.
 - `username` (String) The username of the user.
+- `zone_id` (String) The zone ID of the identity provider the user belongs to.

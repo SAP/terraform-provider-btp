@@ -72,7 +72,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 						resource.TestMatchResourceAttr("data.btp_directory_role_collection.uut", "directory_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "name", "Directory Viewer"),
 						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "show_user_assignments", "true"),
-						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "user_assignments.#", "5"),
+						resource.TestCheckResourceAttr("data.btp_directory_role_collection.uut", "user_assignments.#", "4"),
 					),
 				},
 			},

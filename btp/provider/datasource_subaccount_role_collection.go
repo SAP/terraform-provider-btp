@@ -36,6 +36,8 @@ type subaccountRoleCollectionAttributeMappingsType struct {
 
 type subaccountRoleCollectionUserAssignmentType struct {
 	/* OUTPUT */
+	Id         types.String `tfsdk:"id"`
+	ZoneId     types.String `tfsdk:"zone_id"`
 	Username   types.String `tfsdk:"username"`
 	Email      types.String `tfsdk:"email"`
 	GivenName  types.String `tfsdk:"given_name"`
@@ -168,6 +170,14 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
+						"id": schema.StringAttribute{
+							MarkdownDescription: "The unique ID of the user in the identity provider.",
+							Computed:            true,
+						},
+						"zone_id": schema.StringAttribute{
+							MarkdownDescription: "The zone ID of the identity provider the user belongs to.",
+							Computed:            true,
+						},
 						"username": schema.StringAttribute{
 							MarkdownDescription: "The username of the user.",
 							Computed:            true,
@@ -255,6 +265,8 @@ func (ds *subaccountRoleCollectionDataSource) Read(ctx context.Context, req data
 		data.UserAssignments = []subaccountRoleCollectionUserAssignmentType{}
 		for _, u := range userAssignments {
 			data.UserAssignments = append(data.UserAssignments, subaccountRoleCollectionUserAssignmentType{
+				Id:         types.StringValue(u.Id),
+				ZoneId:     types.StringValue(u.ZoneId),
 				Username:   types.StringValue(u.Username),
 				Email:      types.StringValue(u.Email),
 				GivenName:  types.StringValue(u.GivenName),
