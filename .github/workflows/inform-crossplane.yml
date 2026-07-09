@@ -20,9 +20,28 @@ jobs:
         with:
           github-token: ${{ secrets.GH_CROSSPLANE_TOKEN }}
           script: |
-            const tag = context.payload.workflow_run.head_branch; // the pushed "v*" tag
             const source = { owner: context.repo.owner, repo: context.repo.repo };
             const target = { owner: "SAP", repo: "crossplane-provider-btp" };
+
+            // head_branch is unreliable for tag-push runs (can be null), so resolve
+            // the pushed "v*" tag from the commit SHA instead.
+            const sha = context.payload.workflow_run.head_sha;
+            const match = await github.paginate(
+              github.rest.repos.listTags,
+              { ...source, per_page: 100 },
+              (response, done) => {
+                const hit = response.data.find(
+                  (t) => t.commit.sha === sha && t.name.startsWith("v"),
+                );
+                if (hit) done();
+                return hit ? [hit] : [];
+              },
+            );
+            if (match.length === 0) {
+              core.setFailed(`No "v*" tag found for commit ${sha}`);
+              return;
+            }
+            const tag = match[0].name;
 
             // Fetch the release notes for the tag that triggered the release.
             const release = await github.rest.repos.getReleaseByTag({
@@ -31,11 +50,31 @@ jobs:
             });
 
             const title = `[TASK] Check new Terraform provider version (BTP) ${tag}`;
+
+            // Dedup: re-runs/retries of the release workflow must not create duplicate tasks.
+            const existing = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${target.owner}/${target.repo} is:issue is:open in:title "${title}"`,
+              per_page: 10,
+            });
+            const dupe = existing.data.items.find(
+              (i) => !i.pull_request && i.title === title,
+            );
+
             const body = [
               "Please check the latest release of the Terraform Provider for SAP BTP for upjet",
               "",
               release.data.body || "",
             ].join("\n");
+
+            if (dupe) {
+              console.log(`Issue already exists (#${dupe.number}), commenting instead.`);
+              await github.rest.issues.createComment({
+                ...target,
+                issue_number: dupe.number,
+                body: `Release workflow ran again for ${tag}.\n\n${body}`,
+              });
+              return;
+            }
 
             await github.rest.issues.create({
               ...target,
