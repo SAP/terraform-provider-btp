@@ -44,10 +44,16 @@ jobs:
             const tag = match[0].name;
 
             // Fetch the release notes for the tag that triggered the release.
-            const release = await github.rest.repos.getReleaseByTag({
-              ...source,
-              tag,
-            });
+            let release;
+            try {
+              release = await github.rest.repos.getReleaseByTag({
+                ...source,
+                tag,
+              });
+            } catch (err) {
+              core.setFailed(`Could not fetch release for tag ${tag}: ${err.message}`);
+              return;
+            }
 
             const title = `[TASK] Check new Terraform provider version (BTP) ${tag}`;
 
