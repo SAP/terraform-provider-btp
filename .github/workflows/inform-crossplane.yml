@@ -1,0 +1,44 @@
+name: Inform Crossplane Provider
+
+# Decoupled from the release workflow: runs only after "Terraform Provider Release"
+# completes successfully. Failures here never affect the release run.
+on:
+  workflow_run:
+    workflows: ["Terraform Provider Release"]
+    types:
+      - completed
+
+permissions: {}
+
+jobs:
+  create-crossplane-issue:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create issue in crossplane-provider-btp
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ secrets.GH_CROSSPLANE_TOKEN }}
+          script: |
+            const tag = context.payload.workflow_run.head_branch; // the pushed "v*" tag
+            const source = { owner: context.repo.owner, repo: context.repo.repo };
+            const target = { owner: "SAP", repo: "crossplane-provider-btp" };
+
+            // Fetch the release notes for the tag that triggered the release.
+            const release = await github.rest.repos.getReleaseByTag({
+              ...source,
+              tag,
+            });
+
+            const title = `[TASK] Check new Terraform provider version (BTP) ${tag}`;
+            const body = [
+              "Please check the latest release of the Terraform Provider for SAP BTP for upjet",
+              "",
+              release.data.body || "",
+            ].join("\n");
+
+            await github.rest.issues.create({
+              ...target,
+              title,
+              body,
+            });
