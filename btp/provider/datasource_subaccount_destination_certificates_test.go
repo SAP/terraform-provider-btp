@@ -20,7 +20,11 @@ func TestResourceSubaccountDestinationCertificates(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclResourceSubaccountDestinationCertificates("uut", "integration-test-destination", "servtest"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificates.uut", "subaccount_level_certificates.#", "5"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificates.uut", "subaccount_level_certificates.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificates.uut", "subaccount_level_certificates.0.certificate_name", "terraform.jks"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificates.uut", "subaccount_level_certificates.0.certification_creation_details.generation_method", "external_service"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificates.uut", "subaccount_level_certificates.0.certification_creation_details.validity_duration", "3"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificates.uut", "subaccount_level_certificates.0.certification_creation_details.validity_time_units", "MONTHS"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificates.uut", "service_instance_level_certificates.#", "3"),
 					),
 				},
