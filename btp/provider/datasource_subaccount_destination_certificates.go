@@ -85,7 +85,7 @@ var attributes = map[string]schema.Attribute{
 				MarkdownDescription: "Specifies whether the certificate is automatically renewed before it expires.",
 				Computed:            true,
 			},
-			"validity_duration": schema.StringAttribute{
+			"validity_duration": schema.Int64Attribute{
 				MarkdownDescription: "The numeric duration for which the certificate is valid.",
 				Computed:            true,
 			},
@@ -118,7 +118,7 @@ var creationDataObjType = types.ObjectType{
 		"common_name":         types.StringType,
 		"has_password":        types.BoolType,
 		"auto_renew":          types.BoolType,
-		"validity_duration":   types.StringType,
+		"validity_duration":   types.Int64Type,
 		"validity_time_units": types.StringType,
 	},
 }

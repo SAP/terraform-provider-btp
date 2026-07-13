@@ -63,7 +63,7 @@ type DestinationCertificateCreationType struct {
 	CommonName        types.String `tfsdk:"common_name"`
 	HasPassword       types.Bool   `tfsdk:"has_password"`
 	AutoRenew         types.Bool   `tfsdk:"auto_renew"`
-	ValiditDuration   types.String `tfsdk:"validity_duration"`
+	ValidityDuration  types.Int64  `tfsdk:"validity_duration"`
 	ValidityTimeUnits types.String `tfsdk:"validity_time_units"`
 }
 

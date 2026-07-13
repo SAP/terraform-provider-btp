@@ -24,6 +24,6 @@ type CreationDataResponseObject struct {
 	CommonName        string `json:"common_name,omitempty" tfsdk:"common_name"`
 	HasPassword       bool   `json:"has_password,omitempty" tfsdk:"has_password"`
 	AutoRenew         bool   `json:"auto_renew,omitempty" tfsdk:"auto_renew"`
-	ValidityDuration  string `json:"validity_duration,omitempty" tfsdk:"validity_duration"`
+	ValidityDuration  int64  `json:"validity_duration,omitempty" tfsdk:"validity_duration"`
 	ValidityTimeUnits string `json:"validity_time_units,omitempty" tfsdk:"validity_time_units"`
 }
