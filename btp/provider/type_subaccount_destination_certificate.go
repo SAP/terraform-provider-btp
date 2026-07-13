@@ -58,7 +58,16 @@ type DestinationCertificateNodeType struct {
 	Certificate types.String `tfsdk:"certificate"`
 }
 
-type DestinationCertificateCreationType struct {
+type DestinationCertificateCreationTypeV0 struct {
+	GenerationMethod  types.String `tfsdk:"generation_method"`
+	CommonName        types.String `tfsdk:"common_name"`
+	HasPassword       types.Bool   `tfsdk:"has_password"`
+	AutoRenew         types.Bool   `tfsdk:"auto_renew"`
+	ValidityDuration  types.String `tfsdk:"validity_duration"`
+	ValidityTimeUnits types.String `tfsdk:"validity_time_units"`
+}
+
+type DestinationCertificateCreationTypeV1 struct {
 	GenerationMethod  types.String `tfsdk:"generation_method"`
 	CommonName        types.String `tfsdk:"common_name"`
 	HasPassword       types.Bool   `tfsdk:"has_password"`
@@ -124,7 +133,7 @@ func subaccountDestinationCertificateValueFrom(ctx context.Context, value destin
 	}
 
 	// convert terraform object into a golang object
-	creationVal := DestinationCertificateCreationType{}
+	creationVal := DestinationCertificateCreationTypeV1{}
 	diags = creationData.As(ctx, &creationVal, basetypes.ObjectAsOptions{
 		UnhandledNullAsEmpty:    true,
 		UnhandledUnknownAsEmpty: true,
@@ -136,7 +145,7 @@ func subaccountDestinationCertificateValueFrom(ctx context.Context, value destin
 	}
 
 	// replaces all empty strings with null
-	creationObj, diags := convertEmptyStringToNull[DestinationCertificateCreationType](reflect.ValueOf(&creationVal).Elem())
+	creationObj, diags := convertEmptyStringToNull[DestinationCertificateCreationTypeV1](reflect.ValueOf(&creationVal).Elem())
 	diagnostics.Append(diags...)
 
 	// convert back to terraform object value
