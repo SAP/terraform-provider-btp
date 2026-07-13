@@ -511,20 +511,23 @@ func (rs *subaccountDestinationCertificateResource) UpgradeState(ctx context.Con
 				validityDuration := types.Int64Null()
 
 				if !oldCreation.ValidityDuration.IsNull() && !oldCreation.ValidityDuration.IsUnknown() {
-					value, err := strconv.ParseInt(oldCreation.ValidityDuration.ValueString(), 10, 64)
-					if err != nil {
-						resp.Diagnostics.AddError(
-							"State Migration Failed",
-							fmt.Sprintf(
-								"Unable to convert validity_duration %q to int64: %s",
-								oldCreation.ValidityDuration.ValueString(),
-								err,
-							),
-						)
-						return
-					}
+					raw := oldCreation.ValidityDuration.ValueString()
+					if raw != "" {
+						value, err := strconv.ParseInt(raw, 10, 64)
+						if err != nil {
+							resp.Diagnostics.AddError(
+								"State Migration Failed",
+								fmt.Sprintf(
+									"Unable to convert validity_duration %q to int64: %s",
+									raw,
+									err,
+								),
+							)
+							return
+						}
 
-					validityDuration = types.Int64Value(value)
+						validityDuration = types.Int64Value(value)
+					}
 				}
 
 				newCreation := DestinationCertificateCreationTypeV1{
