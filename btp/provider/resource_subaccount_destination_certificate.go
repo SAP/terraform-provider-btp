@@ -3,14 +3,18 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 )
@@ -191,11 +195,11 @@ __Further Information:__
 							boolplanmodifier.UseStateForUnknown(),
 						},
 					},
-					"validity_duration": schema.StringAttribute{
+					"validity_duration": schema.Int64Attribute{
 						MarkdownDescription: "The numeric duration for which the certificate is valid.",
 						Computed:            true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
+						PlanModifiers: []planmodifier.Int64{
+							int64planmodifier.UseStateForUnknown(),
 						},
 					},
 					"validity_time_units": schema.StringAttribute{
@@ -208,6 +212,7 @@ __Further Information:__
 				},
 			},
 		},
+		Version: 1,
 	}
 }
 
@@ -308,5 +313,254 @@ func (rs *subaccountDestinationCertificateResource) Delete(ctx context.Context, 
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Destination Certificate", fmt.Sprintf("%s", err))
 		return
+	}
+}
+
+func (rs *subaccountDestinationCertificateResource) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
+	return map[int64]resource.StateUpgrader{
+		// State upgrade implementation from 0 (prior state version) to 1 (Schema.Version)
+		0: {
+			PriorSchema: &schema.Schema{
+				Attributes: map[string]schema.Attribute{
+					"subaccount_id": schema.StringAttribute{
+						MarkdownDescription: "The ID of the subaccount which contains the certificate.",
+						Required:            true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"certificate_name": schema.StringAttribute{
+						MarkdownDescription: "The name of the certificate with a valid certificate extension. Supported certificate types include .pem, .p12, .jks and .pfx",
+						Required:            true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"certificate_content": schema.StringAttribute{
+						MarkdownDescription: "The content of the certificate in base64 format.",
+						Required:            true,
+						Sensitive:           true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"service_instance_id": schema.StringAttribute{
+						MarkdownDescription: "The ID of the service instance associated with this certificate.",
+						Optional:            true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"certificate_nodes": schema.ListNestedAttribute{
+						MarkdownDescription: "List of certificate nodes containing details about the certificate and private key components.",
+						Computed:            true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifier.UseStateForUnknown(),
+						},
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"type": schema.StringAttribute{
+									MarkdownDescription: "Denotes the type of the node i.e., 'private_key' or 'x509_certificate'.",
+									Computed:            true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
+								},
+								"format": schema.StringAttribute{
+									MarkdownDescription: "The format of the certificate or key.",
+									Computed:            true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
+								},
+								"algorithm": schema.StringAttribute{
+									MarkdownDescription: "The cryptographic algorithm used in the key.",
+									Computed:            true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
+								},
+								"alias": schema.StringAttribute{
+									MarkdownDescription: "An identifier used for the key.",
+									Computed:            true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
+								},
+								"subject": schema.StringAttribute{
+									MarkdownDescription: "The certificate subject which identifies the owner of the certificate.",
+									Computed:            true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
+								},
+								"issuer": schema.StringAttribute{
+									MarkdownDescription: "The certificate issuer which identifies the certificate authority that signed the certificate.",
+									Computed:            true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
+								},
+								"common_name": schema.StringAttribute{
+									MarkdownDescription: "The common name (CN) extracted from the certificate subject. May be null if not specified in the certificate.",
+									Computed:            true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
+								},
+								"not_before": schema.StringAttribute{
+									MarkdownDescription: "The start date and time (in ISO 8601 format) from which the certificate is valid.",
+									Computed:            true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
+								},
+								"not_after": schema.StringAttribute{
+									MarkdownDescription: "The expiration date and time (in ISO 8601 format) after which the certificate is no longer valid.",
+									Computed:            true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
+								},
+								"certificate": schema.StringAttribute{
+									MarkdownDescription: "The complete X.509 certificate in PEM format, encoded as base64.",
+									Computed:            true,
+									Sensitive:           true,
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
+								},
+							},
+						},
+					},
+					"certification_creation_details": schema.SingleNestedAttribute{
+						MarkdownDescription: "Details about how the destination certificate was created and its configuration settings.",
+						Computed:            true,
+						PlanModifiers: []planmodifier.Object{
+							objectplanmodifier.UseStateForUnknown(),
+						},
+						Attributes: map[string]schema.Attribute{
+							"generation_method": schema.StringAttribute{
+								MarkdownDescription: "Specifies the method used to create the certificate.",
+								Computed:            true,
+								PlanModifiers: []planmodifier.String{
+									stringplanmodifier.UseStateForUnknown(),
+								},
+							},
+							"common_name": schema.StringAttribute{
+								MarkdownDescription: "The common name (CN) associated with the certificate.",
+								Computed:            true,
+								PlanModifiers: []planmodifier.String{
+									stringplanmodifier.UseStateForUnknown(),
+								},
+							},
+							"has_password": schema.BoolAttribute{
+								MarkdownDescription: "Indicates whether the certificate is protected with a password.",
+								Computed:            true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
+							},
+							"auto_renew": schema.BoolAttribute{
+								MarkdownDescription: "Specifies whether the certificate is automatically renewed before it expires.",
+								Computed:            true,
+								PlanModifiers: []planmodifier.Bool{
+									boolplanmodifier.UseStateForUnknown(),
+								},
+							},
+							"validity_duration": schema.StringAttribute{
+								MarkdownDescription: "The numeric duration for which the certificate is valid.",
+								Computed:            true,
+								PlanModifiers: []planmodifier.String{
+									stringplanmodifier.UseStateForUnknown(),
+								},
+							},
+							"validity_time_units": schema.StringAttribute{
+								MarkdownDescription: "The time unit associated with the validity duration, such as `DAYS`, `MONTHS`, or `YEARS`.",
+								Computed:            true,
+								PlanModifiers: []planmodifier.String{
+									stringplanmodifier.UseStateForUnknown(),
+								},
+							},
+						},
+					},
+				},
+			},
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				var priorStateData subaccountDestinationCertificateResourceType
+
+				resp.Diagnostics.Append(req.State.Get(ctx, &priorStateData)...)
+
+				if resp.Diagnostics.HasError() {
+					return
+				}
+
+				var oldCreation DestinationCertificateCreationTypeV0
+
+				resp.Diagnostics.Append(
+					priorStateData.Creation.As(ctx, &oldCreation, basetypes.ObjectAsOptions{
+						UnhandledNullAsEmpty:    true,
+						UnhandledUnknownAsEmpty: true,
+					})...,
+				)
+
+				if resp.Diagnostics.HasError() {
+					return
+				}
+
+				validityDuration := types.Int64Null()
+
+				if !oldCreation.ValidityDuration.IsNull() && !oldCreation.ValidityDuration.IsUnknown() {
+					raw := oldCreation.ValidityDuration.ValueString()
+					if raw != "" {
+						value, err := strconv.ParseInt(raw, 10, 64)
+						if err != nil {
+							resp.Diagnostics.AddError(
+								"State Migration Failed",
+								fmt.Sprintf(
+									"Unable to convert validity_duration %q to int64: %s",
+									raw,
+									err,
+								),
+							)
+							return
+						}
+
+						validityDuration = types.Int64Value(value)
+					}
+				}
+
+				newCreation := DestinationCertificateCreationTypeV1{
+					GenerationMethod:  oldCreation.GenerationMethod,
+					CommonName:        oldCreation.CommonName,
+					HasPassword:       oldCreation.HasPassword,
+					AutoRenew:         oldCreation.AutoRenew,
+					ValidityDuration:  validityDuration,
+					ValidityTimeUnits: oldCreation.ValidityTimeUnits,
+				}
+
+				creation, diags := types.ObjectValueFrom(
+					ctx,
+					creationDataObjType.AttrTypes,
+					newCreation,
+				)
+				resp.Diagnostics.Append(diags...)
+
+				if resp.Diagnostics.HasError() {
+					return
+				}
+
+				upgradedStateData := subaccountDestinationCertificateResourceType{
+					SubaccountId:       priorStateData.SubaccountId,
+					CertificateName:    priorStateData.CertificateName,
+					CertificateContent: priorStateData.CertificateContent,
+					ServiceInstanceId:  priorStateData.ServiceInstanceId,
+					Nodes:              priorStateData.Nodes,
+					Creation:           creation,
+				}
+				// No additional fields to upgrade for subaccountDestinationCertificateResourceType
+				resp.Diagnostics.Append(resp.State.Set(ctx, upgradedStateData)...)
+			},
+		},
 	}
 }
