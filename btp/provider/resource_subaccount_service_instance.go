@@ -110,6 +110,7 @@ You must be assigned to the admin or the service administrator role of the subac
 					stringvalidator.LengthAtLeast(1),
 				},
 				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 					//If the offering changes a new service instance needs to be created
 					stringplanmodifier.RequiresReplaceIfConfigured(),
 				},
