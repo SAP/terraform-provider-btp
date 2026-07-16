@@ -12,7 +12,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - destination certificate - PEM", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/data_source_subaccount_destination_certificate.read_pem_certificate")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.read_pem_certificate")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -24,6 +24,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_name", "terraform.pem"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_nodes.0.type", "x509_certificate"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certification_creation_details.validity_duration", "0"),
 					),
 				},
 			},
@@ -31,7 +32,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate from service instance - PEM", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/data_source_subaccount_destination_certificate.service_instance.read_pem_certificate")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.service_instance.read_pem_certificate")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -43,6 +44,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_name", "terraform.pem"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_nodes.0.type", "x509_certificate"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certification_creation_details.validity_duration", "0"),
 					),
 				},
 			},
@@ -50,7 +52,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate - P12", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/data_source_subaccount_destination_certificate.read_p12_certificate")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.read_p12_certificate")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -66,6 +68,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_nodes.0.algorithm", "RSA"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_nodes.1.type", "x509_certificate"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certification_creation_details.generation_method", "import"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certification_creation_details.validity_duration", "0"),
 					),
 				},
 			},
@@ -73,7 +76,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate from service instance - P12", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/data_source_subaccount_destination_certificate.service_instance.read_p12_certificate")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.service_instance.read_p12_certificate")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -89,6 +92,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_nodes.0.algorithm", "RSA"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_nodes.1.type", "x509_certificate"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certification_creation_details.generation_method", "import"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certification_creation_details.validity_duration", "0"),
 					),
 				},
 			},
@@ -96,7 +100,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate - PFX", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/data_source_subaccount_destination_certificate.read_pfx_certificate")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.read_pfx_certificate")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -112,6 +116,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_nodes.0.algorithm", "RSA"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_nodes.1.type", "x509_certificate"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certification_creation_details.generation_method", "import"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certification_creation_details.validity_duration", "0"),
 					),
 				},
 			},
@@ -119,7 +124,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate from service instance - PFX", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/data_source_subaccount_destination_certificate.service_instance.read_pfx_certificate")
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.service_instance.read_pfx_certificate")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{
@@ -135,6 +140,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_nodes.0.algorithm", "RSA"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certificate_nodes.1.type", "x509_certificate"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certification_creation_details.generation_method", "import"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificate.uut", "certification_creation_details.validity_duration", "0"),
 					),
 				},
 			},

@@ -82,7 +82,7 @@ Read-Only:
 - `common_name` (String) The common name (CN) associated with the certificate.
 - `generation_method` (String) Specifies the method used to create the certificate.
 - `has_password` (Boolean) Indicates whether the certificate is protected with a password.
-- `validity_duration` (String) The numeric duration for which the certificate is valid.
+- `validity_duration` (Number) The numeric duration for which the certificate is valid.
 - `validity_time_units` (String) The time unit associated with the validity duration, such as `DAYS`, `MONTHS`, or `YEARS`.
 
 

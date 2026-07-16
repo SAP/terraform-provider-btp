@@ -121,7 +121,7 @@ __Further Information:__
 						MarkdownDescription: "Specifies whether the certificate is automatically renewed before it expires.",
 						Computed:            true,
 					},
-					"validity_duration": schema.StringAttribute{
+					"validity_duration": schema.Int64Attribute{
 						MarkdownDescription: "The numeric duration for which the certificate is valid.",
 						Computed:            true,
 					},
