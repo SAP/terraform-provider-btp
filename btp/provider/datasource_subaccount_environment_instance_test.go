@@ -19,7 +19,7 @@ func TestDataSourceSubaccountEnvironmentInstance(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountEnvironmentInstanceByInstanceId("uut", "integration-test-acc-static", "DA2883C7-0FAF-4D4A-80BB-A0B54AC9743D"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountEnvironmentInstanceByInstanceId("uut", "integration-test-services-static", "C4C4387E-6CBC-4ABF-B2D3-97997BB22207"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_environment_instance.uut", "subaccount_id", regexpValidUUID),
 						resource.TestMatchResourceAttr("data.btp_subaccount_environment_instance.uut", "id", regexpValidUUID),
@@ -36,7 +36,7 @@ func TestDataSourceSubaccountEnvironmentInstance(t *testing.T) {
 				{
 					Config: `
 					data "btp_subaccount_environment_instance" "instance" {
-						id = "DA2883C7-0FAF-4D4A-80BB-A0B54AC9743D"
+						id = "C98B138A-6DE4-4E87-AB78-491D1CF9691E"
 					}`,
 					ExpectError: regexp.MustCompile(`The argument "subaccount_id" is required, but no definition was found`),
 				},

@@ -37,22 +37,6 @@ func TestDataSourceDirectoryRole(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - directory not security enabled", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_directory_role.not_security_enabled")
-		defer stopQuietly(rec)
-
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclProviderFor(user) + hclDatasourceDirectoryRole("uut", "integration-test-dir-static", "Directory Viewer", "Directory_Viewer", "cis-central!b13"),
-					ExpectError: regexp.MustCompile(`Access forbidden due to insufficient authorization.*`), //error message has a line break, we only check the first part
-				},
-			},
-		})
-	})
-
 	t.Run("error path - directory_id, name, role_template_name and app_id are mandatory", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,

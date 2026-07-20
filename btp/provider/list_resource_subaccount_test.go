@@ -38,7 +38,7 @@ func TestSubaccountListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount.subaccount_list", 11),
+						querycheck.ExpectLength("btp_subaccount.subaccount_list", 17),
 
 						querycheck.ExpectIdentity(
 							"btp_subaccount.subaccount_list",
@@ -56,7 +56,7 @@ func TestSubaccountListResource(t *testing.T) {
 						"eu12",
 					),
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount.subaccount_list", 10),
+						querycheck.ExpectLength("btp_subaccount.subaccount_list", 14),
 
 						querycheck.ExpectIdentity(
 							"btp_subaccount.subaccount_list",
@@ -75,7 +75,7 @@ func TestSubaccountListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount.subaccount_list", 11),
+						querycheck.ExpectLength("btp_subaccount.subaccount_list", 17),
 
 						// Verify full resource data is populated
 						querycheck.ExpectResourceKnownValues(

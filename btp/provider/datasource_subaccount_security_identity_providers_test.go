@@ -22,7 +22,7 @@ func TestDataSourceSubaccountIdentityProviders(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountIdentityProvidersList("uut", "integration-test-security-settings"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_identity_providers.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_identity_providers.uut", "values.#", "12"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_identity_providers.uut", "values.#", "14"),
 					),
 				},
 			},

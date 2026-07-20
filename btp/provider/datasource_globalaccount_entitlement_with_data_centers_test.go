@@ -24,7 +24,7 @@ func TestDataSourceGlobalaccountEntitlementWithDataCenters(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "service_name", "hana-cloud"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "plan_name", "hana"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "datacenter_information.%", "6"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "datacenter_information.%", "7"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "datacenter_information.eu12.dc_region", "eu12"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "datacenter_information.eu12.dc_name", "cf-eu12"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "datacenter_information.eu12.dc_display_name", "cf-eu12"),

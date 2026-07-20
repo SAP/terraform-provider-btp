@@ -135,11 +135,11 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccount("uut", "integration-test-services-static", "SAPLaunchpad", "free"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccount("uut", "integration-test-services-static", "SAPLaunchpadSMS", "free"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpad"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpadSMS"),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "app_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "state", "SUBSCRIBED"),
@@ -152,7 +152,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_subscription.uut",
-					ImportStateIdFunc: getSubscriptionImportStateId("btp_subaccount_subscription.uut", "SAPLaunchpad", "free"),
+					ImportStateIdFunc: getSubscriptionImportStateId("btp_subaccount_subscription.uut", "SAPLaunchpadSMS", "free"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},

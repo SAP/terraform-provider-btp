@@ -93,7 +93,7 @@ func TestResourceDirectoryRole(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderFor(user) + hclResourceDirectoryRole("uut", "integration-test-dir-static", "Directory Viewer", "Directory_Viewer", "cis-central!b13"),
-					ExpectError: regexp.MustCompile(`Access forbidden due to insufficient authorization.*`), //error message has a line break, we only check the first part
+					ExpectError: regexp.MustCompile(`the backend responded with an unknown error: 403`), //error message has a line break, we only check the first part
 				},
 			},
 		})

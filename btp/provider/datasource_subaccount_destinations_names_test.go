@@ -22,7 +22,7 @@ func TestDataSourceSubaccountDestinationsNames(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceDestinationsNamesGeneric("uut", "integration-test-destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_destinations_names.uut", "destination_names.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destinations_names.uut", "destination_names.#", "5"),
 					),
 				},
 			},

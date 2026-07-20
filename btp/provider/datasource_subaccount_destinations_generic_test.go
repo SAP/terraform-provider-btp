@@ -21,7 +21,7 @@ func TestDataSourceSubaccountDestinationsGeneric(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceDestinationsGeneric("uut", "integration-test-destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_destinations_generic.uut", "values.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destinations_generic.uut", "values.#", "5"),
 					),
 				},
 			},
