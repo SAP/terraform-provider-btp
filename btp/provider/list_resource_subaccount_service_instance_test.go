@@ -41,7 +41,7 @@ func TestSubaccountServiceInstanceListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_service_instance.service_instances_list", 3),
+						querycheck.ExpectLength("btp_subaccount_service_instance.service_instances_list", 2),
 
 						querycheck.ExpectIdentity(
 							"btp_subaccount_service_instance.service_instances_list",
@@ -83,7 +83,7 @@ func TestSubaccountServiceInstanceListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_service_instance.service_instances_list", 3),
+						querycheck.ExpectLength("btp_subaccount_service_instance.service_instances_list", 2),
 
 						// Verify full resource data is populated
 						querycheck.ExpectResourceKnownValues(

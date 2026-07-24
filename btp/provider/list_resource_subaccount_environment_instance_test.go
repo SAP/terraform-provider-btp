@@ -46,7 +46,7 @@ func TestSubaccountEnvironmentInstanceListResource(t *testing.T) {
 						querycheck.ExpectIdentity(
 							"btp_subaccount_environment_instance.environment_instances_list",
 							map[string]knownvalue.Check{
-								"id":            knownvalue.StringExact("28EE0D05-966B-4218-8286-14D15B71B610"),
+								"id":            knownvalue.StringExact("C4C4387E-6CBC-4ABF-B2D3-97997BB22207"),
 								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
 							},
 						),
@@ -68,7 +68,7 @@ func TestSubaccountEnvironmentInstanceListResource(t *testing.T) {
 						querycheck.ExpectResourceKnownValues(
 							"btp_subaccount_environment_instance.environment_instances_list",
 							queryfilter.ByResourceIdentity(map[string]knownvalue.Check{
-								"id":            knownvalue.StringExact("28EE0D05-966B-4218-8286-14D15B71B610"),
+								"id":            knownvalue.StringExact("C4C4387E-6CBC-4ABF-B2D3-97997BB22207"),
 								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
 							}),
 							[]querycheck.KnownValueCheck{

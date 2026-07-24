@@ -23,7 +23,7 @@ func TestActionAddMeAsSubaccountAdmin(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclActionAddMeAsSubaccountAdmin("519ece7b-aaee-4ae0-8bfd-68414ec9f520"),
+					Config: hclProviderFor(user) + hclActionAddMeAsSubaccountAdmin("77395f6a-a601-4c9e-8cd0-c1fcefc7f60f"), //integration-test-acc-static
 				},
 			},
 		})

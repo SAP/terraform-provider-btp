@@ -40,7 +40,7 @@ func TestGlobalaccountResourceProviderListResource(t *testing.T) {
 							"btp_globalaccount_resource_provider.resource_provider_list",
 							map[string]knownvalue.Check{
 								"provider_type":  knownvalue.StringExact("AWS"),
-								"technical_name": knownvalue.StringExact("tf_test_resource_provider"),
+								"technical_name": knownvalue.StringExact("integration_test_fixture_resource_provider"),
 							},
 						),
 					},
@@ -58,7 +58,7 @@ func TestGlobalaccountResourceProviderListResource(t *testing.T) {
 							"btp_globalaccount_resource_provider.resource_provider_list",
 							queryfilter.ByResourceIdentity(map[string]knownvalue.Check{
 								"provider_type":  knownvalue.StringExact("AWS"),
-								"technical_name": knownvalue.StringExact("tf_test_resource_provider"),
+								"technical_name": knownvalue.StringExact("integration_test_fixture_resource_provider"),
 							}),
 							[]querycheck.KnownValueCheck{
 								{
@@ -67,19 +67,19 @@ func TestGlobalaccountResourceProviderListResource(t *testing.T) {
 								},
 								{
 									Path:       tfjsonpath.New("description"),
-									KnownValue: knownvalue.StringExact("Description of the resource provider"),
+									KnownValue: knownvalue.StringExact("Resource Provider for Integration Tests Fixture Recording. DO NOT DELETE!!!"),
 								},
 								{
 									Path:       tfjsonpath.New("technical_name"),
-									KnownValue: knownvalue.StringExact("tf_test_resource_provider"),
+									KnownValue: knownvalue.StringExact("integration_test_fixture_resource_provider"),
 								},
 								{
 									Path:       tfjsonpath.New("id"),
-									KnownValue: knownvalue.StringExact("tf_test_resource_provider"),
+									KnownValue: knownvalue.StringExact("integration_test_fixture_resource_provider"),
 								},
 								{
 									Path:       tfjsonpath.New("display_name"),
-									KnownValue: knownvalue.StringExact("Test AWS Resource Provider"),
+									KnownValue: knownvalue.StringExact("Integration Test Fixture Resource Provider"),
 								},
 							},
 						),

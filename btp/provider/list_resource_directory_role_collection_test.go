@@ -19,7 +19,7 @@ import (
 func TestDirectoryRoleCollectionListResource(t *testing.T) {
 	t.Parallel()
 
-	directoryID := "0f7a9b71-0b19-4b6c-b20b-ab2e5445bdc2"
+	directoryID := "79a7e7e7-fbf2-4b18-95b3-856fcc935b54"
 
 	t.Run("happy path", func(t *testing.T) {
 		rec, user := setupVCR(t, "fixtures/list_resource_directory_role_collection")
@@ -82,7 +82,7 @@ func TestDirectoryRoleCollectionListResource(t *testing.T) {
 								},
 								{
 									Path:       tfjsonpath.New("id"),
-									KnownValue: knownvalue.StringExact("0f7a9b71-0b19-4b6c-b20b-ab2e5445bdc2,Directory Viewer"),
+									KnownValue: knownvalue.StringExact("79a7e7e7-fbf2-4b18-95b3-856fcc935b54,Directory Viewer"),
 								},
 								{
 									Path:       tfjsonpath.New("directory_id"),

@@ -22,7 +22,7 @@ func TestDataSourceSubaccountEnvironmentInstances(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountEnvironmentInstances("uut", "integration-test-acc-static"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountEnvironmentInstances("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_environment_instances.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_environment_instances.uut", "values.#", "1"),

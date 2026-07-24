@@ -21,7 +21,7 @@ func TestDataSourceSubaccountDestinations(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceDestinations("uut", "integration-test-destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_destinations.uut", "values.#", "3"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destinations.uut", "values.#", "5"),
 					),
 				},
 			},
@@ -55,7 +55,7 @@ func TestDataSourceSubaccountDestinations(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceDestinationsNames("uut", "integration-test-destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_destinations.uut", "destination_names.#", "3"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destinations.uut", "destination_names.#", "5"),
 					),
 				},
 			},

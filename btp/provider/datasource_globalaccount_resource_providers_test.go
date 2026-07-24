@@ -22,9 +22,9 @@ func TestDataSourceGlobalaccountResourceProviders(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.#", "1"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.provider_type", "AWS"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.technical_name", "tf_test_resource_provider"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.display_name", "Test AWS Resource Provider"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.description", "Description of the resource provider"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.technical_name", "integration_test_fixture_resource_provider"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.display_name", "Integration Test Fixture Resource Provider"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_resource_providers.uut", "values.0.description", "Resource Provider for Integration Tests Fixture Recording. DO NOT DELETE!!!"),
 					),
 				},
 			},

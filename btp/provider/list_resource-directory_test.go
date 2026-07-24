@@ -37,7 +37,7 @@ func TestDirectoryListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_directory.directory_list", 5),
+						querycheck.ExpectLength("btp_directory.directory_list", 7),
 
 						querycheck.ExpectIdentity(
 							"btp_directory.directory_list",
@@ -57,7 +57,7 @@ func TestDirectoryListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_directory.directory_list", 5),
+						querycheck.ExpectLength("btp_directory.directory_list", 7),
 
 						// Verify full resource data is populated
 						querycheck.ExpectResourceKnownValues(

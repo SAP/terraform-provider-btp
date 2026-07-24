@@ -24,9 +24,9 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountRoleCollection("uut", "Global Account Administrator"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", ""),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", "Administrative access to the global account"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "read_only", "true"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "6"),
 					),
 				},
 			},
@@ -43,9 +43,9 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountRoleCollectionWithAttributeMappings("uut", "Global Account Administrator"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", ""),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", "Administrative access to the global account"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "read_only", "true"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "6"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "show_attribute_mappings", "true"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "attribute_mappings.#", "4"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "attribute_mappings.0.attribute", "Groups"),

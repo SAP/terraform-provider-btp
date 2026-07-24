@@ -19,7 +19,7 @@ func TestDataSourceGlobalaccountIdentityProviders(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + `data "btp_globalaccount_identity_providers" "uut" {}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_identity_providers.uut", "values.#", "12"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_identity_providers.uut", "values.#", "14"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_identity_providers.uut", "values.0.status", "ACTIVE"),
 					),
 				},

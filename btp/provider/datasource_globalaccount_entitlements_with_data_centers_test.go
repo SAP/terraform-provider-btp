@@ -24,7 +24,7 @@ func TestDataSourceGlobalaccountEntitlementsWithDataCenter(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountEntitlementsWithDataCenter("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements_with_data_centers.uut", "values.%", "181"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements_with_data_centers.uut", "values.%", "184"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements_with_data_centers.uut", "values.SAPLaunchpad:foundation.datacenter_information.%", "5"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements_with_data_centers.uut", "values.SAPLaunchpad:foundation.datacenter_information.eu12.dc_region", "eu12"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlements_with_data_centers.uut", "values.SAPLaunchpad:foundation.datacenter_information.eu12.dc_name", "cf-eu12"),
