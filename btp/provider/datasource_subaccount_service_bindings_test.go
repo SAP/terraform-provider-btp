@@ -12,6 +12,7 @@ func TestDataSourceSubaccountServiceBindings(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - all service bindings of a subaccount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_bindings")
 		defer stopQuietly(rec)
 
@@ -31,6 +32,7 @@ func TestDataSourceSubaccountServiceBindings(t *testing.T) {
 
 	})
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

@@ -11,6 +11,7 @@ func TestDataSourceGlobalaccountSecuritySettings(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - security settings by id", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_security_settings")
 		defer stopQuietly(rec)
 

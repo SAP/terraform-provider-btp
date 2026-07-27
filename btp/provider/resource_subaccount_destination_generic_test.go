@@ -15,6 +15,7 @@ import (
 func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path HTTP destination with service instance", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http_with_service_instance")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -57,6 +58,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 	t.Run("happy path HTTP destination", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -96,6 +98,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 	})
 
 	t.Run("regression sensitive destination fields remain stable", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_sensitive_regression")
 		defer stopQuietly(rec)
 
@@ -147,6 +150,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 	})
 
 	t.Run("happy path HTTP destination update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http_update")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -189,6 +193,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 	t.Run("happy path TCP destination", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_tcp")
 		defer stopQuietly(rec)
 
@@ -221,6 +226,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 	t.Run("happy path LDAP destination", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_ldap")
 		defer stopQuietly(rec)
 
@@ -266,6 +272,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 	t.Run("happy path MAIL destination", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_mail")
 		defer stopQuietly(rec)
 
@@ -306,6 +313,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 	t.Run("happy path RFC destination", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_rfc")
 		defer stopQuietly(rec)
 
@@ -362,6 +370,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 		})
 	})
 	t.Run("error path HTTP destination invalid url", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http_url_error")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -384,6 +393,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount not provided", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

@@ -24,6 +24,7 @@ type cfOrgParameters struct {
 func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - simple CF creation", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_environment_instance")
 		defer stopQuietly(rec)
 
@@ -45,7 +46,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Provision"),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12-001"),
-						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut","labels",containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "labels", containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
 					),
@@ -61,6 +62,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 		})
 	})
 	t.Run("happy path - CF creation with timeout import", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_environment_instance_import.with_timeout")
 		defer stopQuietly(rec)
 
@@ -85,7 +87,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Provision"),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12-001"),
-						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut","labels",containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "labels", containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.create", "60m"),
@@ -107,6 +109,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - CF creation with timeout", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_environment_instance.with_timeout")
 		defer stopQuietly(rec)
 
@@ -131,7 +134,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Provision"),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12-001"),
-						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut","labels",containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "labels", containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "timeouts.create", "60m"),
@@ -168,6 +171,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 		})
 	})
 	t.Run("happy path - update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_environment_instance.update")
 		defer stopQuietly(rec)
 
@@ -189,7 +193,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Provision"),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12-001"),
-						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut","labels",containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "labels", containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"john.doe@int.test"`)),
 					),
@@ -208,7 +212,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Update"),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12-001"),
-						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut","labels",containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "labels", containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", notContainsCheckFunc(`"id":"john.doe@int.test"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"id":"jane.doe@int.test"`)),
@@ -228,7 +232,7 @@ func TestResourceSubaccountEnvironmentInstance(t *testing.T) {
 						resource.TestMatchResourceAttr("btp_subaccount_environment_instance.uut", "last_modified", regexpValidRFC3999Format),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "type", "Update"),
 						resource.TestCheckResourceAttr("btp_subaccount_environment_instance.uut", "landscape_label", "cf-eu12-001"),
-						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut","labels",containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
+						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "labels", containsCheckFunc(`"API Endpoint":"https://api.cf.eu12-001.hana.ondemand.com"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", containsCheckFunc(`"instance_name":"cf-terraform-org"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", notContainsCheckFunc(`"id":"john.doe@int.test"`)),
 						resource.TestCheckResourceAttrWith("btp_subaccount_environment_instance.uut", "parameters", notContainsCheckFunc(`"id":"jane.doe@int.test"`)),

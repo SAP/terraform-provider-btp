@@ -22,6 +22,7 @@ func TestSubaccountDestinationFragmentListResource(t *testing.T) {
 	subaccountID := "ba268910-81e6-4ac1-9016-cae7ed196889"
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_destination_fragment")
 		defer stopQuietly(rec)
 
@@ -91,6 +92,7 @@ func TestSubaccountDestinationFragmentListResource(t *testing.T) {
 	})
 
 	t.Run("error path - bad request", func(t *testing.T) {
+		t.Parallel()
 		badRequestSubaccountID := ""
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_destination_fragment_bad_request")
 		defer stopQuietly(rec)
@@ -112,6 +114,7 @@ func TestSubaccountDestinationFragmentListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewSubaccountDestinationFragmentListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

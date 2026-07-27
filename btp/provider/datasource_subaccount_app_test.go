@@ -12,6 +12,7 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - app by id", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_app.by_id")
 		defer stopQuietly(rec)
 
@@ -36,6 +37,7 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -48,6 +50,7 @@ func TestDataSourceSubaccountApp(t *testing.T) {
 		})
 	})
 	t.Run("error path - subaccount_id is required", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

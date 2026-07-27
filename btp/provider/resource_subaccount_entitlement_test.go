@@ -16,6 +16,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - no amount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.no_amount")
 		defer stopQuietly(rec)
 
@@ -48,6 +49,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.import_by_resource_identity")
 		defer stopQuietly(rec)
 
@@ -88,6 +90,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - directory hierarchy", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.dir_hierarchy")
 		defer stopQuietly(rec)
 
@@ -120,6 +123,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - with amount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.amount_set")
 		defer stopQuietly(rec)
 
@@ -152,6 +156,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.update")
 		defer stopQuietly(rec)
 
@@ -205,6 +210,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 		})
 	})
 	t.Run("happy path - plan unique identifier", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.plan_unique_identifier")
 		defer stopQuietly(rec)
 
@@ -231,6 +237,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - plan unique identifier with Amount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.plan_unique_identifier_with_amount")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -262,6 +269,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 		})
 	})
 	t.Run("happy path - plan unique identifier with duplicate plan names (issue 1587)", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.plan_unique_identifier.duplicate_plans")
 		defer stopQuietly(rec)
 
@@ -290,6 +298,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("error path - zero amount", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

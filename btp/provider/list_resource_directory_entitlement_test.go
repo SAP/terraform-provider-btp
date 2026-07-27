@@ -22,6 +22,7 @@ func TestDirectoryEntitlementListResource(t *testing.T) {
 	directoryID := "0f7a9b71-0b19-4b6c-b20b-ab2e5445bdc2"
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_directory_entitlement")
 		defer stopQuietly(rec)
 
@@ -103,6 +104,7 @@ func TestDirectoryEntitlementListResource(t *testing.T) {
 	})
 
 	t.Run("error path - directory not found", func(t *testing.T) {
+		t.Parallel()
 		invalidDirectoryID := "00000000-0000-0000-0000-000000000000"
 		rec, user := setupVCR(t, "fixtures/list_resource_directory_entitlement_not_found")
 		defer stopQuietly(rec)
@@ -124,6 +126,7 @@ func TestDirectoryEntitlementListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewDirectoryEntitlementListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

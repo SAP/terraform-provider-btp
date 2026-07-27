@@ -14,6 +14,7 @@ import (
 func TestDataSourceGlobalaccountRoles(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_roles")
 		defer stopQuietly(rec)
 
@@ -33,6 +34,7 @@ func TestDataSourceGlobalaccountRoles(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

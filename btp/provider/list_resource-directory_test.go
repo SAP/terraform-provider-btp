@@ -19,6 +19,7 @@ func TestDirectoryListResource(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_directory")
 		defer stopQuietly(rec)
 
@@ -107,6 +108,7 @@ func TestDirectoryListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewDirectoryListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

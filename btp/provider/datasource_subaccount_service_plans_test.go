@@ -11,6 +11,7 @@ import (
 func TestDataSourceSubaccountServicePlans(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - service plans for subaccount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plans.all")
 		defer stopQuietly(rec)
 
@@ -30,6 +31,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 	})
 
 	t.Run("happy path - service plans for subaccount and environment", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plans.cloudfoundry")
 		defer stopQuietly(rec)
 
@@ -49,6 +51,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 	})
 
 	t.Run("happy path - service plans for subaccount with fields filter", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_plans.namefilter")
 		defer stopQuietly(rec)
 
@@ -68,6 +71,7 @@ func TestDataSourceSubaccountServicePlans(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

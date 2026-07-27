@@ -12,6 +12,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - service bindings by id", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_binding.by_id")
 		defer stopQuietly(rec)
 
@@ -36,6 +37,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 	})
 
 	t.Run("happy path - service bindings by name", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_binding.by_name")
 		defer stopQuietly(rec)
 
@@ -60,6 +62,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -73,6 +76,7 @@ func TestDataSourceSubaccountServiceBinding(t *testing.T) {
 	})
 
 	t.Run("error path - no ID or name", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

@@ -14,6 +14,7 @@ import (
 
 func TestResourceGlobalAccountRole(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role")
 		defer stopQuietly(rec)
 
@@ -46,6 +47,7 @@ func TestResourceGlobalAccountRole(t *testing.T) {
 	})
 
 	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role.import_by_resource_identity")
 		defer stopQuietly(rec)
 
@@ -88,6 +90,7 @@ func TestResourceGlobalAccountRole(t *testing.T) {
 	})
 
 	t.Run("error path - name, role_template_name and app_id are mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -101,6 +104,7 @@ func TestResourceGlobalAccountRole(t *testing.T) {
 	})
 
 	t.Run("error path - name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -113,6 +117,7 @@ func TestResourceGlobalAccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - role_template_name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -125,6 +130,7 @@ func TestResourceGlobalAccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - app_id must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -138,6 +144,7 @@ func TestResourceGlobalAccountRole(t *testing.T) {
 	})
 
 	t.Run("error path - update role name", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role.update")
 		defer stopQuietly(rec)
 

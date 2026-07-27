@@ -12,6 +12,7 @@ func TestDataSourceSubaccountEntitlement(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - plan_unique_identifier found", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_entitlement")
 		defer stopQuietly(rec)
 
@@ -37,6 +38,7 @@ func TestDataSourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount_id is required", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_entitlement_required")
 		defer stopQuietly(rec)
 
@@ -58,6 +60,7 @@ func TestDataSourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("error path - plan not found", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_entitlement_invalid")
 		defer stopQuietly(rec)
 
@@ -74,6 +77,7 @@ func TestDataSourceSubaccountEntitlement(t *testing.T) {
 		})
 	})
 	t.Run("error path - invalid subaccount ID", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_entitlement.subacount_id_invalid")
 		defer stopQuietly(rec)
 

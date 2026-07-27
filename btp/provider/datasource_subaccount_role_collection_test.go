@@ -14,6 +14,7 @@ import (
 func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_role_collection")
 		defer stopQuietly(rec)
 
@@ -35,6 +36,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_role_collection_with_attribute_mappings")
 		defer stopQuietly(rec)
 
@@ -62,6 +64,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("happy path - with user assignments", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_role_collection_with_user_assignments")
 		defer stopQuietly(rec)
 
@@ -82,6 +85,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -95,6 +99,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -107,6 +112,7 @@ func TestDataSourceSubaccountRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

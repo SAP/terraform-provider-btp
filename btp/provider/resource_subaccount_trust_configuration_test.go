@@ -17,6 +17,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - complete configuration with update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration.complete")
 		defer stopQuietly(rec)
 
@@ -72,6 +73,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 	t.Run("happy path - Importing via identity ", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration_with_import_block")
 		defer stopQuietly(rec)
 
@@ -116,6 +118,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 	t.Run("happy path - minimal configuration with update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration.minimal")
 		defer stopQuietly(rec)
 
@@ -172,6 +175,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 	})
 
 	t.Run("error path - import failure", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration.import_error")
 		defer stopQuietly(rec)
 
@@ -194,6 +198,7 @@ func TestResourceSubaccountTrustConfiguration(t *testing.T) {
 	})
 
 	t.Run("error path - missing identity provider", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_trust_configuration.error_missing_identityprovider")
 		defer stopQuietly(rec)
 

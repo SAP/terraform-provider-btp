@@ -9,6 +9,7 @@ import (
 func TestDataSourceGlobalaccountIdentityProviders(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - list all global idps", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_identity_providers.list_all")
 		defer stopQuietly(rec)
 

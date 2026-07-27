@@ -10,6 +10,7 @@ import (
 func TestDataSourceDirectories(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_directories.all")
 		defer stopQuietly(rec)
 

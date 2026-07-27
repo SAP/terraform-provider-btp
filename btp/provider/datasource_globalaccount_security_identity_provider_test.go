@@ -11,6 +11,7 @@ import (
 func TestDataSourceGlobalaccountIdentityProvider(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - get global idp by host", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_identity_provider.by_host")
 		defer stopQuietly(rec)
 
@@ -35,6 +36,7 @@ func TestDataSourceGlobalaccountIdentityProvider(t *testing.T) {
 	})
 
 	t.Run("error path - host mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

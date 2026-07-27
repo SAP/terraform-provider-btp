@@ -12,6 +12,7 @@ import (
 func TestActionAddMeAsSubaccountAdmin(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - successful admin assignment", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/action_add_me_as_subaccount_admin")
 		defer stopQuietly(rec)
 
@@ -30,6 +31,7 @@ func TestActionAddMeAsSubaccountAdmin(t *testing.T) {
 	})
 
 	t.Run("error path - non-existing subaccount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/action_add_me_as_subaccount_admin_fail_non_existing")
 		defer stopQuietly(rec)
 

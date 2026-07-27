@@ -22,6 +22,7 @@ func TestDirectoryRoleListResource(t *testing.T) {
 	directoryID := "14870944-4832-4e76-83f7-d2913661cf6d"
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_directory_role")
 		defer stopQuietly(rec)
 
@@ -109,6 +110,7 @@ func TestDirectoryRoleListResource(t *testing.T) {
 	})
 
 	t.Run("error path - bad request", func(t *testing.T) {
+		t.Parallel()
 		badRequestDirectoryID := ""
 		rec, user := setupVCR(t, "fixtures/list_resource_directory_role_bad_request")
 		defer stopQuietly(rec)
@@ -130,6 +132,7 @@ func TestDirectoryRoleListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewDirectoryRoleListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

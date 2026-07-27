@@ -14,6 +14,7 @@ import (
 
 func TestResourceSubaccountServiceBroker(t *testing.T) {
 	t.Run("happy path - simple service_broker", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_broker")
 		defer stopQuietly(rec)
 
@@ -61,6 +62,7 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service_broker import block", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_broker_import_block")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -114,6 +116,7 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 		})
 	})
 	t.Run("happy path - service_broker with mtls only", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_broker_with_mtls")
 		defer stopQuietly(rec)
 
@@ -159,6 +162,7 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 	})
 
 	t.Run("happy path - service_broker with mtls and username and password", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_broker_with_mtls_username_password")
 		defer stopQuietly(rec)
 
@@ -208,6 +212,7 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 	})
 
 	t.Run("happy path - service_broker with cert and key", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_broker_with_cert_and_key")
 		defer stopQuietly(rec)
 
@@ -251,6 +256,7 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 	})
 
 	t.Run("error path - mtls set to true with cert and key provided", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -264,6 +270,7 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 	})
 
 	t.Run("error path - mtls not set and no auth data", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -277,6 +284,7 @@ func TestResourceSubaccountServiceBroker(t *testing.T) {
 	})
 
 	t.Run("error path - mtls set to false with auth data", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

@@ -13,6 +13,7 @@ import (
 
 func TestResourceSubaccountSecuritySettings(t *testing.T) {
 	t.Run("happy path - complete configuration", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_security_settings.complete")
 		defer stopQuietly(rec)
 
@@ -60,6 +61,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 		})
 	})
 	t.Run("happy path - with import", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_security_settings_with_import")
 		defer stopQuietly(rec)
 
@@ -102,6 +104,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 	})
 
 	t.Run("happy path - complete configuration with iframe domains list", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_security_settings_with_iframe_domains_list.complete")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -156,6 +159,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 	})
 
 	t.Run("happy path - IFrame deletion", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_security_settings.destroy")
 		defer stopQuietly(rec)
 
@@ -204,6 +208,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 	})
 
 	t.Run("happy path - IFrame deletion list", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_security_settings.destroy_list")
 		defer stopQuietly(rec)
 
@@ -250,6 +255,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 		})
 	})
 	t.Run("error path - invalid iframe value", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -263,6 +269,7 @@ func TestResourceSubaccountSecuritySettings(t *testing.T) {
 	})
 
 	t.Run("error path - both iframe_domains and iframe_domains_list is defined in configuration", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

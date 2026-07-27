@@ -12,6 +12,7 @@ func TestDataSourceGlobalaccountEntitlementWithDataCenters(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - retrieve data centers for entitlement", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_entitlement_with_data_centers")
 		defer stopQuietly(rec)
 
@@ -36,6 +37,7 @@ func TestDataSourceGlobalaccountEntitlementWithDataCenters(t *testing.T) {
 	})
 
 	t.Run("happy path - no entry found", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_entitlement_with_data_centers_empty")
 		defer stopQuietly(rec)
 
@@ -56,6 +58,7 @@ func TestDataSourceGlobalaccountEntitlementWithDataCenters(t *testing.T) {
 	})
 
 	t.Run("error path - service_name is required", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_entitlement_with_data_centers_required_service_name")
 		defer stopQuietly(rec)
 
@@ -76,6 +79,7 @@ func TestDataSourceGlobalaccountEntitlementWithDataCenters(t *testing.T) {
 	})
 
 	t.Run("error path - plan_name is required", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_entitlement_with_data_centers_required_plan_name")
 		defer stopQuietly(rec)
 

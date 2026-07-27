@@ -12,6 +12,7 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - service instance by id", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instance.by_id")
 		defer stopQuietly(rec)
 
@@ -38,6 +39,7 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - service instance by name", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instance.by_name")
 		defer stopQuietly(rec)
 
@@ -64,6 +66,7 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("error path - specify ID and name", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -77,6 +80,7 @@ func TestDataSourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

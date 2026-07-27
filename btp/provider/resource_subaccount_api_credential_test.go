@@ -13,6 +13,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - api-credential with client secret", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_api_credential.with_secret")
 		defer stopQuietly(rec)
 
@@ -34,6 +35,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 	})
 
 	t.Run("happy path - api-credential with certificate", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_api_credential.with_certificate")
 		defer stopQuietly(rec)
 
@@ -55,6 +57,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 	})
 
 	t.Run("happy path - api-credential with read-only set to true", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_api_credential.read_only_credentials")
 		defer stopQuietly(rec)
 
@@ -76,6 +79,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 	})
 
 	t.Run("error path - invalid certificate", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_api_credential.error_invalid_certificate")
 		defer stopQuietly(rec)
 
@@ -92,6 +96,7 @@ func TestResourceSubaccountApiCredential(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount id is mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

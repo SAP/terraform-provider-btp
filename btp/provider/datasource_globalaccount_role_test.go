@@ -14,6 +14,7 @@ import (
 func TestDataSourceGlobalaccountRole(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role")
 		defer stopQuietly(rec)
 
@@ -36,6 +37,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - name, role_template_name and app_id are mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -48,6 +50,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -60,6 +63,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - role_template_name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -72,6 +76,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - app_id must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -84,6 +89,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

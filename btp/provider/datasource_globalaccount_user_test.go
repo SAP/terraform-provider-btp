@@ -14,6 +14,7 @@ import (
 func TestDataSourceGlobalaccountUser(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_user")
 		defer stopQuietly(rec)
 
@@ -38,6 +39,7 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 		})
 	})
 	t.Run("error path - user_name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -50,6 +52,7 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 		})
 	})
 	t.Run("error path - user_name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -62,6 +65,7 @@ func TestDataSourceGlobalaccountUser(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

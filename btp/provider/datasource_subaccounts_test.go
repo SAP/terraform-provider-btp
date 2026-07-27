@@ -10,6 +10,7 @@ import (
 func TestDataSourceSubaccounts(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccounts.all")
 		defer stopQuietly(rec)
 

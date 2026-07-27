@@ -12,6 +12,7 @@ func TestDataSourceSubaccountDestinationsNames(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path without service instance only names", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destinations_names_without_service_instance_generic")
 		defer stopQuietly(rec)
 
@@ -29,6 +30,7 @@ func TestDataSourceSubaccountDestinationsNames(t *testing.T) {
 		})
 	})
 	t.Run("happy path with service instance only names", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destinations_names_with_service_instance_generic")
 		defer stopQuietly(rec)
 
@@ -46,6 +48,7 @@ func TestDataSourceSubaccountDestinationsNames(t *testing.T) {
 		})
 	})
 	t.Run("error path - subaccount not provided", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

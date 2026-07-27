@@ -20,6 +20,7 @@ func TestSubaccountListResource(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount")
 		defer stopQuietly(rec)
 
@@ -121,6 +122,7 @@ func TestSubaccountListResource(t *testing.T) {
 	})
 
 	t.Run("error path - bad request", func(t *testing.T) {
+		t.Parallel()
 		badRequestLablesFilter := "a"
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_bad_request")
 		defer stopQuietly(rec)
@@ -142,6 +144,7 @@ func TestSubaccountListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewSubaccountListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

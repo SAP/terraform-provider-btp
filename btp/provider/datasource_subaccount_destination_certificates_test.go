@@ -10,6 +10,7 @@ import (
 func TestDatasourceSubaccountDestinationCertificates(t *testing.T) {
 
 	t.Run("happy path - destination certificates", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificates.read_certificates")
 		defer stopQuietly(rec)
 

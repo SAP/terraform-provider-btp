@@ -14,6 +14,7 @@ import (
 
 func TestResourceSubaccountRoleCollectionBase(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_base")
 		defer stopQuietly(rec)
 
@@ -43,6 +44,7 @@ func TestResourceSubaccountRoleCollectionBase(t *testing.T) {
 	})
 
 	t.Run("happy path - import with resource identity ", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_base.import_resource_identity")
 		defer stopQuietly(rec)
 
@@ -80,6 +82,7 @@ func TestResourceSubaccountRoleCollectionBase(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_base.update")
 		defer stopQuietly(rec)
 
@@ -109,6 +112,7 @@ func TestResourceSubaccountRoleCollectionBase(t *testing.T) {
 	})
 
 	t.Run("happy path - update removing description", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_base.update_rm_desc")
 		defer stopQuietly(rec)
 
@@ -149,6 +153,7 @@ func TestResourceSubaccountRoleCollectionBase(t *testing.T) {
 	})
 
 	t.Run("happy path - update omitting description", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_base.update_wo_desc")
 		defer stopQuietly(rec)
 
@@ -188,6 +193,7 @@ func TestResourceSubaccountRoleCollectionBase(t *testing.T) {
 	})
 
 	t.Run("error path - import with wrong key", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_base.import_error")
 		defer stopQuietly(rec)
 
@@ -215,6 +221,7 @@ func TestResourceSubaccountRoleCollectionBase(t *testing.T) {
 	})
 
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
