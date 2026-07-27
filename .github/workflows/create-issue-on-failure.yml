@@ -30,78 +30,104 @@ jobs:
           script: |
             const results = `${{ inputs.job_results }}`;
             const testType = `${{ inputs.test_type }}`.toLowerCase();
-
-            // Skip if no failure
-            if (!results.includes("failure")) {
-              console.log("No failures detected, skipping issue creation.");
-              return;
-            }
-
             const labels = JSON.parse(`${{ inputs.labels }}`);
             const workflowName = `${{ inputs.workflow_name }}`;
             const repo = context.repo;
             const capitalizedType = testType.charAt(0).toUpperCase() + testType.slice(1);
-
+            const hasFailed = results.includes("failure");
             const title = `${workflowName} - ${capitalizedType} Test Failure`;
-
             const now = new Date().toISOString();
+            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
 
-            const body = `
-            ## ${capitalizedType} Test Failed
-
-            **Workflow Group:** ${{ inputs.workflow_name }}
-
-            **Test Type:** ${capitalizedType}
-
-            **Results:**
-            ${results}
-
-            **Run URL:**
-            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            **Triggered by:** @${context.actor}
-
-            **Timestamp:** ${now}
-            `;
-
-            // Fetch open issues
+            // Search for an existing open issue with this title
             const searchQuery = `repo:${repo.owner}/${repo.repo} is:issue is:open in:title "${title}"`;
-
             const searchResult = await github.rest.search.issuesAndPullRequests({
               q: searchQuery,
               per_page: 10
             });
-
             const existingIssue = searchResult.data.items.find(item => !item.pull_request);
 
-            if (existingIssue) {
-              console.log(`Updating existing issue #${existingIssue.number}`);
+            if (hasFailed) {
+              const failureBody = [
+                `## ${capitalizedType} Test Failed`,
+                '',
+                `**Workflow Group:** ${workflowName}`,
+                `**Test Type:** ${capitalizedType}`,
+                '',
+                '**Results:**',
+                results,
+                '',
+                '**Run URL:**',
+                runUrl,
+                '',
+                `**Triggered by:** @${context.actor}`,
+                `**Timestamp:** ${now}`
+              ].join('\n');
 
-              await github.rest.issues.createComment({
-                owner: repo.owner,
-                repo: repo.repo,
-                issue_number: existingIssue.number,
-                body: body
-              });
+              if (existingIssue) {
+                console.log(`Tests failed again. Adding details to existing issue #${existingIssue.number}`);
+                await github.rest.issues.createComment({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  issue_number: existingIssue.number,
+                  body: failureBody
+                });
+              } else {
+                console.log("No existing issue found, creating a new one");
+                const workflowLabel = workflowName
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/g, '-')
+                  .replace(/^-+|-+$/g, '') + "-failure";
 
+                await github.rest.issues.create({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  title,
+                  body: failureBody,
+                  labels: [
+                    ...labels,
+                    `${testType}-test-failure`,
+                    workflowLabel
+                  ]
+                });
+              }
             } else {
-              console.log("No existing issue found, creating a new one");
+              // Tests passed — close existing issue if one is open
+              if (existingIssue) {
+                console.log(`Tests passed. Resolving existing issue #${existingIssue.number}`);
 
-              // Add workflow-specific label for future filtering
-              const workflowLabel = workflowName
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '') + "-failure";
+                const successBody = [
+                  `## ${capitalizedType} Tests Passed :white_check_mark:`,
+                  '',
+                  'The integration tests have passed on this run.',
+                  '',
+                  '**Results:**',
+                  results,
+                  '',
+                  '**Run URL:**',
+                  runUrl,
+                  '',
+                  `**Triggered by:** @${context.actor}`,
+                  `**Timestamp:** ${now}`,
+                  '',
+                  'Closing this issue as tests are now passing.'
+                ].join('\n');
 
-              await github.rest.issues.create({
-                owner: repo.owner,
-                repo: repo.repo,
-                title,
-                body,
-                labels: [
-                  ...labels,
-                  `${testType}-test-failure`,
-                  workflowLabel
-                ]
-              });
+                await github.rest.issues.createComment({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  issue_number: existingIssue.number,
+                  body: successBody
+                });
+
+                await github.rest.issues.update({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  issue_number: existingIssue.number,
+                  state: 'closed',
+                  state_reason: 'completed'
+                });
+              } else {
+                console.log("Tests passed and no existing open issue found. Nothing to do.");
+              }
             }
