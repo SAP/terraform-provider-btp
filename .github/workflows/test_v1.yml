@@ -156,7 +156,7 @@ jobs:
   # as sequential named steps, visible when the check is opened.
   test-provider:
     if: github.event.pull_request.draft == false || github.event_name != 'pull_request'
-    name: "Provider Tests (TF ${{ matrix.terraform }})"
+    name: "Terraform Provider Acceptance Tests (${{ matrix.terraform }})"
     needs: [build, compute-test-filter]
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -252,22 +252,25 @@ jobs:
   # Pure unit tests — no VCR, no Terraform plugin server, very fast.
   # Always runs the full ./internal/... suite (no filtering needed).
   test-internal:
-    if: |
-      (github.event.pull_request.draft == false || github.event_name != 'pull_request') &&
-      needs.compute-test-filter.outputs.run_internal == 'true'
+    if: github.event.pull_request.draft == false || github.event_name != 'pull_request'
     name: Internal Package Tests
     needs: [build, compute-test-filter]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
+        if: needs.compute-test-filter.outputs.run_internal == 'true'
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+        if: needs.compute-test-filter.outputs.run_internal == 'true'
         with:
           go-version-file: "go.mod"
           cache: false
       - run: go mod download && go mod tidy
+        if: needs.compute-test-filter.outputs.run_internal == 'true'
       - run: go test -v -timeout=120s -parallel=16 -cover -coverprofile=cover-internal.out ./internal/...
+        if: needs.compute-test-filter.outputs.run_internal == 'true'
       - uses: actions/upload-artifact@v7
+        if: needs.compute-test-filter.outputs.run_internal == 'true'
         with:
           name: coverage-internal
           path: cover-internal.out
@@ -320,8 +323,7 @@ jobs:
     if: |
       always() &&
       (github.event.pull_request.draft == false || github.event_name != 'pull_request') &&
-      needs.merge-coverage.result == 'success' &&
-      needs.merge-coverage.outputs.coverage_produced == 'true'
+      needs.merge-coverage.result == 'success'
     name: SonarCloud
     needs: [merge-coverage]
     runs-on: ubuntu-latest
@@ -332,6 +334,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/download-artifact@v7
+        if: needs.merge-coverage.outputs.coverage_produced == 'true'
         with:
           name: coverage-report
       - name: SonarCloud Scan
