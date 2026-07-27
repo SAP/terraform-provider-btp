@@ -289,12 +289,13 @@ jobs:
         run: |
           files=$(ls cover-*.out 2>/dev/null | tr '\n' ' ')
           if [ -z "$files" ]; then
-            echo "No coverage files found — nothing to merge"
-            exit 1
+            echo "No coverage files found — no tests ran, skipping merge"
+            exit 0
           fi
           echo "Merging: $files"
           gocovmerge $files > cover.out
       - uses: actions/upload-artifact@v7
+        if: hashFiles('cover.out') != ''
         with:
           name: coverage-report
           path: cover.out
@@ -304,9 +305,10 @@ jobs:
     if: |
       always() &&
       (github.event.pull_request.draft == false || github.event_name != 'pull_request') &&
-      needs.merge-coverage.result == 'success'
+      needs.merge-coverage.result == 'success' &&
+      (needs.test-provider.result == 'success' || needs.test-internal.result == 'success')
     name: SonarCloud
-    needs: merge-coverage
+    needs: [merge-coverage, test-provider, test-internal]
     runs-on: ubuntu-latest
     environment:
       name: btp
