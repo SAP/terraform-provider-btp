@@ -155,7 +155,9 @@ jobs:
   # Split into 4 shards by type × 3 Terraform versions = 12 parallel jobs.
   # resources | datasources | list-resources | actions+provider+functions
   test-provider:
-    if: github.event.pull_request.draft == false || github.event_name != 'pull_request'
+    if: |
+      (github.event.pull_request.draft == false || github.event_name != 'pull_request') &&
+      needs.compute-test-filter.outputs.run_provider == 'true'
     name: "Provider Tests - ${{ matrix.scope.name }} (TF ${{ matrix.terraform }})"
     needs: [build, compute-test-filter]
     runs-on: ubuntu-latest
@@ -187,19 +189,15 @@ jobs:
             filter: "TestAction|TestProvider|TestFunction|TestResolve|TestDrop|TestExtractLabelValue|TestToGetFormattedValue"
     steps:
       - uses: actions/checkout@v7
-        if: needs.compute-test-filter.outputs.run_provider == 'true'
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
-        if: needs.compute-test-filter.outputs.run_provider == 'true'
         with:
           go-version-file: "go.mod"
           cache: false
       - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85
-        if: needs.compute-test-filter.outputs.run_provider == 'true'
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
       - run: go mod download && go mod tidy
-        if: needs.compute-test-filter.outputs.run_provider == 'true'
 
       # Full suite (".") → use scope filter to keep shards balanced.
       # Path-filtered PR → use the specific test name(s) directly.
@@ -207,7 +205,6 @@ jobs:
       # interpreted as shell pipe operators when inlined by ${{ }}.
       - name: Resolve effective test filter
         id: effective
-        if: needs.compute-test-filter.outputs.run_provider == 'true'
         env:
           PR_FILTER: ${{ needs.compute-test-filter.outputs.provider_filter }}
         run: |
@@ -218,19 +215,19 @@ jobs:
           fi
 
       - run: go test -v -timeout=900s -parallel=16 -run '${{ steps.effective.outputs.filter }}' ./btp/provider/
-        if: needs.compute-test-filter.outputs.run_provider == 'true' && matrix.terraform != env.LATEST_TF_VERSION
+        if: matrix.terraform != env.LATEST_TF_VERSION
         env:
           TF_ACC: "1"
 
       - uses: robherley/go-test-action@v1
-        if: needs.compute-test-filter.outputs.run_provider == 'true' && matrix.terraform == env.LATEST_TF_VERSION
+        if: matrix.terraform == env.LATEST_TF_VERSION
         env:
           TF_ACC: "1"
         with:
           testArguments: -v -cover -coverprofile=cover-${{ matrix.scope.name }}.out -timeout=900s -parallel=16 -run '${{ steps.effective.outputs.filter }}' ./btp/provider/
 
       - uses: actions/upload-artifact@v7
-        if: needs.compute-test-filter.outputs.run_provider == 'true' && matrix.terraform == env.LATEST_TF_VERSION
+        if: matrix.terraform == env.LATEST_TF_VERSION
         with:
           name: coverage-${{ matrix.scope.name }}
           path: cover-${{ matrix.scope.name }}.out
@@ -239,25 +236,22 @@ jobs:
   # Pure unit tests — no VCR, no Terraform plugin server, very fast.
   # Always runs the full ./internal/... suite (no filtering needed).
   test-internal:
-    if: github.event.pull_request.draft == false || github.event_name != 'pull_request'
+    if: |
+      (github.event.pull_request.draft == false || github.event_name != 'pull_request') &&
+      needs.compute-test-filter.outputs.run_internal == 'true'
     name: Internal Package Tests
     needs: [build, compute-test-filter]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-        if: needs.compute-test-filter.outputs.run_internal == 'true'
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
-        if: needs.compute-test-filter.outputs.run_internal == 'true'
         with:
           go-version-file: "go.mod"
           cache: false
       - run: go mod download && go mod tidy
-        if: needs.compute-test-filter.outputs.run_internal == 'true'
       - run: go test -v -timeout=120s -parallel=16 -cover -coverprofile=cover-internal.out ./internal/...
-        if: needs.compute-test-filter.outputs.run_internal == 'true'
       - uses: actions/upload-artifact@v7
-        if: needs.compute-test-filter.outputs.run_internal == 'true'
         with:
           name: coverage-internal
           path: cover-internal.out

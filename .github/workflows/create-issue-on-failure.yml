@@ -35,6 +35,7 @@ jobs:
             const repo = context.repo;
             const capitalizedType = testType.charAt(0).toUpperCase() + testType.slice(1);
             const hasFailed = results.includes("failure");
+            const hasInconclusiveResults = !hasFailed && (results.includes("cancelled") || results.includes("skipped"));
             const title = `${workflowName} - ${capitalizedType} Test Failure`;
             const now = new Date().toISOString();
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
@@ -91,6 +92,9 @@ jobs:
                   ]
                 });
               }
+            } else if (hasInconclusiveResults) {
+              // cancelled or skipped — do not close any open issue, just log
+              console.log("Run was cancelled or skipped. Leaving any existing issue open.");
             } else {
               // Tests passed — close existing issue if one is open
               if (existingIssue) {
@@ -99,7 +103,7 @@ jobs:
                 const successBody = [
                   `## ${capitalizedType} Tests Passed :white_check_mark:`,
                   '',
-                  'The integration tests have passed on this run.',
+                  `The ${capitalizedType} tests have passed on this run.`,
                   '',
                   '**Results:**',
                   results,
