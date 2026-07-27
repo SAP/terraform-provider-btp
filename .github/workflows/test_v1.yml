@@ -152,16 +152,14 @@ jobs:
           fi
 
   # ── Provider tests ──────────────────────────────────────────────────────────
-  # Split into 4 shards by type × 3 Terraform versions = 12 parallel jobs.
-  # resources | datasources | list-resources | actions+provider+functions
+  # One check per Terraform version (3 total). Each check runs all four scopes
+  # as sequential named steps, visible when the check is opened.
   test-provider:
-    if: |
-      (github.event.pull_request.draft == false || github.event_name != 'pull_request') &&
-      needs.compute-test-filter.outputs.run_provider == 'true'
-    name: "Provider Tests - ${{ matrix.scope.name }} (TF ${{ matrix.terraform }})"
+    if: github.event.pull_request.draft == false || github.event_name != 'pull_request'
+    name: "Provider Tests (TF ${{ matrix.terraform }})"
     needs: [build, compute-test-filter]
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -178,59 +176,77 @@ jobs:
           - "1.13.*"
           - "1.14.*"
           - "1.15.*"
-        scope:
-          - name: resources
-            filter: "TestResource"
-          - name: datasources
-            filter: "TestDataSource"
-          - name: list-resources
-            filter: "ListResource"
-          - name: actions-provider-functions
-            filter: "TestAction|TestProvider|TestFunction|TestResolve|TestDrop|TestExtractLabelValue|TestToGetFormattedValue"
     steps:
       - uses: actions/checkout@v7
+        if: needs.compute-test-filter.outputs.run_provider == 'true'
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+        if: needs.compute-test-filter.outputs.run_provider == 'true'
         with:
           go-version-file: "go.mod"
           cache: false
       - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85
+        if: needs.compute-test-filter.outputs.run_provider == 'true'
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
       - run: go mod download && go mod tidy
+        if: needs.compute-test-filter.outputs.run_provider == 'true'
 
-      # Full suite (".") → use scope filter to keep shards balanced.
-      # Path-filtered PR → use the specific test name(s) directly.
-      # PR_FILTER is passed via env to prevent | characters from being
-      # interpreted as shell pipe operators when inlined by ${{ }}.
-      - name: Resolve effective test filter
-        id: effective
+      # Resolve per-scope filters once. Full suite (".") → each scope gets its
+      # own regex. Path-filtered PR → all scopes use the PR filter (scopes with
+      # no matching tests finish instantly). Filters with "|" are stored in
+      # outputs and passed via env vars to avoid shell pipe interpretation.
+      - name: Resolve test filters
+        id: filters
+        if: needs.compute-test-filter.outputs.run_provider == 'true'
         env:
           PR_FILTER: ${{ needs.compute-test-filter.outputs.provider_filter }}
         run: |
           if [ "$PR_FILTER" = "." ]; then
-            echo "filter=${{ matrix.scope.filter }}" >> "$GITHUB_OUTPUT"
+            echo "resources=TestResource"                    >> "$GITHUB_OUTPUT"
+            echo "datasources=TestDataSource"               >> "$GITHUB_OUTPUT"
+            echo "list_resources=ListResource"              >> "$GITHUB_OUTPUT"
+            echo "misc=TestAction|TestProvider|TestFunction|TestResolve|TestDrop|TestExtractLabelValue|TestToGetFormattedValue" >> "$GITHUB_OUTPUT"
           else
-            echo "filter=$PR_FILTER" >> "$GITHUB_OUTPUT"
+            echo "resources=$PR_FILTER"      >> "$GITHUB_OUTPUT"
+            echo "datasources=$PR_FILTER"    >> "$GITHUB_OUTPUT"
+            echo "list_resources=$PR_FILTER" >> "$GITHUB_OUTPUT"
+            echo "misc=$PR_FILTER"           >> "$GITHUB_OUTPUT"
           fi
 
-      - run: go test -v -timeout=900s -parallel=16 -run '${{ steps.effective.outputs.filter }}' ./btp/provider/
-        if: matrix.terraform != env.LATEST_TF_VERSION
+      - name: Test - Resources
+        if: needs.compute-test-filter.outputs.run_provider == 'true'
         env:
           TF_ACC: "1"
+          TEST_FILTER: ${{ steps.filters.outputs.resources }}
+        run: go test -v -timeout=900s -parallel=16 -coverprofile=cover-resources.out -run "$TEST_FILTER" ./btp/provider/
 
-      - uses: robherley/go-test-action@v1
-        if: matrix.terraform == env.LATEST_TF_VERSION
+      - name: Test - Data Sources
+        if: needs.compute-test-filter.outputs.run_provider == 'true'
         env:
           TF_ACC: "1"
-        with:
-          testArguments: -v -cover -coverprofile=cover-${{ matrix.scope.name }}.out -timeout=900s -parallel=16 -run '${{ steps.effective.outputs.filter }}' ./btp/provider/
+          TEST_FILTER: ${{ steps.filters.outputs.datasources }}
+        run: go test -v -timeout=900s -parallel=16 -coverprofile=cover-datasources.out -run "$TEST_FILTER" ./btp/provider/
+
+      - name: Test - List Resources
+        if: needs.compute-test-filter.outputs.run_provider == 'true'
+        env:
+          TF_ACC: "1"
+          TEST_FILTER: ${{ steps.filters.outputs.list_resources }}
+        run: go test -v -timeout=900s -parallel=16 -coverprofile=cover-list-resources.out -run "$TEST_FILTER" ./btp/provider/
+
+      - name: Test - Actions / Functions / Provider
+        if: needs.compute-test-filter.outputs.run_provider == 'true'
+        env:
+          TF_ACC: "1"
+          TEST_FILTER: ${{ steps.filters.outputs.misc }}
+        run: go test -v -timeout=900s -parallel=16 -coverprofile=cover-misc.out -run "$TEST_FILTER" ./btp/provider/
 
       - uses: actions/upload-artifact@v7
-        if: matrix.terraform == env.LATEST_TF_VERSION
+        if: needs.compute-test-filter.outputs.run_provider == 'true' && matrix.terraform == env.LATEST_TF_VERSION
         with:
-          name: coverage-${{ matrix.scope.name }}
-          path: cover-${{ matrix.scope.name }}.out
+          name: coverage-provider
+          path: cover-*.out
 
   # ── Internal tests ──────────────────────────────────────────────────────────
   # Pure unit tests — no VCR, no Terraform plugin server, very fast.
@@ -284,7 +300,7 @@ jobs:
       - name: Merge coverage files
         id: merge
         run: |
-          files=$(ls cover-*.out 2>/dev/null | tr '\n' ' ')
+          files=$(find . -maxdepth 1 -name 'cover-*.out' -printf '%f ' 2>/dev/null || true)
           if [ -z "$files" ]; then
             echo "No coverage files found — no tests ran, skipping merge"
             echo "coverage_produced=false" >> "$GITHUB_OUTPUT"
