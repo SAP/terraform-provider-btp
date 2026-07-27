@@ -22,6 +22,7 @@ func TestSubaccountRoleCollectionRoleListResource(t *testing.T) {
 	subaccountID := "ba268910-81e6-4ac1-9016-cae7ed196889"
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_role_collection_role")
 		defer stopQuietly(rec)
 
@@ -113,6 +114,7 @@ func TestSubaccountRoleCollectionRoleListResource(t *testing.T) {
 	})
 
 	t.Run("error path - bad request", func(t *testing.T) {
+		t.Parallel()
 		badRequestSubaccountID := ""
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_role_collection_role_bad_request")
 		defer stopQuietly(rec)
@@ -134,6 +136,7 @@ func TestSubaccountRoleCollectionRoleListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewSubaccountRoleCollectionRoleListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

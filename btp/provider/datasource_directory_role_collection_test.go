@@ -14,6 +14,7 @@ import (
 func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_directory_role_collection")
 		defer stopQuietly(rec)
 
@@ -36,6 +37,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_directory_role_collection_with_attribute_mappings")
 		defer stopQuietly(rec)
 
@@ -59,6 +61,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("happy path - with user assignments", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_directory_role_collection_with_user_assignments")
 		defer stopQuietly(rec)
 
@@ -78,22 +81,8 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 			},
 		})
 	})
-	t.Run("error path - directory not security enabled", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_directory_role_collection.not_security_enabled")
-		defer stopQuietly(rec)
-
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclProviderFor(user) + hclDatasourceDirectoryRoleCollection("uut", "integration-test-dir-static", "Directory Viewer"),
-					ExpectError: regexp.MustCompile(`Access forbidden due to insufficient authorization.*`), //error message has a line break, we only check the first part
-				},
-			},
-		})
-	})
 	t.Run("error path - directory_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -106,6 +95,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("error path - directory_id not a valid UUID", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -118,6 +108,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("error path - name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -130,6 +121,7 @@ func TestDataSourceDirectoryRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

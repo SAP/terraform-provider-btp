@@ -14,6 +14,7 @@ import (
 func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_trust_configurations.subaccount_exists")
 		defer stopQuietly(rec)
 
@@ -31,6 +32,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 		})
 	})
 	t.Run("error path - subaccount not existing", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_trust_configurations.subaccount_not_existing")
 		defer stopQuietly(rec)
 
@@ -47,6 +49,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -59,6 +62,7 @@ func TestDataSourceSubaccountTrustConfigurations(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

@@ -14,6 +14,7 @@ import (
 func TestDataSourceDirectoryUser(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - default idp", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_directory_user.default_idp")
 		defer stopQuietly(rec)
 
@@ -39,6 +40,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 		})
 	})
 	t.Run("happy path - custom idp", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_directory_user.custom_idp")
 		defer stopQuietly(rec)
 
@@ -56,7 +58,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "family_name", ""),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "given_name", ""),
 						resource.TestMatchResourceAttr("data.btp_directory_user.uut", "id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "2"),
+						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "role_collections.#", "0"),
 						resource.TestCheckResourceAttr("data.btp_directory_user.uut", "verified", "false"),
 					),
 				},
@@ -64,6 +66,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 		})
 	})
 	t.Run("error path - directory_id not a valid UUID", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -76,6 +79,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 		})
 	})
 	t.Run("error path - directory_id, user_name and origin are mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -88,6 +92,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 		})
 	})
 	t.Run("error path - user_name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -100,6 +105,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 		})
 	})
 	t.Run("error path - user_name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -112,6 +118,7 @@ func TestDataSourceDirectoryUser(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

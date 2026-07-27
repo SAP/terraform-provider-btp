@@ -12,6 +12,7 @@ func TestDataSourceSubaccountRoleCollectionBase(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_role_collection_base")
 		defer stopQuietly(rec)
 
@@ -33,6 +34,7 @@ func TestDataSourceSubaccountRoleCollectionBase(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -49,6 +51,7 @@ data "btp_subaccount_role_collection_bases" "uut" {
 	})
 
 	t.Run("error path - name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

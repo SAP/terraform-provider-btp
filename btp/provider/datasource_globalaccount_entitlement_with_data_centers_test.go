@@ -12,6 +12,7 @@ func TestDataSourceGlobalaccountEntitlementWithDataCenters(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - retrieve data centers for entitlement", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_entitlement_with_data_centers")
 		defer stopQuietly(rec)
 
@@ -24,7 +25,7 @@ func TestDataSourceGlobalaccountEntitlementWithDataCenters(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "service_name", "hana-cloud"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "plan_name", "hana"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "datacenter_information.%", "6"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "datacenter_information.%", "7"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "datacenter_information.eu12.dc_region", "eu12"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "datacenter_information.eu12.dc_name", "cf-eu12"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_entitlement_with_data_centers.uut", "datacenter_information.eu12.dc_display_name", "cf-eu12"),
@@ -36,6 +37,7 @@ func TestDataSourceGlobalaccountEntitlementWithDataCenters(t *testing.T) {
 	})
 
 	t.Run("happy path - no entry found", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_entitlement_with_data_centers_empty")
 		defer stopQuietly(rec)
 
@@ -56,6 +58,7 @@ func TestDataSourceGlobalaccountEntitlementWithDataCenters(t *testing.T) {
 	})
 
 	t.Run("error path - service_name is required", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_entitlement_with_data_centers_required_service_name")
 		defer stopQuietly(rec)
 
@@ -76,6 +79,7 @@ func TestDataSourceGlobalaccountEntitlementWithDataCenters(t *testing.T) {
 	})
 
 	t.Run("error path - plan_name is required", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_entitlement_with_data_centers_required_plan_name")
 		defer stopQuietly(rec)
 

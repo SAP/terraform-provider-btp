@@ -12,6 +12,7 @@ import (
 func TestResourceDirectory(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - parent directory", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory")
 		defer stopQuietly(rec)
 
@@ -49,6 +50,7 @@ func TestResourceDirectory(t *testing.T) {
 	})
 
 	t.Run("happy path - parent directory import block", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_import_block")
 		defer stopQuietly(rec)
 
@@ -84,6 +86,7 @@ func TestResourceDirectory(t *testing.T) {
 	})
 
 	t.Run("happy path - directory with features", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory.with_features")
 		defer stopQuietly(rec)
 
@@ -124,6 +127,7 @@ func TestResourceDirectory(t *testing.T) {
 	})
 
 	t.Run("happy path full config with update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory.full_config")
 		defer stopQuietly(rec)
 
@@ -166,6 +170,7 @@ func TestResourceDirectory(t *testing.T) {
 	})
 
 	t.Run("happy path - change directory features", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory.change_with_features")
 		defer stopQuietly(rec)
 
@@ -199,7 +204,10 @@ func TestResourceDirectory(t *testing.T) {
 	})
 
 	t.Run("happy path - directory hierarchy", func(t *testing.T) {
+		t.Parallel(
 		// When recroding this test, make sure that your are not Global Account Admin, but Directory Admin of the parent directory
+		)
+
 		rec, user := setupVCR(t, "fixtures/resource_directory.with_hierarchy")
 		defer stopQuietly(rec)
 

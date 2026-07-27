@@ -19,9 +19,10 @@ import (
 func TestDirectoryRoleCollectionListResource(t *testing.T) {
 	t.Parallel()
 
-	directoryID := "0f7a9b71-0b19-4b6c-b20b-ab2e5445bdc2"
+	directoryID := "79a7e7e7-fbf2-4b18-95b3-856fcc935b54"
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_directory_role_collection")
 		defer stopQuietly(rec)
 
@@ -82,7 +83,7 @@ func TestDirectoryRoleCollectionListResource(t *testing.T) {
 								},
 								{
 									Path:       tfjsonpath.New("id"),
-									KnownValue: knownvalue.StringExact("0f7a9b71-0b19-4b6c-b20b-ab2e5445bdc2,Directory Viewer"),
+									KnownValue: knownvalue.StringExact("79a7e7e7-fbf2-4b18-95b3-856fcc935b54,Directory Viewer"),
 								},
 								{
 									Path:       tfjsonpath.New("directory_id"),
@@ -101,6 +102,7 @@ func TestDirectoryRoleCollectionListResource(t *testing.T) {
 	})
 
 	t.Run("error path - Access forbidden", func(t *testing.T) {
+		t.Parallel()
 		notFoundDirectoryID := "00000000-0000-0000-0000-000000000000"
 
 		rec, user := setupVCR(t, "fixtures/list_resource_directory_role_collection_access_forbidden")
@@ -128,6 +130,7 @@ func TestDirectoryRoleCollectionListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewDirectoryRoleCollectionListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

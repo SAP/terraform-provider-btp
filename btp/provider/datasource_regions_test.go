@@ -14,6 +14,7 @@ import (
 func TestDataSourceRegions(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_regions")
 		defer stopQuietly(rec)
 
@@ -24,13 +25,14 @@ func TestDataSourceRegions(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceRegions("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_regions.uut", "values.#", "6"),
+						resource.TestCheckResourceAttr("data.btp_regions.uut", "values.#", "10"),
 					),
 				},
 			},
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

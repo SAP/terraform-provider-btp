@@ -15,6 +15,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 	var testIdp = getenv("BTP_TEST_IDP", "btpterraform.accounts400.ondemand.com")
 
 	t.Run("happy path - minimal configuration with update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.minimal")
 		defer stopQuietly(rec)
 
@@ -61,6 +62,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 	t.Run("happy path - minimal configuration with import_block", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.import_block")
 		defer stopQuietly(rec)
 
@@ -101,6 +103,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 	})
 
 	t.Run("happy path - complete configuration without update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.complete")
 		defer stopQuietly(rec)
 
@@ -148,6 +151,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 	})
 
 	t.Run("error path - idp does not exist", func(t *testing.T) {
+		t.Parallel()
 
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.invalid_idp")
 		defer stopQuietly(rec)
@@ -166,6 +170,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 	})
 
 	t.Run("error path - malformed origin", func(t *testing.T) {
+		t.Parallel()
 
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_trust_configuration.invalid_origin")
 		defer stopQuietly(rec)

@@ -10,6 +10,7 @@ import (
 func TestDataSourceSubaccounts(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccounts.all")
 		defer stopQuietly(rec)
 
@@ -20,7 +21,7 @@ func TestDataSourceSubaccounts(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceSubaccounts("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccounts.uut", "values.#", "10"),
+						resource.TestCheckResourceAttr("data.btp_subaccounts.uut", "values.#", "18"),
 					),
 				},
 			},

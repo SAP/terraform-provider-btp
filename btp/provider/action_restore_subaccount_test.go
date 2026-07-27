@@ -12,11 +12,13 @@ import (
 func TestActionRestoreSubaccount(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - successful restore", func(t *testing.T) {
+		t.Parallel(
 		/*
 			ATTENTION:
 			BEFORE recording the test, make sure that the subaccount is in the state pending deletion
 			AFTER recording the test, make sure that the subaccount is active
-		*/
+		*/)
+
 		rec, user := setupVCR(t, "fixtures/action_restore_subaccount")
 		defer stopQuietly(rec)
 
@@ -36,6 +38,7 @@ func TestActionRestoreSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - restore active subaccount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/action_restore_subaccount_fail_active")
 		defer stopQuietly(rec)
 
@@ -55,6 +58,7 @@ func TestActionRestoreSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - restore non-existing subaccount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/action_restore_subaccount_fail_non_existing")
 		defer stopQuietly(rec)
 

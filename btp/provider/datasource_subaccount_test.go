@@ -14,6 +14,7 @@ import (
 func TestDataSourceSubaccount(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount")
 		defer stopQuietly(rec)
 
@@ -44,6 +45,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path - subaccount by subdomain", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_by_subdomain")
 		defer stopQuietly(rec)
 
@@ -74,6 +76,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount doesn't exist", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount.err_subaccount_doesnt_exist")
 		defer stopQuietly(rec)
 
@@ -90,6 +93,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - id or subdomain with region is mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -103,6 +107,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")
@@ -125,6 +130,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - either id or subdomain with region should be provided, not both", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -143,6 +149,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - region not provided with subdomain", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -156,6 +163,7 @@ func TestDataSourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - subdomain is invalid", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount.err_invalid_subdomain")
 		defer stopQuietly(rec)
 

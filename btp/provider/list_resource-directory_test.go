@@ -19,6 +19,7 @@ func TestDirectoryListResource(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_directory")
 		defer stopQuietly(rec)
 
@@ -37,7 +38,7 @@ func TestDirectoryListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_directory.directory_list", 5),
+						querycheck.ExpectLength("btp_directory.directory_list", 7),
 
 						querycheck.ExpectIdentity(
 							"btp_directory.directory_list",
@@ -57,7 +58,7 @@ func TestDirectoryListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_directory.directory_list", 5),
+						querycheck.ExpectLength("btp_directory.directory_list", 7),
 
 						// Verify full resource data is populated
 						querycheck.ExpectResourceKnownValues(
@@ -107,6 +108,7 @@ func TestDirectoryListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewDirectoryListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

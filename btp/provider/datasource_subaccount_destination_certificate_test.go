@@ -12,6 +12,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - destination certificate - PEM", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.read_pem_certificate")
 		defer stopQuietly(rec)
 
@@ -32,6 +33,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate from service instance - PEM", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.service_instance.read_pem_certificate")
 		defer stopQuietly(rec)
 
@@ -52,6 +54,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate - P12", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.read_p12_certificate")
 		defer stopQuietly(rec)
 
@@ -76,6 +79,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate from service instance - P12", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.service_instance.read_p12_certificate")
 		defer stopQuietly(rec)
 
@@ -100,6 +104,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate - PFX", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.read_pfx_certificate")
 		defer stopQuietly(rec)
 
@@ -124,6 +129,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate from service instance - PFX", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificate.service_instance.read_pfx_certificate")
 		defer stopQuietly(rec)
 
@@ -148,6 +154,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("error path - destination certificate - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -162,6 +169,7 @@ func TestDataSourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("error path - destination certificate - certificate name mandatory", func(t *testing.T) {
+		t.Parallel()
 
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,

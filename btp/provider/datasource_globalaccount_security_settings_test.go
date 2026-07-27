@@ -11,6 +11,7 @@ func TestDataSourceGlobalaccountSecuritySettings(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - security settings by id", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_security_settings")
 		defer stopQuietly(rec)
 
@@ -27,8 +28,8 @@ func TestDataSourceGlobalaccountSecuritySettings(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_globalaccount_security_settings.uut", "access_token_validity", "-1"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_security_settings.uut", "refresh_token_validity", "-1"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_security_settings.uut", "iframe_domains", ""),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_security_settings.uut", "use_idp_user_name_in_tokens", "true"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_security_settings.uut", "auto_rotate_signing_key", "true"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_security_settings.uut", "use_idp_user_name_in_tokens", "false"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_security_settings.uut", "auto_rotate_signing_key", "false"),
 					),
 				},
 			},

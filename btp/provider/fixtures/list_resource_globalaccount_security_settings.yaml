@@ -6,7 +6,7 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 114
+        content_length: 116
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -19,12 +19,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.14.5 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - 19919dac-3653-967b-5934-5fbb70b62298
+                - 15947d35-9336-6b94-9321-4aa49383e35d
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.97.0
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
         method: POST
       response:
         proto: HTTP/2.0
@@ -32,22 +32,24 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 79
+        content_length: 62
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test","refreshToken":null}'
+        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "79"
+                - "62"
             Content-Security-Policy:
-                - default-src 'self'
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Date:
-                - Thu, 26 Feb 2026 05:21:50 GMT
+                - Wed, 15 Jul 2026 06:40:48 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -61,12 +63,10 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - d63fd087-8788-41a8-40ff-64b62bbd1aa7
-            X-Xss-Protection:
-                - "1"
+                - d727d43c-3424-45e4-5089-32198f899ce5
         status: 200 OK
         code: 200
-        duration: 2.039320043s
+        duration: 2.920553418s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -85,9 +85,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.14.5 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - 50392d2e-5fb4-fd81-f6b2-b99939d6373c
+                - 5c44e698-45f4-42de-4cbf-eb0b3d3a7557
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -96,7 +96,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.97.0/security/settings?list
+        url: https://canary.cli.btp.int.sap/command/v2.106.1/security/settings?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -106,18 +106,20 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369"],"keys":{"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","lastModifiedAt":"Thu Dec 11 07:03:54 UTC 2025","nextRotationDate":null,"fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"redacted","passphrase":"","certificate":"redacted"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"b30613c1-0579-4039-a429-d9463114ccf7","appId":"full-access!a129991","credentialType":"binding-secret","bindingId":"with-secret-new"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"b30613c1-0579-4039-a429-d9463114ccf7","appId":"full-access!a129991","credentialType":"binding-secret","bindingId":"with-secret-new"}],"treatUsersWithSameEmailAsSameUser":false,"useIdpUserNameInTokens":true,"customEmailDomains":[]}'
+        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369","default-jwt-key-9515ea752f"],"keys":{"default-jwt-key-9515ea752f":{"created":"Tue Jun 02 10:58:41 UTC 2026","lastModifiedAt":"Tue Jun 02 10:58:41 UTC 2026","nextRotationDate":null,"fipsCompliant":true},"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","lastModifiedAt":"Thu Dec 11 07:03:54 UTC 2025","nextRotationDate":null,"fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"redacted","passphrase":"","certificate":"redacted"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"b30613c1-0579-4039-a429-d9463114ccf7","appId":"full-access!a129991","credentialType":"binding-secret","bindingId":"with-secret-new"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"b30613c1-0579-4039-a429-d9463114ccf7","appId":"full-access!a129991","credentialType":"binding-secret","bindingId":"with-secret-new"}],"treatUsersWithSameEmailAsSameUser":false,"useIdpUserNameInTokens":false,"customEmailDomains":[],"rotateSigningKeyAutomatically":false}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Security-Policy:
-                - default-src 'self'
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Date:
-                - Thu, 26 Feb 2026 05:21:51 GMT
+                - Wed, 15 Jul 2026 06:40:48 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -133,18 +135,16 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 7fdb2f53-052d-44fa-5509-9925f17943fb
-            X-Xss-Protection:
-                - "1"
+                - 10c72d5b-abea-4626-51e5-3c4c8e20869e
         status: 200 OK
         code: 200
-        duration: 450.968458ms
+        duration: 410.076208ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 114
+        content_length: 116
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
@@ -157,12 +157,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.14.5 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - c605b5c4-3c35-73cb-c8f0-34e53d187a36
+                - 7c46d8e5-3e76-ca22-871f-7df7df0f8027
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.97.0
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
         method: POST
       response:
         proto: HTTP/2.0
@@ -170,22 +170,24 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 79
+        content_length: 62
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test","refreshToken":null}'
+        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "79"
+                - "62"
             Content-Security-Policy:
-                - default-src 'self'
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Date:
-                - Thu, 26 Feb 2026 05:21:54 GMT
+                - Wed, 15 Jul 2026 06:40:52 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -199,12 +201,10 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - ca285653-1b55-464f-7617-161bebd9f375
-            X-Xss-Protection:
-                - "1"
+                - dd2b25dd-789b-4616-5943-18a2e6c10084
         status: 200 OK
         code: 200
-        duration: 2.938950793s
+        duration: 3.282718334s
     - id: 3
       request:
         proto: HTTP/1.1
@@ -223,9 +223,9 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.14.5 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - 177290a8-0b27-2ee6-4bcd-8de809b5a696
+                - e1a1cd88-61c0-0066-59c7-976c13f04a81
             X-Cpcli-Customidp:
                 - identityProvider
             X-Cpcli-Format:
@@ -234,7 +234,7 @@ interactions:
                 - redacted
             X-Cpcli-Subdomain:
                 - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.97.0/security/settings?list
+        url: https://canary.cli.btp.int.sap/command/v2.106.1/security/settings?list
         method: POST
       response:
         proto: HTTP/2.0
@@ -244,18 +244,20 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369"],"keys":{"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","lastModifiedAt":"Thu Dec 11 07:03:54 UTC 2025","nextRotationDate":null,"fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"redacted","passphrase":"","certificate":"redacted"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"b30613c1-0579-4039-a429-d9463114ccf7","appId":"full-access!a129991","credentialType":"binding-secret","bindingId":"with-secret-new"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"b30613c1-0579-4039-a429-d9463114ccf7","appId":"full-access!a129991","credentialType":"binding-secret","bindingId":"with-secret-new"}],"treatUsersWithSameEmailAsSameUser":false,"useIdpUserNameInTokens":true,"customEmailDomains":[]}'
+        body: '{"iframeDomains":"","tokenPolicySettings":{"accessTokenValidity":-1,"refreshTokenValidity":-1,"refreshTokenUnique":false,"activeKeyId":"default-jwt-key--487487369","keyIds":["default-jwt-key--487487369","default-jwt-key-9515ea752f"],"keys":{"default-jwt-key-9515ea752f":{"created":"Tue Jun 02 10:58:41 UTC 2026","lastModifiedAt":"Tue Jun 02 10:58:41 UTC 2026","nextRotationDate":null,"fipsCompliant":true},"default-jwt-key--487487369":{"created":"Thu May 11 08:59:25 UTC 2023","lastModifiedAt":"Thu Dec 11 07:03:54 UTC 2025","nextRotationDate":null,"fipsCompliant":true}}},"samlConfigSettings":{"disableInResponseToCheck":false,"entityID":"https://terraformintcanary.authentication.sap.hana.ondemand.com","activeKeyId":"default-saml-key-51688972","keys":{"default-saml-key-51688972":{"key":"redacted","passphrase":"","certificate":"redacted"}}},"links":{},"defaultIdp":"sap.default","corsDefaultOrigins":[".*"],"corsXhrOrigins":[".*"],"credentialTypeInfos":[{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"b30613c1-0579-4039-a429-d9463114ccf7","appId":"full-access!a129991","credentialType":"binding-secret","bindingId":"with-secret-new"},{"tenantId":"03760ecf-9d89-4189-a92a-1c7efed09298","serviceInstanceId":"b30613c1-0579-4039-a429-d9463114ccf7","appId":"full-access!a129991","credentialType":"binding-secret","bindingId":"with-secret-new"}],"treatUsersWithSameEmailAsSameUser":false,"useIdpUserNameInTokens":false,"customEmailDomains":[],"rotateSigningKeyAutomatically":false}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Security-Policy:
-                - default-src 'self'
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Date:
-                - Thu, 26 Feb 2026 05:21:54 GMT
+                - Wed, 15 Jul 2026 06:40:52 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -271,9 +273,7 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - ef755807-387e-4d29-44e6-b8bc6667e093
-            X-Xss-Protection:
-                - "1"
+                - 90271815-3d04-4320-54c6-c4f743bd1c77
         status: 200 OK
         code: 200
-        duration: 421.655917ms
+        duration: 488.210125ms

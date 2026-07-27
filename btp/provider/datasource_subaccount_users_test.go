@@ -14,6 +14,7 @@ import (
 func TestDataSourceSubaccountUsers(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path with default idp", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_users.default_idp")
 		defer stopQuietly(rec)
 
@@ -25,13 +26,14 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountUsersDefaultIdp("uut", "integration-test-acc-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_users.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_users.uut", "values.#", "9"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_users.uut", "values.#", "12"),
 					),
 				},
 			},
 		})
 	})
 	t.Run("happy path with custom idp", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_users.custom_idp")
 		defer stopQuietly(rec)
 
@@ -50,6 +52,7 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 		})
 	})
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -63,6 +66,7 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 	})
 
 	t.Run("error path - origin must not be empty if given", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -75,6 +79,7 @@ func TestDataSourceSubaccountUsers(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

@@ -21,6 +21,7 @@ func TestSubaccountEntitlementListResource(t *testing.T) {
 	subaccountID := "77395f6a-a601-4c9e-8cd0-c1fcefc7f60f"
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_entitlement")
 		defer stopQuietly(rec)
 
@@ -110,6 +111,7 @@ func TestSubaccountEntitlementListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewSubaccountEntitlementListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

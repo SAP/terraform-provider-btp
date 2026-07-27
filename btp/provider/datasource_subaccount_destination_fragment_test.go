@@ -12,6 +12,7 @@ func TestDataSourceSubaccountDestinationFragment(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - destination fragment", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_fragment")
 		defer stopQuietly(rec)
 
@@ -34,6 +35,7 @@ func TestDataSourceSubaccountDestinationFragment(t *testing.T) {
 	})
 
 	t.Run("happy path - destination fragment with service instance", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_fragment_with_service_instance")
 		defer stopQuietly(rec)
 
@@ -56,6 +58,7 @@ func TestDataSourceSubaccountDestinationFragment(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount is required", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_fragment_subaccount_required")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -74,6 +77,7 @@ func TestDataSourceSubaccountDestinationFragment(t *testing.T) {
 	})
 
 	t.Run("error path - name is required", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_fragment_subaccount_required")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -92,6 +96,7 @@ func TestDataSourceSubaccountDestinationFragment(t *testing.T) {
 	})
 
 	t.Run("error path - destination fragment doesn't exist on subaccount level", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_fragment_not_found_subaccount_level")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -107,6 +112,7 @@ func TestDataSourceSubaccountDestinationFragment(t *testing.T) {
 	})
 
 	t.Run("error path - destination fragment doesn't exist on service instance level", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_fragment_not_found_service_instance_level")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{

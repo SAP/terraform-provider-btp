@@ -11,6 +11,7 @@ import (
 func TestDataSourceSubaccountDestinationsGeneric(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path without service instance", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destinations_generic_without_service_instance")
 		defer stopQuietly(rec)
 
@@ -21,13 +22,14 @@ func TestDataSourceSubaccountDestinationsGeneric(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceDestinationsGeneric("uut", "integration-test-destination"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_destinations_generic.uut", "values.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destinations_generic.uut", "values.#", "5"),
 					),
 				},
 			},
 		})
 	})
 	t.Run("happy path with service instance", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destinations_generic_with_service_instance")
 		defer stopQuietly(rec)
 
@@ -46,6 +48,7 @@ func TestDataSourceSubaccountDestinationsGeneric(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount not provided", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
