@@ -96,6 +96,7 @@ jobs:
   # PR rules:
   #   btp/provider/ changed only → provider tests (path-filtered), skip internal
   #   internal/ changed          → provider tests (full) + internal tests
+  #   go.mod/go.sum changed      → provider tests (full) + internal tests
   #   both changed               → provider tests (full) + internal tests
   #   neither changed            → skip everything
   #
@@ -128,12 +129,15 @@ jobs:
             | wc -l | tr -d ' ')
           internal_changed=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'internal/' \
             | grep '\.go$' | wc -l | tr -d ' ')
+          gomod_changed=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'go.mod' 'go.sum' \
+            | wc -l | tr -d ' ')
 
           echo "Provider files changed: $provider_changed"
           echo "Internal files changed: $internal_changed"
+          echo "go.mod/go.sum changed: $gomod_changed"
 
-          if [ "$internal_changed" -gt 0 ]; then
-            # internal/ changed: run full provider suite + full internal suite
+          if [ "$internal_changed" -gt 0 ] || [ "$gomod_changed" -gt 0 ]; then
+            # internal/ or go.mod/go.sum changed: run full provider suite + full internal suite
             echo "run_provider=true"    >> "$GITHUB_OUTPUT"
             echo "run_internal=true"    >> "$GITHUB_OUTPUT"
             echo "provider_filter=."    >> "$GITHUB_OUTPUT"
