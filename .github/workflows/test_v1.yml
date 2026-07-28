@@ -307,15 +307,15 @@ jobs:
       - name: Merge coverage files
         id: merge
         run: |
-          files=$(find . -maxdepth 1 -name 'cover-*.out' -printf '%f ' 2>/dev/null || true)
-          if [ -z "$files" ]; then
+          files=$(find . -maxdepth 1 -name 'cover-*.out' | tr '\n' ' ')
+          if [ -z "$(echo $files | tr -d ' ')" ]; then
             echo "No coverage files found — no tests ran, skipping merge"
             echo "coverage_produced=false" >> "$GITHUB_OUTPUT"
-            exit 0
+          else
+            echo "Merging: $files"
+            gocovmerge $files > cover.out
+            echo "coverage_produced=true" >> "$GITHUB_OUTPUT"
           fi
-          echo "Merging: $files"
-          gocovmerge $files > cover.out
-          echo "coverage_produced=true" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v7
         if: steps.merge.outputs.coverage_produced == 'true'
         with:
@@ -327,7 +327,8 @@ jobs:
     if: |
       always() &&
       (github.event.pull_request.draft == false || github.event_name != 'pull_request') &&
-      needs.merge-coverage.result == 'success'
+      needs.merge-coverage.result == 'success' &&
+      needs.merge-coverage.outputs.coverage_produced == 'true'
     name: SonarCloud
     needs: [merge-coverage]
     runs-on: ubuntu-latest
@@ -338,7 +339,6 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/download-artifact@v7
-        if: needs.merge-coverage.outputs.coverage_produced == 'true'
         with:
           name: coverage-report
       - name: SonarCloud Scan
