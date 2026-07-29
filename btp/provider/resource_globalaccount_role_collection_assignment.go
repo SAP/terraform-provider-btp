@@ -134,15 +134,50 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Read(ctx context.Contex
 	var state globalaccountRoleCollectionAssignmentType
 
 	diags := req.State.Get(ctx, &state)
-
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// This resource is not supposed to be read by definition. However nothing the user can do about that, hence no error message is raised via resp.Diagnostics.
-	diags = resp.State.Set(ctx, &state)
-	resp.Diagnostics.Append(diags...)
+	if !state.Username.IsNull() {
+		users, _, err := rs.cli.Security.RoleCollection.GetUserAssignmentsByGlobalAccount(ctx, state.RoleCollectionName.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Role Collection Assignment (Global Account)", fmt.Sprintf("%s", err))
+			return
+		}
+		for _, u := range users {
+			if (u.Username == state.Username.ValueString() || u.Email == state.Username.ValueString()) && originMatches(u.Origin, state.Origin.ValueString()) {
+				diags = resp.State.Set(ctx, &state)
+				resp.Diagnostics.Append(diags...)
+				return
+			}
+		}
+		resp.State.RemoveResource(ctx)
+		return
+	}
+
+	cliRes, _, err := rs.cli.Security.RoleCollection.GetByGlobalAccountWithAttributeMapings(ctx, state.RoleCollectionName.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("API Error Reading Resource Role Collection Assignment (Global Account)", fmt.Sprintf("%s", err))
+		return
+	}
+
+	for _, am := range cliRes.SamlAttributeAssignment {
+		if !state.Groupname.IsNull() {
+			if am.AttributeValue == state.Groupname.ValueString() && am.IdentityProvider == state.Origin.ValueString() {
+				diags = resp.State.Set(ctx, &state)
+				resp.Diagnostics.Append(diags...)
+				return
+			}
+		} else {
+			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && am.IdentityProvider == state.Origin.ValueString() {
+				diags = resp.State.Set(ctx, &state)
+				resp.Diagnostics.Append(diags...)
+				return
+			}
+		}
+	}
+	resp.State.RemoveResource(ctx)
 }
 
 func (rs *globalaccountRoleCollectionAssignmentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
