@@ -755,3 +755,67 @@ interactions:
         status: 200 OK
         code: 200
         duration: 521.382292ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 149
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"roleCollectionName":"Destination Administrator","showAttributeMappings":"true","subaccount":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.15.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - fixture-drift-detection-fix
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.106.1/security/role-collection?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"Destination Administrator","samlAttributeAssignment":[{"roleCollectionName":"Destination Administrator","roleCollectionIdentityZone":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","samlAttrName":"Groups","attributeName":"Groups","samlAttributeValue":"tf-test-group","attributeValue":"tf-test-group","comparisonOperator":"equals","samlEntityId":"https://sap.accounts400.ondemand.com","idpDisplayName":"sap.custom"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Type:
+                - application/json
+            Date:
+                - Wed, 15 Jul 2026 08:22:00 GMT
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+        status: 200 OK
+        code: 200
+        duration: 300ms
