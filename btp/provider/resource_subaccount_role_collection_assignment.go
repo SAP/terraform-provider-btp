@@ -172,13 +172,13 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 
 	for _, am := range cliRes.SamlAttributeAssignment {
 		if !state.Groupname.IsNull() {
-			if am.AttributeValue == state.Groupname.ValueString() && am.IdentityProvider == state.Origin.ValueString() {
+			if am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && originMatches(am.IdentityProvider, state.Origin.ValueString()) {
 				diags = resp.State.Set(ctx, &state)
 				resp.Diagnostics.Append(diags...)
 				return
 			}
 		} else {
-			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && am.IdentityProvider == state.Origin.ValueString() {
+			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && originMatches(am.IdentityProvider, state.Origin.ValueString()) {
 				diags = resp.State.Set(ctx, &state)
 				resp.Diagnostics.Append(diags...)
 				return
