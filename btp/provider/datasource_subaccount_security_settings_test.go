@@ -12,6 +12,7 @@ func TestDataSourceSubaccountSecuritySettings(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - security settings by id", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_security_settings.by_id")
 		defer stopQuietly(rec)
 
@@ -41,6 +42,7 @@ func TestDataSourceSubaccountSecuritySettings(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

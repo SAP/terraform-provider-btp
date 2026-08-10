@@ -16,6 +16,7 @@ import (
 func TestResourceSubaccount(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount")
 		defer stopQuietly(rec)
 
@@ -62,6 +63,7 @@ func TestResourceSubaccount(t *testing.T) {
 		})
 	})
 	t.Run("happy path with import", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_with_import")
 		defer stopQuietly(rec)
 
@@ -102,6 +104,7 @@ func TestResourceSubaccount(t *testing.T) {
 		})
 	})
 	t.Run("happy path used for prod", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount.used_for_production")
 		defer stopQuietly(rec)
 
@@ -152,6 +155,7 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path change to used for prod", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount.change_to_used_for_production")
 		defer stopQuietly(rec)
 
@@ -197,6 +201,7 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path full config with update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount.full_config")
 		defer stopQuietly(rec)
 
@@ -249,7 +254,10 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path with parent hierarchy", func(t *testing.T) {
+		t.Parallel(
 		// When recroding this test, make sure that your are not Global Account Admin, but Directory Admin of the parent directory
+		)
+
 		rec, user := setupVCR(t, "fixtures/resource_subaccount.with_parent_hierarchy")
 		defer stopQuietly(rec)
 
@@ -279,7 +287,10 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path with managed parent", func(t *testing.T) {
+		t.Parallel(
 		// When recroding this test, make sure that your are not Global Account Admin, but Directory Admin of the parent directory
+		)
+
 		rec, user := setupVCR(t, "fixtures/resource_subaccount.with_managed_parent")
 		defer stopQuietly(rec)
 
@@ -309,6 +320,7 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("happy path with skipped entitlement provisioning", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount.skip_entitlements")
 		defer stopQuietly(rec)
 
@@ -355,6 +367,7 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - name must not contain slashes", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -368,6 +381,7 @@ func TestResourceSubaccount(t *testing.T) {
 	})
 
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

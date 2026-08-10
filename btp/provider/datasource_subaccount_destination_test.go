@@ -11,6 +11,7 @@ import (
 func TestDataSourceSubaccountDestination(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path without service instance", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_without_service_instance")
 		defer stopQuietly(rec)
 
@@ -35,6 +36,7 @@ func TestDataSourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("happy path with service instance", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_with_service_instance")
 		defer stopQuietly(rec)
 
@@ -58,6 +60,7 @@ func TestDataSourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("error path - name not provided", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -70,6 +73,7 @@ func TestDataSourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("error path - subaccount not provided", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -82,6 +86,7 @@ func TestDataSourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("error path - destination not found", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_not_found")
 		defer stopQuietly(rec)
 

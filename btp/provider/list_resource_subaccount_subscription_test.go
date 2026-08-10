@@ -22,6 +22,7 @@ func TestSubaccountSubscriptionListResource(t *testing.T) {
 	subaccountID := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_subscription")
 		defer stopQuietly(rec)
 
@@ -107,6 +108,7 @@ func TestSubaccountSubscriptionListResource(t *testing.T) {
 	})
 
 	t.Run("error path - bad request", func(t *testing.T) {
+		t.Parallel()
 		badRequestSubaccountID := ""
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_subscription_bad_request")
 		defer stopQuietly(rec)
@@ -128,6 +130,7 @@ func TestSubaccountSubscriptionListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewSubaccountSubscriptionListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

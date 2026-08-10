@@ -11,7 +11,8 @@ func TestDataSourceDirectoryEntitlement(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - data source fetches correct values", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/data_source_directory_entitlement_plan_unique_identifier")
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/datasource_directory_entitlement_plan_unique_identifier")
 		defer stopQuietly(rec)
 
 		resource.Test(t, resource.TestCase{

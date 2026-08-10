@@ -12,6 +12,7 @@ func TestDataSourceSubaccountDestinationFragments(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - destination fragment", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_fragments")
 		defer stopQuietly(rec)
 
@@ -34,6 +35,7 @@ func TestDataSourceSubaccountDestinationFragments(t *testing.T) {
 	})
 
 	t.Run("happy path - destination fragment with service instance", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_fragments_with_service_instance")
 		defer stopQuietly(rec)
 
@@ -56,6 +58,7 @@ func TestDataSourceSubaccountDestinationFragments(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount is required", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_fragments_subaccount_required")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{

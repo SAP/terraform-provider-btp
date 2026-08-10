@@ -15,6 +15,7 @@ import (
 func TestResourceSubaccountDestinationFragment(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path: destination fragment without service instance", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_fragment_without_service_instance")
 		defer stopQuietly(rec)
 
@@ -45,6 +46,7 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 	})
 
 	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_fragment.import_by_resource_identity")
 		defer stopQuietly(rec)
 
@@ -84,6 +86,7 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 	})
 
 	t.Run("happy path: destination fragment with service instance", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_fragment_with_service_instance")
 		defer stopQuietly(rec)
 
@@ -109,6 +112,7 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 	})
 
 	t.Run("happy path - import destination fragment service instance using resource identity", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_fragment_with_service_instance.import_by_resource_identity")
 		defer stopQuietly(rec)
 
@@ -149,6 +153,7 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 	})
 
 	t.Run("error path - name and subaccount_id are mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -162,6 +167,7 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 	})
 
 	t.Run("error path - name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

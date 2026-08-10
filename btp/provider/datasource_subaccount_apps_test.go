@@ -12,6 +12,7 @@ func TestDataSourceSubaccountApps(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - all apps of subaccount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_apps")
 		defer stopQuietly(rec)
 
@@ -23,7 +24,7 @@ func TestDataSourceSubaccountApps(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountApps("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_apps.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_apps.uut", "values.#", "18"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_apps.uut", "values.#", "30"),
 					),
 				},
 			},
@@ -31,6 +32,7 @@ func TestDataSourceSubaccountApps(t *testing.T) {
 
 	})
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

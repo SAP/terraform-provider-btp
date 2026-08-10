@@ -11,6 +11,7 @@ import (
 func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - simple role collection assignment", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection_assignment")
 		defer stopQuietly(rec)
 
@@ -31,6 +32,7 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 	})
 
 	t.Run("happy path - role collection assignment with origin", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection_assignment.with_origin")
 		defer stopQuietly(rec)
 
@@ -51,6 +53,7 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 	})
 
 	t.Run("happy path - role collection assignment with origin and group", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection_assignment.with_origin_and_group")
 		defer stopQuietly(rec)
 
@@ -72,6 +75,7 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 	})
 
 	t.Run("happy path - role collection assignment with origin and attribute", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection_assignment.with_origin_and_attribute")
 		defer stopQuietly(rec)
 
@@ -94,6 +98,7 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 	})
 
 	t.Run("error path - role collection import fails", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection_assignment.import_error")
 		defer stopQuietly(rec)
 
@@ -116,6 +121,7 @@ func TestResourceGlobalaccountRoleCollectionAssignment(t *testing.T) {
 	})
 
 	t.Run("error path - role_collection_name mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

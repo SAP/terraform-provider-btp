@@ -15,6 +15,7 @@ import (
 func TestResourceSubaccountServiceBinding(t *testing.T) {
 	// Using the alert notification service as ID for the service instance
 	t.Run("happy path - simple service_binding", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding")
 		defer stopQuietly(rec)
 
@@ -41,6 +42,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 		})
 	})
 	t.Run("happy path - simple service_binding with import", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding_with_import")
 		defer stopQuietly(rec)
 
@@ -77,6 +79,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service_binding with labels", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding.with_labels")
 		defer stopQuietly(rec)
 
@@ -99,6 +102,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 	})
 
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -112,6 +116,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 	})
 
 	t.Run("error path - service instance id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -125,6 +130,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 	})
 
 	t.Run("error path - service plan ID", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -138,6 +144,7 @@ func TestResourceSubaccountServiceBinding(t *testing.T) {
 	})
 
 	t.Run("error path - import failure", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_binding.import_error")
 		defer stopQuietly(rec)
 

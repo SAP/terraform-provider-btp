@@ -13,6 +13,7 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - active destination trust", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_trust_active")
 		defer stopQuietly(rec)
 
@@ -39,6 +40,7 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 	})
 
 	t.Run("happy path - passive destination trust", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_trust_passive")
 		defer stopQuietly(rec)
 
@@ -65,6 +67,7 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount is required", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_trust_subaccount_required")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -83,6 +86,7 @@ func TestDataSourceSubaccountDestinationTrust(t *testing.T) {
 	})
 
 	t.Run("error path - destination trust doesn't exist", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_trust_not_found")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{

@@ -19,6 +19,7 @@ func TestGlobalaccountSecuritySettingsListResource(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_globalaccount_security_settings")
 		defer stopQuietly(rec)
 
@@ -94,6 +95,7 @@ func TestGlobalaccountSecuritySettingsListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewGlobalaccountSecuritySettingsListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

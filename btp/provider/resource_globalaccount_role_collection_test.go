@@ -21,6 +21,7 @@ type globalaccountRoleCollectionRoleRefTestType struct {
 
 func TestResourceGlobalaccountRoleCollection(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection")
 		defer stopQuietly(rec)
 
@@ -55,6 +56,7 @@ func TestResourceGlobalaccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.import_by_resource_identity")
 		defer stopQuietly(rec)
 
@@ -96,6 +98,7 @@ func TestResourceGlobalaccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.update")
 		defer stopQuietly(rec)
 
@@ -148,6 +151,7 @@ func TestResourceGlobalaccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - update removing description", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.update_rm_desc")
 		defer stopQuietly(rec)
 
@@ -200,6 +204,7 @@ func TestResourceGlobalaccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - update omitting description", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.update_wo_desc")
 		defer stopQuietly(rec)
 
@@ -251,6 +256,7 @@ func TestResourceGlobalaccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - import fails", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_role_collection.import_error")
 		defer stopQuietly(rec)
 

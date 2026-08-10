@@ -11,6 +11,7 @@ import (
 func TestDataSourceSubaccountIdentityProvider(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - get idp by host", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_identity_provider.by_host")
 		defer stopQuietly(rec)
 
@@ -37,6 +38,7 @@ func TestDataSourceSubaccountIdentityProvider(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount not found", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_identity_provider.subaccount_not_found")
 		defer stopQuietly(rec)
 
@@ -53,6 +55,7 @@ func TestDataSourceSubaccountIdentityProvider(t *testing.T) {
 	})
 
 	t.Run("error path - mandatory fields missing", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

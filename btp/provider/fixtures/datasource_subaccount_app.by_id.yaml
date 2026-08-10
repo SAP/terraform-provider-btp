@@ -19,12 +19,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - bed94b93-d407-ee2b-e35c-bf8f028a0483
+                - f7640d44-d935-80c2-c38b-fc8af250e326
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.97.0
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
         method: POST
       response:
         proto: HTTP/2.0
@@ -32,22 +32,22 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 149
+        content_length: 0
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: ""
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "149"
+                - "0"
             Content-Security-Policy:
-                - default-src 'self'
-            Content-Type:
-                - application/json
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Date:
-                - Thu, 23 Jan 2025 09:41:25 GMT
+                - Tue, 07 Jul 2026 10:26:37 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -56,162 +56,16 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
+            X-Cpcli-Server-Message:
+                - A timeout was reached while preparing the command execution. The command execution request was not sent to the backend.
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - b9c026d0-01cb-493f-7ca6-4302fe00792e
-            X-Xss-Protection:
-                - "1"
-        status: 200 OK
-        code: 200
-        duration: 2.667077167s
+                - 86d4cd5d-c01e-4f8d-46e9-9a8ee6125098
+        status: 504 Gateway Timeout
+        code: 504
+        duration: 20.791552592s
     - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 55
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"globalAccount":"terraformintcanary"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
-            X-Correlationid:
-                - 54aaf379-730c-5cdb-8bb6-570c5eb5204a
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.97.0/accounts/subaccount?list
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"value":[{"guid":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","technicalName":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","displayName":"integration-test-services-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-services-4ie3yr1a","betaEnabled":true,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Subaccount to test: \n- Service instances\n- Service Bindings\n- App Subscriptions","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jul 3, 2023, 11:34:41 AM","createdBy":"john.doe+1@int.test","modifiedDate":"Jul 7, 2023, 11:48:00 AM"},{"guid":"31db5972-22fd-45b7-b923-6a91926cc598","technicalName":"31db5972-22fd-45b7-b923-6a91926cc598","displayName":"integration-test-trust-settings","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-trust-settings-20is1p4j","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jul 15, 2024, 3:55:46 PM","createdBy":"john.doe+2@int.test","modifiedDate":"Jul 15, 2024, 3:56:07 PM"},{"guid":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","technicalName":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","displayName":"integration-test-security-settings","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-security-settings-8ptbr820","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 3:04:48 PM","createdBy":"john.doe+3@int.test","modifiedDate":"Nov 14, 2023, 3:05:04 PM"},{"guid":"b75a605d-151c-4485-83f4-64604378e4ec","technicalName":"b75a605d-151c-4485-83f4-64604378e4ec","displayName":"test_ias","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-ias-uedsoe81","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 12, 2024, 6:09:59 AM","createdBy":"john.doe+4@int.test","modifiedDate":"Nov 12, 2024, 6:10:18 AM"},{"guid":"c78f8017-009c-40a6-ae7c-7178b4b9a424","technicalName":"c78f8017-009c-40a6-ae7c-7178b4b9a424","displayName":"test_sg","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-sg-ssalzt0w","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount moved.","createdDate":"Nov 21, 2024, 6:09:30 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 28, 2024, 9:27:36 AM"},{"guid":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","technicalName":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","displayName":"integration-test-acc-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-static-b8xxozer","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Please don\u0027t modify. This is used for integration tests.","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"1"},{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"4"}],"labels":{"a":["1","2","3"],"b":["4","5","6"]},"createdDate":"Mar 5, 2024, 6:55:18 AM","createdBy":"john.doe+5@int.test","modifiedDate":"Mar 5, 2024, 6:55:37 AM"},{"guid":"49e59eaa-65e4-4ffb-8186-74979e1f47c4","technicalName":"49e59eaa-65e4-4ffb-8186-74979e1f47c4","displayName":"dcmcanary_20241108084819","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"btp-gp43a2b332-be5b-e3f8-50fb-77c947700e54","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 8, 2024, 8:48:21 AM","createdBy":"DL_65DDA8EBA97EAA0134EEB5DC@global.corp.sap","modifiedDate":"Nov 8, 2024, 8:48:43 AM"},{"guid":"bcbefbb2-3365-428b-9d39-cab13197cf43","technicalName":"bcbefbb2-3365-428b-9d39-cab13197cf43","displayName":"test_prajin","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu10-canary","subdomain":"test-prajin-sgomvyh6","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 21, 2024, 6:32:04 AM","createdBy":"john.doe+6@int.test","modifiedDate":"Nov 21, 2024, 6:32:27 AM"},{"guid":"4e981c0f-de50-4442-a26e-54798120f141","technicalName":"4e981c0f-de50-4442-a26e-54798120f141","displayName":"integration-test-acc-entitlements-stacked","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"ccaf9acf-219d-47b5-bb3f-adae6871cdb2","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-acc-entitlements-stacked-gddtpz5i","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 1:14:31 PM","createdBy":"john.doe+7@int.test","modifiedDate":"Nov 14, 2023, 1:14:54 PM"}]}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Security-Policy:
-                - default-src 'self'
-            Content-Type:
-                - application/json
-            Date:
-                - Thu, 23 Jan 2025 09:41:26 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json;charset=UTF-8
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - 991a2c51-0ced-4559-6bbf-025cd9d3fd1f
-            X-Xss-Protection:
-                - "1"
-        status: 200 OK
-        code: 200
-        duration: 389.741333ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 103
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"appId":"cas-ui-xsuaa-prod!t216","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
-            X-Correlationid:
-                - f6775f96-58d7-19a8-fe0c-b52a27311fc3
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.97.0/security/app?get
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","instanceSecretLastUsedAt":"2025-01-23T04:10:03.779+00:00","xsappname":"cas-ui-xsuaa-prod","scopes":[{"description":"Basic user with minimal access","name":"cas-ui-xsuaa-prod!t216.user"},{"description":"Admin access ","name":"cas-ui-xsuaa-prod!t216.admin"},{"description":"Scope for standard plan.","name":"cas-ui-xsuaa-prod!t216.assemble"},{"description":"Scope for export scenario.","name":"cas-ui-xsuaa-prod!t216.export"},{"description":"Scope for application plan.","name":"cas-ui-xsuaa-prod!t216.import"},{"description":"Scope for get operations in Assembly.","name":"cas-ui-xsuaa-prod!t216.internal.getprocess"},{"description":"Scope for create MTAR operation in Assembly","name":"cas-ui-xsuaa-prod!t216.internal.createmtar"},{"description":"Scope for reading activities transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.activities.read"},{"description":"Scope for reading contentresources transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.contentresources.read"},{"description":"Scope for reading content types and transport modes in CAS","name":"cas-ui-xsuaa-prod!t216.read"},{"description":"Scope for reading transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.operations.read"},{"description":"Scope for downloading files from CAS","name":"cas-ui-xsuaa-prod!t216.operations.download"},{"description":"With this scope set, the callbacks for tenant onboarding, offboarding and getDependencies can be called.","name":"cas-ui-xsuaa-prod!t216.Callback","grant-as-authority-to-apps":["tenant-onboarding!t2"]},{"description":"Scope for CAS Security Operator.","name":"cas-ui-xsuaa-prod!t216.security.operator"},{"description":"Scope for GACD","name":"cas-ui-xsuaa-prod!t216.cas.gacd"}],"authorities":["cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.contentresources.read","uaa.user","cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.user","cas-ui-xsuaa-prod!t216.read"],"foreign-scope-references":[],"attributes":[],"role-templates":[{"name":"SecurityOperator","description":"Gives user additional ability to transport role collections along with admin capabilities.","default-role-name":"Security Operator","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Read","description":"Enables user to read operation details and contents available in the subscribed tenant","scope-references":["cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Export","description":"Enables user to perform Export operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Activities","description":"To read operation details performed using Content Agent UI","scope-references":["cas-ui-xsuaa-prod!t216.activities.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Admin","description":"Admin access for user that enables user to perform all the operations including Export and Import","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Import","description":"Enables user to perform Import operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"}],"oauth2-configuration":{"token-validity":86400,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":["https://*.content-agent.cfapps.eu12.hana.ondemand.com/login/callback","https://*.content-agent.cloud.sap/**"]},"tenant-mode":"shared"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Security-Policy:
-                - default-src 'self'
-            Content-Type:
-                - application/json
-            Date:
-                - Thu, 23 Jan 2025 09:41:27 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - 9f9d97f8-3eb1-48e0-6659-c17937f2e6d4
-            X-Xss-Protection:
-                - "1"
-        status: 200 OK
-        code: 200
-        duration: 730.879375ms
-    - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -229,12 +83,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - dea087c6-1403-6fd8-f4ae-834fcd4c958d
+                - f7640d44-d935-80c2-c38b-fc8af250e326
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.97.0
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
         method: POST
       response:
         proto: HTTP/2.0
@@ -242,22 +96,24 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 149
+        content_length: 62
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "149"
+                - "62"
             Content-Security-Policy:
-                - default-src 'self'
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Date:
-                - Thu, 23 Jan 2025 09:41:27 GMT
+                - Tue, 07 Jul 2026 10:26:39 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -271,12 +127,154 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 222de5d3-d2f1-4bd2-6118-b47544240590
-            X-Xss-Protection:
-                - "1"
+                - 135205e4-7b69-427b-57f9-a0f0f0dac4bc
         status: 200 OK
         code: 200
-        duration: 494.502ms
+        duration: 1.103693042s
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.15.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - a0b6e675-7f88-2c38-85a4-a77bb4c62130
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.106.1/accounts/subaccount?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"value":[{"guid":"b8b66419-797f-441b-8ae9-07570a902421","technicalName":"b8b66419-797f-441b-8ae9-07570a902421","displayName":"beta-test-account","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"beta-test-account-ep1sauhx","betaEnabled":true,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"b8b66419-797f-441b-8ae9-07570a902421","key":"redacted","value":"true"}],"labels":{"beta-test":["true"]},"createdDate":"May 28, 2026, 8:24:11 AM","createdBy":"john.doe+1@int.test","modifiedDate":"May 28, 2026, 8:24:50 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+2@int.test"},{"guid":"ba268910-81e6-4ac1-9016-cae7ed196889","technicalName":"ba268910-81e6-4ac1-9016-cae7ed196889","displayName":"integration-test-destination","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-destination-ds8oaxcf","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2025, 10:06:02 AM","createdBy":"john.doe+3@int.test","modifiedDate":"Nov 24, 2025, 10:06:26 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+4@int.test"},{"guid":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","technicalName":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","displayName":"integration-test-security-settings","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-security-settings-8ptbr820","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 3:04:48 PM","createdBy":"john.doe+5@int.test","modifiedDate":"Nov 14, 2023, 3:05:04 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+6@int.test"},{"guid":"816bd18f-6af1-4998-83a5-6d36504143bf","technicalName":"816bd18f-6af1-4998-83a5-6d36504143bf","displayName":"integration-test-cicd-service","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-cicd-service-kfdmyx7a","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"This subaccount will be used for integration testing of the CI/CD service. [DO NOT DELETE]","state":"OK","stateMessage":"Subaccount created.","createdDate":"May 5, 2026, 5:02:44 AM","createdBy":"john.doe+7@int.test","modifiedDate":"Jul 7, 2026, 6:18:38 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+8@int.test"},{"guid":"22aea11d-1125-40b8-9d41-2c7b169b1e9e","technicalName":"22aea11d-1125-40b8-9d41-2c7b169b1e9e","displayName":"test-ci-cd","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-ci-cd-l646hcu6","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"This subaccount is for testing CI/CD API. [DO NOT DELETE]","state":"OK","stateMessage":"Subaccount created.","createdDate":"Mar 16, 2026, 3:03:49 AM","createdBy":"john.doe+9@int.test","modifiedDate":"Jul 7, 2026, 6:18:55 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+10@int.test"},{"guid":"247420c3-99c8-4e8c-9790-bea9c4f1cff6","technicalName":"247420c3-99c8-4e8c-9790-bea9c4f1cff6","displayName":"integration-test-pending-deletion","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu10-canary","subdomain":"integration-test-pending-deletion-yv4w0zzk","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount pending deletion cancelled","createdDate":"Apr 15, 2026, 1:48:00 PM","createdBy":"john.doe+11@int.test","modifiedDate":"Jul 7, 2026, 9:31:26 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe@int.test"},{"guid":"b3f80de4-d72f-419a-9473-e841019391b0","technicalName":"b3f80de4-d72f-419a-9473-e841019391b0","displayName":"test-code-snippets","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-code-snippets-dtug1goi","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jun 1, 2026, 7:34:32 AM","createdBy":"john.doe+12@int.test","modifiedDate":"Jun 1, 2026, 7:35:38 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+13@int.test"},{"guid":"b75a605d-151c-4485-83f4-64604378e4ec","technicalName":"b75a605d-151c-4485-83f4-64604378e4ec","displayName":"test_ias","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-ias-uedsoe81","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"This subaccount is being used for unit tests on the SCI provider. DO NOT DELETE.","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 12, 2024, 6:09:59 AM","createdBy":"john.doe+14@int.test","modifiedDate":"Jul 7, 2026, 6:19:21 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+15@int.test"},{"guid":"16c59127-2e48-47cf-88d6-9a283b4f2275","technicalName":"16c59127-2e48-47cf-88d6-9a283b4f2275","displayName":"test-cf-anugrah","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu23-canary","subdomain":"test-cf-anugrah-j06b2fx7","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount is pending deletion","createdDate":"May 15, 2026, 8:04:24 AM","createdBy":"john.doe+16@int.test","modifiedDate":"Jul 7, 2026, 8:05:37 AM","contractStatus":"PENDING_FORCED_DELETION","forceDeleteRequestTime":"Jul 7, 2026, 8:05:34 AM","forceDeleteTargetTime":"Jul 14, 2026, 8:05:34 AM","lastModifiedBy":"john.doe@int.test"},{"guid":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","technicalName":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","displayName":"integration-test-services-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-services-4ie3yr1a","betaEnabled":true,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Subaccount to test: \n- Service instances\n- Service Bindings\n- App Subscriptions","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jul 3, 2023, 11:34:41 AM","createdBy":"john.doe+17@int.test","modifiedDate":"Jul 7, 2023, 11:48:00 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+18@int.test"},{"guid":"b7ed3f66-5b6d-4290-856c-099e9e3cbb1b","technicalName":"b7ed3f66-5b6d-4290-856c-099e9e3cbb1b","displayName":"integration-test-ias","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-ias-408hsvn1","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Subaccount to test bundled applications on the SAP Cloud Identity Services Provider","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 8:47:42 AM","createdBy":"john.doe+19@int.test","modifiedDate":"Feb 27, 2026, 8:48:09 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+20@int.test"},{"guid":"ffbf1ae9-d9a6-4c65-a2f1-4b39b8896ccc","technicalName":"ffbf1ae9-d9a6-4c65-a2f1-4b39b8896ccc","displayName":"test-cred","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-cred-8633u6tv","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"test for cloud foundry","state":"OK","stateMessage":"Subaccount created.","createdDate":"Dec 2, 2025, 7:45:48 AM","createdBy":"john.doe+21@int.test","modifiedDate":"Jul 7, 2026, 6:19:47 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+22@int.test"},{"guid":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","technicalName":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","displayName":"integration-test-acc-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-static-b8xxozer","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Please don\u0027t modify. This is used for integration tests.","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"1"},{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"4"}],"labels":{"a":["1","2","3"],"b":["4","5","6"]},"createdDate":"Mar 5, 2024, 6:55:18 AM","createdBy":"john.doe+23@int.test","modifiedDate":"Mar 5, 2024, 6:55:37 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+24@int.test"},{"guid":"4e981c0f-de50-4442-a26e-54798120f141","technicalName":"4e981c0f-de50-4442-a26e-54798120f141","displayName":"integration-test-acc-entitlements-stacked","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"ccaf9acf-219d-47b5-bb3f-adae6871cdb2","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-acc-entitlements-stacked-gddtpz5i","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 1:14:31 PM","createdBy":"john.doe+25@int.test","modifiedDate":"Nov 14, 2023, 1:14:54 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+26@int.test"},{"guid":"f59b5902-d24c-446c-b245-92c814faa0d9","technicalName":"f59b5902-d24c-446c-b245-92c814faa0d9","displayName":"integration-test-dr-to-be-paired-eu10-canary","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu10-canary","subdomain":"integration-test-dr-to-be-paired-eu10-canacry-hqhkrthv","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 12:58:30 PM","createdBy":"john.doe+27@int.test","modifiedDate":"Feb 27, 2026, 12:59:17 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+28@int.test"},{"guid":"badbcbf8-eca7-4472-9f66-cb9887ba7c3d","technicalName":"badbcbf8-eca7-4472-9f66-cb9887ba7c3d","displayName":"integration-test-dr-subaccount-eu12","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-dr-subaccount-eu12-99p94dot","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 11:34:34 AM","createdBy":"john.doe+29@int.test","modifiedDate":"Feb 27, 2026, 11:34:59 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+30@int.test"},{"guid":"608858ef-5829-4aa6-88e7-0e220ef1aaeb","technicalName":"608858ef-5829-4aa6-88e7-0e220ef1aaeb","displayName":"integration-test-dr-subaccount-eu10-canary","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu10-canary","subdomain":"integration-test-dr-subaccount-eu10-canary-ls0upaxs","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 11:34:09 AM","createdBy":"john.doe+31@int.test","modifiedDate":"Feb 27, 2026, 11:34:29 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+32@int.test"},{"guid":"2dc1ecf1-786c-4f92-91f2-26650ab3ad28","technicalName":"2dc1ecf1-786c-4f92-91f2-26650ab3ad28","displayName":"integration-test-dr-to-be-paired-eu12","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-dr-to-be-paired-eu12-8tu9lgxa","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 12:59:03 PM","createdBy":"john.doe+33@int.test","modifiedDate":"Feb 27, 2026, 12:59:34 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+34@int.test"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 07 Jul 2026 10:26:39 GMT
+            Expires:
+                - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 68151135-4ed7-4ad1-6e81-0cb33a3363ec
+        status: 200 OK
+        code: 200
+        duration: 457.302792ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 103
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cas-ui-xsuaa-prod!t216","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.15.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - 0b7857e5-d5a0-48ce-82dd-b7f0979ae29e
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.106.1/security/app?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","instanceSecretLastUsedAt":null,"xsappname":"cas-ui-xsuaa-prod","scopes":[{"description":"Scope for CAS Security Operator.","name":"cas-ui-xsuaa-prod!t216.security.operator"},{"description":"Scope for GACD","name":"cas-ui-xsuaa-prod!t216.cas.gacd"},{"description":"With this scope set, the callbacks for tenant onboarding, offboarding and getDependencies can be called.","name":"cas-ui-xsuaa-prod!t216.Callback","grant-as-authority-to-apps":["tenant-onboarding!t2"]},{"description":"Scope for downloading files from CAS","name":"cas-ui-xsuaa-prod!t216.operations.download"},{"description":"Scope for reading transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.operations.read"},{"description":"Scope for reading content types and transport modes in CAS","name":"cas-ui-xsuaa-prod!t216.read"},{"description":"Scope for reading contentresources transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.contentresources.read"},{"description":"Scope for reading activities transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.activities.read"},{"description":"Scope for create MTAR operation in Assembly","name":"cas-ui-xsuaa-prod!t216.internal.createmtar"},{"description":"Scope for get operations in Assembly.","name":"cas-ui-xsuaa-prod!t216.internal.getprocess"},{"description":"Scope for application plan.","name":"cas-ui-xsuaa-prod!t216.import"},{"description":"Scope for export scenario.","name":"cas-ui-xsuaa-prod!t216.export"},{"description":"Scope for standard plan.","name":"cas-ui-xsuaa-prod!t216.assemble"},{"description":"Admin access ","name":"cas-ui-xsuaa-prod!t216.admin"},{"description":"Basic user with minimal access","name":"cas-ui-xsuaa-prod!t216.user"}],"authorities":["cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.contentresources.read","uaa.user","cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.user","cas-ui-xsuaa-prod!t216.read"],"foreign-scope-references":[],"attributes":[],"role-templates":[{"name":"SecurityOperator","description":"Gives user additional ability to transport role collections along with admin capabilities.","default-role-name":"Security Operator","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Read","description":"Enables user to read operation details and contents available in the subscribed tenant","scope-references":["cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Activities","description":"To read operation details performed using Content Agent UI","scope-references":["cas-ui-xsuaa-prod!t216.activities.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Admin","description":"Admin access for user that enables user to perform all the operations including Export and Import","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Import","description":"Enables user to perform Import operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Export","description":"Enables user to perform Export operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"}],"oauth2-configuration":{"token-validity":86400,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":["https://*.content-agent.cfapps.eu12.hana.ondemand.com/login/callback","https://*.content-agent.cloud.sap/**"],"credential-types":["binding-secret","x509"]},"tenant-mode":"shared"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 07 Jul 2026 10:26:40 GMT
+            Expires:
+                - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 32e6adb0-dd3d-42d7-5812-629ee0ad0696
+        status: 200 OK
+        code: 200
+        duration: 816.115625ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -295,12 +293,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - 5a438dde-2d15-816f-ddc1-e58b186d6450
+                - 5fe4c804-1af2-5923-cf26-fad25da6dd69
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.97.0
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
         method: POST
       response:
         proto: HTTP/2.0
@@ -308,22 +306,22 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 149
+        content_length: 0
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: ""
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "149"
+                - "0"
             Content-Security-Policy:
-                - default-src 'self'
-            Content-Type:
-                - application/json
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Date:
-                - Thu, 23 Jan 2025 09:41:29 GMT
+                - Tue, 07 Jul 2026 10:27:01 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -332,47 +330,39 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Sessionid:
-                - redacted
+            X-Cpcli-Server-Message:
+                - A timeout was reached while preparing the command execution. The command execution request was not sent to the backend.
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - c2ad443e-e256-4050-409b-03b7a21c9d10
-            X-Xss-Protection:
-                - "1"
-        status: 200 OK
-        code: 200
-        duration: 1.75184025s
+                - d11c3f39-e093-442f-7606-5a0bda1b8cc8
+        status: 504 Gateway Timeout
+        code: 504
+        duration: 20.248042759s
     - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 55
+        content_length: 116
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"globalAccount":"terraformintcanary"}}
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - 5e0fb592-1c8a-ddb9-f003-4f3e36565c5d
-            X-Cpcli-Customidp:
-                - identityProvider
+                - 5fe4c804-1af2-5923-cf26-fad25da6dd69
             X-Cpcli-Format:
                 - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.97.0/accounts/subaccount?list
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
         method: POST
       response:
         proto: HTTP/2.0
@@ -380,20 +370,22 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"value":[{"guid":"31db5972-22fd-45b7-b923-6a91926cc598","technicalName":"31db5972-22fd-45b7-b923-6a91926cc598","displayName":"integration-test-trust-settings","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-trust-settings-20is1p4j","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jul 15, 2024, 3:55:46 PM","createdBy":"john.doe+1@int.test","modifiedDate":"Jul 15, 2024, 3:56:07 PM"},{"guid":"b75a605d-151c-4485-83f4-64604378e4ec","technicalName":"b75a605d-151c-4485-83f4-64604378e4ec","displayName":"test_ias","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-ias-uedsoe81","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 12, 2024, 6:09:59 AM","createdBy":"john.doe+2@int.test","modifiedDate":"Nov 12, 2024, 6:10:18 AM"},{"guid":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","technicalName":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","displayName":"integration-test-security-settings","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-security-settings-8ptbr820","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 3:04:48 PM","createdBy":"john.doe+3@int.test","modifiedDate":"Nov 14, 2023, 3:05:04 PM"},{"guid":"bcbefbb2-3365-428b-9d39-cab13197cf43","technicalName":"bcbefbb2-3365-428b-9d39-cab13197cf43","displayName":"test_prajin","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu10-canary","subdomain":"test-prajin-sgomvyh6","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 21, 2024, 6:32:04 AM","createdBy":"john.doe+4@int.test","modifiedDate":"Nov 21, 2024, 6:32:27 AM"},{"guid":"c78f8017-009c-40a6-ae7c-7178b4b9a424","technicalName":"c78f8017-009c-40a6-ae7c-7178b4b9a424","displayName":"test_sg","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-sg-ssalzt0w","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount moved.","createdDate":"Nov 21, 2024, 6:09:30 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 28, 2024, 9:27:36 AM"},{"guid":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","technicalName":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","displayName":"integration-test-acc-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-static-b8xxozer","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Please don\u0027t modify. This is used for integration tests.","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"1"},{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"4"}],"labels":{"a":["1","2","3"],"b":["4","5","6"]},"createdDate":"Mar 5, 2024, 6:55:18 AM","createdBy":"john.doe+5@int.test","modifiedDate":"Mar 5, 2024, 6:55:37 AM"},{"guid":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","technicalName":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","displayName":"integration-test-services-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-services-4ie3yr1a","betaEnabled":true,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Subaccount to test: \n- Service instances\n- Service Bindings\n- App Subscriptions","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jul 3, 2023, 11:34:41 AM","createdBy":"john.doe+6@int.test","modifiedDate":"Jul 7, 2023, 11:48:00 AM"},{"guid":"49e59eaa-65e4-4ffb-8186-74979e1f47c4","technicalName":"49e59eaa-65e4-4ffb-8186-74979e1f47c4","displayName":"dcmcanary_20241108084819","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"btp-gp43a2b332-be5b-e3f8-50fb-77c947700e54","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 8, 2024, 8:48:21 AM","createdBy":"DL_65DDA8EBA97EAA0134EEB5DC@global.corp.sap","modifiedDate":"Nov 8, 2024, 8:48:43 AM"},{"guid":"4e981c0f-de50-4442-a26e-54798120f141","technicalName":"4e981c0f-de50-4442-a26e-54798120f141","displayName":"integration-test-acc-entitlements-stacked","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"ccaf9acf-219d-47b5-bb3f-adae6871cdb2","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-acc-entitlements-stacked-gddtpz5i","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 1:14:31 PM","createdBy":"john.doe+7@int.test","modifiedDate":"Nov 14, 2023, 1:14:54 PM"}]}'
+        content_length: 0
+        uncompressed: false
+        body: ""
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
             Content-Security-Policy:
-                - default-src 'self'
-            Content-Type:
-                - application/json
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Date:
-                - Thu, 23 Jan 2025 09:41:29 GMT
+                - Tue, 07 Jul 2026 10:27:22 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -402,49 +394,39 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json;charset=UTF-8
-            X-Cpcli-Backend-Status:
-                - "200"
+            X-Cpcli-Server-Message:
+                - A timeout was reached while preparing the command execution. The command execution request was not sent to the backend.
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 8f7c0f5e-78b8-4cf5-7586-2585775f86df
-            X-Xss-Protection:
-                - "1"
-        status: 200 OK
-        code: 200
-        duration: 318.121708ms
+                - c9fdad14-9ef4-4d81-6783-fb5678e9663d
+        status: 504 Gateway Timeout
+        code: 504
+        duration: 20.231028676s
     - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 103
+        content_length: 116
         transfer_encoding: []
         trailer: {}
         host: canary.cli.btp.int.sap
         remote_addr: ""
         request_uri: ""
         body: |
-            {"paramValues":{"appId":"cas-ui-xsuaa-prod!t216","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
         form: {}
         headers:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - f4963351-ef3f-37fc-2585-0475397139d5
-            X-Cpcli-Customidp:
-                - identityProvider
+                - 5fe4c804-1af2-5923-cf26-fad25da6dd69
             X-Cpcli-Format:
                 - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.97.0/security/app?get
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
         method: POST
       response:
         proto: HTTP/2.0
@@ -452,20 +434,22 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","instanceSecretLastUsedAt":"2025-01-23T04:10:03.779+00:00","xsappname":"cas-ui-xsuaa-prod","scopes":[{"description":"Basic user with minimal access","name":"cas-ui-xsuaa-prod!t216.user"},{"description":"Admin access ","name":"cas-ui-xsuaa-prod!t216.admin"},{"description":"Scope for standard plan.","name":"cas-ui-xsuaa-prod!t216.assemble"},{"description":"Scope for export scenario.","name":"cas-ui-xsuaa-prod!t216.export"},{"description":"Scope for application plan.","name":"cas-ui-xsuaa-prod!t216.import"},{"description":"Scope for get operations in Assembly.","name":"cas-ui-xsuaa-prod!t216.internal.getprocess"},{"description":"Scope for create MTAR operation in Assembly","name":"cas-ui-xsuaa-prod!t216.internal.createmtar"},{"description":"Scope for reading activities transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.activities.read"},{"description":"Scope for reading contentresources transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.contentresources.read"},{"description":"Scope for reading content types and transport modes in CAS","name":"cas-ui-xsuaa-prod!t216.read"},{"description":"Scope for reading transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.operations.read"},{"description":"Scope for downloading files from CAS","name":"cas-ui-xsuaa-prod!t216.operations.download"},{"description":"With this scope set, the callbacks for tenant onboarding, offboarding and getDependencies can be called.","name":"cas-ui-xsuaa-prod!t216.Callback","grant-as-authority-to-apps":["tenant-onboarding!t2"]},{"description":"Scope for CAS Security Operator.","name":"cas-ui-xsuaa-prod!t216.security.operator"},{"description":"Scope for GACD","name":"cas-ui-xsuaa-prod!t216.cas.gacd"}],"authorities":["cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.contentresources.read","uaa.user","cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.user","cas-ui-xsuaa-prod!t216.read"],"foreign-scope-references":[],"attributes":[],"role-templates":[{"name":"SecurityOperator","description":"Gives user additional ability to transport role collections along with admin capabilities.","default-role-name":"Security Operator","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Read","description":"Enables user to read operation details and contents available in the subscribed tenant","scope-references":["cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Export","description":"Enables user to perform Export operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Activities","description":"To read operation details performed using Content Agent UI","scope-references":["cas-ui-xsuaa-prod!t216.activities.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Admin","description":"Admin access for user that enables user to perform all the operations including Export and Import","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Import","description":"Enables user to perform Import operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"}],"oauth2-configuration":{"token-validity":86400,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":["https://*.content-agent.cfapps.eu12.hana.ondemand.com/login/callback","https://*.content-agent.cloud.sap/**"]},"tenant-mode":"shared"}'
+        content_length: 0
+        uncompressed: false
+        body: ""
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "0"
             Content-Security-Policy:
-                - default-src 'self'
-            Content-Type:
-                - application/json
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Date:
-                - Thu, 23 Jan 2025 09:41:30 GMT
+                - Tue, 07 Jul 2026 10:27:44 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -474,19 +458,15 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload;
             X-Content-Type-Options:
                 - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json
-            X-Cpcli-Backend-Status:
-                - "200"
+            X-Cpcli-Server-Message:
+                - A timeout was reached while preparing the command execution. The command execution request was not sent to the backend.
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 94461533-f932-4115-45c4-e647d113eb14
-            X-Xss-Protection:
-                - "1"
-        status: 200 OK
-        code: 200
-        duration: 496.765167ms
+                - 32d2d0e9-8298-4593-7aec-d9c3d88323ad
+        status: 504 Gateway Timeout
+        code: 504
+        duration: 20.235761843s
     - id: 7
       request:
         proto: HTTP/1.1
@@ -505,12 +485,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - 7455524f-e116-a7bf-413b-6fcf73b5e94d
+                - 5fe4c804-1af2-5923-cf26-fad25da6dd69
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.97.0
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
         method: POST
       response:
         proto: HTTP/2.0
@@ -518,22 +498,24 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 149
+        content_length: 62
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "149"
+                - "62"
             Content-Security-Policy:
-                - default-src 'self'
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Date:
-                - Thu, 23 Jan 2025 09:41:31 GMT
+                - Tue, 07 Jul 2026 10:27:49 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -547,157 +529,11 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 89d98bdd-12b7-4e4a-59f0-ca5bac440dd6
-            X-Xss-Protection:
-                - "1"
+                - 44a946fa-a999-466d-61f1-b891c8554602
         status: 200 OK
         code: 200
-        duration: 1.57448425s
+        duration: 674.558542ms
     - id: 8
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 55
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"globalAccount":"terraformintcanary"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
-            X-Correlationid:
-                - a257775f-96a8-3e4b-4ac6-ba3f99db5d55
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.97.0/accounts/subaccount?list
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"value":[{"guid":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","technicalName":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","displayName":"integration-test-security-settings","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-security-settings-8ptbr820","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 3:04:48 PM","createdBy":"john.doe+1@int.test","modifiedDate":"Nov 14, 2023, 3:05:04 PM"},{"guid":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","technicalName":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","displayName":"integration-test-services-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-services-4ie3yr1a","betaEnabled":true,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Subaccount to test: \n- Service instances\n- Service Bindings\n- App Subscriptions","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jul 3, 2023, 11:34:41 AM","createdBy":"john.doe+2@int.test","modifiedDate":"Jul 7, 2023, 11:48:00 AM"},{"guid":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","technicalName":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","displayName":"integration-test-acc-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-static-b8xxozer","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Please don\u0027t modify. This is used for integration tests.","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"1"},{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"4"}],"labels":{"a":["1","2","3"],"b":["4","5","6"]},"createdDate":"Mar 5, 2024, 6:55:18 AM","createdBy":"john.doe+3@int.test","modifiedDate":"Mar 5, 2024, 6:55:37 AM"},{"guid":"c78f8017-009c-40a6-ae7c-7178b4b9a424","technicalName":"c78f8017-009c-40a6-ae7c-7178b4b9a424","displayName":"test_sg","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-sg-ssalzt0w","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount moved.","createdDate":"Nov 21, 2024, 6:09:30 AM","createdBy":"john.doe@int.test","modifiedDate":"Nov 28, 2024, 9:27:36 AM"},{"guid":"bcbefbb2-3365-428b-9d39-cab13197cf43","technicalName":"bcbefbb2-3365-428b-9d39-cab13197cf43","displayName":"test_prajin","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu10-canary","subdomain":"test-prajin-sgomvyh6","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 21, 2024, 6:32:04 AM","createdBy":"john.doe+4@int.test","modifiedDate":"Nov 21, 2024, 6:32:27 AM"},{"guid":"49e59eaa-65e4-4ffb-8186-74979e1f47c4","technicalName":"49e59eaa-65e4-4ffb-8186-74979e1f47c4","displayName":"dcmcanary_20241108084819","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"btp-gp43a2b332-be5b-e3f8-50fb-77c947700e54","betaEnabled":false,"usedForProduction":"UNSET","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 8, 2024, 8:48:21 AM","createdBy":"DL_65DDA8EBA97EAA0134EEB5DC@global.corp.sap","modifiedDate":"Nov 8, 2024, 8:48:43 AM"},{"guid":"b75a605d-151c-4485-83f4-64604378e4ec","technicalName":"b75a605d-151c-4485-83f4-64604378e4ec","displayName":"test_ias","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-ias-uedsoe81","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 12, 2024, 6:09:59 AM","createdBy":"john.doe+5@int.test","modifiedDate":"Nov 12, 2024, 6:10:18 AM"},{"guid":"31db5972-22fd-45b7-b923-6a91926cc598","technicalName":"31db5972-22fd-45b7-b923-6a91926cc598","displayName":"integration-test-trust-settings","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-trust-settings-20is1p4j","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jul 15, 2024, 3:55:46 PM","createdBy":"john.doe+6@int.test","modifiedDate":"Jul 15, 2024, 3:56:07 PM"},{"guid":"4e981c0f-de50-4442-a26e-54798120f141","technicalName":"4e981c0f-de50-4442-a26e-54798120f141","displayName":"integration-test-acc-entitlements-stacked","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"ccaf9acf-219d-47b5-bb3f-adae6871cdb2","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-acc-entitlements-stacked-gddtpz5i","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 1:14:31 PM","createdBy":"john.doe+7@int.test","modifiedDate":"Nov 14, 2023, 1:14:54 PM"}]}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Security-Policy:
-                - default-src 'self'
-            Content-Type:
-                - application/json
-            Date:
-                - Thu, 23 Jan 2025 09:41:32 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json;charset=UTF-8
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - a488e5dc-f961-42fd-776a-e71d13919f65
-            X-Xss-Protection:
-                - "1"
-        status: 200 OK
-        code: 200
-        duration: 303.111875ms
-    - id: 9
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 103
-        transfer_encoding: []
-        trailer: {}
-        host: canary.cli.btp.int.sap
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"paramValues":{"appId":"cas-ui-xsuaa-prod!t216","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
-        form: {}
-        headers:
-            Content-Type:
-                - application/json
-            User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
-            X-Correlationid:
-                - 8600cf99-1895-52b5-328f-6fc184d3b0b4
-            X-Cpcli-Customidp:
-                - identityProvider
-            X-Cpcli-Format:
-                - json
-            X-Cpcli-Sessionid:
-                - redacted
-            X-Cpcli-Subdomain:
-                - terraformintcanary
-        url: https://canary.cli.btp.int.sap/command/v2.97.0/security/app?get
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","instanceSecretLastUsedAt":"2025-01-23T04:10:03.779+00:00","xsappname":"cas-ui-xsuaa-prod","scopes":[{"description":"Basic user with minimal access","name":"cas-ui-xsuaa-prod!t216.user"},{"description":"Admin access ","name":"cas-ui-xsuaa-prod!t216.admin"},{"description":"Scope for standard plan.","name":"cas-ui-xsuaa-prod!t216.assemble"},{"description":"Scope for export scenario.","name":"cas-ui-xsuaa-prod!t216.export"},{"description":"Scope for application plan.","name":"cas-ui-xsuaa-prod!t216.import"},{"description":"Scope for get operations in Assembly.","name":"cas-ui-xsuaa-prod!t216.internal.getprocess"},{"description":"Scope for create MTAR operation in Assembly","name":"cas-ui-xsuaa-prod!t216.internal.createmtar"},{"description":"Scope for reading activities transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.activities.read"},{"description":"Scope for reading contentresources transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.contentresources.read"},{"description":"Scope for reading content types and transport modes in CAS","name":"cas-ui-xsuaa-prod!t216.read"},{"description":"Scope for reading transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.operations.read"},{"description":"Scope for downloading files from CAS","name":"cas-ui-xsuaa-prod!t216.operations.download"},{"description":"With this scope set, the callbacks for tenant onboarding, offboarding and getDependencies can be called.","name":"cas-ui-xsuaa-prod!t216.Callback","grant-as-authority-to-apps":["tenant-onboarding!t2"]},{"description":"Scope for CAS Security Operator.","name":"cas-ui-xsuaa-prod!t216.security.operator"},{"description":"Scope for GACD","name":"cas-ui-xsuaa-prod!t216.cas.gacd"}],"authorities":["cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.contentresources.read","uaa.user","cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.user","cas-ui-xsuaa-prod!t216.read"],"foreign-scope-references":[],"attributes":[],"role-templates":[{"name":"SecurityOperator","description":"Gives user additional ability to transport role collections along with admin capabilities.","default-role-name":"Security Operator","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Read","description":"Enables user to read operation details and contents available in the subscribed tenant","scope-references":["cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Export","description":"Enables user to perform Export operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Activities","description":"To read operation details performed using Content Agent UI","scope-references":["cas-ui-xsuaa-prod!t216.activities.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Admin","description":"Admin access for user that enables user to perform all the operations including Export and Import","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Import","description":"Enables user to perform Import operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"}],"oauth2-configuration":{"token-validity":86400,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":["https://*.content-agent.cfapps.eu12.hana.ondemand.com/login/callback","https://*.content-agent.cloud.sap/**"]},"tenant-mode":"shared"}'
-        headers:
-            Cache-Control:
-                - no-cache, no-store, max-age=0, must-revalidate
-            Content-Security-Policy:
-                - default-src 'self'
-            Content-Type:
-                - application/json
-            Date:
-                - Thu, 23 Jan 2025 09:41:32 GMT
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Referrer-Policy:
-                - no-referrer
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload;
-            X-Content-Type-Options:
-                - nosniff
-            X-Cpcli-Backend-Mediatype:
-                - application/json
-            X-Cpcli-Backend-Status:
-                - "200"
-            X-Frame-Options:
-                - DENY
-            X-Vcap-Request-Id:
-                - f3f97bc5-88fa-4784-5de8-c7d63c152d20
-            X-Xss-Protection:
-                - "1"
-        status: 200 OK
-        code: 200
-        duration: 456.654917ms
-    - id: 10
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -715,12 +551,12 @@ interactions:
             Content-Type:
                 - application/json
             User-Agent:
-                - Terraform/1.10.4 terraform-provider-btp/dev
+                - Terraform/1.15.5 terraform-provider-btp/dev
             X-Correlationid:
-                - 64c578e8-3409-7f40-e7d5-283f59cf6431
+                - 4bf05f5f-3279-a834-e37d-f506896886e3
             X-Cpcli-Format:
                 - json
-        url: https://canary.cli.btp.int.sap/login/v2.97.0
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
         method: POST
       response:
         proto: HTTP/2.0
@@ -728,22 +564,24 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 149
+        content_length: 62
         uncompressed: false
-        body: '{"issuer":"identity.provider.test","refreshToken":"redacted","user":"john.doe@int.test","mail":"john.doe@int.test"}'
+        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test"}'
         headers:
             Cache-Control:
                 - no-cache, no-store, max-age=0, must-revalidate
             Content-Length:
-                - "149"
+                - "62"
             Content-Security-Policy:
-                - default-src 'self'
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Date:
-                - Thu, 23 Jan 2025 09:41:33 GMT
+                - Tue, 07 Jul 2026 10:27:55 GMT
             Expires:
                 - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
             Pragma:
                 - no-cache
             Referrer-Policy:
@@ -757,9 +595,427 @@ interactions:
             X-Frame-Options:
                 - DENY
             X-Vcap-Request-Id:
-                - 4ad6727b-6611-45a7-44c9-6419023f24ab
-            X-Xss-Protection:
-                - "1"
+                - 0a5a8a14-58c3-45f9-46a8-bf012ad52fb0
         status: 200 OK
         code: 200
-        duration: 425.084667ms
+        duration: 6.378236211s
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.15.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - 2cfd6160-ad31-920d-2350-4c2e18ddb1af
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.106.1/accounts/subaccount?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"value":[{"guid":"16c59127-2e48-47cf-88d6-9a283b4f2275","technicalName":"16c59127-2e48-47cf-88d6-9a283b4f2275","displayName":"test-cf-anugrah","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu23-canary","subdomain":"test-cf-anugrah-j06b2fx7","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount is pending deletion","createdDate":"May 15, 2026, 8:04:24 AM","createdBy":"john.doe+1@int.test","modifiedDate":"Jul 7, 2026, 8:05:37 AM","contractStatus":"PENDING_FORCED_DELETION","forceDeleteRequestTime":"Jul 7, 2026, 8:05:34 AM","forceDeleteTargetTime":"Jul 14, 2026, 8:05:34 AM","lastModifiedBy":"john.doe@int.test"},{"guid":"247420c3-99c8-4e8c-9790-bea9c4f1cff6","technicalName":"247420c3-99c8-4e8c-9790-bea9c4f1cff6","displayName":"integration-test-pending-deletion","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu10-canary","subdomain":"integration-test-pending-deletion-yv4w0zzk","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount pending deletion cancelled","createdDate":"Apr 15, 2026, 1:48:00 PM","createdBy":"john.doe+2@int.test","modifiedDate":"Jul 7, 2026, 9:31:26 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe@int.test"},{"guid":"b7ed3f66-5b6d-4290-856c-099e9e3cbb1b","technicalName":"b7ed3f66-5b6d-4290-856c-099e9e3cbb1b","displayName":"integration-test-ias","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-ias-408hsvn1","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Subaccount to test bundled applications on the SAP Cloud Identity Services Provider","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 8:47:42 AM","createdBy":"john.doe+3@int.test","modifiedDate":"Feb 27, 2026, 8:48:09 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+4@int.test"},{"guid":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","technicalName":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","displayName":"integration-test-services-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-services-4ie3yr1a","betaEnabled":true,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Subaccount to test: \n- Service instances\n- Service Bindings\n- App Subscriptions","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jul 3, 2023, 11:34:41 AM","createdBy":"john.doe+5@int.test","modifiedDate":"Jul 7, 2023, 11:48:00 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+6@int.test"},{"guid":"ffbf1ae9-d9a6-4c65-a2f1-4b39b8896ccc","technicalName":"ffbf1ae9-d9a6-4c65-a2f1-4b39b8896ccc","displayName":"test-cred","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-cred-8633u6tv","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"test for cloud foundry","state":"OK","stateMessage":"Subaccount created.","createdDate":"Dec 2, 2025, 7:45:48 AM","createdBy":"john.doe+7@int.test","modifiedDate":"Jul 7, 2026, 6:19:47 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+8@int.test"},{"guid":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","technicalName":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","displayName":"integration-test-acc-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-static-b8xxozer","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Please don\u0027t modify. This is used for integration tests.","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"1"},{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"4"}],"labels":{"a":["1","2","3"],"b":["4","5","6"]},"createdDate":"Mar 5, 2024, 6:55:18 AM","createdBy":"john.doe+9@int.test","modifiedDate":"Mar 5, 2024, 6:55:37 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+10@int.test"},{"guid":"22aea11d-1125-40b8-9d41-2c7b169b1e9e","technicalName":"22aea11d-1125-40b8-9d41-2c7b169b1e9e","displayName":"test-ci-cd","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-ci-cd-l646hcu6","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"This subaccount is for testing CI/CD API. [DO NOT DELETE]","state":"OK","stateMessage":"Subaccount created.","createdDate":"Mar 16, 2026, 3:03:49 AM","createdBy":"john.doe+11@int.test","modifiedDate":"Jul 7, 2026, 6:18:55 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+12@int.test"},{"guid":"b75a605d-151c-4485-83f4-64604378e4ec","technicalName":"b75a605d-151c-4485-83f4-64604378e4ec","displayName":"test_ias","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-ias-uedsoe81","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"This subaccount is being used for unit tests on the SCI provider. DO NOT DELETE.","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 12, 2024, 6:09:59 AM","createdBy":"john.doe+13@int.test","modifiedDate":"Jul 7, 2026, 6:19:21 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+14@int.test"},{"guid":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","technicalName":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","displayName":"integration-test-security-settings","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-security-settings-8ptbr820","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 3:04:48 PM","createdBy":"john.doe+15@int.test","modifiedDate":"Nov 14, 2023, 3:05:04 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+16@int.test"},{"guid":"b3f80de4-d72f-419a-9473-e841019391b0","technicalName":"b3f80de4-d72f-419a-9473-e841019391b0","displayName":"test-code-snippets","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-code-snippets-dtug1goi","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jun 1, 2026, 7:34:32 AM","createdBy":"john.doe+17@int.test","modifiedDate":"Jun 1, 2026, 7:35:38 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+18@int.test"},{"guid":"b8b66419-797f-441b-8ae9-07570a902421","technicalName":"b8b66419-797f-441b-8ae9-07570a902421","displayName":"beta-test-account","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"beta-test-account-ep1sauhx","betaEnabled":true,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"b8b66419-797f-441b-8ae9-07570a902421","key":"redacted","value":"true"}],"labels":{"beta-test":["true"]},"createdDate":"May 28, 2026, 8:24:11 AM","createdBy":"john.doe+19@int.test","modifiedDate":"May 28, 2026, 8:24:50 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+20@int.test"},{"guid":"816bd18f-6af1-4998-83a5-6d36504143bf","technicalName":"816bd18f-6af1-4998-83a5-6d36504143bf","displayName":"integration-test-cicd-service","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-cicd-service-kfdmyx7a","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"This subaccount will be used for integration testing of the CI/CD service. [DO NOT DELETE]","state":"OK","stateMessage":"Subaccount created.","createdDate":"May 5, 2026, 5:02:44 AM","createdBy":"john.doe+21@int.test","modifiedDate":"Jul 7, 2026, 6:18:38 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+22@int.test"},{"guid":"ba268910-81e6-4ac1-9016-cae7ed196889","technicalName":"ba268910-81e6-4ac1-9016-cae7ed196889","displayName":"integration-test-destination","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-destination-ds8oaxcf","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2025, 10:06:02 AM","createdBy":"john.doe+23@int.test","modifiedDate":"Nov 24, 2025, 10:06:26 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+24@int.test"},{"guid":"4e981c0f-de50-4442-a26e-54798120f141","technicalName":"4e981c0f-de50-4442-a26e-54798120f141","displayName":"integration-test-acc-entitlements-stacked","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"ccaf9acf-219d-47b5-bb3f-adae6871cdb2","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-acc-entitlements-stacked-gddtpz5i","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 1:14:31 PM","createdBy":"john.doe+25@int.test","modifiedDate":"Nov 14, 2023, 1:14:54 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+26@int.test"},{"guid":"f59b5902-d24c-446c-b245-92c814faa0d9","technicalName":"f59b5902-d24c-446c-b245-92c814faa0d9","displayName":"integration-test-dr-to-be-paired-eu10-canary","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu10-canary","subdomain":"integration-test-dr-to-be-paired-eu10-canacry-hqhkrthv","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 12:58:30 PM","createdBy":"john.doe+27@int.test","modifiedDate":"Feb 27, 2026, 12:59:17 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+28@int.test"},{"guid":"badbcbf8-eca7-4472-9f66-cb9887ba7c3d","technicalName":"badbcbf8-eca7-4472-9f66-cb9887ba7c3d","displayName":"integration-test-dr-subaccount-eu12","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-dr-subaccount-eu12-99p94dot","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 11:34:34 AM","createdBy":"john.doe+29@int.test","modifiedDate":"Feb 27, 2026, 11:34:59 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+30@int.test"},{"guid":"608858ef-5829-4aa6-88e7-0e220ef1aaeb","technicalName":"608858ef-5829-4aa6-88e7-0e220ef1aaeb","displayName":"integration-test-dr-subaccount-eu10-canary","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu10-canary","subdomain":"integration-test-dr-subaccount-eu10-canary-ls0upaxs","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 11:34:09 AM","createdBy":"john.doe+31@int.test","modifiedDate":"Feb 27, 2026, 11:34:29 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+32@int.test"},{"guid":"2dc1ecf1-786c-4f92-91f2-26650ab3ad28","technicalName":"2dc1ecf1-786c-4f92-91f2-26650ab3ad28","displayName":"integration-test-dr-to-be-paired-eu12","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-dr-to-be-paired-eu12-8tu9lgxa","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 12:59:03 PM","createdBy":"john.doe+33@int.test","modifiedDate":"Feb 27, 2026, 12:59:34 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+34@int.test"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 07 Jul 2026 10:27:56 GMT
+            Expires:
+                - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 335dd0f4-5033-44e7-553d-78ecff28c4ed
+        status: 200 OK
+        code: 200
+        duration: 482.480667ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 103
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cas-ui-xsuaa-prod!t216","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.15.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - 9f69e69a-4ac8-bc4d-c7f3-c06a95751227
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.106.1/security/app?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","instanceSecretLastUsedAt":null,"xsappname":"cas-ui-xsuaa-prod","scopes":[{"description":"Scope for CAS Security Operator.","name":"cas-ui-xsuaa-prod!t216.security.operator"},{"description":"Scope for GACD","name":"cas-ui-xsuaa-prod!t216.cas.gacd"},{"description":"With this scope set, the callbacks for tenant onboarding, offboarding and getDependencies can be called.","name":"cas-ui-xsuaa-prod!t216.Callback","grant-as-authority-to-apps":["tenant-onboarding!t2"]},{"description":"Scope for downloading files from CAS","name":"cas-ui-xsuaa-prod!t216.operations.download"},{"description":"Scope for reading transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.operations.read"},{"description":"Scope for reading content types and transport modes in CAS","name":"cas-ui-xsuaa-prod!t216.read"},{"description":"Scope for reading contentresources transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.contentresources.read"},{"description":"Scope for reading activities transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.activities.read"},{"description":"Scope for create MTAR operation in Assembly","name":"cas-ui-xsuaa-prod!t216.internal.createmtar"},{"description":"Scope for get operations in Assembly.","name":"cas-ui-xsuaa-prod!t216.internal.getprocess"},{"description":"Scope for application plan.","name":"cas-ui-xsuaa-prod!t216.import"},{"description":"Scope for export scenario.","name":"cas-ui-xsuaa-prod!t216.export"},{"description":"Scope for standard plan.","name":"cas-ui-xsuaa-prod!t216.assemble"},{"description":"Admin access ","name":"cas-ui-xsuaa-prod!t216.admin"},{"description":"Basic user with minimal access","name":"cas-ui-xsuaa-prod!t216.user"}],"authorities":["cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.contentresources.read","uaa.user","cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.user","cas-ui-xsuaa-prod!t216.read"],"foreign-scope-references":[],"attributes":[],"role-templates":[{"name":"SecurityOperator","description":"Gives user additional ability to transport role collections along with admin capabilities.","default-role-name":"Security Operator","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Read","description":"Enables user to read operation details and contents available in the subscribed tenant","scope-references":["cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Activities","description":"To read operation details performed using Content Agent UI","scope-references":["cas-ui-xsuaa-prod!t216.activities.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Admin","description":"Admin access for user that enables user to perform all the operations including Export and Import","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Import","description":"Enables user to perform Import operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Export","description":"Enables user to perform Export operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"}],"oauth2-configuration":{"token-validity":86400,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":["https://*.content-agent.cfapps.eu12.hana.ondemand.com/login/callback","https://*.content-agent.cloud.sap/**"],"credential-types":["binding-secret","x509"]},"tenant-mode":"shared"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 07 Jul 2026 10:27:57 GMT
+            Expires:
+                - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 62998f7e-7672-4eb2-6d96-ec470ff056da
+        status: 200 OK
+        code: 200
+        duration: 1.091808334s
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 116
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.15.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - 14f64a9f-113c-1959-fded-f5c2ca7f121c
+            X-Cpcli-Format:
+                - json
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 62
+        uncompressed: false
+        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "62"
+            Content-Security-Policy:
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 07 Jul 2026 10:27:58 GMT
+            Expires:
+                - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - dafabf6f-2ae9-45f5-69d6-0cbf5e5b50d1
+        status: 200 OK
+        code: 200
+        duration: 1.465160709s
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"globalAccount":"terraformintcanary"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.15.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - 45a4c9af-e6e9-b565-fca9-a4dbd4f2ed98
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.106.1/accounts/subaccount?list
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"value":[{"guid":"16c59127-2e48-47cf-88d6-9a283b4f2275","technicalName":"16c59127-2e48-47cf-88d6-9a283b4f2275","displayName":"test-cf-anugrah","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu23-canary","subdomain":"test-cf-anugrah-j06b2fx7","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount is pending deletion","createdDate":"May 15, 2026, 8:04:24 AM","createdBy":"john.doe+1@int.test","modifiedDate":"Jul 7, 2026, 8:05:37 AM","contractStatus":"PENDING_FORCED_DELETION","forceDeleteRequestTime":"Jul 7, 2026, 8:05:34 AM","forceDeleteTargetTime":"Jul 14, 2026, 8:05:34 AM","lastModifiedBy":"john.doe@int.test"},{"guid":"816bd18f-6af1-4998-83a5-6d36504143bf","technicalName":"816bd18f-6af1-4998-83a5-6d36504143bf","displayName":"integration-test-cicd-service","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-cicd-service-kfdmyx7a","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"This subaccount will be used for integration testing of the CI/CD service. [DO NOT DELETE]","state":"OK","stateMessage":"Subaccount created.","createdDate":"May 5, 2026, 5:02:44 AM","createdBy":"john.doe+2@int.test","modifiedDate":"Jul 7, 2026, 6:18:38 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+3@int.test"},{"guid":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","technicalName":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","displayName":"integration-test-acc-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-acc-static-b8xxozer","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Please don\u0027t modify. This is used for integration tests.","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"1"},{"accountGUID":"77395f6a-a601-4c9e-8cd0-c1fcefc7f60f","key":"redacted","value":"4"}],"labels":{"a":["1","2","3"],"b":["4","5","6"]},"createdDate":"Mar 5, 2024, 6:55:18 AM","createdBy":"john.doe+4@int.test","modifiedDate":"Mar 5, 2024, 6:55:37 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+5@int.test"},{"guid":"b8b66419-797f-441b-8ae9-07570a902421","technicalName":"b8b66419-797f-441b-8ae9-07570a902421","displayName":"beta-test-account","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"beta-test-account-ep1sauhx","betaEnabled":true,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","customProperties":[{"accountGUID":"b8b66419-797f-441b-8ae9-07570a902421","key":"redacted","value":"true"}],"labels":{"beta-test":["true"]},"createdDate":"May 28, 2026, 8:24:11 AM","createdBy":"john.doe+6@int.test","modifiedDate":"May 28, 2026, 8:24:50 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+7@int.test"},{"guid":"b3f80de4-d72f-419a-9473-e841019391b0","technicalName":"b3f80de4-d72f-419a-9473-e841019391b0","displayName":"test-code-snippets","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-code-snippets-dtug1goi","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jun 1, 2026, 7:34:32 AM","createdBy":"john.doe+8@int.test","modifiedDate":"Jun 1, 2026, 7:35:38 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+9@int.test"},{"guid":"22aea11d-1125-40b8-9d41-2c7b169b1e9e","technicalName":"22aea11d-1125-40b8-9d41-2c7b169b1e9e","displayName":"test-ci-cd","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-ci-cd-l646hcu6","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"This subaccount is for testing CI/CD API. [DO NOT DELETE]","state":"OK","stateMessage":"Subaccount created.","createdDate":"Mar 16, 2026, 3:03:49 AM","createdBy":"john.doe+10@int.test","modifiedDate":"Jul 7, 2026, 6:18:55 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+11@int.test"},{"guid":"b75a605d-151c-4485-83f4-64604378e4ec","technicalName":"b75a605d-151c-4485-83f4-64604378e4ec","displayName":"test_ias","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-ias-uedsoe81","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"This subaccount is being used for unit tests on the SCI provider. DO NOT DELETE.","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 12, 2024, 6:09:59 AM","createdBy":"john.doe+12@int.test","modifiedDate":"Jul 7, 2026, 6:19:21 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+13@int.test"},{"guid":"247420c3-99c8-4e8c-9790-bea9c4f1cff6","technicalName":"247420c3-99c8-4e8c-9790-bea9c4f1cff6","displayName":"integration-test-pending-deletion","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu10-canary","subdomain":"integration-test-pending-deletion-yv4w0zzk","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount pending deletion cancelled","createdDate":"Apr 15, 2026, 1:48:00 PM","createdBy":"john.doe+14@int.test","modifiedDate":"Jul 7, 2026, 9:31:26 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe@int.test"},{"guid":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","technicalName":"fc26cc61-ac5e-4c7d-9747-725f32a8994e","displayName":"integration-test-security-settings","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-security-settings-8ptbr820","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 3:04:48 PM","createdBy":"john.doe+15@int.test","modifiedDate":"Nov 14, 2023, 3:05:04 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+16@int.test"},{"guid":"ffbf1ae9-d9a6-4c65-a2f1-4b39b8896ccc","technicalName":"ffbf1ae9-d9a6-4c65-a2f1-4b39b8896ccc","displayName":"test-cred","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"test-cred-8633u6tv","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"test for cloud foundry","state":"OK","stateMessage":"Subaccount created.","createdDate":"Dec 2, 2025, 7:45:48 AM","createdBy":"john.doe+17@int.test","modifiedDate":"Jul 7, 2026, 6:19:47 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+18@int.test"},{"guid":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","technicalName":"59cd458e-e66e-4b60-b6d8-8f219379f9a5","displayName":"integration-test-services-static","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-services-4ie3yr1a","betaEnabled":true,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Subaccount to test: \n- Service instances\n- Service Bindings\n- App Subscriptions","state":"OK","stateMessage":"Subaccount created.","createdDate":"Jul 3, 2023, 11:34:41 AM","createdBy":"john.doe+19@int.test","modifiedDate":"Jul 7, 2023, 11:48:00 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+20@int.test"},{"guid":"ba268910-81e6-4ac1-9016-cae7ed196889","technicalName":"ba268910-81e6-4ac1-9016-cae7ed196889","displayName":"integration-test-destination","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-destination-ds8oaxcf","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 24, 2025, 10:06:02 AM","createdBy":"john.doe+21@int.test","modifiedDate":"Nov 24, 2025, 10:06:26 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+22@int.test"},{"guid":"b7ed3f66-5b6d-4290-856c-099e9e3cbb1b","technicalName":"b7ed3f66-5b6d-4290-856c-099e9e3cbb1b","displayName":"integration-test-ias","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentType":"ROOT","region":"eu12","subdomain":"integration-test-ias-408hsvn1","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","description":"Subaccount to test bundled applications on the SAP Cloud Identity Services Provider","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 8:47:42 AM","createdBy":"john.doe+23@int.test","modifiedDate":"Feb 27, 2026, 8:48:09 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+24@int.test"},{"guid":"4e981c0f-de50-4442-a26e-54798120f141","technicalName":"4e981c0f-de50-4442-a26e-54798120f141","displayName":"integration-test-acc-entitlements-stacked","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"ccaf9acf-219d-47b5-bb3f-adae6871cdb2","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-acc-entitlements-stacked-gddtpz5i","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Nov 14, 2023, 1:14:31 PM","createdBy":"john.doe+25@int.test","modifiedDate":"Nov 14, 2023, 1:14:54 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+26@int.test"},{"guid":"608858ef-5829-4aa6-88e7-0e220ef1aaeb","technicalName":"608858ef-5829-4aa6-88e7-0e220ef1aaeb","displayName":"integration-test-dr-subaccount-eu10-canary","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu10-canary","subdomain":"integration-test-dr-subaccount-eu10-canary-ls0upaxs","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 11:34:09 AM","createdBy":"john.doe+27@int.test","modifiedDate":"Feb 27, 2026, 11:34:29 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+28@int.test"},{"guid":"2dc1ecf1-786c-4f92-91f2-26650ab3ad28","technicalName":"2dc1ecf1-786c-4f92-91f2-26650ab3ad28","displayName":"integration-test-dr-to-be-paired-eu12","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-dr-to-be-paired-eu12-8tu9lgxa","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 12:59:03 PM","createdBy":"john.doe+29@int.test","modifiedDate":"Feb 27, 2026, 12:59:34 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+30@int.test"},{"guid":"f59b5902-d24c-446c-b245-92c814faa0d9","technicalName":"f59b5902-d24c-446c-b245-92c814faa0d9","displayName":"integration-test-dr-to-be-paired-eu10-canary","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu10-canary","subdomain":"integration-test-dr-to-be-paired-eu10-canacry-hqhkrthv","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 12:58:30 PM","createdBy":"john.doe+31@int.test","modifiedDate":"Feb 27, 2026, 12:59:17 PM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+32@int.test"},{"guid":"badbcbf8-eca7-4472-9f66-cb9887ba7c3d","technicalName":"badbcbf8-eca7-4472-9f66-cb9887ba7c3d","displayName":"integration-test-dr-subaccount-eu12","globalAccountGUID":"03760ecf-9d89-4189-a92a-1c7efed09298","parentGUID":"c5a9f407-c93c-4aa8-ac3b-86ff6c2cf6d4","parentType":"FOLDER","parentFeatures":["DEFAULT"],"region":"eu12","subdomain":"integration-test-dr-subaccount-eu12-99p94dot","betaEnabled":false,"usedForProduction":"NOT_USED_FOR_PRODUCTION","state":"OK","stateMessage":"Subaccount created.","createdDate":"Feb 27, 2026, 11:34:34 AM","createdBy":"john.doe+33@int.test","modifiedDate":"Feb 27, 2026, 11:34:59 AM","contractStatus":"ACTIVE","lastModifiedBy":"john.doe+34@int.test"}]}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 07 Jul 2026 10:27:59 GMT
+            Expires:
+                - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json;charset=UTF-8
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - 52b6a58d-f8f2-48b0-6583-3f33c35eedb5
+        status: 200 OK
+        code: 200
+        duration: 479.953583ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 103
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"paramValues":{"appId":"cas-ui-xsuaa-prod!t216","subaccount":"59cd458e-e66e-4b60-b6d8-8f219379f9a5"}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.15.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - 4ace127d-383f-cb73-07cd-7791c47f3020
+            X-Cpcli-Customidp:
+                - identityProvider
+            X-Cpcli-Format:
+                - json
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Cpcli-Subdomain:
+                - terraformintcanary
+        url: https://canary.cli.btp.int.sap/command/v2.106.1/security/app?get
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"appid":"cas-ui-xsuaa-prod!t216","serviceinstanceid":"397f90fe-69b5-4334-965a-172b9cb8b28d","planId":"ThGdx5loQ6XhvcdY6dLlEXcTgQD7641pDKXJfzwYGLg=","planName":"application","orgId":null,"spaceId":null,"userName":null,"description":"Security profile of Content Agent UI","masterAppId":null,"tenantId":"3374b000-ef2f-4a11-9fb5-a1636dc1c480","instanceSecretLastUsedAt":null,"xsappname":"cas-ui-xsuaa-prod","scopes":[{"description":"Scope for CAS Security Operator.","name":"cas-ui-xsuaa-prod!t216.security.operator"},{"description":"Scope for GACD","name":"cas-ui-xsuaa-prod!t216.cas.gacd"},{"description":"With this scope set, the callbacks for tenant onboarding, offboarding and getDependencies can be called.","name":"cas-ui-xsuaa-prod!t216.Callback","grant-as-authority-to-apps":["tenant-onboarding!t2"]},{"description":"Scope for downloading files from CAS","name":"cas-ui-xsuaa-prod!t216.operations.download"},{"description":"Scope for reading transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.operations.read"},{"description":"Scope for reading content types and transport modes in CAS","name":"cas-ui-xsuaa-prod!t216.read"},{"description":"Scope for reading contentresources transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.contentresources.read"},{"description":"Scope for reading activities transactional data of CAS","name":"cas-ui-xsuaa-prod!t216.activities.read"},{"description":"Scope for create MTAR operation in Assembly","name":"cas-ui-xsuaa-prod!t216.internal.createmtar"},{"description":"Scope for get operations in Assembly.","name":"cas-ui-xsuaa-prod!t216.internal.getprocess"},{"description":"Scope for application plan.","name":"cas-ui-xsuaa-prod!t216.import"},{"description":"Scope for export scenario.","name":"cas-ui-xsuaa-prod!t216.export"},{"description":"Scope for standard plan.","name":"cas-ui-xsuaa-prod!t216.assemble"},{"description":"Admin access ","name":"cas-ui-xsuaa-prod!t216.admin"},{"description":"Basic user with minimal access","name":"cas-ui-xsuaa-prod!t216.user"}],"authorities":["cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.contentresources.read","uaa.user","cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.user","cas-ui-xsuaa-prod!t216.read"],"foreign-scope-references":[],"attributes":[],"role-templates":[{"name":"SecurityOperator","description":"Gives user additional ability to transport role collections along with admin capabilities.","default-role-name":"Security Operator","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.security.operator","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Read","description":"Enables user to read operation details and contents available in the subscribed tenant","scope-references":["cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Activities","description":"To read operation details performed using Content Agent UI","scope-references":["cas-ui-xsuaa-prod!t216.activities.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Admin","description":"Admin access for user that enables user to perform all the operations including Export and Import","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.admin","cas-ui-xsuaa-prod!t216.assemble","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Import","description":"Enables user to perform Import operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.cas.gacd","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.import","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"},{"name":"Export","description":"Enables user to perform Export operation and read details related to the operations","scope-references":["cas-ui-xsuaa-prod!t216.operations.download","cas-ui-xsuaa-prod!t216.internal.getprocess","cas-ui-xsuaa-prod!t216.operations.read","cas-ui-xsuaa-prod!t216.read","cas-ui-xsuaa-prod!t216.internal.createmtar","cas-ui-xsuaa-prod!t216.export","cas-ui-xsuaa-prod!t216.activities.read","cas-ui-xsuaa-prod!t216.contentresources.read"],"attribute-references":[],"appId":"cas-ui-xsuaa-prod!t216"}],"oauth2-configuration":{"token-validity":86400,"refresh-token-validity":0,"autoapprove":true,"grant-types":["refresh_token","urn:ietf:params:oauth:grant-type:saml2-bearer","client_credentials","password","authorization_code","user_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"system-attributes":["groups","rolecollections"],"allowedproviders":null,"redirect-uris":["https://*.content-agent.cfapps.eu12.hana.ondemand.com/login/callback","https://*.content-agent.cloud.sap/**"],"credential-types":["binding-secret","x509"]},"tenant-mode":"shared"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Security-Policy:
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 07 Jul 2026 10:28:00 GMT
+            Expires:
+                - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Backend-Mediatype:
+                - application/json
+            X-Cpcli-Backend-Status:
+                - "200"
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - a74ecac1-1747-41e0-4386-4b133dd8ba4c
+        status: 200 OK
+        code: 200
+        duration: 670.596583ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 116
+        transfer_encoding: []
+        trailer: {}
+        host: canary.cli.btp.int.sap
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"customIdp":"identityProvider","subdomain":"terraformintcanary","userName":"john.doe@int.test","password":"testUserPassword"}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+            User-Agent:
+                - Terraform/1.15.5 terraform-provider-btp/dev
+            X-Correlationid:
+                - aaed0f0c-0b87-f9f0-efe4-fc2cee4b8a5b
+            X-Cpcli-Format:
+                - json
+        url: https://canary.cli.btp.int.sap/login/v2.106.1
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 62
+        uncompressed: false
+        body: '{"issuer":"identity.provider.test","mail":"john.doe@int.test"}'
+        headers:
+            Cache-Control:
+                - no-cache, no-store, max-age=0, must-revalidate
+            Content-Length:
+                - "62"
+            Content-Security-Policy:
+                - default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 07 Jul 2026 10:28:02 GMT
+            Expires:
+                - "0"
+            Permissions-Policy:
+                - accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - no-referrer
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload;
+            X-Content-Type-Options:
+                - nosniff
+            X-Cpcli-Sessionid:
+                - redacted
+            X-Frame-Options:
+                - DENY
+            X-Vcap-Request-Id:
+                - fecec5a9-8966-46b5-511a-303f03f1dc85
+        status: 200 OK
+        code: 200
+        duration: 1.988702084s

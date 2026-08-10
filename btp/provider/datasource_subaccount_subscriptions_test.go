@@ -12,6 +12,7 @@ func TestDataSourceSubaccountSubscriptions(t *testing.T) {
 
 	t.Parallel()
 	t.Run("happy path - all subscriptions of subaccount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_subscriptions")
 		defer stopQuietly(rec)
 
@@ -23,7 +24,7 @@ func TestDataSourceSubaccountSubscriptions(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountSubscriptionsBySubaccount("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_subscriptions.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_subscriptions.uut", "values.#", "11"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_subscriptions.uut", "values.#", "12"),
 					),
 				},
 			},
@@ -31,6 +32,7 @@ func TestDataSourceSubaccountSubscriptions(t *testing.T) {
 
 	})
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

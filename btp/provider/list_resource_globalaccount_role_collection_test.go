@@ -19,6 +19,7 @@ func TestGlobalaccountRoleCollectionListResource(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_globalaccount_role_collection")
 		defer stopQuietly(rec)
 
@@ -84,6 +85,7 @@ func TestGlobalaccountRoleCollectionListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewGlobalaccountRoleCollectionListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

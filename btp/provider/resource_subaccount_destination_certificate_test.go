@@ -12,6 +12,7 @@ import (
 func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 
 	t.Run("happy path - destination certificate - PEM", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_certificate.create_pem_certificate")
 		defer stopQuietly(rec)
 
@@ -42,6 +43,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate from service instance - PEM", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_certificate.service_instance.create_pem_certificate")
 		defer stopQuietly(rec)
 
@@ -73,6 +75,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate - P12", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_certificate.create_p12_certificate")
 		defer stopQuietly(rec)
 
@@ -107,6 +110,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate from service instance - P12", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_certificate.service_instance.create_p12_certificate")
 		defer stopQuietly(rec)
 
@@ -141,6 +145,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate - PFX", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_certificate.create_pfx_certificate")
 		defer stopQuietly(rec)
 
@@ -175,6 +180,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("happy path - destination certificate from service instance - PFX", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_certificate.service_instance.create_pfx_certificate")
 		defer stopQuietly(rec)
 
@@ -209,6 +215,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		certContent := "redacted"
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -223,6 +230,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("error path - certificate_name mandatory", func(t *testing.T) {
+		t.Parallel()
 		certContent := "redacted"
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
@@ -237,6 +245,7 @@ func TestResourceSubaccountDestinationCertificate(t *testing.T) {
 	})
 
 	t.Run("error path - certificate_content mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
