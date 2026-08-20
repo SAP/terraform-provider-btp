@@ -52,7 +52,11 @@ func ExtractLabelValue(label string, key EnvironmentLabelKey) (string, error) {
 		return "", errors.New(baseErrorMsg + "failed to parse label JSON: " + err.Error())
 	}
 
+	// Try exact key first, then fall back to the legacy format where CF keys had a trailing colon (e.g. "API Endpoint:")
 	val, ok := data[key.String()]
+	if !ok {
+		val, ok = data[key.String()+":"]
+	}
 	if !ok {
 		return "", errors.New(baseErrorMsg + "label does not contain '" + key.String() + "'")
 	}
