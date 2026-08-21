@@ -11,10 +11,12 @@ require (
 	github.com/hashicorp/terraform-plugin-framework-validators v0.19.0
 	github.com/hashicorp/terraform-plugin-go v0.31.0
 	github.com/hashicorp/terraform-plugin-testing v1.16.0
-	github.com/stretchr/testify v1.12.0
+	github.com/stretchr/testify v1.12.1
 	github.com/zalando/go-keyring v0.2.8
 	gopkg.in/dnaeon/go-vcr.v3 v3.2.1
 )
+
+require go.yaml.in/yaml/v3 v3.0.5 // indirect
 
 require (
 	github.com/ProtonMail/go-crypto v1.4.1 // indirect
