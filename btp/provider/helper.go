@@ -12,6 +12,16 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+// originMatches reports whether a BTP API origin matches a Terraform state origin.
+// BTP uses "sap.default" in API responses for users assigned with the "ldap" origin alias.
+func originMatches(apiOrigin, stateOrigin string) bool {
+	if apiOrigin == stateOrigin {
+		return true
+	}
+	return (stateOrigin == "ldap" && apiOrigin == "sap.default") ||
+		(stateOrigin == "sap.default" && apiOrigin == "ldap")
+}
+
 func stringNullIfEmpty(val string) types.String {
 	if len(val) == 0 {
 		return types.StringNull()

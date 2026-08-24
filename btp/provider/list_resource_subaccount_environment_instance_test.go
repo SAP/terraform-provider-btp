@@ -22,6 +22,7 @@ func TestSubaccountEnvironmentInstanceListResource(t *testing.T) {
 	subaccountID := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_environment_instance")
 		defer stopQuietly(rec)
 
@@ -46,7 +47,7 @@ func TestSubaccountEnvironmentInstanceListResource(t *testing.T) {
 						querycheck.ExpectIdentity(
 							"btp_subaccount_environment_instance.environment_instances_list",
 							map[string]knownvalue.Check{
-								"id":            knownvalue.StringExact("28EE0D05-966B-4218-8286-14D15B71B610"),
+								"id":            knownvalue.StringExact("C4C4387E-6CBC-4ABF-B2D3-97997BB22207"),
 								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
 							},
 						),
@@ -68,7 +69,7 @@ func TestSubaccountEnvironmentInstanceListResource(t *testing.T) {
 						querycheck.ExpectResourceKnownValues(
 							"btp_subaccount_environment_instance.environment_instances_list",
 							queryfilter.ByResourceIdentity(map[string]knownvalue.Check{
-								"id":            knownvalue.StringExact("28EE0D05-966B-4218-8286-14D15B71B610"),
+								"id":            knownvalue.StringExact("C4C4387E-6CBC-4ABF-B2D3-97997BB22207"),
 								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
 							}),
 							[]querycheck.KnownValueCheck{
@@ -137,6 +138,7 @@ func TestSubaccountEnvironmentInstanceListResource(t *testing.T) {
 	})
 
 	t.Run("error path - bad request", func(t *testing.T) {
+		t.Parallel()
 		badRequestSubaccountID := ""
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_environment_instance_bad_request")
 		defer stopQuietly(rec)
@@ -158,6 +160,7 @@ func TestSubaccountEnvironmentInstanceListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewSubaccountEnvironmentInstanceListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

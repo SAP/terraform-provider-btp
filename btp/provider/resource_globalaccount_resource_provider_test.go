@@ -13,6 +13,7 @@ import (
 func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - create", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_resource_provider.create")
 		defer stopQuietly(rec)
 
@@ -56,6 +57,7 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 	})
 
 	t.Run("happy path - update with import", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_resource_provider.update_with_import")
 		defer stopQuietly(rec)
 
@@ -115,6 +117,7 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 	})
 
 	t.Run("happy path - update omitting description", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_resource_provider.update_wo_description")
 		defer stopQuietly(rec)
 
@@ -159,6 +162,7 @@ func TestResourceGlobalaccountResourceProvider(t *testing.T) {
 	})
 
 	t.Run("error path - provider_type is mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -177,6 +181,7 @@ resource "btp_globalaccount_resource_provider" "uut" {
 	})
 
 	t.Run("error path - technical_name is mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -195,6 +200,7 @@ resource "btp_globalaccount_resource_provider" "uut" {
 	})
 
 	t.Run("error path - display_name is mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -213,6 +219,7 @@ resource "btp_globalaccount_resource_provider" "uut" {
 	})
 
 	t.Run("error path - configuration is mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

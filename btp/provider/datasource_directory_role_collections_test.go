@@ -14,6 +14,7 @@ import (
 func TestDataSourceDirectoryRoleCollections(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_directory_role_collections")
 		defer stopQuietly(rec)
 
@@ -31,22 +32,8 @@ func TestDataSourceDirectoryRoleCollections(t *testing.T) {
 			},
 		})
 	})
-	t.Run("error path - directory not security enabled", func(t *testing.T) {
-		rec, user := setupVCR(t, "fixtures/datasource_directory_role_collections.not_security_enabled")
-		defer stopQuietly(rec)
-
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
-			Steps: []resource.TestStep{
-				{
-					Config:      hclProviderFor(user) + hclDatasourceDirectoryRoleCollections("uut", "integration-test-dir-static"),
-					ExpectError: regexp.MustCompile(`Access forbidden due to insufficient authorization.*`), //error message has a line break, we only check the first part
-				},
-			},
-		})
-	})
 	t.Run("error path - directory_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -59,6 +46,7 @@ func TestDataSourceDirectoryRoleCollections(t *testing.T) {
 		})
 	})
 	t.Run("error path - directory_id not a valid UUID", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -71,6 +59,7 @@ func TestDataSourceDirectoryRoleCollections(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

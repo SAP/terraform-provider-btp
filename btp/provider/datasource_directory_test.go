@@ -14,6 +14,7 @@ import (
 func TestDataSourceDirectory(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_directory")
 		defer stopQuietly(rec)
 
@@ -56,7 +57,10 @@ func TestDataSourceDirectory(t *testing.T) {
 	})
 
 	t.Run("error path - invalid directory ID", func(t *testing.T) {
+		t.Parallel(
 		// See: https://github.com/SAP/terraform-provider-btp/issues/1210
+		)
+
 		rec, user := setupVCR(t, "fixtures/datasource_directory.invalid_id")
 		defer stopQuietly(rec)
 
@@ -73,6 +77,7 @@ func TestDataSourceDirectory(t *testing.T) {
 	})
 
 	t.Run("error path - id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -85,6 +90,7 @@ func TestDataSourceDirectory(t *testing.T) {
 		})
 	})
 	t.Run("error path - id not a valid UUID", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -97,6 +103,7 @@ func TestDataSourceDirectory(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

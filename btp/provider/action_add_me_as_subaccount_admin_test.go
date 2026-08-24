@@ -12,6 +12,7 @@ import (
 func TestActionAddMeAsSubaccountAdmin(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - successful admin assignment", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/action_add_me_as_subaccount_admin")
 		defer stopQuietly(rec)
 
@@ -23,13 +24,14 @@ func TestActionAddMeAsSubaccountAdmin(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclActionAddMeAsSubaccountAdmin("519ece7b-aaee-4ae0-8bfd-68414ec9f520"),
+					Config: hclProviderFor(user) + hclActionAddMeAsSubaccountAdmin("77395f6a-a601-4c9e-8cd0-c1fcefc7f60f"), //integration-test-acc-static
 				},
 			},
 		})
 	})
 
 	t.Run("error path - non-existing subaccount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/action_add_me_as_subaccount_admin_fail_non_existing")
 		defer stopQuietly(rec)
 

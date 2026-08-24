@@ -14,6 +14,7 @@ import (
 func TestDataSourceSubaccountRoles(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_roles")
 		defer stopQuietly(rec)
 
@@ -25,7 +26,7 @@ func TestDataSourceSubaccountRoles(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountRoles("uut", "integration-test-acc-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_roles.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_roles.uut", "values.#", "34"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_roles.uut", "values.#", "45"),
 						resource.TestCheckResourceAttrSet("data.btp_subaccount_roles.uut", "values.0.app_name"),
 					),
 				},
@@ -33,6 +34,7 @@ func TestDataSourceSubaccountRoles(t *testing.T) {
 		})
 	})
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -46,6 +48,7 @@ func TestDataSourceSubaccountRoles(t *testing.T) {
 	})
 
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

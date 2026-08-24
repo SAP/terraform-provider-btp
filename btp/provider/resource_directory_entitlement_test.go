@@ -15,6 +15,7 @@ import (
 func TestResourceDirectoryEntitlement(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - no amount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.no_amount")
 		defer stopQuietly(rec)
 
@@ -47,6 +48,7 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.import_by_resource_identity")
 		defer stopQuietly(rec)
 
@@ -88,6 +90,7 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - no amount with distribution", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.no_amount_with_flags")
 		defer stopQuietly(rec)
 
@@ -120,6 +123,7 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - with amount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.amount_set")
 		defer stopQuietly(rec)
 
@@ -152,6 +156,7 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.update")
 		defer stopQuietly(rec)
 
@@ -192,6 +197,7 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - update with flags", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.update_with_flags")
 		defer stopQuietly(rec)
 
@@ -247,6 +253,7 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - with PlanUniqueIdentifier", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.plan_unique_identifier")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -277,6 +284,7 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 		})
 	})
 	t.Run("happy path - with PlanUniqueIdentifier with amount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.plan_unique_identifier.amount_set")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -309,6 +317,7 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - with PlanUniqueIdentifier for duplicate plan names (issue 1587)", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.plan_unique_identifier.duplicate_plans")
 		defer stopQuietly(rec)
 
@@ -337,6 +346,7 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 	})
 
 	t.Run("error path - zero amount", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -344,6 +354,53 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 				{
 					Config:      hclResourceDirectoryEntitlementWithAmountByDirectory("uut", "00000000-0000-0000-0000-000000000000", "data-privacy-integration-service", "standard", "0"),
 					ExpectError: regexp.MustCompile(`Attribute amount value must be between 1 and 2000000000, got: 0`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - amount set on elastic service (create)", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.error_amount_on_elastic_service")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					// hana-cloud/hana is ELASTIC_SERVICE — amount is not supported.
+					// plan_unique_identifier is required here because the environment has
+					// duplicate plans for hana-cloud/hana; without it GetEntitledByDirectory
+					// returns nil and the pre-flight check cannot determine the category.
+					Config:      hclProviderFor(user) + hclResourceDirectoryEntitlementWithPlanUniqueIdentifier("uut", "integration-test-dir-se-static", "hana-cloud", "hana", "hana-cloud-hana", "1"),
+					ExpectError: regexp.MustCompile(`The 'amount' attribute is not supported for service 'hana-cloud' plan 'hana'|setting a quota is not`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - amount set on elastic service (update)", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.error_amount_on_elastic_service_update")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					// Step 1: create without amount — succeeds, category = ELASTIC_SERVICE stored in state
+					Config: hclProviderFor(user) + hclResourceDirectoryEntitlementPlanUniqueIdentifierWithAmount("uut", "integration-test-dir-se-static", "hana-cloud", "hana", "hana-cloud-hana"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "category", "ELASTIC_SERVICE"),
+					),
+				},
+				{
+					// Step 2: add amount=1 — category known from state as ELASTIC_SERVICE, should fail immediately
+					Config:      hclProviderFor(user) + hclResourceDirectoryEntitlementWithAmountByDirectory("uut", "integration-test-dir-se-static", "hana-cloud", "hana", "1"),
+					ExpectError: regexp.MustCompile(`The 'amount' attribute is not supported for service 'hana-cloud' plan 'hana'`),
 				},
 			},
 		})

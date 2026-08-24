@@ -14,6 +14,7 @@ import (
 func TestDataSourceSubaccountRoleCollections(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_role_collections")
 		defer stopQuietly(rec)
 
@@ -25,13 +26,14 @@ func TestDataSourceSubaccountRoleCollections(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountRoleCollections("uut", "integration-test-acc-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_role_collections.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_role_collections.uut", "values.#", "6"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_role_collections.uut", "values.#", "7"),
 					),
 				},
 			},
 		})
 	})
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -45,6 +47,7 @@ func TestDataSourceSubaccountRoleCollections(t *testing.T) {
 	})
 
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

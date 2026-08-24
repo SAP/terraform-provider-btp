@@ -115,7 +115,7 @@ __Further documentation:__
 				Computed:            true,
 			},
 			"amount": schema.Int64Attribute{
-				MarkdownDescription: "The quota assigned to the subaccount.",
+				MarkdownDescription: "The quota assigned to the subaccount. Only applicable for plans with a numeric quota (category `SERVICE`, `QUOTA_BASED_APPLICATION`, `PLATFORM`, or `ENVIRONMENT`). Setting this attribute for plans that do not support numeric quota (category `ELASTIC_SERVICE`, `ELASTIC_LIMITED`, or `APPLICATION`) will result in an error.",
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.Int64{
@@ -286,6 +286,35 @@ func (rs *subaccountEntitlementResource) createOrUpdate(ctx context.Context, req
 	var directoryId string
 	if !isParentGlobalAccount {
 		directoryId = parentId
+	}
+
+	// Pre-flight: if amount is set but category is unknown (create path), look up the plan
+	// category before making any assignment call. On update the category is already known
+	// from state, so we check it directly. This prevents sending amount to a non-quota plan
+	// and waiting 10 minutes for a timeout instead of a clear error.
+	if !plan.Amount.IsNull() && plan.Amount.ValueInt64() > 0 {
+		category := plan.Category.ValueString()
+		if category == "" {
+			// create path: category not yet known, fetch it
+			entitlement, _, lookupErr := rs.cli.Accounts.Entitlement.GetEntitledBySubaccount(
+				ctx,
+				plan.SubaccountId.ValueString(),
+				plan.ServiceName.ValueString(),
+				plan.PlanName.ValueString(),
+				plan.PlanUniqueIdentifier.ValueString(),
+			)
+			if lookupErr == nil && entitlement != nil {
+				category = entitlement.Plan.Category
+			}
+		}
+		if category != "" && !isTransferAmountRequired(category) {
+			responseDiagnostics.AddError(
+				fmt.Sprintf("API Error %s Resource Entitlement (Subaccount)", action),
+				fmt.Sprintf("The 'amount' attribute is not supported for service '%s' plan '%s' (category: %s). Remove the 'amount' attribute from your configuration.",
+					plan.ServiceName.ValueString(), plan.PlanName.ValueString(), category),
+			)
+			return
+		}
 	}
 
 	if !hasPlanQuota(plan) {

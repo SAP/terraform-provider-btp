@@ -24,6 +24,7 @@ type directoryRoleCollectionRoleRefTestType struct {
 func TestResourceDirectoryRoleCollection(t *testing.T) {
 
 	t.Run("happy path - no description", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.no_description")
 		defer stopQuietly(rec)
 
@@ -50,6 +51,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.import_by_resource_identity")
 		defer stopQuietly(rec)
 
@@ -84,6 +86,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - with description", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.with_description")
 		defer stopQuietly(rec)
 
@@ -111,6 +114,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - multiple roles", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.multiple_roles")
 		defer stopQuietly(rec)
 
@@ -152,6 +156,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.update")
 		defer stopQuietly(rec)
 
@@ -243,6 +248,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - import fails", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_role_collection.error_import")
 		defer stopQuietly(rec)
 
@@ -265,6 +271,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - directory_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -278,6 +285,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - name mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -291,6 +299,7 @@ func TestResourceDirectoryRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - roles mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

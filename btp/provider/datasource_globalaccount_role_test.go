@@ -14,6 +14,7 @@ import (
 func TestDataSourceGlobalaccountRole(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role")
 		defer stopQuietly(rec)
 
@@ -29,13 +30,14 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "app_id", "cis-central!b13"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "description", "Role for global account members with read-only authorizations for core commercialization operations, such as viewing global accounts, subaccounts, entitlements, and regions."),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "read_only", "true"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "scopes.#", "10"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role.uut", "scopes.#", "11"),
 					),
 				},
 			},
 		})
 	})
 	t.Run("error path - name, role_template_name and app_id are mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -48,6 +50,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -60,6 +63,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - role_template_name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -72,6 +76,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - app_id must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -84,6 +89,7 @@ func TestDataSourceGlobalaccountRole(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

@@ -14,6 +14,7 @@ import (
 func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_exists")
 		defer stopQuietly(rec)
 
@@ -24,15 +25,16 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountRoleCollection("uut", "Global Account Administrator"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", ""),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", "Administrative access to the global account"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "read_only", "true"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "6"),
 					),
 				},
 			},
 		})
 	})
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_exists_with_attribute_mappings")
 		defer stopQuietly(rec)
 
@@ -43,9 +45,9 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDatasourceGlobalaccountRoleCollectionWithAttributeMappings("uut", "Global Account Administrator"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", ""),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "description", "Administrative access to the global account"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "read_only", "true"),
-						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "roles.#", "6"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "show_attribute_mappings", "true"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "attribute_mappings.#", "4"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_role_collection.uut", "attribute_mappings.0.attribute", "Groups"),
@@ -58,6 +60,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("happy path - with user assignments", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_exists_with_user_assignments")
 		defer stopQuietly(rec)
 
@@ -77,6 +80,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("error path - role collection not available", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_role_collection.role_collection_not_available")
 		defer stopQuietly(rec)
 
@@ -93,6 +97,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 	})
 
 	t.Run("error path - name must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -105,6 +110,7 @@ func TestDataSourceGlobalaccountRoleCollection(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

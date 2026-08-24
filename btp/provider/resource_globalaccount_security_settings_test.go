@@ -12,6 +12,7 @@ import (
 
 func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 	t.Run("happy path - complete configuration", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_security_settings.complete")
 		defer stopQuietly(rec)
 
@@ -55,6 +56,7 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 		})
 	})
 	t.Run("happy path - complete configuration import block", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_security_settings.complete_import_block")
 		defer stopQuietly(rec)
 
@@ -94,6 +96,7 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 	})
 
 	t.Run("happy path - IFrame deletion", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_globalaccount_security_settings.destroy")
 		defer stopQuietly(rec)
 
@@ -137,6 +140,7 @@ func TestResourceGlobalaccountSecuritySettings(t *testing.T) {
 	})
 
 	t.Run("error path - invalid iframe value", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

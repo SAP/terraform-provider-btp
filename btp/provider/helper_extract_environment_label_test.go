@@ -16,6 +16,18 @@ func TestExtractLabelValue_Success_CfApiUrl(t *testing.T) {
 	}
 }
 
+func TestExtractLabelValue_Success_CfApiUrl_LegacyKey(t *testing.T) {
+	label := `{"API Endpoint:":"https://api.cf.eu20.hana.ondemand.com","Org ID:":"xxx","Org Name":"xxx","Org Memory Limit":"204,800MB"}`
+	val, err := ExtractLabelValue(label, EnvironmentLabelKeyCfApiUrl)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	want := "https://api.cf.eu20.hana.ondemand.com"
+	if val != want {
+		t.Fatalf("got %q, want %q", val, want)
+	}
+}
+
 func TestExtractLabelValue_Success_CfOrgId(t *testing.T) {
 	label := `{"API Endpoint":"https://api.cf.example.com","Org Name":"example","Org ID":"8d818824-394a-abcd-0815-7a3c8ce93e57"}`
 	val, err := ExtractLabelValue(label, EnvironmentLabelKeyCfOrgId)
@@ -23,6 +35,18 @@ func TestExtractLabelValue_Success_CfOrgId(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 	want := "8d818824-394a-abcd-0815-7a3c8ce93e57"
+	if val != want {
+		t.Fatalf("got %q, want %q", val, want)
+	}
+}
+
+func TestExtractLabelValue_Success_CfOrgId_LegacyKey(t *testing.T) {
+	label := `{"API Endpoint:":"https://api.cf.eu20.hana.ondemand.com","Org ID:":"xxx","Org Name":"xxx","Org Memory Limit":"204,800MB"}`
+	val, err := ExtractLabelValue(label, EnvironmentLabelKeyCfOrgId)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	want := "xxx"
 	if val != want {
 		t.Fatalf("got %q, want %q", val, want)
 	}

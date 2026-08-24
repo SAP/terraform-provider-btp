@@ -16,6 +16,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - no amount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.no_amount")
 		defer stopQuietly(rec)
 
@@ -48,6 +49,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - import with resource identity", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.import_by_resource_identity")
 		defer stopQuietly(rec)
 
@@ -88,6 +90,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - directory hierarchy", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.dir_hierarchy")
 		defer stopQuietly(rec)
 
@@ -120,6 +123,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - with amount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.amount_set")
 		defer stopQuietly(rec)
 
@@ -152,6 +156,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.update")
 		defer stopQuietly(rec)
 
@@ -205,6 +210,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 		})
 	})
 	t.Run("happy path - plan unique identifier", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.plan_unique_identifier")
 		defer stopQuietly(rec)
 
@@ -231,6 +237,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("happy path - plan unique identifier with Amount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.plan_unique_identifier_with_amount")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -262,6 +269,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 		})
 	})
 	t.Run("happy path - plan unique identifier with duplicate plan names (issue 1587)", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.plan_unique_identifier.duplicate_plans")
 		defer stopQuietly(rec)
 
@@ -290,6 +298,7 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 	})
 
 	t.Run("error path - zero amount", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -297,6 +306,53 @@ func TestResourceSubaccountEntitlement(t *testing.T) {
 				{
 					Config:      hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "uas", "reporting-directory", "0"),
 					ExpectError: regexp.MustCompile(`Attribute amount value must be between 1 and 2000000000, got: 0`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - amount set on elastic service (create)", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.error_amount_on_elastic_service")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					// hana-cloud/hana is ELASTIC_SERVICE — amount is not supported.
+					// plan_unique_identifier is required here because the environment has
+					// duplicate plans for hana-cloud/hana; without it GetEntitledBySubaccount
+					// returns nil and the pre-flight check cannot determine the category.
+					Config:      hclProviderFor(user) + hclResourceSubaccountEntitlementWithPlanUniqueIdentifierWithAmountBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana", "hana-cloud-hana", "1"),
+					ExpectError: regexp.MustCompile(`The 'amount' attribute is not supported for service 'hana-cloud' plan 'hana'|setting a quota is not`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - amount set on elastic service (update)", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_entitlement.error_amount_on_elastic_service_update")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					// Step 1: create without amount — succeeds, category = ELASTIC_SERVICE stored in state
+					Config: hclProviderFor(user) + hclResourceSubaccountEntitlementWithPlanUniqueIdentifierBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana", "hana-cloud-hana"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_subaccount_entitlement.uut", "category", "ELASTIC_SERVICE"),
+					),
+				},
+				{
+					// Step 2: add amount=1 — category known from state as ELASTIC_SERVICE, should fail immediately
+					Config:      hclProviderFor(user) + hclResourceSubaccountEntitlementWithAmountBySubaccount("uut", "integration-test-acc-static", "hana-cloud", "hana", "1"),
+					ExpectError: regexp.MustCompile(`The 'amount' attribute is not supported for service 'hana-cloud' plan 'hana'`),
 				},
 			},
 		})

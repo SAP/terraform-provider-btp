@@ -15,6 +15,7 @@ import (
 func TestResourceSubaccountDestination(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_with_additional_configuration_with_service_instance")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -61,6 +62,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("happy path with additional configuration without service instance", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_with_additional_configuration_without_service_instance")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -97,6 +99,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("happy path without service instance with additional configuration for import id", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_without_service_instance_with_additional_configuration_for_import_id")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -126,6 +129,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("happy path TCP destination with additional configuration", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_tcp_with_additional_configuration")
 		defer stopQuietly(rec)
 
@@ -159,6 +163,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("happy path LDAP destination with additional configuration", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_ldap_with_additional_configuration")
 		defer stopQuietly(rec)
 
@@ -205,6 +210,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("happy path MAIL destination with additional configuration", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_mail_with_additional_configuration")
 		defer stopQuietly(rec)
 
@@ -246,6 +252,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("happy path RFC destination with additional configuration", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_rfc_with_additional_configuration")
 		defer stopQuietly(rec)
 
@@ -308,6 +315,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 	})
 
 	t.Run("happy path update", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_update")
 		defer stopQuietly(rec)
 		resource.Test(t, resource.TestCase{
@@ -347,6 +355,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 	})
 
 	t.Run("error path - subaccount not provided", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -359,6 +368,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 		})
 	})
 	t.Run("error path - name must not contain slashes", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -372,6 +382,7 @@ func TestResourceSubaccountDestination(t *testing.T) {
 	})
 
 	t.Run("error path - proxy_type, url and authentication must be configured in additional_configuration for destinations not of type HTTP", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

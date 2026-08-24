@@ -14,6 +14,7 @@ import (
 
 func TestResourceSubaccountSubscription(t *testing.T) {
 	t.Run("happy path - simple subscription", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription")
 		defer stopQuietly(rec)
 
@@ -48,6 +49,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("happy path - import by resource identity", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription.import_by_resource_identity")
 		defer stopQuietly(rec)
 
@@ -91,6 +93,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("happy path - simple subscription with timeouts", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_with_timeouts")
 		defer stopQuietly(rec)
 
@@ -127,6 +130,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("happy path - subscription with technical app name", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_techapp_name")
 		defer stopQuietly(rec)
 
@@ -135,11 +139,11 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccount("uut", "integration-test-services-static", "SAPLaunchpad", "free"),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionBySubaccount("uut", "integration-test-services-static", "SAPLaunchpadSMS", "free"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpad"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "SAPLaunchpadSMS"),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "plan_name", "free"),
 						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "app_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "state", "SUBSCRIBED"),
@@ -152,7 +156,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 				},
 				{
 					ResourceName:      "btp_subaccount_subscription.uut",
-					ImportStateIdFunc: getSubscriptionImportStateId("btp_subaccount_subscription.uut", "SAPLaunchpad", "free"),
+					ImportStateIdFunc: getSubscriptionImportStateId("btp_subaccount_subscription.uut", "SAPLaunchpadSMS", "free"),
 					ImportState:       true,
 					ImportStateVerify: true,
 				},
@@ -161,6 +165,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("happy path - subscription with commercial app name", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_commercialapp_name")
 		defer stopQuietly(rec)
 
@@ -195,6 +200,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -208,6 +214,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("error path - service name mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -221,6 +228,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("error path - service plan ID", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -234,6 +242,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("error path - import failure", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription.import_error")
 		defer stopQuietly(rec)
 
@@ -256,6 +265,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("happy path - update subscription", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_update")
 		defer stopQuietly(rec)
 
@@ -290,6 +300,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("happy path - update subscription timeouts only", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_update_timeouts")
 		defer stopQuietly(rec)
 
@@ -324,6 +335,7 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 	})
 
 	t.Run("error path - subscription plan update not supported", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription_update_plan.update_error")
 		defer stopQuietly(rec)
 

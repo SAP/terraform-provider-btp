@@ -49,7 +49,7 @@ resource "btp_subaccount_entitlement" "uas_reporting" {
 
 ### Optional
 
-- `amount` (Number) The quota assigned to the subaccount.
+- `amount` (Number) The quota assigned to the subaccount. Only applicable for plans with a numeric quota (category `SERVICE`, `QUOTA_BASED_APPLICATION`, `PLATFORM`, or `ENVIRONMENT`). Setting this attribute for plans that do not support numeric quota (category `ELASTIC_SERVICE`, `ELASTIC_LIMITED`, or `APPLICATION`) will result in an error.
 - `plan_unique_identifier` (String) The unique identifier of the service plan. The unique identifier for service plans is required only if you need to differentiate between identical plans that have different pricing.
 
 ### Read-Only

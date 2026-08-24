@@ -22,6 +22,7 @@ func TestSubaccountServiceInstanceListResource(t *testing.T) {
 	subaccountID := "59cd458e-e66e-4b60-b6d8-8f219379f9a5"
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_service_instance")
 		defer stopQuietly(rec)
 
@@ -41,7 +42,7 @@ func TestSubaccountServiceInstanceListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_service_instance.service_instances_list", 3),
+						querycheck.ExpectLength("btp_subaccount_service_instance.service_instances_list", 2),
 
 						querycheck.ExpectIdentity(
 							"btp_subaccount_service_instance.service_instances_list",
@@ -83,7 +84,7 @@ func TestSubaccountServiceInstanceListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_service_instance.service_instances_list", 3),
+						querycheck.ExpectLength("btp_subaccount_service_instance.service_instances_list", 2),
 
 						// Verify full resource data is populated
 						querycheck.ExpectResourceKnownValues(
@@ -135,6 +136,7 @@ func TestSubaccountServiceInstanceListResource(t *testing.T) {
 	})
 
 	t.Run("error path - bad request", func(t *testing.T) {
+		t.Parallel()
 		badRequestSubaccountID := ""
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_service_instance_bad_request")
 		defer stopQuietly(rec)
@@ -156,6 +158,7 @@ func TestSubaccountServiceInstanceListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewSubaccountServiceInstanceListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

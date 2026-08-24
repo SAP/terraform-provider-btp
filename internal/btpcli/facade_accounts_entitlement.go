@@ -294,3 +294,27 @@ func (f *accountsEntitlementFacade) GetEntitledByDirectory(ctx context.Context, 
 
 	return nil, comRes, nil
 }
+
+func (f *accountsEntitlementFacade) GetEntitledBySubaccount(ctx context.Context, subaccountId, serviceName string, servicePlanName string, planUniqueIdentifier string) (*UnfoldedEntitlement, CommandResponse, error) {
+	cliRes, comRes, err := f.FilterBySubaccount(ctx, subaccountId)
+
+	if err != nil {
+		return nil, comRes, err
+	}
+
+	for _, entitledService := range cliRes.EntitledServices {
+		if entitledService.Name != serviceName {
+			continue
+		}
+
+		servicePlan := f.searchPlansForEntitlement(entitledService.ServicePlans, servicePlanName, planUniqueIdentifier, subaccountEntityType, subaccountId)
+		if servicePlan != nil {
+			return &UnfoldedEntitlement{
+				Service: entitledService,
+				Plan:    *servicePlan,
+			}, comRes, nil
+		}
+	}
+
+	return nil, comRes, nil
+}

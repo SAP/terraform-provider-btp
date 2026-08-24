@@ -22,6 +22,7 @@ func TestSubaccountRoleCollectionListResource(t *testing.T) {
 	subaccountID := "ba268910-81e6-4ac1-9016-cae7ed196889"
 
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_role_collection")
 		defer stopQuietly(rec)
 
@@ -100,6 +101,7 @@ func TestSubaccountRoleCollectionListResource(t *testing.T) {
 	})
 
 	t.Run("error path - Access forbidden", func(t *testing.T) {
+		t.Parallel()
 		notFoundSubaccountID := "00000000-0000-0000-0000-000000000000"
 
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_role_collection_access_forbidden")
@@ -127,6 +129,7 @@ func TestSubaccountRoleCollectionListResource(t *testing.T) {
 	})
 
 	t.Run("error path - configure", func(t *testing.T) {
+		t.Parallel()
 		r := NewSubaccountRoleCollectionListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{

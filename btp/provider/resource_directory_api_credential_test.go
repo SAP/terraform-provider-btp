@@ -13,6 +13,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 	t.Parallel()
 
 	t.Run("happy path - api-credential with client secret", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_api_credential.with_secret")
 		defer stopQuietly(rec)
 
@@ -21,7 +22,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryApiCredential("uut", "directory-api-credential-with-secret", "integration-test-dir-static", false),
+					Config: hclProviderFor(user) + hclResourceDirectoryApiCredential("uut", "directory-api-credential-with-secret", "integration-test-dir-se-static", false),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_directory_api_credential.uut", "name", "directory-api-credential-with-secret"),
 						resource.TestMatchResourceAttr("btp_directory_api_credential.uut", "directory_id", regexpValidUUID),
@@ -34,6 +35,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 	})
 
 	t.Run("happy path - api-credential with certificate", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_api_credential.with_certificate")
 		defer stopQuietly(rec)
 
@@ -42,7 +44,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryApiCredentialWithCertificate("uut", "directory-api-credential-with-certificate", "integration-test-dir-static", rec.IsRecording()),
+					Config: hclProviderFor(user) + hclResourceDirectoryApiCredentialWithCertificate("uut", "directory-api-credential-with-certificate", "integration-test-dir-se-static", rec.IsRecording()),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_directory_api_credential.uut", "name", "directory-api-credential-with-certificate"),
 						resource.TestMatchResourceAttr("btp_directory_api_credential.uut", "directory_id", regexpValidUUID),
@@ -55,6 +57,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 	})
 
 	t.Run("happy path - api-credential with read-only set to true", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_api_credential.read_only_credentials")
 		defer stopQuietly(rec)
 
@@ -63,7 +66,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceDirectoryApiCredential("uut", "directory-api-credential-read-only", "integration-test-dir-static", true),
+					Config: hclProviderFor(user) + hclResourceDirectoryApiCredential("uut", "directory-api-credential-read-only", "integration-test-dir-se-static", true),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_directory_api_credential.uut", "name", "directory-api-credential-read-only"),
 						resource.TestMatchResourceAttr("btp_directory_api_credential.uut", "directory_id", regexpValidUUID),
@@ -76,6 +79,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 	})
 
 	t.Run("error path - invalid certificate", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_directory_api_credential.error_invalid_certificate")
 		defer stopQuietly(rec)
 
@@ -84,7 +88,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclResourceDirectoryApiCredentialWithInvalidCertificate("uut", "directory-api-credential-invalid-certificate", "integration-test-dir-static", rec.IsRecording()),
+					Config:      hclProviderFor(user) + hclResourceDirectoryApiCredentialWithInvalidCertificate("uut", "directory-api-credential-invalid-certificate", "integration-test-dir-se-static", rec.IsRecording()),
 					ExpectError: regexp.MustCompile(`The certificate is not valid PEM format`),
 				},
 			},
@@ -92,6 +96,7 @@ func TestResourceDirectoryApiCredential(t *testing.T) {
 	})
 
 	t.Run("error path - directory id is mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

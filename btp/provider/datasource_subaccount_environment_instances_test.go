@@ -14,6 +14,7 @@ import (
 func TestDataSourceSubaccountEnvironmentInstances(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_environment_instances")
 		defer stopQuietly(rec)
 
@@ -22,7 +23,7 @@ func TestDataSourceSubaccountEnvironmentInstances(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountEnvironmentInstances("uut", "integration-test-acc-static"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountEnvironmentInstances("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_environment_instances.uut", "subaccount_id", regexpValidUUID),
 						resource.TestCheckResourceAttr("data.btp_subaccount_environment_instances.uut", "values.#", "1"),
@@ -32,6 +33,7 @@ func TestDataSourceSubaccountEnvironmentInstances(t *testing.T) {
 		})
 	})
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -45,6 +47,7 @@ func TestDataSourceSubaccountEnvironmentInstances(t *testing.T) {
 	})
 
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

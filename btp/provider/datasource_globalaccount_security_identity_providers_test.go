@@ -9,6 +9,7 @@ import (
 func TestDataSourceGlobalaccountIdentityProviders(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - list all global idps", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_identity_providers.list_all")
 		defer stopQuietly(rec)
 
@@ -19,7 +20,7 @@ func TestDataSourceGlobalaccountIdentityProviders(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + `data "btp_globalaccount_identity_providers" "uut" {}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_globalaccount_identity_providers.uut", "values.#", "12"),
+						resource.TestCheckResourceAttr("data.btp_globalaccount_identity_providers.uut", "values.#", "14"),
 						resource.TestCheckResourceAttr("data.btp_globalaccount_identity_providers.uut", "values.0.status", "ACTIVE"),
 					),
 				},

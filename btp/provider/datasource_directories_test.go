@@ -10,6 +10,7 @@ import (
 func TestDataSourceDirectories(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_directories.all")
 		defer stopQuietly(rec)
 
@@ -20,7 +21,7 @@ func TestDataSourceDirectories(t *testing.T) {
 				{
 					Config: hclProviderFor(user) + hclDataSourceDirectories("uut"),
 					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_directories.uut", "values.#", "5"),
+						resource.TestCheckResourceAttr("data.btp_directories.uut", "values.#", "9"),
 					),
 				},
 			},

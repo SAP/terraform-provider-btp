@@ -7,9 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestResourceSubaccountDestinationCertificates(t *testing.T) {
+func TestDatasourceSubaccountDestinationCertificates(t *testing.T) {
 
 	t.Run("happy path - destination certificates", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_certificates.read_certificates")
 		defer stopQuietly(rec)
 
@@ -18,7 +19,7 @@ func TestResourceSubaccountDestinationCertificates(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceSubaccountDestinationCertificates("uut", "integration-test-destination", "servtest"),
+					Config: hclProviderFor(user) + hclDatasourceSubaccountDestinationCertificates("uut", "integration-test-destination", "servtest"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificates.uut", "subaccount_level_certificates.#", "4"),
 						resource.TestCheckResourceAttr("data.btp_subaccount_destination_certificates.uut", "subaccount_level_certificates.0.certificate_name", "terraform.jks"),
@@ -34,7 +35,7 @@ func TestResourceSubaccountDestinationCertificates(t *testing.T) {
 
 }
 
-func hclResourceSubaccountDestinationCertificates(resourceName, subaccountName, serviceInstanceName string) string {
+func hclDatasourceSubaccountDestinationCertificates(resourceName, subaccountName, serviceInstanceName string) string {
 	return fmt.Sprintf(`
 		data "btp_subaccounts" "all" {}
 		data "btp_subaccount_service_instances" "all" {

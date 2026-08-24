@@ -29,6 +29,7 @@ type HanaCloudParameters struct {
 
 func TestResourceSubaccountServiceInstance(t *testing.T) {
 	t.Run("happy path - simple service creation wo parameters", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters")
 		defer stopQuietly(rec)
 
@@ -77,6 +78,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation wo parameters by name", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters_by_name")
 		defer stopQuietly(rec)
 
@@ -125,6 +127,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation with plan change", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters_plan_change")
 		defer stopQuietly(rec)
 
@@ -167,6 +170,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - service creation by name with plan change", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters_plan_change_by_name")
 		defer stopQuietly(rec)
 
@@ -209,6 +213,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation with import", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.wo_parameters_with_import")
 		defer stopQuietly(rec)
 
@@ -251,6 +256,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation with parameters", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_parameters")
 		defer stopQuietly(rec)
 
@@ -278,6 +284,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation with timeout", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance_with_timeouts")
 		defer stopQuietly(rec)
 
@@ -340,6 +347,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation with labels", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_labels")
 		defer stopQuietly(rec)
 
@@ -388,6 +396,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation with labels change", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_labels_change")
 		defer stopQuietly(rec)
 
@@ -431,6 +440,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation with sharing enabled", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_sharing_enabled")
 		defer stopQuietly(rec)
 
@@ -458,6 +468,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("happy path - simple service creation with sharing configuration modified", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.with_sharing_conf_changed")
 		defer stopQuietly(rec)
 
@@ -500,6 +511,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("error path - subacount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -513,6 +525,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("error path - service name mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -526,6 +539,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("error path - service plan mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -539,6 +553,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("error path - import failure", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.import_error")
 		defer stopQuietly(rec)
 
@@ -561,6 +576,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("error path - sharing an instance with a service plan that doesn't support sharing", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.sharing_error")
 		defer stopQuietly(rec)
 
@@ -577,6 +593,7 @@ func TestResourceSubaccountServiceInstance(t *testing.T) {
 	})
 
 	t.Run("error path - hana instance creation with wrong parameters", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_service_instance.creation_error")
 		defer stopQuietly(rec)
 

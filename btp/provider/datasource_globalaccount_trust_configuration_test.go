@@ -14,6 +14,7 @@ import (
 func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - default idp", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.default")
 		defer stopQuietly(rec)
 
@@ -39,6 +40,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 	t.Run("happy path - custom idp", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.custom_idp_exists")
 		defer stopQuietly(rec)
 
@@ -64,6 +66,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 	t.Run("error path - custom idp - not existing", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_globalaccount_trust_configuration.custom_idp_not_existing")
 		defer stopQuietly(rec)
 
@@ -79,6 +82,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 	t.Run("error path - origin must not be empty", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),
@@ -91,6 +95,7 @@ func TestDataSourceGlobalaccountTrustConfiguration(t *testing.T) {
 		})
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
+		t.Parallel()
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")

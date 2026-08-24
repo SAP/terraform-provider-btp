@@ -10,6 +10,7 @@ import (
 func TestDataSourceWhoami(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path with default idp", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_whoami")
 		defer stopQuietly(rec)
 

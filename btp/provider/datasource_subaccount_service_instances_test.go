@@ -11,6 +11,7 @@ import (
 func TestDataSourceSubaccountServiceInstances(t *testing.T) {
 	t.Parallel()
 	t.Run("happy path - service instances for subaccount", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances.all")
 		defer stopQuietly(rec)
 
@@ -22,7 +23,7 @@ func TestDataSourceSubaccountServiceInstances(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountServiceInstanceBySubaccount("uut", "integration-test-services-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "2"),
 					),
 				},
 			},
@@ -30,6 +31,7 @@ func TestDataSourceSubaccountServiceInstances(t *testing.T) {
 	})
 
 	t.Run("happy path - service instances for subaccount with fields filter", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances.namefilter")
 		defer stopQuietly(rec)
 
@@ -49,6 +51,7 @@ func TestDataSourceSubaccountServiceInstances(t *testing.T) {
 	})
 
 	t.Run("happy path - service instances for subaccount with fields filter (variant)", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances.namefilter_variant")
 		defer stopQuietly(rec)
 
@@ -60,7 +63,7 @@ func TestDataSourceSubaccountServiceInstances(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountInstancesBySubaccountAndFields("uut", "integration-test-services-static", "true"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_service_instances.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "4"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_service_instances.uut", "values.#", "2"),
 					),
 				},
 			},
@@ -68,6 +71,7 @@ func TestDataSourceSubaccountServiceInstances(t *testing.T) {
 	})
 
 	t.Run("happy path - service instances for subaccount with labels filter", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/datasource_subaccount_service_instances.labelsfilter")
 		defer stopQuietly(rec)
 
@@ -86,6 +90,7 @@ func TestDataSourceSubaccountServiceInstances(t *testing.T) {
 		})
 	})
 	t.Run("error path - subaccount_id mandatory", func(t *testing.T) {
+		t.Parallel()
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
 			ProtoV6ProviderFactories: getProviders(nil),

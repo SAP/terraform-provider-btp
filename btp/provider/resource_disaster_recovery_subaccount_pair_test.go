@@ -12,6 +12,7 @@ import (
 
 func TestResourceDisasterRecoverySubaccountPair(t *testing.T) {
 	t.Run("happy path - create subaccount pair", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_disaster_recovery_subaccount_pair")
 		defer stopQuietly(rec)
 
@@ -49,6 +50,7 @@ func TestResourceDisasterRecoverySubaccountPair(t *testing.T) {
 	})
 
 	t.Run("error path - create subaccount pair existing", func(t *testing.T) {
+		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_disaster_recovery_subaccount_pair.error_existing")
 		defer stopQuietly(rec)
 

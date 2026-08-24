@@ -98,7 +98,7 @@ __Further documentation:__
 				},
 			},
 			"amount": schema.Int64Attribute{
-				MarkdownDescription: "The quota assigned to the directory.",
+				MarkdownDescription: "The quota assigned to the directory. Only applicable for plans with a numeric quota (category `SERVICE`, `QUOTA_BASED_APPLICATION`, `PLATFORM`, or `ENVIRONMENT`). Setting this attribute for plans that do not support numeric quota (category `ELASTIC_SERVICE`, `ELASTIC_LIMITED`, or `APPLICATION`) will result in an error.",
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.Int64{
@@ -209,19 +209,14 @@ func (rs *directoryEntitlementResource) Read(ctx context.Context, req resource.R
 	diags = resp.State.Set(ctx, &updatedState)
 	resp.Diagnostics.Append(diags...)
 
-	var identity DirectoryEntitlementResourceIdentityModel
-
-	diags = req.Identity.Get(ctx, &identity)
-	if diags.HasError() {
-		identity = DirectoryEntitlementResourceIdentityModel{
-			DirectoryId: types.StringValue(state.DirectoryId.ValueString()),
-			ServiceName: types.StringValue(updatedState.ServiceName.ValueString()),
-			PlanName:    types.StringValue(updatedState.PlanName.ValueString()),
-		}
-
-		diags = resp.Identity.Set(ctx, identity)
-		resp.Diagnostics.Append(diags...)
+	identity := DirectoryEntitlementResourceIdentityModel{
+		DirectoryId: types.StringValue(state.DirectoryId.ValueString()),
+		ServiceName: types.StringValue(updatedState.ServiceName.ValueString()),
+		PlanName:    types.StringValue(updatedState.PlanName.ValueString()),
 	}
+
+	diags = resp.Identity.Set(ctx, identity)
+	resp.Diagnostics.Append(diags...)
 }
 
 func (rs *directoryEntitlementResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -238,6 +233,35 @@ func (rs *directoryEntitlementResource) createOrUpdate(ctx context.Context, requ
 	responseDiagnostics.Append(diags...)
 	if responseDiagnostics.HasError() {
 		return
+	}
+
+	// Pre-flight: if amount is set but category is unknown (create path), look up the plan
+	// category before making any assignment call. On update the category is already known
+	// from state, so we check it directly. This prevents sending amount to a non-quota plan
+	// and waiting 10 minutes for a timeout instead of a clear error.
+	if !plan.Amount.IsNull() && plan.Amount.ValueInt64() > 0 {
+		category := plan.Category.ValueString()
+		if category == "" {
+			// create path: category not yet known, fetch it
+			entitlement, _, lookupErr := rs.cli.Accounts.Entitlement.GetEntitledByDirectory(
+				ctx,
+				plan.DirectoryId.ValueString(),
+				plan.ServiceName.ValueString(),
+				plan.PlanName.ValueString(),
+				plan.PlanUniqueIdentifier.ValueString(),
+			)
+			if lookupErr == nil && entitlement != nil {
+				category = entitlement.Plan.Category
+			}
+		}
+		if category != "" && !isTransferAmountRequired(category) {
+			responseDiagnostics.AddError(
+				fmt.Sprintf("API Error %s Resource Entitlement (Directory)", action),
+				fmt.Sprintf("The 'amount' attribute is not supported for service '%s' plan '%s' (category: %s). Remove the 'amount' attribute from your configuration.",
+					plan.ServiceName.ValueString(), plan.PlanName.ValueString(), category),
+			)
+			return
+		}
 	}
 
 	var err error
