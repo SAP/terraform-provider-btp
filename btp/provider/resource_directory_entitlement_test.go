@@ -358,6 +358,53 @@ func TestResourceDirectoryEntitlement(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - amount set on elastic service (create)", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.error_amount_on_elastic_service")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					// hana-cloud/hana is ELASTIC_SERVICE — amount is not supported.
+					// plan_unique_identifier is required here because the environment has
+					// duplicate plans for hana-cloud/hana; without it GetEntitledByDirectory
+					// returns nil and the pre-flight check cannot determine the category.
+					Config:      hclProviderFor(user) + hclResourceDirectoryEntitlementWithPlanUniqueIdentifier("uut", "integration-test-dir-se-static", "hana-cloud", "hana", "hana-cloud-hana", "1"),
+					ExpectError: regexp.MustCompile(`The 'amount' attribute is not supported for service 'hana-cloud' plan 'hana'|setting a quota is not`),
+				},
+			},
+		})
+	})
+
+	t.Run("error path - amount set on elastic service (update)", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/resource_directory_entitlement.error_amount_on_elastic_service_update")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					// Step 1: create without amount — succeeds, category = ELASTIC_SERVICE stored in state
+					Config: hclProviderFor(user) + hclResourceDirectoryEntitlementPlanUniqueIdentifierWithAmount("uut", "integration-test-dir-se-static", "hana-cloud", "hana", "hana-cloud-hana"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "service_name", "hana-cloud"),
+						resource.TestCheckResourceAttr("btp_directory_entitlement.uut", "category", "ELASTIC_SERVICE"),
+					),
+				},
+				{
+					// Step 2: add amount=1 — category known from state as ELASTIC_SERVICE, should fail immediately
+					Config:      hclProviderFor(user) + hclResourceDirectoryEntitlementWithAmountByDirectory("uut", "integration-test-dir-se-static", "hana-cloud", "hana", "1"),
+					ExpectError: regexp.MustCompile(`The 'amount' attribute is not supported for service 'hana-cloud' plan 'hana'`),
+				},
+			},
+		})
+	})
 }
 
 func hclResourceDirectoryEntitlementWithAmountByDirectory(resourceName string, directoryName string, serviceName string, planName string, amount string) string {
