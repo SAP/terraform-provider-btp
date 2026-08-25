@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strings"
 	"time"
 
@@ -20,6 +21,21 @@ func originMatches(apiOrigin, stateOrigin string) bool {
 	}
 	return (stateOrigin == "ldap" && apiOrigin == "sap.default") ||
 		(stateOrigin == "sap.default" && apiOrigin == "ldap")
+}
+
+// samlOriginMatches extends originMatches for SAML attribute assignments.
+// For custom IAS tenants the idpDisplayName may differ from the origin key, so as a
+// fallback we check whether the origin key is the first hostname label of the entity ID
+// URL (e.g. origin "myidp" matches samlEntityId "https://myidp.accounts400.ondemand.com").
+func samlOriginMatches(apiOrigin, samlEntityId, stateOrigin string) bool {
+	if originMatches(apiOrigin, stateOrigin) {
+		return true
+	}
+	u, err := url.Parse(samlEntityId)
+	if err != nil {
+		return false
+	}
+	return strings.HasPrefix(strings.ToLower(u.Hostname()), strings.ToLower(stateOrigin)+".")
 }
 
 func stringNullIfEmpty(val string) types.String {
