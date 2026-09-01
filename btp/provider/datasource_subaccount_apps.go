@@ -175,11 +175,11 @@ func (ds *subaccountAppsDataSource) Read(ctx context.Context, req datasource.Rea
 	data.Id = data.SubaccountId
 	data.Values = []subaccountAppsValue{}
 	for _, app := range cliRes {
-		appVal := subaccountAppsValue{}
+		appVal := subaccountAppsValue{
 
-		appVal.Id = types.StringValue(app.Appid)
+			Id: types.StringValue(app.Appid),
 
-		appVal.Description = types.StringValue(app.Description)
+			Description: types.StringValue(app.Description)}
 
 		if app.MasterAppId == nil {
 			appVal.MasterAppId = types.StringNull()
