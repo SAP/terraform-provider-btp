@@ -51,7 +51,7 @@ func TestActionRestoreSubaccount(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderFor(user) + hclActionRestoreSubaccount("integration-test-services-static"),
-					ExpectError: regexp.MustCompile(`No pending deletion: The subaccount with ID`),
+					ExpectError: regexp.MustCompile(`The subaccount with ID 59cd458e-e66e-4b60-b6d8-8f219379f9a5 is not restorable`),
 				},
 			},
 		})
@@ -71,7 +71,7 @@ func TestActionRestoreSubaccount(t *testing.T) {
 			Steps: []resource.TestStep{
 				{
 					Config:      hclProviderFor(user) + hclActionRestoreNonExistingSubaccount(),
-					ExpectError: regexp.MustCompile(`API Error Reading Subaccount:`),
+					ExpectError: regexp.MustCompile(`Subaccount 00000000-0000-0000-0000-000000000000 not found`),
 				},
 			},
 		})
