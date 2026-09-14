@@ -88,7 +88,7 @@ resource "btp_subaccount_destination" "destination-with-additional-configuration
   description    = "resource"
   subaccount_id  = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   additional_configuration = jsonencode({
-    clientID            = "<clientid>"
+    clientId            = "<clientid>"
     clientSecret        = "<clientsecret>"
     tokenServiceURL     = "https://tokenurl"
     tokenServiceURLType = "Dedicated"
