@@ -51,9 +51,9 @@ type TrustConfigurationCreateInput struct {
 	Description           *string `btpcli:"description"`
 	Origin                *string `btpcli:"origin"`
 	Domain                *string `btpcli:"domain"`
-	LinkText              *string `btpcli:"linkText"`    // subaccount only
-	AvailableForUserLogon *bool   `btpcli:"userLogon"`   // subaccount only
-	AutoCreateShadowUsers *bool   `btpcli:"shadowUsers"` // subaccount only
+	LinkText              *string `btpcli:"linkText"`  // subaccount only
+	AvailableForUserLogon *bool   `btpcli:"userLogon"` // subaccount only
+	AutoCreateShadowUsers *bool   `btpcli:"shadowUsers"`
 }
 
 func (f *securityTrustFacade) CreateByGlobalAccount(ctx context.Context, args TrustConfigurationCreateInput) (xsuaa_trust.ModifyTrustConfigurationResponseObject, CommandResponse, error) {

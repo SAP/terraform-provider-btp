@@ -138,6 +138,14 @@ __Further documentation:__
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"auto_create_shadow_users": schema.BoolAttribute{
+				MarkdownDescription: "Indicates whether shadow users are automatically created.",
+				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 		},
 	}
 }
@@ -229,6 +237,29 @@ func (rs *globalaccountTrustConfigurationResource) Create(ctx context.Context, r
 		return
 	}
 
+	// AutoCreateShadowUsers cannot be set via the create request,
+	// so update the trust configuration after creation.
+	if !plan.AutoCreateShadowUsers.IsNull() && !plan.AutoCreateShadowUsers.IsUnknown() {
+		autoCreateShadowUsers := plan.AutoCreateShadowUsers.ValueBool()
+
+		cliUpdateReq := btpcli.TrustConfigurationUpdateInput{
+			OriginKey:             createRes.OriginKey,
+			AutoCreateShadowUsers: &autoCreateShadowUsers,
+		}
+
+		_, _, err = rs.cli.Security.Trust.UpdateByGlobalAccount(
+			ctx,
+			cliUpdateReq,
+		)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"API Error Updating Resource Trust Configuration after Creation (Global Account)",
+				fmt.Sprintf("%s", err),
+			)
+			return
+		}
+	}
+
 	getRes, _, err := rs.cli.Security.Trust.GetByGlobalAccount(ctx, createRes.OriginKey)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Resource Trust Configuration after Creation (Global Account)", fmt.Sprintf("%s", err))
@@ -274,6 +305,11 @@ func (rs *globalaccountTrustConfigurationResource) Update(ctx context.Context, r
 	if !plan.Domain.IsUnknown() {
 		domain := plan.Domain.ValueString()
 		cliUpdateReq.Domain = &domain
+	}
+
+	if !plan.AutoCreateShadowUsers.IsUnknown() {
+		autoCreateShadowUsers := plan.AutoCreateShadowUsers.ValueBool()
+		cliUpdateReq.AutoCreateShadowUsers = &autoCreateShadowUsers
 	}
 
 	updateRes, _, err := rs.cli.Security.Trust.UpdateByGlobalAccount(ctx, cliUpdateReq)

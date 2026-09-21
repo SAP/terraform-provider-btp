@@ -36,6 +36,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "protocol", "OpenID Connect"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "status", "active"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "read_only", "false"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "auto_create_shadow_users", "true"),
 					),
 				},
 				{
@@ -51,6 +52,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "protocol", "OpenID Connect"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "status", "active"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "read_only", "false"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "auto_create_shadow_users", "true"),
 					),
 				},
 				{
@@ -83,6 +85,7 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "protocol", "OpenID Connect"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "status", "active"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "read_only", "false"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "auto_create_shadow_users", "true"),
 					),
 					ConfigStateChecks: []statecheck.StateCheck{
 						statecheck.ExpectIdentity(
@@ -112,18 +115,19 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationComplete("uut", testIdp, testIdp, "Custom platform IAS tenant", "btpterraform-platform", "Description for "+testIdp),
+					Config: hclProviderFor(user) + hclResourceGlobalaccountTrustConfigurationComplete("uut", testIdp, testIdp, "Custom Platform Identity Provider", "btpterraform-platform", "Custom Platform Identity Provider"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", testIdp),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", testIdp),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "name", "Custom platform IAS tenant"),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Description for "+testIdp),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "name", "Custom Platform Identity Provider"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Custom Platform Identity Provider"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "origin", "btpterraform-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "id", "btpterraform-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "type", "Platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "protocol", "OpenID Connect"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "status", "active"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "read_only", "false"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "auto_create_shadow_users", "true"),
 					),
 				},
 				{
@@ -131,14 +135,15 @@ func TestResourceGlobalaccountTrustConfiguration(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "identity_provider", testIdp),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "domain", testIdp),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "name", "Custom platform IAS tenant"),
-						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Description for "+testIdp),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "name", "Custom Platform Identity Provider"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "description", "Custom Platform Identity Provider"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "origin", "btpterraform-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "id", "btpterraform-platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "type", "Platform"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "protocol", "OpenID Connect"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "status", "active"),
 						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "read_only", "false"),
+						resource.TestCheckResourceAttr("btp_globalaccount_trust_configuration.uut", "auto_create_shadow_users", "true"),
 					),
 				},
 				{
