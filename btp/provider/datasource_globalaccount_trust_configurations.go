@@ -94,6 +94,10 @@ __Further documentation:__
 							MarkdownDescription: "Shows whether the trust configuration can be modified.",
 							Computed:            true,
 						},
+						"auto_create_shadow_users": schema.BoolAttribute{
+							MarkdownDescription: "Indicates whether shadow users are automatically created.",
+							Computed:            true,
+						},
 					},
 				},
 				MarkdownDescription: "The trust configurations associated with the global account.",
