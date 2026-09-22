@@ -545,6 +545,7 @@ func (p *btpcliProvider) Actions(_ context.Context) []func() action.Action {
 	return []func() action.Action{
 		NewRestoreSubaccountAction,
 		NewAddMeAsSubaccountAdminAction,
+		NewUpdateGlobalAccountAction,
 	}
 }
 
