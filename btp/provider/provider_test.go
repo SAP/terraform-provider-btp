@@ -824,6 +824,7 @@ func TestProvider_HasActions(t *testing.T) {
 	expectedActions := []string{
 		"btp_restore_subaccount",
 		"btp_add_me_as_subaccount_admin",
+		"btp_update_global_account",
 	}
 
 	ctx := context.Background()

@@ -51,6 +51,7 @@ data "btp_globalaccount" "this" {}
 - `crm_customer_id` (String) The ID of the customer as registered in the CRM system.
 - `crm_tenant_id` (String) The ID of the customer tenant as registered in the CRM system.
 - `description` (String) The description of the global account.
+- `enable_subaccount_force_deletion` (Boolean) Shows whether the force deletion of subaccounts is enabled for the global account.
 - `expiry_date` (String) The planned date that the global account expires. This is the same date as the Contract End Date, unless a manual adjustment has been made to the actual expiration date of the global account. Typically, this property is automatically populated only when a formal termination order is received from the CRM system. From a customer perspective, this date marks the start of the grace period, which is typically 30 days before the actual deletion of the account.
 - `geo_access` (String) The geographic locations from where the global account can be accessed. Possible values are: 
 

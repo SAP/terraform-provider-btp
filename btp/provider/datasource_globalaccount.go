@@ -17,27 +17,28 @@ func newGlobalaccountDataSource() datasource.DataSource {
 
 type globalaccountDataSourceConfig struct {
 	/* OUTPUT */
-	ID               types.String `tfsdk:"id"`
-	CommercialModel  types.String `tfsdk:"commercial_model"`
-	ConsumptionBased types.Bool   `tfsdk:"consumption_based"`
-	ContractStatus   types.String `tfsdk:"contract_status"`
-	CostObjectId     types.String `tfsdk:"costobject_id"`
-	CostObjectType   types.String `tfsdk:"costobject_type"`
-	CreatedDate      types.String `tfsdk:"created_date"`
-	CrmCustomerId    types.String `tfsdk:"crm_customer_id"`
-	CrmTenantId      types.String `tfsdk:"crm_tenant_id"`
-	Description      types.String `tfsdk:"description"`
-	DisplayName      types.String `tfsdk:"name"`
-	ExpiryDate       types.String `tfsdk:"expiry_date"`
-	GeoAccess        types.String `tfsdk:"geo_access"`
-	LicenseType      types.String `tfsdk:"license_type"`
-	LastModified     types.String `tfsdk:"last_modified"`
-	State            types.String `tfsdk:"state"`
-	Origin           types.String `tfsdk:"origin"`
-	RenewalDate      types.String `tfsdk:"renewal_date"`
-	ServiceId        types.String `tfsdk:"service_id"`
-	Subdomain        types.String `tfsdk:"subdomain"`
-	Usage            types.String `tfsdk:"usage"`
+	ID                            types.String `tfsdk:"id"`
+	CommercialModel               types.String `tfsdk:"commercial_model"`
+	ConsumptionBased              types.Bool   `tfsdk:"consumption_based"`
+	ContractStatus                types.String `tfsdk:"contract_status"`
+	CostObjectId                  types.String `tfsdk:"costobject_id"`
+	CostObjectType                types.String `tfsdk:"costobject_type"`
+	CreatedDate                   types.String `tfsdk:"created_date"`
+	CrmCustomerId                 types.String `tfsdk:"crm_customer_id"`
+	CrmTenantId                   types.String `tfsdk:"crm_tenant_id"`
+	Description                   types.String `tfsdk:"description"`
+	DisplayName                   types.String `tfsdk:"name"`
+	EnableSubaccountForceDeletion types.Bool   `tfsdk:"enable_subaccount_force_deletion"`
+	ExpiryDate                    types.String `tfsdk:"expiry_date"`
+	GeoAccess                     types.String `tfsdk:"geo_access"`
+	LicenseType                   types.String `tfsdk:"license_type"`
+	LastModified                  types.String `tfsdk:"last_modified"`
+	State                         types.String `tfsdk:"state"`
+	Origin                        types.String `tfsdk:"origin"`
+	RenewalDate                   types.String `tfsdk:"renewal_date"`
+	ServiceId                     types.String `tfsdk:"service_id"`
+	Subdomain                     types.String `tfsdk:"subdomain"`
+	Usage                         types.String `tfsdk:"usage"`
 }
 
 type globalaccountDataSource struct {
@@ -114,6 +115,10 @@ __Further documentation:__
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "The description of the global account.",
+				Computed:            true,
+			},
+			"enable_subaccount_force_deletion": schema.BoolAttribute{
+				MarkdownDescription: "Shows whether the force deletion of subaccounts is enabled for the global account.",
 				Computed:            true,
 			},
 			"geo_access": schema.StringAttribute{
@@ -233,6 +238,7 @@ func (ds *globalaccountDataSource) Read(ctx context.Context, req datasource.Read
 
 	data.Description = types.StringValue(cliRes.Description)
 	data.DisplayName = types.StringValue(cliRes.DisplayName)
+	data.EnableSubaccountForceDeletion = types.BoolValue(cliRes.EnableSubaccountForceDeletion)
 	data.ExpiryDate = timeToValue(cliRes.ExpiryDate.Time())
 	data.GeoAccess = types.StringValue(cliRes.GeoAccess)
 	data.LicenseType = types.StringValue(cliRes.LicenseType)
