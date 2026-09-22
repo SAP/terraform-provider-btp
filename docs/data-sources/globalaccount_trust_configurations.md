@@ -38,6 +38,7 @@ data "btp_globalaccount_trust_configurations" "all" {}
 
 Read-Only:
 
+- `auto_create_shadow_users` (Boolean) Indicates whether shadow users are automatically created.
 - `description` (String) The description of the trust configuration.
 - `domain` (String) The tenant's domain which should be used for user logon.
 - `id` (String, Deprecated) The origin of the identity provider.

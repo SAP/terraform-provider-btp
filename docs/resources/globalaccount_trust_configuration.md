@@ -45,6 +45,7 @@ resource "btp_globalaccount_trust_configuration" "fully_customized" {
 
 ### Optional
 
+- `auto_create_shadow_users` (Boolean) Indicates whether shadow users are automatically created.
 - `description` (String) Description of the trust configuration.
 - `domain` (String) The tenant's domain which should be used for user logon.
 - `name` (String) The display name of the trust configuration.
