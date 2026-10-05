@@ -213,11 +213,12 @@ To make the transition to the new setup we need to do the following changes:
 
 ## Restrictions
 
-### Import of a service instance with parameters
+### Import of a service instance
 
-The import of service instances that can be configured via parameters only works if the corresponding service offering supports the retrieval of these parameters, which means that the `instances_retrievable` parameter of the service offering must be set to `true`.
+- **Service instances without parameters:** Importing a service instance that does not take custom configuration parameters populates the standard metadata attributes (such as `name`, `subaccount_id`, `service_offering_name`, and `serviceplan_name`) directly into state.
+- **Service instances with parameters:** The import of service instances configured via parameters only works if the corresponding service offering supports parameter retrieval (`instances_retrievable` set to `true`). If parameters are not retrievable from the backend API, ensure you declare `parameters` in your resource block matching the existing state to prevent unintended configuration drift during `terraform plan`.
 
-You can check this setting via the following data source:
+You can check whether a service offering supports retrieving instances via the following data source:
 
 ```terraform
 data "btp_subaccount_service_offering" "by_name" {
@@ -225,6 +226,14 @@ data "btp_subaccount_service_offering" "by_name" {
   name          = <name of the service offering>
 }
 ```
+
+### Timeouts during import
+
+The `timeouts` block (e.g. `create`, `update`, `delete`) is client-side configuration and is not stored on the remote BTP backend. When importing an existing service instance, Terraform will apply the default timeouts unless custom values are explicitly specified in the resource definition.
+
+### Service instances that do not allow in-place updates
+
+Certain BTP service offerings or plans do not support in-place modifications (such as updating parameters or changing plans after creation). When importing such instances, ensure that all attribute values declared in your configuration (e.g., `parameters`, `serviceplan_name`) strictly match the live backend settings; otherwise, Terraform will attempt a destructive replace (destroy and recreate).
 
 ### Generation of resource configuration
 
