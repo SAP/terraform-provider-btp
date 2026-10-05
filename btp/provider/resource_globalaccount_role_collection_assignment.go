@@ -3,10 +3,12 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -130,6 +132,40 @@ You must be assigned to the admin role of the global account.`,
 	}
 }
 
+type globalaccountRoleCollectionAssignmentIdentityModel struct {
+	RoleCollectionName types.String `tfsdk:"role_collection_name"`
+	Username           types.String `tfsdk:"user_name"`
+	Groupname          types.String `tfsdk:"group_name"`
+	AttributeName      types.String `tfsdk:"attribute_name"`
+	AttributeValue     types.String `tfsdk:"attribute_value"`
+	Origin             types.String `tfsdk:"origin"`
+}
+
+func (rs *globalaccountRoleCollectionAssignmentResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = identityschema.Schema{
+		Attributes: map[string]identityschema.Attribute{
+			"role_collection_name": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+			"user_name": identityschema.StringAttribute{
+				OptionalForImport: true,
+			},
+			"group_name": identityschema.StringAttribute{
+				OptionalForImport: true,
+			},
+			"attribute_name": identityschema.StringAttribute{
+				OptionalForImport: true,
+			},
+			"attribute_value": identityschema.StringAttribute{
+				OptionalForImport: true,
+			},
+			"origin": identityschema.StringAttribute{
+				RequiredForImport: true,
+			},
+		},
+	}
+}
+
 func (rs *globalaccountRoleCollectionAssignmentResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state globalaccountRoleCollectionAssignmentType
 
@@ -147,7 +183,16 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Read(ctx context.Contex
 		}
 		for _, u := range users {
 			if (u.Username == state.Username.ValueString() || u.Email == state.Username.ValueString()) && originMatches(u.Origin, state.Origin.ValueString()) {
+				if state.Id.IsNull() || state.Id.IsUnknown() {
+					state.Id = types.StringValue(fmt.Sprintf("%s,%s", state.RoleCollectionName.ValueString(), state.Username.ValueString()))
+				}
 				diags = resp.State.Set(ctx, &state)
+				resp.Diagnostics.Append(diags...)
+				diags = resp.Identity.Set(ctx, globalaccountRoleCollectionAssignmentIdentityModel{
+					RoleCollectionName: state.RoleCollectionName,
+					Username:           state.Username,
+					Origin:             state.Origin,
+				})
 				resp.Diagnostics.Append(diags...)
 				return
 			}
@@ -165,13 +210,32 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Read(ctx context.Contex
 	for _, am := range cliRes.SamlAttributeAssignment {
 		if !state.Groupname.IsNull() {
 			if am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) {
+				if state.Id.IsNull() || state.Id.IsUnknown() {
+					state.Id = types.StringValue(fmt.Sprintf("%s,group:%s", state.RoleCollectionName.ValueString(), state.Groupname.ValueString()))
+				}
 				diags = resp.State.Set(ctx, &state)
+				resp.Diagnostics.Append(diags...)
+				diags = resp.Identity.Set(ctx, globalaccountRoleCollectionAssignmentIdentityModel{
+					RoleCollectionName: state.RoleCollectionName,
+					Groupname:          state.Groupname,
+					Origin:             state.Origin,
+				})
 				resp.Diagnostics.Append(diags...)
 				return
 			}
 		} else {
 			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) {
+				if state.Id.IsNull() || state.Id.IsUnknown() {
+					state.Id = types.StringValue(fmt.Sprintf("%s,attribute:%s/%s", state.RoleCollectionName.ValueString(), state.AttributeName.ValueString(), state.AttributeValue.ValueString()))
+				}
 				diags = resp.State.Set(ctx, &state)
+				resp.Diagnostics.Append(diags...)
+				diags = resp.Identity.Set(ctx, globalaccountRoleCollectionAssignmentIdentityModel{
+					RoleCollectionName: state.RoleCollectionName,
+					AttributeName:      state.AttributeName,
+					AttributeValue:     state.AttributeValue,
+					Origin:             state.Origin,
+				})
 				resp.Diagnostics.Append(diags...)
 				return
 			}
@@ -209,6 +273,16 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Create(ctx context.Cont
 	plan.Id = types.StringValue(fmt.Sprintf("%s,%s", plan.RoleCollectionName.ValueString(), plan.Username.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+
+	diags = resp.Identity.Set(ctx, globalaccountRoleCollectionAssignmentIdentityModel{
+		RoleCollectionName: plan.RoleCollectionName,
+		Username:           plan.Username,
+		Groupname:          plan.Groupname,
+		AttributeName:      plan.AttributeName,
+		AttributeValue:     plan.AttributeValue,
+		Origin:             plan.Origin,
+	})
 	resp.Diagnostics.Append(diags...)
 }
 
@@ -257,8 +331,60 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Delete(ctx context.Cont
 }
 
 func (rs *globalaccountRoleCollectionAssignmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resp.Diagnostics.AddError(
-		"Import Not Supported",
-		"Import is not supported for this resource. Use the resource globalaccount_role_collection instead.",
-	)
+	if req.ID != "" {
+		idParts := strings.Split(req.ID, ",")
+
+		if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
+			resp.Diagnostics.AddError(
+				"Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: role_collection_name,user_name,origin (for user assignments) or role_collection_name,group:<group_name>,origin (for group assignments) or role_collection_name,attribute:<attr_name>/<attr_value>,origin (for attribute assignments). Got: %q", req.ID),
+			)
+			return
+		}
+
+		roleCollectionName := idParts[0]
+		assignmentPart := idParts[1]
+		origin := idParts[2]
+
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_collection_name"), roleCollectionName)...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("origin"), origin)...)
+
+		if strings.HasPrefix(assignmentPart, "group:") {
+			groupName := strings.TrimPrefix(assignmentPart, "group:")
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("group_name"), groupName)...)
+		} else if strings.HasPrefix(assignmentPart, "attribute:") {
+			attrPart := strings.TrimPrefix(assignmentPart, "attribute:")
+			slashIdx := strings.Index(attrPart, "/")
+			if slashIdx == -1 {
+				resp.Diagnostics.AddError(
+					"Unexpected Import Identifier",
+					fmt.Sprintf("Expected attribute assignment in format attribute:<attr_name>/<attr_value>. Got: %q", assignmentPart),
+				)
+				return
+			}
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("attribute_name"), attrPart[:slashIdx])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("attribute_value"), attrPart[slashIdx+1:])...)
+		} else {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("user_name"), assignmentPart)...)
+		}
+		return
+	}
+
+	var identityData globalaccountRoleCollectionAssignmentIdentityModel
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &identityData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_collection_name"), identityData.RoleCollectionName)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("origin"), identityData.Origin)...)
+
+	if !identityData.Username.IsNull() && identityData.Username.ValueString() != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("user_name"), identityData.Username)...)
+	} else if !identityData.Groupname.IsNull() && identityData.Groupname.ValueString() != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("group_name"), identityData.Groupname)...)
+	} else {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("attribute_name"), identityData.AttributeName)...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("attribute_value"), identityData.AttributeValue)...)
+	}
 }
