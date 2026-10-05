@@ -213,7 +213,7 @@ To make the transition to the new setup we need to do the following changes:
 
 ## Restrictions
 
-### Import of a service instance without or with parameters
+### Import of a service instance
 
 - **Service instances without parameters:** Importing a service instance that does not take custom configuration parameters populates the standard metadata attributes (such as `name`, `subaccount_id`, `service_offering_name`, and `serviceplan_name`) directly into state.
 - **Service instances with parameters:** The import of service instances configured via parameters only works if the corresponding service offering supports parameter retrieval (`instances_retrievable` set to `true`). If parameters are not retrievable from the backend API, ensure you declare `parameters` in your resource block matching the existing state to prevent unintended configuration drift during `terraform plan`.
