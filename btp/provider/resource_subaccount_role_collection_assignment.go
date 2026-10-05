@@ -210,6 +210,12 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 				return
 			}
 		}
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, subaccountRoleCollectionAssignmentIdentityModel{
+			SubaccountId:       state.SubaccountId,
+			RoleCollectionName: state.RoleCollectionName,
+			Username:           state.Username,
+			Origin:             state.Origin,
+		})...)
 		resp.State.RemoveResource(ctx)
 		return
 	}
@@ -255,6 +261,22 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 				return
 			}
 		}
+	}
+	if !state.Groupname.IsNull() {
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, subaccountRoleCollectionAssignmentIdentityModel{
+			SubaccountId:       state.SubaccountId,
+			RoleCollectionName: state.RoleCollectionName,
+			Groupname:          state.Groupname,
+			Origin:             state.Origin,
+		})...)
+	} else {
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, subaccountRoleCollectionAssignmentIdentityModel{
+			SubaccountId:       state.SubaccountId,
+			RoleCollectionName: state.RoleCollectionName,
+			AttributeName:      state.AttributeName,
+			AttributeValue:     state.AttributeValue,
+			Origin:             state.Origin,
+		})...)
 	}
 	resp.State.RemoveResource(ctx)
 }

@@ -197,6 +197,11 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Read(ctx context.Contex
 				return
 			}
 		}
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, globalaccountRoleCollectionAssignmentIdentityModel{
+			RoleCollectionName: state.RoleCollectionName,
+			Username:           state.Username,
+			Origin:             state.Origin,
+		})...)
 		resp.State.RemoveResource(ctx)
 		return
 	}
@@ -240,6 +245,20 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Read(ctx context.Contex
 				return
 			}
 		}
+	}
+	if !state.Groupname.IsNull() {
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, globalaccountRoleCollectionAssignmentIdentityModel{
+			RoleCollectionName: state.RoleCollectionName,
+			Groupname:          state.Groupname,
+			Origin:             state.Origin,
+		})...)
+	} else {
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, globalaccountRoleCollectionAssignmentIdentityModel{
+			RoleCollectionName: state.RoleCollectionName,
+			AttributeName:      state.AttributeName,
+			AttributeValue:     state.AttributeValue,
+			Origin:             state.Origin,
+		})...)
 	}
 	resp.State.RemoveResource(ctx)
 }

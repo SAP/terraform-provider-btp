@@ -214,6 +214,12 @@ func (rs *directoryRoleCollectionAssignmentResource) Read(ctx context.Context, r
 				return
 			}
 		}
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, directoryRoleCollectionAssignmentIdentityModel{
+			DirectoryId:        state.DirectoryId,
+			RoleCollectionName: state.RoleCollectionName,
+			Username:           state.Username,
+			Origin:             state.Origin,
+		})...)
 		resp.State.RemoveResource(ctx)
 		return
 	}
@@ -259,6 +265,22 @@ func (rs *directoryRoleCollectionAssignmentResource) Read(ctx context.Context, r
 				return
 			}
 		}
+	}
+	if !state.Groupname.IsNull() {
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, directoryRoleCollectionAssignmentIdentityModel{
+			DirectoryId:        state.DirectoryId,
+			RoleCollectionName: state.RoleCollectionName,
+			Groupname:          state.Groupname,
+			Origin:             state.Origin,
+		})...)
+	} else {
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, directoryRoleCollectionAssignmentIdentityModel{
+			DirectoryId:        state.DirectoryId,
+			RoleCollectionName: state.RoleCollectionName,
+			AttributeName:      state.AttributeName,
+			AttributeValue:     state.AttributeValue,
+			Origin:             state.Origin,
+		})...)
 	}
 	resp.State.RemoveResource(ctx)
 }
