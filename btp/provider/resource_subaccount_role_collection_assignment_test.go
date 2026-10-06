@@ -6,6 +6,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 func TestResourceSubaccountRoleCollectionAssignment(t *testing.T) {
@@ -101,7 +105,65 @@ func TestResourceSubaccountRoleCollectionAssignment(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - role collection import fails", func(t *testing.T) {
+	t.Run("happy path - import role collection assignment by user", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment.import")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "jenny.doe@test.com", "sap.custom"),
+				},
+				{
+					ResourceName:            "btp_subaccount_role_collection_assignment.uut",
+					ImportState:             true,
+					ImportStateIdFunc:       getImportStateIdForSubaccountRoleCollectionAssignmentUser("btp_subaccount_role_collection_assignment.uut", "Destination Administrator", "jenny.doe@test.com"),
+					ImportStateVerify:       true,
+					ImportStateVerifyIgnore: []string{"id"},
+				},
+			},
+		})
+	})
+
+	t.Run("happy path - import role collection assignment with resource identity", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment.import_identity")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_12_0),
+			},
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "jenny.doe@test.com", "sap.custom"),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity("btp_subaccount_role_collection_assignment.uut", map[string]knownvalue.Check{
+							"subaccount_id":        knownvalue.NotNull(),
+							"role_collection_name": knownvalue.StringExact("Destination Administrator"),
+							"user_name":            knownvalue.StringExact("jenny.doe@test.com"),
+							"group_name":           knownvalue.Null(),
+							"attribute_name":       knownvalue.Null(),
+							"attribute_value":      knownvalue.Null(),
+							"origin":               knownvalue.StringExact("sap.custom"),
+						}),
+					},
+				},
+				{
+					ResourceName:    "btp_subaccount_role_collection_assignment.uut",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				},
+			},
+		})
+	})
+
+	t.Run("error path - import with invalid identifier", func(t *testing.T) {
 		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_role_collection_assignment.import_error")
 		defer stopQuietly(rec)
@@ -111,13 +173,13 @@ func TestResourceSubaccountRoleCollectionAssignment(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "jenny.doe@test.com"),
+					Config: hclProviderFor(user) + hclResourceRoleCollectionAssignmentWithOriginBySubaccount("uut", "integration-test-acc-static", "Destination Administrator", "jenny.doe@test.com", "sap.custom"),
 				},
 				{
-					ResourceName:      "btp_subaccount_role_collection_assignment.uut",
-					ImportState:       true,
-					ImportStateVerify: true,
-					ExpectError:       regexp.MustCompile(`Import Not Supported`),
+					ResourceName:  "btp_subaccount_role_collection_assignment.uut",
+					ImportState:   true,
+					ImportStateId: "invalid-id",
+					ExpectError:   regexp.MustCompile(`Unexpected Import Identifier`),
 				},
 			},
 		})
@@ -194,4 +256,14 @@ resource "btp_subaccount_role_collection_assignment" "%s"{
 	attribute_name       = "%s"
 	attribute_value      = "%s"
 }`, resourceName, subaccountName, roleCollectionName, origin, attributeName, attributeValue)
+}
+
+func getImportStateIdForSubaccountRoleCollectionAssignmentUser(resourceName, roleCollectionName, userName string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		rs, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return "", fmt.Errorf("not found: %s", resourceName)
+		}
+		return fmt.Sprintf("%s,%s,%s,%s", rs.Primary.Attributes["subaccount_id"], roleCollectionName, userName, rs.Primary.Attributes["origin"]), nil
+	}
 }
