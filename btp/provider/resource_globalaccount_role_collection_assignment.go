@@ -289,7 +289,13 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Create(ctx context.Cont
 	}
 
 	// Setting ID of state - required by hashicorps terraform plugin testing framework for Create. See issue https://github.com/hashicorp/terraform-plugin-testing/issues/84
-	plan.Id = types.StringValue(fmt.Sprintf("%s,%s", plan.RoleCollectionName.ValueString(), plan.Username.ValueString()))
+	if !plan.Groupname.IsNull() {
+		plan.Id = types.StringValue(fmt.Sprintf("%s,group:%s,%s", plan.RoleCollectionName.ValueString(), plan.Groupname.ValueString(), plan.Origin.ValueString()))
+	} else if !plan.AttributeName.IsNull() {
+		plan.Id = types.StringValue(fmt.Sprintf("%s,attribute:%s/%s,%s", plan.RoleCollectionName.ValueString(), plan.AttributeName.ValueString(), plan.AttributeValue.ValueString(), plan.Origin.ValueString()))
+	} else {
+		plan.Id = types.StringValue(fmt.Sprintf("%s,%s,%s", plan.RoleCollectionName.ValueString(), plan.Username.ValueString(), plan.Origin.ValueString()))
+	}
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
