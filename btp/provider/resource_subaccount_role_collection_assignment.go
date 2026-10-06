@@ -196,7 +196,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 		for _, u := range users {
 			if (u.Username == state.Username.ValueString() || u.Email == state.Username.ValueString()) && originMatches(u.Origin, state.Origin.ValueString()) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
-					state.Id = types.StringValue(fmt.Sprintf("%s,%s,%s", state.SubaccountId.ValueString(), state.RoleCollectionName.ValueString(), state.Username.ValueString()))
+					state.Id = types.StringValue(fmt.Sprintf("%s,%s,%s,%s", state.SubaccountId.ValueString(), state.RoleCollectionName.ValueString(), state.Username.ValueString(), state.Origin.ValueString()))
 				}
 				diags = resp.State.Set(ctx, &state)
 				resp.Diagnostics.Append(diags...)
@@ -230,7 +230,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 		if !state.Groupname.IsNull() {
 			if am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
-					state.Id = types.StringValue(fmt.Sprintf("%s,%s,group:%s", state.SubaccountId.ValueString(), state.RoleCollectionName.ValueString(), state.Groupname.ValueString()))
+					state.Id = types.StringValue(fmt.Sprintf("%s,%s,group:%s,%s", state.SubaccountId.ValueString(), state.RoleCollectionName.ValueString(), state.Groupname.ValueString(), state.Origin.ValueString()))
 				}
 				diags = resp.State.Set(ctx, &state)
 				resp.Diagnostics.Append(diags...)
@@ -246,7 +246,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 		} else {
 			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
-					state.Id = types.StringValue(fmt.Sprintf("%s,%s,attribute:%s/%s", state.SubaccountId.ValueString(), state.RoleCollectionName.ValueString(), state.AttributeName.ValueString(), state.AttributeValue.ValueString()))
+					state.Id = types.StringValue(fmt.Sprintf("%s,%s,attribute:%s/%s,%s", state.SubaccountId.ValueString(), state.RoleCollectionName.ValueString(), state.AttributeName.ValueString(), state.AttributeValue.ValueString(), state.Origin.ValueString()))
 				}
 				diags = resp.State.Set(ctx, &state)
 				resp.Diagnostics.Append(diags...)
