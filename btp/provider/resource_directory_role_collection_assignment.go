@@ -393,21 +393,21 @@ func (rs *directoryRoleCollectionAssignmentResource) ImportState(ctx context.Con
 		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("role_collection_name"), roleCollectionName)...)
 		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("origin"), origin)...)
 
-		if strings.HasPrefix(assignmentPart, "group:") {
-			groupName := strings.TrimPrefix(assignmentPart, "group:")
+		if after, ok := strings.CutPrefix(assignmentPart, "group:"); ok {
+			groupName := after
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("group_name"), groupName)...)
-		} else if strings.HasPrefix(assignmentPart, "attribute:") {
-			attrPart := strings.TrimPrefix(assignmentPart, "attribute:")
-			slashIdx := strings.Index(attrPart, "/")
-			if slashIdx == -1 {
+		} else if after, ok := strings.CutPrefix(assignmentPart, "attribute:"); ok {
+			attrPart := after
+			before, after, ok := strings.Cut(attrPart, "/")
+			if !ok {
 				resp.Diagnostics.AddError(
 					"Unexpected Import Identifier",
 					fmt.Sprintf("Expected attribute assignment in format attribute:<attr_name>/<attr_value>. Got: %q", assignmentPart),
 				)
 				return
 			}
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("attribute_name"), attrPart[:slashIdx])...)
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("attribute_value"), attrPart[slashIdx+1:])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("attribute_name"), before)...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("attribute_value"), after)...)
 		} else {
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("user_name"), assignmentPart)...)
 		}
