@@ -226,9 +226,18 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 		return
 	}
 
+	// Resolve the SAML entity ID for the configured origin key via the trust configuration.
+	// The samlAttributeAssignment response only carries idpDisplayName (a human label), which
+	// may differ from the origin key for custom IDPs. Comparing against the entity ID from the
+	// trust config is the reliable fallback for those cases.
+	var expectedSamlEntityId string
+	if trustConfig, _, trustErr := rs.cli.Security.Trust.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Origin.ValueString()); trustErr == nil {
+		expectedSamlEntityId = trustConfig.IdentityProvider
+	}
+
 	for _, am := range cliRes.SamlAttributeAssignment {
 		if !state.Groupname.IsNull() {
-			if am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) {
+			if am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && (samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) || (expectedSamlEntityId != "" && am.SamlEntityId == expectedSamlEntityId)) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
 					state.Id = types.StringValue(fmt.Sprintf("%s,%s,group:%s,%s", state.SubaccountId.ValueString(), state.RoleCollectionName.ValueString(), state.Groupname.ValueString(), state.Origin.ValueString()))
 				}
@@ -244,7 +253,7 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 				return
 			}
 		} else {
-			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) {
+			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && (samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) || (expectedSamlEntityId != "" && am.SamlEntityId == expectedSamlEntityId)) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
 					state.Id = types.StringValue(fmt.Sprintf("%s,%s,attribute:%s/%s,%s", state.SubaccountId.ValueString(), state.RoleCollectionName.ValueString(), state.AttributeName.ValueString(), state.AttributeValue.ValueString(), state.Origin.ValueString()))
 				}

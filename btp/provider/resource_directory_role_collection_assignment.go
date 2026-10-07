@@ -230,9 +230,17 @@ func (rs *directoryRoleCollectionAssignmentResource) Read(ctx context.Context, r
 		return
 	}
 
+	// Directories inherit trust configurations from the global account.
+	// Resolve the SAML entity ID for the configured origin key to handle cases where
+	// idpDisplayName differs from the origin key for custom IDPs.
+	var expectedSamlEntityId string
+	if trustConfig, _, trustErr := rs.cli.Security.Trust.GetByGlobalAccount(ctx, state.Origin.ValueString()); trustErr == nil {
+		expectedSamlEntityId = trustConfig.IdentityProvider
+	}
+
 	for _, am := range cliRes.SamlAttributeAssignment {
 		if !state.Groupname.IsNull() {
-			if am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) {
+			if am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && (samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) || (expectedSamlEntityId != "" && am.SamlEntityId == expectedSamlEntityId)) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
 					state.Id = types.StringValue(fmt.Sprintf("%s,%s,group:%s,%s", state.DirectoryId.ValueString(), state.RoleCollectionName.ValueString(), state.Groupname.ValueString(), state.Origin.ValueString()))
 				}
@@ -248,7 +256,7 @@ func (rs *directoryRoleCollectionAssignmentResource) Read(ctx context.Context, r
 				return
 			}
 		} else {
-			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) {
+			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && (samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) || (expectedSamlEntityId != "" && am.SamlEntityId == expectedSamlEntityId)) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
 					state.Id = types.StringValue(fmt.Sprintf("%s,%s,attribute:%s/%s,%s", state.DirectoryId.ValueString(), state.RoleCollectionName.ValueString(), state.AttributeName.ValueString(), state.AttributeValue.ValueString(), state.Origin.ValueString()))
 				}
