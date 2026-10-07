@@ -163,6 +163,11 @@ func determineParentIdByFeature(cli *btpcli.ClientFacade, ctx context.Context, p
 		return parentIdToVerify, false, nil
 	}
 
+	//Before traversing up the hierarchy, we check if the parent ID is set - If not soemthing is wrong with the directory data
+	if dataDirectory.ParentGUID == "" {
+		return "", false, fmt.Errorf("the parent ID for %s is not set", parentIdToVerify)
+	}
+
 	//The parent does not have the required feature, so we must traverse up the hierarchy to find the correct parent
 	return determineParentIdByFeature(cli, ctx, dataDirectory.ParentGUID, featureType, globalAccountGUID)
 }
@@ -293,7 +298,8 @@ func determineParentIdForAuthorization(cli *btpcli.ClientFacade, ctx context.Con
 			// However the authorization feature needs to be checked
 			dataDirectory, _, err := cli.Accounts.Directory.Get(ctx, closestEntitlementManagedParentGUID, "")
 			if err != nil {
-				return "", false, fmt.Errorf("failed to get directory data: %w", err)
+				// Fallback, maybe the directoryAdmin parameter bneeds ot be set, but we do not have it, so we try to determine the parent by feature hierarchy.
+				return determineParentIdByFeatureByHierarchy(cli, ctx, parentIdToVerify, AuthorizationFeature)
 			}
 
 			if hasFeature(dataDirectory.DirectoryFeatures, AuthorizationFeature) {
