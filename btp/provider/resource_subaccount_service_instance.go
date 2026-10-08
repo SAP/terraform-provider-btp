@@ -571,26 +571,7 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 		Refresh: func() (any, string, error) {
 			subRes, cmdRes, err := rs.cli.Services.Instance.GetById(ctx, state.SubaccountId.ValueString(), state.Id.ValueString())
 
-			if cmdRes.StatusCode == http.StatusTooManyRequests {
-				// Retry in case of rate limiting
-				return subRes, servicemanager.StateInProgress, nil
-			}
-
-			if cmdRes.StatusCode == http.StatusNotFound {
-				return subRes, "DELETED", nil
-			}
-
-			if err != nil {
-				return subRes, subRes.LastOperation.State, err
-			}
-
-			// No error returned even if operation failed
-			if subRes.LastOperation.State == servicemanager.StateFailed {
-				opsError := extractDetailedError(subRes.LastOperation.Errors, "deletion")
-				return subRes, subRes.LastOperation.State, opsError
-			}
-
-			return subRes, subRes.LastOperation.State, nil
+			return serviceInstanceDeletionState(subRes, cmdRes, err)
 		},
 		Timeout:    deleteTimeout,
 		Delay:      delay,
@@ -603,6 +584,33 @@ func (rs *subaccountServiceInstanceResource) Delete(ctx context.Context, req res
 		resp.Diagnostics.AddError("API Error Deleting Resource Service Instance (Subaccount)", fmt.Sprintf("%s", err))
 		return
 	}
+}
+
+func serviceInstanceDeletionState(subRes servicemanager.ServiceInstanceResponseObject, cmdRes btpcli.CommandResponse, err error) (any, string, error) {
+	if cmdRes.StatusCode == http.StatusTooManyRequests {
+		// Retry in case of rate limiting.
+		return subRes, servicemanager.StateInProgress, nil
+	}
+
+	if cmdRes.StatusCode == http.StatusNotFound {
+		return subRes, "DELETED", nil
+	}
+
+	if err != nil {
+		// A failed read may not contain operation metadata. Preserve the read error.
+		return subRes, "", err
+	}
+
+	if subRes.LastOperation == nil {
+		// The instance still exists. Missing operation metadata does not prove deletion.
+		return subRes, servicemanager.StateInProgress, nil
+	}
+
+	if subRes.LastOperation.State == servicemanager.StateFailed {
+		return subRes, subRes.LastOperation.State, extractDetailedError(subRes.LastOperation.Errors, "deletion")
+	}
+
+	return subRes, subRes.LastOperation.State, nil
 }
 
 func (rs *subaccountServiceInstanceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
