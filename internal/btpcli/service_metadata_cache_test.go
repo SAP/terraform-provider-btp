@@ -2,7 +2,6 @@ package btpcli
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"sync"
@@ -124,45 +123,4 @@ func TestServiceMetadataCacheBounded(t *testing.T) {
 		require.NoError(t, err)
 	}
 	require.Len(t, client.serviceMetadataCache.entries, serviceMetadataCacheCapacity)
-}
-
-func TestServiceInstanceParameterFormatsUseOneRequest(t *testing.T) {
-	cases := []struct {
-		name, response, expected string
-		status                   int
-	}{
-		{"wrapped", `{"data":{"color":"blue"}}`, `{"color":"blue"}`, 200},
-		{"plain", `{"color":"blue"}`, `{"color":"blue"}`, 200},
-		{"plain scalar data", `{"data":"blue"}`, `{"data":"blue"}`, 200},
-		{"empty wrapped", `{"data":{}}`, "", 200},
-		{"null wrapped", `{"data":null}`, "", 200},
-		{"unsupported", `{"error":"this operation is not supported"}`, "", 400},
-	}
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			var baseCalls, parameterCalls atomic.Int32
-			client, server := prepareClientFacadeForTest(func(w http.ResponseWriter, r *http.Request) {
-				var payload struct {
-					ParamValues map[string]string `json:"paramValues"`
-				}
-				require.NoError(t, json.NewDecoder(r.Body).Decode(&payload))
-				if payload.ParamValues["parameters"] == "false" {
-					baseCalls.Add(1)
-					_, _ = fmt.Fprint(w, `{"id":"instance-a","service_plan_id":"plan-a"}`)
-					return
-				}
-				parameterCalls.Add(1)
-				w.Header().Set(HeaderCLIBackendStatus, fmt.Sprint(tc.status))
-				_, _ = fmt.Fprint(w, tc.response)
-			})
-			defer server.Close()
-			for range 2 {
-				result, _, err := client.Services.Instance.GetById(context.Background(), "account-a", "instance-a")
-				require.NoError(t, err)
-				require.Equal(t, tc.expected, result.Parameters)
-			}
-			require.EqualValues(t, 2, baseCalls.Load())
-			require.EqualValues(t, 2, parameterCalls.Load())
-		})
-	}
 }

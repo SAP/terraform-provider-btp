@@ -68,25 +68,23 @@ func (f servicesInstanceFacade) doGet(ctx context.Context, params map[string]str
 	// Execute a call for the parameters. We need two calls because the parameters are not returned by the first call.
 	params["parameters"] = "true"
 
-	// Decode either response shape from the same request. A plain response or
-	// unsupported retrieval must not trigger another identical backend call.
-	parameterResponse, _, parameterErr := doExecute[json.RawMessage](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
-	if parameterErr == nil {
-		var parameters map[string]json.RawMessage
-		if json.Unmarshal(parameterResponse, &parameters) == nil {
-			// Wrapped responses carry a data object. Leave a scalar data key in
-			// plain parameters intact.
-			if data, wrapped := parameters["data"]; wrapped {
-				var nested map[string]json.RawMessage
-				if json.Unmarshal(data, &nested) == nil {
-					parameters = nested
-				}
-			}
-			if len(parameters) != 0 {
-				jsonString, _ := json.Marshal(parameters)
-				sir.Parameters = string(jsonString)
-			}
-		}
+	// In addition the response format might differ depending on the service instance.
+	resData, _, err_param := doExecute[servicemanager.ServiceInstanceParametersData](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+
+	// Case 1 - Parameters are returned as data object
+	if err_param == nil && len(resData.Parameters) != 0 {
+		jsonString, _ := json.Marshal(resData.Parameters)
+		sir.Parameters = string(jsonString)
+		return
+	}
+
+	resPlain, _, err_param := doExecute[servicemanager.ServiceInstanceParametersPlain](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
+
+	// Case 2 - Parameters are returned as plain object
+	if err_param == nil && len(resPlain.Parameters) != 0 {
+		jsonString, _ := json.Marshal(resPlain.Parameters)
+		sir.Parameters = string(jsonString)
+		return
 	}
 
 	// Even if the service instance has parameters, the parameters are not returned by the API due to settings in the service offering
