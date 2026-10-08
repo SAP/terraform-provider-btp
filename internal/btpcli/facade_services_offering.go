@@ -39,14 +39,14 @@ func (f servicesOfferingFacade) List(ctx context.Context, subaccountId string, f
 }
 
 func (f servicesOfferingFacade) GetById(ctx context.Context, subaccountId string, offeringId string) (servicemanager.ServiceOfferingResponseObject, CommandResponse, error) {
-	return doExecute[servicemanager.ServiceOfferingResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+	return doExecuteServiceMetadata[servicemanager.ServiceOfferingResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 		"id":         offeringId,
 	}))
 }
 
 func (f servicesOfferingFacade) GetByName(ctx context.Context, subaccountId string, offeringName string) (servicemanager.ServiceOfferingResponseObject, CommandResponse, error) {
-	return doExecute[servicemanager.ServiceOfferingResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+	return doExecuteServiceMetadata[servicemanager.ServiceOfferingResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
 		"subaccount": subaccountId,
 		"name":       offeringName,
 	}))

@@ -150,8 +150,9 @@ func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg
 	retryClient := NewRetryableHttpClient(retryCfg)
 	retryClient.HTTPClient = client
 	return &v2Client{
-		httpClient: injectBTPCLITransport(retryClient.StandardClient()),
-		serverURL:  serverURL,
+		httpClient:           injectBTPCLITransport(retryClient.StandardClient()),
+		serverURL:            serverURL,
+		serviceMetadataCache: newServiceMetadataCache(DefaultServiceMetadataCacheTTL),
 		newCorrelationID: func() string {
 			val, err := uuid.GenerateUUID()
 			if err != nil {
@@ -181,8 +182,9 @@ const cliTargetProtocolVersion string = "v2.106.1"
 type v2ContextKey string
 
 type v2Client struct {
-	httpClient *http.Client
-	serverURL  *url.URL
+	serviceMetadataCache *serviceMetadataCache
+	httpClient           *http.Client
+	serverURL            *url.URL
 
 	newCorrelationID func() string
 

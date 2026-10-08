@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/action"
@@ -69,6 +70,10 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `The Terraform provider for SAP BTP enables you to automate the provisioning, management, and configuration of resources on [SAP Business Technology Platform](https://account.hana.ondemand.com/). By leveraging this provider, you can simplify and streamline the deployment and maintenance of BTP services and applications.`,
 		Attributes: map[string]schema.Attribute{
+			"service_metadata_cache_ttl": schema.StringAttribute{
+				MarkdownDescription: "Maximum age of cached service plan and offering metadata, as a Go duration (for example `5m` or `30s`). Defaults to `5m`; set `0s` to disable. Cache entries are scoped to the configured client, login session, subaccount and exact lookup, bounded to 1024 entries, and never persisted. Lists, instances, parameters, credentials and errors are not cached. External catalogue changes can take up to this duration to appear in individual lookups. This can also be sourced from `BTP_SERVICE_METADATA_CACHE_TTL`; an explicit attribute takes precedence.",
+				Optional:            true,
+			},
 			"cli_server_url": schema.StringAttribute{
 				MarkdownDescription: "The URL of the BTP CLI server (e.g. `https://cli.btp.cloud.sap`).",
 				Optional:            true, // TODO validate URL
@@ -141,16 +146,17 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 }
 
 type providerData struct {
-	CLIServerURL         types.String `tfsdk:"cli_server_url"`
-	GlobalAccount        types.String `tfsdk:"globalaccount"`
-	Username             types.String `tfsdk:"username"`
-	Password             types.String `tfsdk:"password"`
-	Assertion            types.String `tfsdk:"assertion"`
-	IdToken              types.String `tfsdk:"idtoken"`
-	IdentityProvider     types.String `tfsdk:"idp"`
-	IdentityProviderURL  types.String `tfsdk:"tls_idp_url"`
-	TLSClientKey         types.String `tfsdk:"tls_client_key"`
-	TLSClientCertificate types.String `tfsdk:"tls_client_certificate"`
+	ServiceMetadataCacheTTL types.String `tfsdk:"service_metadata_cache_ttl"`
+	CLIServerURL            types.String `tfsdk:"cli_server_url"`
+	GlobalAccount           types.String `tfsdk:"globalaccount"`
+	Username                types.String `tfsdk:"username"`
+	Password                types.String `tfsdk:"password"`
+	Assertion               types.String `tfsdk:"assertion"`
+	IdToken                 types.String `tfsdk:"idtoken"`
+	IdentityProvider        types.String `tfsdk:"idp"`
+	IdentityProviderURL     types.String `tfsdk:"tls_idp_url"`
+	TLSClientKey            types.String `tfsdk:"tls_client_key"`
+	TLSClientCertificate    types.String `tfsdk:"tls_client_certificate"`
 }
 
 // Metadata returns the provider type name.
@@ -183,6 +189,11 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	client := btpcli.NewClientFacade(btpcli.NewV2ClientWithHttpClient(p.httpClient, u, nil))
+	cacheTTL, ok := resolveServiceMetadataCacheTTL(config.ServiceMetadataCacheTTL, resp)
+	if !ok {
+		return
+	}
+	client.SetServiceMetadataCacheTTL(cacheTTL)
 	btpUserAgent := os.Getenv("BTP_APPEND_USER_AGENT")
 
 	if len(strings.TrimSpace(btpUserAgent)) == 0 {
@@ -727,4 +738,21 @@ func validateX509Flow(userName string, identityProviderUrl string, tlsClientKey 
 				errorMessagePostfixWithoutEnv,
 		)
 	}
+}
+
+func resolveServiceMetadataCacheTTL(value types.String, resp *provider.ConfigureResponse) (time.Duration, bool) {
+	if value.IsUnknown() {
+		resp.Diagnostics.AddWarning("unableToCreateClient", "Cannot use unknown service metadata cache TTL")
+		return 0, false
+	}
+	selected, _ := resolveWithEnv(value, "BTP_SERVICE_METADATA_CACHE_TTL", "service_metadata_cache_ttl", resp)
+	if selected == "" {
+		return btpcli.DefaultServiceMetadataCacheTTL, true
+	}
+	ttl, err := time.ParseDuration(selected)
+	if err != nil || ttl < 0 {
+		resp.Diagnostics.AddError("invalid service metadata cache TTL", "service_metadata_cache_ttl must be a non-negative Go duration, for example 5m or 0s.")
+		return 0, false
+	}
+	return ttl, true
 }

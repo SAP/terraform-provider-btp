@@ -40,6 +40,7 @@ provider "btp" {
 - `idp` (String) The identity provider to be used for authentication (only required for custom idp).
 - `idtoken` (String, Sensitive) A valid id token. To be provided instead of 'username' and 'password'. This can also be sourced from the `BTP_IDTOKEN` environment variable. (SAP-internal usage only)
 - `password` (String, Sensitive) Your password. Note that two-factor authentication is not supported. This can also be sourced from the `BTP_PASSWORD` environment variable.
+- `service_metadata_cache_ttl` (String) Maximum age of cached service plan and offering metadata, as a Go duration (for example `5m` or `30s`). Defaults to `5m`; set `0s` to disable. Cache entries are scoped to the configured client, login session, subaccount and exact lookup, bounded to 1024 entries, and never persisted. Lists, instances, parameters, credentials and errors are not cached. External catalogue changes can take up to this duration to appear in individual lookups. This can also be sourced from `BTP_SERVICE_METADATA_CACHE_TTL`; an explicit attribute takes precedence.
 - `tls_client_certificate` (String) PEM encoded certificate (only required for x509 auth).
 - `tls_client_key` (String) PEM encoded private key (only required for x509 auth).
 - `tls_idp_url` (String) The URL of the identity provider to be used for authentication (only required for x509 auth).
