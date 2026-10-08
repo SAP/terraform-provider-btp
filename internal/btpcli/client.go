@@ -223,7 +223,9 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 	req.Header.Set(HeaderCLIFormat, "json")
 
 	if v2.session != nil {
-		v2.session.Lock()
+		if err := v2.session.LockContext(ctx); err != nil {
+			return nil, err
+		}
 		defer v2.session.Unlock()
 
 		req.Header.Set(HeaderCLISessionId, v2.session.SessionId)
