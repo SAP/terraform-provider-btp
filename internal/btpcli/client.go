@@ -15,6 +15,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpclisession"
@@ -186,7 +187,7 @@ type v2Client struct {
 
 	newCorrelationID func() string
 
-	session   *Session
+	session   atomic.Pointer[Session]
 	UserAgent string
 }
 
@@ -222,12 +223,10 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set(HeaderCLIFormat, "json")
 
-	if session := v2.session; session != nil {
-		snapshot := session.snapshot()
-
-		req.Header.Set(HeaderCLISessionId, snapshot.sessionId)
-		req.Header.Set(HeaderCLISubdomain, snapshot.globalAccountSubdomain)
-		req.Header.Set(HeaderCLICustomIDP, snapshot.identityProvider)
+	if session := v2.session.Load(); session != nil {
+		req.Header.Set(HeaderCLISessionId, session.SessionId)
+		req.Header.Set(HeaderCLISubdomain, session.GlobalAccountSubdomain)
+		req.Header.Set(HeaderCLICustomIDP, session.IdentityProvider)
 	}
 
 	if correlationID := ctx.Value(v2ContextKey(HeaderCorrelationID)); correlationID != nil {
@@ -333,7 +332,7 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 		return nil, err
 	}
 
-	v2.session = &Session{
+	v2.session.Store(&Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.IdentityProvider,
 		LoggedInUser: &v2LoggedInUser{
@@ -341,7 +340,7 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 			Issuer: loginResponse.Issuer,
 		},
 		SessionId: res.Header.Get(HeaderCLISessionId),
-	}
+	})
 
 	return &loginResponse, nil
 }
@@ -369,7 +368,7 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 		return nil, err
 	}
 
-	v2.session = &Session{
+	v2.session.Store(&Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginResponse.Issuer,
 		LoggedInUser: &v2LoggedInUser{
@@ -377,7 +376,7 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 			Issuer: loginResponse.Issuer,
 		},
 		SessionId: res.Header.Get(HeaderCLISessionId),
-	}
+	})
 
 	return &loginResponse, nil
 }
@@ -440,7 +439,7 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 		return nil, err
 	}
 
-	v2.session = &Session{
+	v2.session.Store(&Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.CustomIdp,
 		LoggedInUser: &v2LoggedInUser{
@@ -448,7 +447,7 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 			Issuer: browserLoginPostResponse.Issuer,
 		},
 		SessionId: res.Header.Get(HeaderCLISessionId),
-	}
+	})
 
 	return &browserLoginPostResponse, nil
 }
@@ -551,7 +550,7 @@ func (v2 *v2Client) BtpCliSessionLogin(ctx context.Context, loginReq *BtpCliSess
 		return nil, fmt.Errorf("no active BTP CLI session found (source: %s); please run 'btp login' first", res.Source)
 	}
 
-	v2.session = &Session{
+	v2.session.Store(&Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.IdentityProvider,
 		LoggedInUser: &v2LoggedInUser{
@@ -559,7 +558,7 @@ func (v2 *v2Client) BtpCliSessionLogin(ctx context.Context, loginReq *BtpCliSess
 			Issuer: res.Config.Authentication.Issuer,
 		},
 		SessionId: res.SessionID,
-	}
+	})
 
 	return &LoginResponse{
 		Email:  res.Config.Authentication.Mail,
@@ -659,19 +658,19 @@ func handleSpecialErrors(backendError BtpClientError, plainError error) error {
 }
 
 func (v2 *v2Client) GetGlobalAccountSubdomain() string {
-	session := v2.session
+	session := v2.session.Load()
 	if session == nil {
 		return ""
 	}
 
-	return session.snapshot().globalAccountSubdomain
+	return session.GlobalAccountSubdomain
 }
 
 func (v2 *v2Client) GetLoggedInUser() *v2LoggedInUser {
-	session := v2.session
+	session := v2.session.Load()
 	if session == nil {
 		return nil
 	}
 
-	return session.snapshot().loggedInUser
+	return session.LoggedInUser
 }
