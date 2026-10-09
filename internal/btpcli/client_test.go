@@ -293,7 +293,7 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 
 	t.Run("happy path", func(t *testing.T) {
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-		uut.session = &Session{}
+		uut.session.Store(&Session{})
 		uut.newCorrelationID = func() string {
 			return "fake-correlation-id"
 		}
@@ -310,12 +310,12 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 				Issuer: "accounts.sap.com",
 				Email:  "john.doe@test.com",
 			},
-		}, uut.session)
+		}, uut.session.Load())
 	})
 
 	t.Run("happy path - with custom idp", func(t *testing.T) {
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-		uut.session = &Session{}
+		uut.session.Store(&Session{})
 		uut.newCorrelationID = func() string {
 			return "fake-correlation-id"
 		}
@@ -333,7 +333,7 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 				Issuer: "customidp.accounts.ondemand.com",
 				Email:  "john.doe@test.com",
 			},
-		}, uut.session)
+		}, uut.session.Load())
 	})
 }
 
@@ -464,7 +464,7 @@ func TestV2Client_Execute(t *testing.T) {
 
 		srvUrl, _ := url.Parse(srv.URL)
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-		uut.session = &Session{
+		uut.session.Store(&Session{
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			SessionId:              "session-id",
 			IdentityProvider:       "my.custom.idp",
@@ -472,7 +472,7 @@ func TestV2Client_Execute(t *testing.T) {
 				Email:  "john.doe@int.test",
 				Issuer: "customidp.accounts.ondemand.com",
 			},
-		}
+		})
 
 		cmdRes, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
@@ -490,14 +490,14 @@ func TestV2Client_Execute(t *testing.T) {
 
 		srvUrl, _ := url.Parse(srv.URL)
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-		uut.session = &Session{
+		uut.session.Store(&Session{
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			IdentityProvider:       "my.custom.idp",
 			LoggedInUser: &v2LoggedInUser{
 				Email:  "john.doe@int.test",
 				Issuer: "customidp.accounts.ondemand.com",
 			},
-		}
+		})
 
 		cmdRes, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
@@ -515,14 +515,14 @@ func TestV2Client_Execute(t *testing.T) {
 
 		srvUrl, _ := url.Parse(srv.URL)
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-		uut.session = &Session{
+		uut.session.Store(&Session{
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			IdentityProvider:       "my.custom.idp",
 			LoggedInUser: &v2LoggedInUser{
 				Email:  "john.doe@int.test",
 				Issuer: "customidp.accounts.ondemand.com",
 			},
-		}
+		})
 
 		cmdRes, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
@@ -594,7 +594,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 	srvUrl, _ := url.Parse(srv.URL)
 	uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 	uut.UserAgent = "Terraform/x.x.x terraform-plugin-btp/y.y.y"
-	uut.session = config.initSession
+	uut.session.Store(config.initSession)
 	uut.newCorrelationID = func() string {
 		return "fake-correlation-id"
 	}
@@ -608,7 +608,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 		}
 	}
 
-	assert.Equal(t, config.expectClientSession, uut.session)
+	assert.Equal(t, config.expectClientSession, uut.session.Load())
 }
 
 func assertV2DefaultHeader(t *testing.T, r *http.Request, expectedMethod string) {
@@ -634,7 +634,7 @@ func TestV2Client_GetLoggedInUser(t *testing.T) {
 		}
 
 		uut := NewV2Client(nil)
-		uut.session = &Session{LoggedInUser: testUser}
+		uut.session.Store(&Session{LoggedInUser: testUser})
 
 		assert.Equal(t, testUser, uut.GetLoggedInUser())
 	})
@@ -648,7 +648,7 @@ func TestV2Client_GetGlobalAccountSubdomain(t *testing.T) {
 	})
 	t.Run("someone logged in", func(t *testing.T) {
 		uut := NewV2Client(nil)
-		uut.session = &Session{GlobalAccountSubdomain: "my-subdomain"}
+		uut.session.Store(&Session{GlobalAccountSubdomain: "my-subdomain"})
 
 		assert.Equal(t, "my-subdomain", uut.GetGlobalAccountSubdomain())
 	})
