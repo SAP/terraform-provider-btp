@@ -1,6 +1,7 @@
 package btpcli
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"crypto/rsa"
@@ -11,6 +12,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io"
+	"log"
 	"math/big"
 	"net"
 	"net/http"
@@ -49,6 +51,61 @@ func TestV2Client_New(t *testing.T) {
 		uut := NewV2Client(fakeURL)
 
 		assert.Equal(t, fakeURL, uut.serverURL)
+	})
+}
+
+func TestV2Client_ServerVerboseEnvironment(t *testing.T) {
+	t.Setenv(envBTPServerVerbose, "true")
+
+	fakeURL, _ := url.Parse("https://my.cli.server.local")
+	uut := NewV2Client(fakeURL)
+
+	assert.True(t, uut.serverVerbose)
+}
+
+func TestV2Client_LogServerResponse(t *testing.T) {
+	ctx := context.WithValue(context.Background(), v2ContextKey(HeaderCorrelationID), "correlation-id")
+	response := &http.Response{
+		StatusCode: http.StatusForbidden,
+		Header: http.Header{
+			HeaderCLIBackendStatus: []string{"401"},
+			HeaderCLIServerMessage: []string{"session authorization failed"},
+			HeaderCLISessionId:     []string{"must-not-be-logged"},
+		},
+	}
+
+	t.Run("disabled", func(t *testing.T) {
+		var output bytes.Buffer
+		uut := NewV2Client(nil)
+		uut.serverVerbose = false
+		uut.verboseLogger = log.New(&output, "", 0)
+
+		uut.logServerResponse(ctx, response)
+
+		assert.Empty(t, output.String())
+	})
+
+	t.Run("enabled", func(t *testing.T) {
+		var output bytes.Buffer
+		uut := NewV2Client(nil)
+		uut.serverVerbose = true
+		uut.verboseLogger = log.New(&output, "", 0)
+		uut.sessionEstablishedAt.Store(time.Now().Add(-2 * time.Minute).UnixNano())
+
+		uut.logServerResponse(ctx, response)
+
+		line := strings.TrimSpace(output.String())
+		encodedEvent := strings.TrimPrefix(line, "BTP_SERVER_RESPONSE ")
+		var event serverVerboseEvent
+		assert.NoError(t, json.Unmarshal([]byte(encodedEvent), &event))
+		assert.Equal(t, "correlation-id", event.CorrelationID)
+		assert.Equal(t, http.StatusForbidden, event.OuterHTTPStatus)
+		assert.Equal(t, "401", event.BackendStatus)
+		assert.Equal(t, "session authorization failed", event.ServerMessage)
+		elapsed, err := time.ParseDuration(event.ElapsedSinceLogin)
+		assert.NoError(t, err)
+		assert.InDelta(t, (2 * time.Minute).Seconds(), elapsed.Seconds(), 0.1)
+		assert.NotContains(t, line, "must-not-be-logged")
 	})
 }
 

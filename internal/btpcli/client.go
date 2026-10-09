@@ -8,8 +8,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"os/exec"
 	"path"
 	"runtime"
@@ -24,6 +26,7 @@ import (
 )
 
 const DefaultServerURL string = "https://cli.btp.cloud.sap"
+const envBTPServerVerbose string = "BTP_SERVER_VERBOSE"
 
 // We define an Uber Error type that is used to handle errors from the BTP CLI client.
 // The error structure comprises the possible JSON structure of the error responses
@@ -150,9 +153,12 @@ func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
 func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg *RetryConfig) *v2Client {
 	retryClient := NewRetryableHttpClient(retryCfg)
 	retryClient.HTTPClient = client
+	serverVerbose, _ := strconv.ParseBool(strings.TrimSpace(os.Getenv(envBTPServerVerbose)))
 	return &v2Client{
-		httpClient: injectBTPCLITransport(retryClient.StandardClient()),
-		serverURL:  serverURL,
+		httpClient:    injectBTPCLITransport(retryClient.StandardClient()),
+		serverURL:     serverURL,
+		serverVerbose: serverVerbose,
+		verboseLogger: log.New(os.Stdout, "", 0),
 		newCorrelationID: func() string {
 			val, err := uuid.GenerateUUID()
 			if err != nil {
@@ -187,8 +193,54 @@ type v2Client struct {
 
 	newCorrelationID func() string
 
-	session   atomic.Pointer[Session]
-	UserAgent string
+	session              atomic.Pointer[Session]
+	sessionEstablishedAt atomic.Int64
+	serverVerbose        bool
+	verboseLogger        *log.Logger
+	UserAgent            string
+}
+
+type serverVerboseEvent struct {
+	ElapsedSinceLogin string `json:"elapsed_since_login"`
+	CorrelationID     string `json:"correlation_id"`
+	OuterHTTPStatus   int    `json:"outer_http_status"`
+	BackendStatus     string `json:"x_cpcli_backend_status"`
+	ServerMessage     string `json:"x_cpcli_server_message"`
+}
+
+func (v2 *v2Client) storeSession(session *Session) {
+	v2.sessionEstablishedAt.Store(time.Now().UnixNano())
+	v2.session.Store(session)
+}
+
+func (v2 *v2Client) logServerResponse(ctx context.Context, res *http.Response) {
+	if !v2.serverVerbose || v2.verboseLogger == nil || res == nil {
+		return
+	}
+
+	elapsedSinceLogin := "not-established"
+	if establishedAt := v2.sessionEstablishedAt.Load(); establishedAt > 0 {
+		elapsed := time.Since(time.Unix(0, establishedAt))
+		if elapsed < 0 {
+			elapsed = 0
+		}
+		elapsedSinceLogin = elapsed.Round(time.Millisecond).String()
+	}
+
+	correlationID, _ := ctx.Value(v2ContextKey(HeaderCorrelationID)).(string)
+	event := serverVerboseEvent{
+		ElapsedSinceLogin: elapsedSinceLogin,
+		CorrelationID:     correlationID,
+		OuterHTTPStatus:   res.StatusCode,
+		BackendStatus:     res.Header.Get(HeaderCLIBackendStatus),
+		ServerMessage:     res.Header.Get(HeaderCLIServerMessage),
+	}
+
+	encodedEvent, err := json.Marshal(event)
+	if err != nil {
+		return
+	}
+	v2.verboseLogger.Printf("BTP_SERVER_RESPONSE %s", encodedEvent)
 }
 
 func (v2 *v2Client) initTrace(ctx context.Context) context.Context {
@@ -234,6 +286,7 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 	}
 
 	res, err := v2.httpClient.Do(req)
+	v2.logServerResponse(ctx, res)
 
 	return res, err
 }
@@ -332,7 +385,7 @@ func (v2 *v2Client) Login(ctx context.Context, loginReq *LoginRequest) (*LoginRe
 		return nil, err
 	}
 
-	v2.session.Store(&Session{
+	v2.storeSession(&Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.IdentityProvider,
 		LoggedInUser: &v2LoggedInUser{
@@ -368,7 +421,7 @@ func (v2 *v2Client) IdTokenLogin(ctx context.Context, loginReq *IdTokenLoginRequ
 		return nil, err
 	}
 
-	v2.session.Store(&Session{
+	v2.storeSession(&Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginResponse.Issuer,
 		LoggedInUser: &v2LoggedInUser{
@@ -439,7 +492,7 @@ func (v2 *v2Client) BrowserLogin(ctx context.Context, loginReq *BrowserLoginRequ
 		return nil, err
 	}
 
-	v2.session.Store(&Session{
+	v2.storeSession(&Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.CustomIdp,
 		LoggedInUser: &v2LoggedInUser{
@@ -550,7 +603,7 @@ func (v2 *v2Client) BtpCliSessionLogin(ctx context.Context, loginReq *BtpCliSess
 		return nil, fmt.Errorf("no active BTP CLI session found (source: %s); please run 'btp login' first", res.Source)
 	}
 
-	v2.session.Store(&Session{
+	v2.storeSession(&Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.IdentityProvider,
 		LoggedInUser: &v2LoggedInUser{
