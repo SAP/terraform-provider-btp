@@ -451,8 +451,10 @@ func TestV2Client_Execute(t *testing.T) {
 		assert.Equal(t, 201, res.StatusCode)
 		assert.Equal(t, "backend/mediatype", res.ContentType)
 	})
-	t.Run("custom idp: request header `X-CPCLI-CustomIdp` must be set", func(t *testing.T) {
+	t.Run("session headers must be set", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "session-id", r.Header.Get(HeaderCLISessionId))
+			assert.Equal(t, "globalaccount-subdomain", r.Header.Get(HeaderCLISubdomain))
 			assert.Equal(t, "my.custom.idp", r.Header.Get(HeaderCLICustomIDP))
 			w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 201))
 			w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
@@ -464,6 +466,7 @@ func TestV2Client_Execute(t *testing.T) {
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 		uut.session = &Session{
 			GlobalAccountSubdomain: "globalaccount-subdomain",
+			SessionId:              "session-id",
 			IdentityProvider:       "my.custom.idp",
 			LoggedInUser: &v2LoggedInUser{
 				Email:  "john.doe@int.test",

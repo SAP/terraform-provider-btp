@@ -222,13 +222,12 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set(HeaderCLIFormat, "json")
 
-	if v2.session != nil {
-		v2.session.Lock()
-		defer v2.session.Unlock()
+	if session := v2.session; session != nil {
+		snapshot := session.snapshot()
 
-		req.Header.Set(HeaderCLISessionId, v2.session.SessionId)
-		req.Header.Set(HeaderCLISubdomain, v2.session.GlobalAccountSubdomain)
-		req.Header.Set(HeaderCLICustomIDP, v2.session.IdentityProvider)
+		req.Header.Set(HeaderCLISessionId, snapshot.sessionId)
+		req.Header.Set(HeaderCLISubdomain, snapshot.globalAccountSubdomain)
+		req.Header.Set(HeaderCLICustomIDP, snapshot.identityProvider)
 	}
 
 	if correlationID := ctx.Value(v2ContextKey(HeaderCorrelationID)); correlationID != nil {
@@ -660,17 +659,19 @@ func handleSpecialErrors(backendError BtpClientError, plainError error) error {
 }
 
 func (v2 *v2Client) GetGlobalAccountSubdomain() string {
-	if v2.session == nil {
+	session := v2.session
+	if session == nil {
 		return ""
 	}
 
-	return v2.session.GlobalAccountSubdomain
+	return session.snapshot().globalAccountSubdomain
 }
 
 func (v2 *v2Client) GetLoggedInUser() *v2LoggedInUser {
-	if v2.session == nil {
+	session := v2.session
+	if session == nil {
 		return nil
 	}
 
-	return v2.session.LoggedInUser
+	return session.snapshot().loggedInUser
 }
