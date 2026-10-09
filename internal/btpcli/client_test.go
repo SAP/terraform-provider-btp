@@ -1,7 +1,6 @@
 package btpcli
 
 import (
-	"bytes"
 	"context"
 	"crypto/rand"
 	"crypto/rsa"
@@ -12,7 +11,6 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io"
-	"log"
 	"math/big"
 	"net"
 	"net/http"
@@ -75,29 +73,29 @@ func TestV2Client_LogServerResponse(t *testing.T) {
 	}
 
 	t.Run("disabled", func(t *testing.T) {
-		var output bytes.Buffer
+		called := false
 		uut := NewV2Client(nil)
 		uut.serverVerbose = false
-		uut.verboseLogger = log.New(&output, "", 0)
+		uut.verboseLogger = func(context.Context, serverVerboseEvent) {
+			called = true
+		}
 
 		uut.logServerResponse(ctx, response)
 
-		assert.Empty(t, output.String())
+		assert.False(t, called)
 	})
 
 	t.Run("enabled", func(t *testing.T) {
-		var output bytes.Buffer
+		var event serverVerboseEvent
 		uut := NewV2Client(nil)
 		uut.serverVerbose = true
-		uut.verboseLogger = log.New(&output, "", 0)
+		uut.verboseLogger = func(_ context.Context, received serverVerboseEvent) {
+			event = received
+		}
 		uut.sessionEstablishedAt.Store(time.Now().Add(-2 * time.Minute).UnixNano())
 
 		uut.logServerResponse(ctx, response)
 
-		line := strings.TrimSpace(output.String())
-		encodedEvent := strings.TrimPrefix(line, "BTP_SERVER_RESPONSE ")
-		var event serverVerboseEvent
-		assert.NoError(t, json.Unmarshal([]byte(encodedEvent), &event))
 		assert.Equal(t, "correlation-id", event.CorrelationID)
 		assert.Equal(t, http.StatusForbidden, event.OuterHTTPStatus)
 		assert.Equal(t, "401", event.BackendStatus)
@@ -105,7 +103,6 @@ func TestV2Client_LogServerResponse(t *testing.T) {
 		elapsed, err := time.ParseDuration(event.ElapsedSinceLogin)
 		assert.NoError(t, err)
 		assert.InDelta(t, (2 * time.Minute).Seconds(), elapsed.Seconds(), 0.1)
-		assert.NotContains(t, line, "must-not-be-logged")
 	})
 }
 

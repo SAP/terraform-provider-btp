@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -23,6 +22,7 @@ import (
 	"github.com/SAP/terraform-provider-btp/internal/btpclisession"
 	"github.com/hashicorp/go-retryablehttp"
 	uuid "github.com/hashicorp/go-uuid"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 const DefaultServerURL string = "https://cli.btp.cloud.sap"
@@ -158,7 +158,15 @@ func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg
 		httpClient:    injectBTPCLITransport(retryClient.StandardClient()),
 		serverURL:     serverURL,
 		serverVerbose: serverVerbose,
-		verboseLogger: log.New(os.Stdout, "", 0),
+		verboseLogger: func(ctx context.Context, event serverVerboseEvent) {
+			tflog.Info(ctx, "BTP server response", map[string]any{
+				"elapsed_since_login":    event.ElapsedSinceLogin,
+				"correlation_id":         event.CorrelationID,
+				"outer_http_status":      event.OuterHTTPStatus,
+				"x_cpcli_backend_status": event.BackendStatus,
+				"x_cpcli_server_message": event.ServerMessage,
+			})
+		},
 		newCorrelationID: func() string {
 			val, err := uuid.GenerateUUID()
 			if err != nil {
@@ -196,7 +204,7 @@ type v2Client struct {
 	session              atomic.Pointer[Session]
 	sessionEstablishedAt atomic.Int64
 	serverVerbose        bool
-	verboseLogger        *log.Logger
+	verboseLogger        func(context.Context, serverVerboseEvent)
 	UserAgent            string
 }
 
@@ -236,11 +244,7 @@ func (v2 *v2Client) logServerResponse(ctx context.Context, res *http.Response) {
 		ServerMessage:     res.Header.Get(HeaderCLIServerMessage),
 	}
 
-	encodedEvent, err := json.Marshal(event)
-	if err != nil {
-		return
-	}
-	v2.verboseLogger.Printf("BTP_SERVER_RESPONSE %s", encodedEvent)
+	v2.verboseLogger(ctx, event)
 }
 
 func (v2 *v2Client) initTrace(ctx context.Context) context.Context {
