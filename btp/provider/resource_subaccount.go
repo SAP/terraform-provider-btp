@@ -303,8 +303,8 @@ func (rs *subaccountResource) Create(ctx context.Context, req resource.CreateReq
 		parentID := plan.ParentID.ValueString()
 		args.Directory = parentID
 
-		//Check which parent ID needs to be used for authorization
-		parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, parentID)
+		//Check which parent ID needs to be used for authorization, we cannot provide the closest entitlement managed parent GUID at CREATE
+		parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, parentID, "")
 		if err != nil {
 			resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
 			return
@@ -487,7 +487,9 @@ func (rs *subaccountResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	dataSubaccount, _, _ := rs.cli.Accounts.Subaccount.Get(ctx, state.ID.ValueString())
+
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString(), dataSubaccount.ClosestEntitlementManagedParentGUID)
 	if err != nil {
 		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
 		return

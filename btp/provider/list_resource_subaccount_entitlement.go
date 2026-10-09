@@ -100,7 +100,7 @@ func (r *subaccountEntitlementListResource) List(
 		return
 	}
 
-	parentId, isParentGlobalAccount, err := determineParentIdForEntitlement(r.client, ctx, subaccountData.ParentGUID)
+	parentId, isParentGlobalAccount, err := determineParentIdForEntitlement(r.client, ctx, subaccountData.ParentGUID, subaccountData.ClosestEntitlementManagedParentGUID)
 	if err != nil {
 		var diags diag.Diagnostics
 		diags.AddError(
