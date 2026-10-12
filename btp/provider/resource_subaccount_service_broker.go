@@ -36,6 +36,25 @@ type subaccountServiceBrokerResourceType struct {
 	Username     types.String `tfsdk:"username"`
 	Password     types.String `tfsdk:"password"`
 	//Labels		 types.Map `tfsdk:"labels"` // not implemented because of NGPBUG-397042
+	Cert types.String `tfsdk:"cert"`
+	Key  types.String `tfsdk:"key"`
+
+	/* OUTPUT */
+	Ready        types.Bool   `tfsdk:"ready"`
+	CreatedDate  types.String `tfsdk:"created_date"`
+	LastModified types.String `tfsdk:"last_modified"`
+}
+
+type subaccountServiceBrokerResourceTypev0 struct {
+	/* INPUT */
+	SubaccountId types.String `tfsdk:"subaccount_id"`
+	Id           types.String `tfsdk:"id"`
+	Name         types.String `tfsdk:"name"`
+	Description  types.String `tfsdk:"description"`
+	Url          types.String `tfsdk:"url"`
+	Username     types.String `tfsdk:"username"`
+	Password     types.String `tfsdk:"password"`
+	//Labels		 types.Map `tfsdk:"labels"` // not implemented because of NGPBUG-397042
 	MTLS types.Bool   `tfsdk:"mtls"`
 	Cert types.String `tfsdk:"cert"`
 	Key  types.String `tfsdk:"key"`
@@ -102,7 +121,6 @@ You must be assigned to the admin role of the subaccount.`,
 				Validators: []validator.String{
 					stringvalidator.AlsoRequires(path.MatchRoot("password")),
 					stringvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
-					stringvalidator.AtLeastOneOf(path.MatchRoot("cert"), path.MatchRoot("mtls")),
 				},
 			},
 			"password": schema.StringAttribute{
@@ -114,14 +132,7 @@ You must be assigned to the admin role of the subaccount.`,
 					stringvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
 				},
 			},
-			"mtls": schema.BoolAttribute{
-				MarkdownDescription: "Use Service-Manager-provided mTLS credentials for the broker. When set to true, cert and key must NOT be supplied.",
-				Optional:            true,
-				Validators: []validator.Bool{
-					boolvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
-					boolvalidator.Equals(true),
-				},
-			},
+
 			"cert": schema.StringAttribute{
 				MarkdownDescription: "PEM-encoded client certificate. cert and key must be supplied together.",
 				Optional:            true,
@@ -156,6 +167,7 @@ You must be assigned to the admin role of the subaccount.`,
 				Computed:            true,
 			},
 		},
+		Version: 1,
 	}
 }
 
@@ -197,7 +209,6 @@ func (rs *subaccountServiceBrokerResource) Read(ctx context.Context, req resourc
 	newState.Name = state.Name
 	newState.Username = state.Username
 	newState.Password = state.Password
-	newState.MTLS = state.MTLS
 	newState.Cert = state.Cert
 	newState.Key = state.Key
 
@@ -233,7 +244,6 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 		URL:         plan.Url.ValueString(),
 		User:        plan.Username.ValueString(),
 		Password:    plan.Password.ValueString(),
-		MTLS:        plan.MTLS.ValueBool(),
 		Cert:        plan.Cert.ValueString(),
 		Key:         plan.Key.ValueString(),
 	}
@@ -257,7 +267,6 @@ func (rs *subaccountServiceBrokerResource) Create(ctx context.Context, req resou
 	state.Name = plan.Name
 	state.Username = plan.Username
 	state.Password = plan.Password
-	state.MTLS = plan.MTLS
 	state.Cert = plan.Cert
 	state.Key = plan.Key
 
@@ -298,7 +307,6 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 		URL:         plan.Url.ValueString(),
 		User:        plan.Username.ValueString(),
 		Password:    plan.Password.ValueString(),
-		MTLS:        plan.MTLS.ValueBool(),
 		Cert:        plan.Cert.ValueString(),
 		Key:         plan.Key.ValueString(),
 	}
@@ -322,7 +330,6 @@ func (rs *subaccountServiceBrokerResource) Update(ctx context.Context, req resou
 	newState.Name = plan.Name
 	newState.Username = plan.Username
 	newState.Password = plan.Password
-	newState.MTLS = plan.MTLS
 	newState.Cert = plan.Cert
 	newState.Key = plan.Key
 
@@ -393,7 +400,6 @@ func (rs *subaccountServiceBrokerResource) createStateChange(ctx context.Context
 	state.Name = plan.Name
 	state.Username = plan.Username
 	state.Password = plan.Password
-	state.MTLS = plan.MTLS
 	state.Cert = plan.Cert
 	state.Key = plan.Key
 
@@ -430,5 +436,130 @@ func subaccountServiceBrokerValueFrom(ctx context.Context, broker servicemanager
 		Ready:        types.BoolValue(broker.Ready),
 		CreatedDate:  timeToValue(broker.CreatedAt),
 		LastModified: timeToValue(broker.UpdatedAt),
+	}
+}
+
+func (r *subaccountServiceBrokerResource) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
+	return map[int64]resource.StateUpgrader{
+		0: {
+			PriorSchema: &schema.Schema{
+
+				Attributes: map[string]schema.Attribute{
+					"subaccount_id": schema.StringAttribute{
+						MarkdownDescription: "The ID of the subaccount.",
+						Required:            true,
+					},
+					"id": schema.StringAttribute{
+						MarkdownDescription: "The ID of the service broker.",
+						Computed:            true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.UseStateForUnknown(),
+						},
+					},
+					"name": schema.StringAttribute{
+						MarkdownDescription: "The name of the service broker.",
+						Required:            true,
+						Validators: []validator.String{
+							stringvalidator.LengthAtLeast(1),
+						},
+					},
+					"description": schema.StringAttribute{
+						MarkdownDescription: "The description of the service broker.",
+						Optional:            true,
+						Computed:            true,
+					},
+					"url": schema.StringAttribute{
+						MarkdownDescription: "The URL of the service broker.",
+						Required:            true,
+					},
+					"username": schema.StringAttribute{
+						MarkdownDescription: "The username for basic authentication against the service broker.",
+						Optional:            true,
+						Validators: []validator.String{
+							stringvalidator.AlsoRequires(path.MatchRoot("password")),
+							stringvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
+							stringvalidator.AtLeastOneOf(path.MatchRoot("cert"), path.MatchRoot("mtls")),
+						},
+					},
+					"password": schema.StringAttribute{
+						MarkdownDescription: "The password for basic authentication against the service broker.",
+						Optional:            true,
+						Sensitive:           true,
+						Validators: []validator.String{
+							stringvalidator.AlsoRequires(path.MatchRoot("username")),
+							stringvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
+						},
+					},
+					"mtls": schema.BoolAttribute{
+						MarkdownDescription: "Use Service-Manager-provided mTLS credentials for the broker. When set to true, cert and key must NOT be supplied.",
+						Optional:            true,
+						Validators: []validator.Bool{
+							boolvalidator.ConflictsWith(path.MatchRoot("key"), path.MatchRoot("cert")),
+							boolvalidator.Equals(true),
+						},
+					},
+					"cert": schema.StringAttribute{
+						MarkdownDescription: "PEM-encoded client certificate. cert and key must be supplied together.",
+						Optional:            true,
+						Sensitive:           true,
+						Validators: []validator.String{
+							stringvalidator.AlsoRequires(path.MatchRoot("key")),
+							stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password")),
+						},
+					},
+					"key": schema.StringAttribute{
+						MarkdownDescription: "PEM-encoded private key matching the client certificate. cert and key must be supplied together.",
+						Optional:            true,
+						Sensitive:           true,
+						Validators: []validator.String{
+							stringvalidator.AlsoRequires(path.MatchRoot("cert")),
+							stringvalidator.ConflictsWith(path.MatchRoot("username"), path.MatchRoot("password")),
+						},
+					},
+					"created_date": schema.StringAttribute{
+						MarkdownDescription: "The date and time when the resource was created in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+						Computed:            true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.UseStateForUnknown(),
+						},
+					},
+					"last_modified": schema.StringAttribute{
+						MarkdownDescription: "The date and time when the resource was last modified in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format.",
+						Computed:            true,
+					},
+					"ready": schema.BoolAttribute{
+						MarkdownDescription: "Shows whether the service broker is ready.",
+						Computed:            true,
+					},
+				},
+			},
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				var priorStateData subaccountServiceBrokerResourceTypev0
+
+				resp.Diagnostics.Append(req.State.Get(ctx, &priorStateData)...)
+
+				if resp.Diagnostics.HasError() {
+					return
+				}
+
+				upgradedStateData := subaccountServiceBrokerResourceType{
+					SubaccountId: priorStateData.SubaccountId,
+					Id:           priorStateData.Id,
+					Name:         priorStateData.Name,
+					Description:  priorStateData.Description,
+					Url:          priorStateData.Url,
+					Username:     priorStateData.Username,
+					Password:     priorStateData.Password,
+					Cert:         priorStateData.Cert,
+					Key:          priorStateData.Key,
+					Ready:        priorStateData.Ready,
+					CreatedDate:  priorStateData.CreatedDate,
+					LastModified: priorStateData.LastModified,
+				}
+
+				resp.Diagnostics.Append(resp.State.Set(ctx, upgradedStateData)...)
+
+			},
+		},
 	}
 }
