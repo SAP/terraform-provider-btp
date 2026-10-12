@@ -244,7 +244,6 @@ func TestSubaccountServiceBrokerImportState_WrongFormat(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			req := fwresource.ImportStateRequest{ID: tc.id}
 			resp := &fwresource.ImportStateResponse{}

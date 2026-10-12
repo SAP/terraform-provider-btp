@@ -42,7 +42,6 @@ resource "btp_subaccount_service_broker" "my_broker" {
 - `cert` (String, Sensitive) PEM-encoded client certificate. cert and key must be supplied together.
 - `description` (String) The description of the service broker.
 - `key` (String, Sensitive) PEM-encoded private key matching the client certificate. cert and key must be supplied together.
-- `mtls` (Boolean) Use Service-Manager-provided mTLS credentials for the broker. When set to true, cert and key must NOT be supplied.
 - `password` (String, Sensitive) The password for basic authentication against the service broker.
 - `username` (String) The username for basic authentication against the service broker.
 
