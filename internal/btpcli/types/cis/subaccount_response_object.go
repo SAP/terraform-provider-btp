@@ -49,4 +49,6 @@ type SubaccountResponseObject struct {
 	UsedForProduction string `json:"usedForProduction"`
 	// Added manually due to change of internal API response, not present in swagger spec
 	ContractStatus string `json:"contractStatus,omitempty"`
+	// Added manually due to change of internal API response, not present in swagger spec
+	ClosestEntitlementManagedParentGUID string `json:"closestEntitlementManagedParentGUID,omitempty"`
 }

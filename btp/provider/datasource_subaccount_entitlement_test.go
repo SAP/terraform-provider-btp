@@ -86,7 +86,7 @@ func TestDataSourceSubaccountEntitlement(t *testing.T) {
 			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclProviderFor(user) + hclDatasourceSubaccountEntitlementById("uut", "00000000-0000-0000-0000-000000000001", "invalid-service", "invalid-plan"),
+					Config:      hclProviderFor(user) + hclDatasourceSubaccountEntitlementById("uut", "00000000-0000-0000-0000-000000000000", "invalid-service", "invalid-plan"),
 					ExpectError: regexp.MustCompile(`Error: Failed to get subaccount`),
 				},
 			},

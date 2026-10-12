@@ -142,7 +142,7 @@ func (ds *directoryDataSource) Read(ctx context.Context, req datasource.ReadRequ
 
 	//Check which parent ID needs to be used for authorization
 	var adminDirectoryId string
-	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(ds.cli, ctx, data.ID.ValueString())
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(ds.cli, ctx, data.ID.ValueString(), "")
 	if err != nil {
 		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
 		return

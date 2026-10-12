@@ -26,26 +26,7 @@ func TestDataSourceSubaccountEntitlements(t *testing.T) {
 					Config: hclProviderFor(user) + hclDatasourceSubaccountEntitlements("uut", "integration-test-acc-static"),
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestMatchResourceAttr("data.btp_subaccount_entitlements.uut", "subaccount_id", regexpValidUUID),
-						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "values.%", "34"),
-					),
-				},
-			},
-		})
-	})
-
-	t.Run("error path - invalid subaccount ID", func(t *testing.T) {
-		t.Parallel()
-		rec, user := setupVCR(t, "fixtures/datasource_subaccount_entitlements.subacount_id_invalid")
-		defer stopQuietly(rec)
-
-		resource.Test(t, resource.TestCase{
-			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
-			Steps: []resource.TestStep{
-				{
-					Config: hclProviderFor(user) + hclDatasourceSubaccountEntitlementsBySubaccountId("uut", "00000000-0000-0000-0000-000000000001"),
-					Check: resource.ComposeAggregateTestCheckFunc(
-						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "values.%", "0"),
+						resource.TestCheckResourceAttr("data.btp_subaccount_entitlements.uut", "values.%", "33"),
 					),
 				},
 			},

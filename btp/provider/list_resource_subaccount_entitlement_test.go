@@ -20,7 +20,7 @@ func TestSubaccountEntitlementListResource(t *testing.T) {
 
 	subaccountID := "77395f6a-a601-4c9e-8cd0-c1fcefc7f60f"
 
-	t.Run("happy path", func(t *testing.T) {
+	t.Run("happy path - simple", func(t *testing.T) {
 		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_entitlement")
 		defer stopQuietly(rec)
@@ -46,13 +46,29 @@ func TestSubaccountEntitlementListResource(t *testing.T) {
 						querycheck.ExpectIdentity(
 							"btp_subaccount_entitlement.entitlement_list",
 							map[string]knownvalue.Check{
-								"plan_name":     knownvalue.StringExact("oauth2"),
-								"service_name":  knownvalue.StringExact("cias"),
+								"plan_name":     knownvalue.StringExact("default"),
+								"service_name":  knownvalue.StringExact("auditlog-api"),
 								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
 							},
 						),
 					},
 				},
+			},
+		})
+	})
+
+	t.Run("happy path - with include_resource", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/list_resource_subaccount_entitlement_incl_resource")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_14_0),
+			},
+			Steps: []resource.TestStep{
 				{
 					// List Query with include_resource = true
 					Query: true,
@@ -69,14 +85,14 @@ func TestSubaccountEntitlementListResource(t *testing.T) {
 						querycheck.ExpectResourceKnownValues(
 							"btp_subaccount_entitlement.entitlement_list",
 							queryfilter.ByResourceIdentity(map[string]knownvalue.Check{
-								"plan_name":     knownvalue.StringExact("oauth2"),
-								"service_name":  knownvalue.StringExact("cias"),
+								"plan_name":     knownvalue.StringExact("default"),
+								"service_name":  knownvalue.StringExact("auditlog-api"),
 								"subaccount_id": knownvalue.StringRegexp(regexpValidUUID),
 							}),
 							[]querycheck.KnownValueCheck{
 								{
 									Path:       tfjsonpath.New("id"),
-									KnownValue: knownvalue.StringExact("cias-oauth2"),
+									KnownValue: knownvalue.StringExact("auditlog-api-default"),
 								},
 								{
 									Path:       tfjsonpath.New("category"),
@@ -84,19 +100,19 @@ func TestSubaccountEntitlementListResource(t *testing.T) {
 								},
 								{
 									Path:       tfjsonpath.New("plan_id"),
-									KnownValue: knownvalue.StringExact("cias-oauth2"),
+									KnownValue: knownvalue.StringExact("auditlog-api-default"),
 								},
 								{
 									Path:       tfjsonpath.New("plan_name"),
-									KnownValue: knownvalue.StringExact("oauth2"),
+									KnownValue: knownvalue.StringExact("default"),
 								},
 								{
 									Path:       tfjsonpath.New("plan_unique_identifier"),
-									KnownValue: knownvalue.StringExact("cias-oauth2"),
+									KnownValue: knownvalue.StringExact("auditlog-api-default"),
 								},
 								{
 									Path:       tfjsonpath.New("service_name"),
-									KnownValue: knownvalue.StringExact("cias"),
+									KnownValue: knownvalue.StringExact("auditlog-api"),
 								},
 								{
 									Path:       tfjsonpath.New("subaccount_id"),

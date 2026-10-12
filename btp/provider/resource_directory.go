@@ -202,7 +202,7 @@ func (rs *directoryResource) Read(ctx context.Context, req resource.ReadRequest,
 	}
 
 	var adminDirectoryId string
-	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString())
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(rs.cli, ctx, state.ParentID.ValueString(), "")
 	if err != nil {
 		resp.Diagnostics.AddError("API Error determining parent features for authorization", fmt.Sprintf("%s", err))
 		return
@@ -614,9 +614,8 @@ func (rs *directoryResource) updateDirectory(ctx context.Context, plan directory
 
 func setAdminDirectoryId(cli *btpcli.ClientFacade, ctx context.Context, parentIdToVerify string) (adminDirectoryId string, isParentGlobalaccount bool, err error) {
 
-	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(cli, ctx, parentIdToVerify)
+	parentId, isParentGlobalAccount, err := determineParentIdForAuthorization(cli, ctx, parentIdToVerify, "")
 	if err != nil {
-
 		return "", false, err
 	}
 
