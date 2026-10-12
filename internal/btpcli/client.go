@@ -159,13 +159,17 @@ func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg
 		serverURL:     serverURL,
 		serverVerbose: serverVerbose,
 		verboseLogger: func(ctx context.Context, event serverVerboseEvent) {
-			tflog.Info(ctx, "BTP server response", map[string]any{
+			fields := map[string]any{
 				"elapsed_since_login":    event.ElapsedSinceLogin,
 				"correlation_id":         event.CorrelationID,
 				"outer_http_status":      event.OuterHTTPStatus,
 				"x_cpcli_backend_status": event.BackendStatus,
 				"x_cpcli_server_message": event.ServerMessage,
-			})
+			}
+			if event.ErrorResponseBody != "" {
+				fields["error_response_body"] = event.ErrorResponseBody
+			}
+			tflog.Info(ctx, "BTP server response", fields)
 		},
 		newCorrelationID: func() string {
 			val, err := uuid.GenerateUUID()
@@ -214,6 +218,12 @@ type serverVerboseEvent struct {
 	OuterHTTPStatus   int    `json:"outer_http_status"`
 	BackendStatus     string `json:"x_cpcli_backend_status"`
 	ServerMessage     string `json:"x_cpcli_server_message"`
+	ErrorResponseBody string `json:"error_response_body,omitempty"`
+}
+
+type replayReadCloser struct {
+	io.Reader
+	io.Closer
 }
 
 func (v2 *v2Client) storeSession(session *Session) {
@@ -243,8 +253,28 @@ func (v2 *v2Client) logServerResponse(ctx context.Context, res *http.Response) {
 		BackendStatus:     res.Header.Get(HeaderCLIBackendStatus),
 		ServerMessage:     res.Header.Get(HeaderCLIServerMessage),
 	}
+	if responseIndicatesError(res) && res.Body != nil {
+		body := res.Body
+		bodyBytes, err := io.ReadAll(body)
+		res.Body = &replayReadCloser{
+			Reader: io.MultiReader(bytes.NewReader(bodyBytes), body),
+			Closer: body,
+		}
+		if err == nil {
+			event.ErrorResponseBody = string(bodyBytes)
+		}
+	}
 
 	v2.verboseLogger(ctx, event)
+}
+
+func responseIndicatesError(res *http.Response) bool {
+	if res.StatusCode >= http.StatusBadRequest {
+		return true
+	}
+
+	backendStatus, err := strconv.Atoi(strings.TrimSpace(res.Header.Get(HeaderCLIBackendStatus)))
+	return err == nil && backendStatus >= http.StatusBadRequest
 }
 
 func (v2 *v2Client) initTrace(ctx context.Context) context.Context {

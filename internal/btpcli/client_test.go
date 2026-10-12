@@ -63,6 +63,7 @@ func TestV2Client_ServerVerboseEnvironment(t *testing.T) {
 
 func TestV2Client_LogServerResponse(t *testing.T) {
 	ctx := context.WithValue(context.Background(), v2ContextKey(HeaderCorrelationID), "correlation-id")
+	errorBody := `{"error":"complete error response","details":["first","second"]}`
 	response := &http.Response{
 		StatusCode: http.StatusForbidden,
 		Header: http.Header{
@@ -70,6 +71,7 @@ func TestV2Client_LogServerResponse(t *testing.T) {
 			HeaderCLIServerMessage: []string{"session authorization failed"},
 			HeaderCLISessionId:     []string{"must-not-be-logged"},
 		},
+		Body: io.NopCloser(strings.NewReader(errorBody)),
 	}
 
 	t.Run("disabled", func(t *testing.T) {
@@ -100,9 +102,57 @@ func TestV2Client_LogServerResponse(t *testing.T) {
 		assert.Equal(t, http.StatusForbidden, event.OuterHTTPStatus)
 		assert.Equal(t, "401", event.BackendStatus)
 		assert.Equal(t, "session authorization failed", event.ServerMessage)
+		assert.Equal(t, errorBody, event.ErrorResponseBody)
+
+		responseBody, err := io.ReadAll(response.Body)
+		assert.NoError(t, err)
+		assert.Equal(t, errorBody, string(responseBody), "logging must not consume the response body")
 		elapsed, err := time.ParseDuration(event.ElapsedSinceLogin)
 		assert.NoError(t, err)
 		assert.InDelta(t, (2 * time.Minute).Seconds(), elapsed.Seconds(), 0.1)
+	})
+
+	t.Run("backend error in successful outer response", func(t *testing.T) {
+		backendErrorBody := `{"error":"backend error"}`
+		response := &http.Response{
+			StatusCode: http.StatusOK,
+			Header: http.Header{
+				HeaderCLIBackendStatus: []string{"500"},
+			},
+			Body: io.NopCloser(strings.NewReader(backendErrorBody)),
+		}
+
+		var event serverVerboseEvent
+		uut := NewV2Client(nil)
+		uut.serverVerbose = true
+		uut.verboseLogger = func(_ context.Context, received serverVerboseEvent) {
+			event = received
+		}
+
+		uut.logServerResponse(ctx, response)
+
+		assert.Equal(t, backendErrorBody, event.ErrorResponseBody)
+	})
+
+	t.Run("successful response body is not logged", func(t *testing.T) {
+		response := &http.Response{
+			StatusCode: http.StatusOK,
+			Header: http.Header{
+				HeaderCLIBackendStatus: []string{"200"},
+			},
+			Body: io.NopCloser(strings.NewReader(`{"secret":"value"}`)),
+		}
+
+		var event serverVerboseEvent
+		uut := NewV2Client(nil)
+		uut.serverVerbose = true
+		uut.verboseLogger = func(_ context.Context, received serverVerboseEvent) {
+			event = received
+		}
+
+		uut.logServerResponse(ctx, response)
+
+		assert.Empty(t, event.ErrorResponseBody)
 	})
 }
 
