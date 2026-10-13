@@ -338,6 +338,23 @@ func notContainsCheckFunc(unexpectedSubString string) testingResource.CheckResou
 	}
 }
 
+func TestConcurrentSessionRequestOptions(t *testing.T) {
+	tests := []struct {
+		customUserAgent string
+		wantOptions     int
+	}{
+		{customUserAgent: "crossplane", wantOptions: 1},
+		{customUserAgent: "another-agent", wantOptions: 0},
+		{customUserAgent: "Crossplane", wantOptions: 0},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.customUserAgent, func(t *testing.T) {
+			assert.Len(t, concurrentSessionRequestOptions(tt.customUserAgent), tt.wantOptions)
+		})
+	}
+}
+
 func TestProvider_ConfigurationFlows(t *testing.T) {
 	t.Parallel()
 	t.Run("error path - user password login with missing data", func(t *testing.T) {

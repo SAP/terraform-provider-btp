@@ -19,6 +19,7 @@ import (
 	"path"
 	"regexp"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -102,8 +103,6 @@ func TestV2Client_LogServerResponse(t *testing.T) {
 		assert.Equal(t, http.StatusForbidden, event.OuterHTTPStatus)
 		assert.Equal(t, "401", event.BackendStatus)
 		assert.Equal(t, "session authorization failed", event.ServerMessage)
-		assert.Equal(t, errorBody, event.ErrorResponseBody)
-
 		responseBody, err := io.ReadAll(response.Body)
 		assert.NoError(t, err)
 		assert.Equal(t, errorBody, string(responseBody), "logging must not consume the response body")
@@ -122,16 +121,15 @@ func TestV2Client_LogServerResponse(t *testing.T) {
 			Body: io.NopCloser(strings.NewReader(backendErrorBody)),
 		}
 
-		var event serverVerboseEvent
 		uut := NewV2Client(nil)
 		uut.serverVerbose = true
-		uut.verboseLogger = func(_ context.Context, received serverVerboseEvent) {
-			event = received
-		}
+		uut.verboseLogger = func(context.Context, serverVerboseEvent) {}
 
 		uut.logServerResponse(ctx, response)
 
-		assert.Equal(t, backendErrorBody, event.ErrorResponseBody)
+		responseBody, err := io.ReadAll(response.Body)
+		assert.NoError(t, err)
+		assert.Equal(t, backendErrorBody, string(responseBody), "logging must not consume backend error bodies")
 	})
 
 	t.Run("successful response body is not logged", func(t *testing.T) {
@@ -143,17 +141,107 @@ func TestV2Client_LogServerResponse(t *testing.T) {
 			Body: io.NopCloser(strings.NewReader(`{"secret":"value"}`)),
 		}
 
-		var event serverVerboseEvent
 		uut := NewV2Client(nil)
 		uut.serverVerbose = true
-		uut.verboseLogger = func(_ context.Context, received serverVerboseEvent) {
-			event = received
-		}
+		uut.verboseLogger = func(context.Context, serverVerboseEvent) {}
 
 		uut.logServerResponse(ctx, response)
 
-		assert.Empty(t, event.ErrorResponseBody)
+		responseBody, err := io.ReadAll(response.Body)
+		assert.NoError(t, err)
+		assert.Equal(t, "{\"secret\":\"value\"}", string(responseBody), "logging must not consume successful response bodies")
 	})
+}
+
+func TestV2Client_SessionRequestPolicies(t *testing.T) {
+	tests := []struct {
+		name                   string
+		options                []V2ClientOption
+		wantConcurrentRequests bool
+	}{
+		{
+			name: "default serializes session requests",
+		},
+		{
+			name:                   "concurrent option permits concurrent session requests",
+			options:                []V2ClientOption{WithConcurrentSessionRequests()},
+			wantConcurrentRequests: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			firstRequestMayComplete := make(chan struct{})
+			requestReachedServer := make(chan struct{}, 2)
+			requestHeaders := make(chan http.Header, 2)
+			var requestCount atomic.Int32
+
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				requestHeaders <- r.Header.Clone()
+				requestNumber := requestCount.Add(1)
+				requestReachedServer <- struct{}{}
+				if requestNumber == 1 {
+					<-firstRequestMayComplete
+				}
+				w.Header().Set(HeaderCLIBackendStatus, "200")
+				_, _ = w.Write([]byte("{}"))
+			}))
+			defer server.Close()
+
+			serverURL, err := url.Parse(server.URL)
+			assert.NoError(t, err)
+			client := NewV2ClientWithHttpClient(server.Client(), serverURL, &RetryConfig{Enabled: false}, tt.options...)
+			assert.Equal(t, tt.wantConcurrentRequests, client.allowConcurrentSessionRequests)
+			client.session.Store(&Session{
+				GlobalAccountSubdomain: "global-account",
+				SessionId:              "session-id",
+				IdentityProvider:       "custom-idp",
+			})
+
+			var requests sync.WaitGroup
+			requestErrors := make(chan error, 2)
+			requests.Add(2)
+			for range 2 {
+				go func() {
+					defer requests.Done()
+					_, err := client.Execute(context.Background(), NewGetRequest("test", map[string]string{}))
+					requestErrors <- err
+				}()
+			}
+
+			select {
+			case <-requestReachedServer:
+			case <-time.After(time.Second):
+				t.Fatal("first request did not reach the server")
+			}
+
+			if tt.wantConcurrentRequests {
+				select {
+				case <-requestReachedServer:
+				case <-time.After(time.Second):
+					t.Fatal("second concurrent request did not reach the server")
+				}
+			} else {
+				select {
+				case <-requestReachedServer:
+					t.Fatal("second request reached the server before the first completed")
+				case <-time.After(100 * time.Millisecond):
+				}
+			}
+
+			close(firstRequestMayComplete)
+			requests.Wait()
+			for range 2 {
+				assert.NoError(t, <-requestErrors)
+			}
+			for range 2 {
+				headers := <-requestHeaders
+				assert.Equal(t, "session-id", headers.Get(HeaderCLISessionId))
+				assert.Equal(t, "global-account", headers.Get(HeaderCLISubdomain))
+				assert.Equal(t, "custom-idp", headers.Get(HeaderCLICustomIDP))
+			}
+		})
+	}
 }
 
 func TestV2Client_ProtocolVersion(t *testing.T) {

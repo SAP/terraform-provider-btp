@@ -81,8 +81,17 @@ type RetryConfig struct {
 	RetryWaitMax time.Duration
 }
 
-func NewV2Client(serverURL *url.URL) *v2Client {
-	return NewV2ClientWithHttpClient(http.DefaultClient, serverURL, nil)
+type V2ClientOption func(*v2Client)
+
+// WithConcurrentSessionRequests allows concurrent requests using the same session.
+func WithConcurrentSessionRequests() V2ClientOption {
+	return func(client *v2Client) {
+		client.allowConcurrentSessionRequests = true
+	}
+}
+
+func NewV2Client(serverURL *url.URL, options ...V2ClientOption) *v2Client {
+	return NewV2ClientWithHttpClient(http.DefaultClient, serverURL, nil, options...)
 }
 
 func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
@@ -150,11 +159,11 @@ func NewRetryableHttpClient(cfg *RetryConfig) *retryablehttp.Client {
 	return retryClient
 }
 
-func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg *RetryConfig) *v2Client {
+func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg *RetryConfig, options ...V2ClientOption) *v2Client {
 	retryClient := NewRetryableHttpClient(retryCfg)
 	retryClient.HTTPClient = client
 	serverVerbose, _ := strconv.ParseBool(strings.TrimSpace(os.Getenv(envBTPServerVerbose)))
-	return &v2Client{
+	v2Client := &v2Client{
 		httpClient:    injectBTPCLITransport(retryClient.StandardClient()),
 		serverURL:     serverURL,
 		serverVerbose: serverVerbose,
@@ -166,9 +175,6 @@ func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg
 				"x_cpcli_backend_status": event.BackendStatus,
 				"x_cpcli_server_message": event.ServerMessage,
 			}
-			if event.ErrorResponseBody != "" {
-				fields["error_response_body"] = event.ErrorResponseBody
-			}
 			tflog.Info(ctx, "BTP server response", fields)
 		},
 		newCorrelationID: func() string {
@@ -179,6 +185,12 @@ func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg
 			return val
 		},
 	}
+	for _, option := range options {
+		if option != nil {
+			option(v2Client)
+		}
+	}
+	return v2Client
 }
 
 const (
@@ -205,11 +217,12 @@ type v2Client struct {
 
 	newCorrelationID func() string
 
-	session              atomic.Pointer[Session]
-	sessionEstablishedAt atomic.Int64
-	serverVerbose        bool
-	verboseLogger        func(context.Context, serverVerboseEvent)
-	UserAgent            string
+	session                        atomic.Pointer[Session]
+	sessionEstablishedAt           atomic.Int64
+	allowConcurrentSessionRequests bool
+	serverVerbose                  bool
+	verboseLogger                  func(context.Context, serverVerboseEvent)
+	UserAgent                      string
 }
 
 type serverVerboseEvent struct {
@@ -218,12 +231,6 @@ type serverVerboseEvent struct {
 	OuterHTTPStatus   int    `json:"outer_http_status"`
 	BackendStatus     string `json:"x_cpcli_backend_status"`
 	ServerMessage     string `json:"x_cpcli_server_message"`
-	ErrorResponseBody string `json:"error_response_body,omitempty"`
-}
-
-type replayReadCloser struct {
-	io.Reader
-	io.Closer
 }
 
 func (v2 *v2Client) storeSession(session *Session) {
@@ -253,28 +260,7 @@ func (v2 *v2Client) logServerResponse(ctx context.Context, res *http.Response) {
 		BackendStatus:     res.Header.Get(HeaderCLIBackendStatus),
 		ServerMessage:     res.Header.Get(HeaderCLIServerMessage),
 	}
-	if responseIndicatesError(res) && res.Body != nil {
-		body := res.Body
-		bodyBytes, err := io.ReadAll(body)
-		res.Body = &replayReadCloser{
-			Reader: io.MultiReader(bytes.NewReader(bodyBytes), body),
-			Closer: body,
-		}
-		if err == nil {
-			event.ErrorResponseBody = string(bodyBytes)
-		}
-	}
-
 	v2.verboseLogger(ctx, event)
-}
-
-func responseIndicatesError(res *http.Response) bool {
-	if res.StatusCode >= http.StatusBadRequest {
-		return true
-	}
-
-	backendStatus, err := strconv.Atoi(strings.TrimSpace(res.Header.Get(HeaderCLIBackendStatus)))
-	return err == nil && backendStatus >= http.StatusBadRequest
 }
 
 func (v2 *v2Client) initTrace(ctx context.Context) context.Context {
@@ -309,7 +295,13 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set(HeaderCLIFormat, "json")
 
-	if session := v2.session.Load(); session != nil {
+	session := v2.session.Load()
+	lockedSession := false
+	if session != nil && !v2.allowConcurrentSessionRequests {
+		session.Lock()
+		lockedSession = true
+	}
+	if session != nil {
 		req.Header.Set(HeaderCLISessionId, session.SessionId)
 		req.Header.Set(HeaderCLISubdomain, session.GlobalAccountSubdomain)
 		req.Header.Set(HeaderCLICustomIDP, session.IdentityProvider)
@@ -320,6 +312,9 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 	}
 
 	res, err := v2.httpClient.Do(req)
+	if lockedSession {
+		session.Unlock()
+	}
 	v2.logServerResponse(ctx, res)
 
 	return res, err
