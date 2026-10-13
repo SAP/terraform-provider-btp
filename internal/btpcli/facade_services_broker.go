@@ -56,7 +56,6 @@ type SubaccountServiceBrokerRegisterInput struct {
 	User        string              `btpcli:"user"`
 	Password    string              `btpcli:"password"`
 	URL         string              `btpcli:"url"`
-	MTLS        bool                `btpcli:"mtls"`
 	Cert        string              `btpcli:"cert"`
 	Key         string              `btpcli:"key"`
 	Labels      map[string][]string `btpcli:"labels"`
@@ -80,7 +79,6 @@ type SubaccountServiceBrokerUpdateInput struct {
 	User        string              `btpcli:"user"`
 	Password    string              `btpcli:"password"`
 	URL         string              `btpcli:"url"`
-	MTLS        bool                `btpcli:"mtls"`
 	Cert        string              `btpcli:"cert"`
 	Key         string              `btpcli:"key"`
 	Labels      map[string][]string `btpcli:"labels"`
