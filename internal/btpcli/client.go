@@ -226,11 +226,11 @@ type v2Client struct {
 }
 
 type serverVerboseEvent struct {
-	ElapsedSinceLogin string `json:"elapsed_since_login"`
-	CorrelationID     string `json:"correlation_id"`
-	OuterHTTPStatus   int    `json:"outer_http_status"`
-	BackendStatus     string `json:"x_cpcli_backend_status"`
-	ServerMessage     string `json:"x_cpcli_server_message"`
+	ElapsedSinceLogin string
+	CorrelationID     string
+	OuterHTTPStatus   int
+	BackendStatus     string
+	ServerMessage     string
 }
 
 func (v2 *v2Client) storeSession(session *Session) {
@@ -296,25 +296,24 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 	req.Header.Set(HeaderCLIFormat, "json")
 
 	session := v2.session.Load()
-	lockedSession := false
-	if session != nil && !v2.allowConcurrentSessionRequests {
-		session.Lock()
-		lockedSession = true
-	}
-	if session != nil {
-		req.Header.Set(HeaderCLISessionId, session.SessionId)
-		req.Header.Set(HeaderCLISubdomain, session.GlobalAccountSubdomain)
-		req.Header.Set(HeaderCLICustomIDP, session.IdentityProvider)
-	}
+	var res *http.Response
+	func() {
+		if session != nil && !v2.allowConcurrentSessionRequests {
+			session.Lock()
+			defer session.Unlock()
+		}
+		if session != nil {
+			req.Header.Set(HeaderCLISessionId, session.SessionId)
+			req.Header.Set(HeaderCLISubdomain, session.GlobalAccountSubdomain)
+			req.Header.Set(HeaderCLICustomIDP, session.IdentityProvider)
+		}
 
-	if correlationID := ctx.Value(v2ContextKey(HeaderCorrelationID)); correlationID != nil {
-		req.Header.Set(HeaderCorrelationID, correlationID.(string))
-	}
+		if correlationID := ctx.Value(v2ContextKey(HeaderCorrelationID)); correlationID != nil {
+			req.Header.Set(HeaderCorrelationID, correlationID.(string))
+		}
 
-	res, err := v2.httpClient.Do(req)
-	if lockedSession {
-		session.Unlock()
-	}
+		res, err = v2.httpClient.Do(req)
+	}()
 	v2.logServerResponse(ctx, res)
 
 	return res, err
