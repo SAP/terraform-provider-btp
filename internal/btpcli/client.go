@@ -245,10 +245,7 @@ func (v2 *v2Client) logServerResponse(ctx context.Context, res *http.Response) {
 
 	elapsedSinceLogin := "not-established"
 	if establishedAt := v2.sessionEstablishedAt.Load(); establishedAt > 0 {
-		elapsed := time.Since(time.Unix(0, establishedAt))
-		if elapsed < 0 {
-			elapsed = 0
-		}
+		elapsed := max(time.Since(time.Unix(0, establishedAt)), 0)
 		elapsedSinceLogin = elapsed.Round(time.Millisecond).String()
 	}
 
