@@ -37,7 +37,7 @@ const errorMessagePostfixWithEnv = "If either is already set, ensure the value i
 const errorMessagePostfixWithoutEnv = "If it is already set, ensure the value is not empty."
 
 func concurrentSessionRequestOptions(customUserAgent string) []btpcli.V2ClientOption {
-	if customUserAgent != "crossplane" {
+	if !strings.HasPrefix(customUserAgent, "crossplane") {
 		return nil
 	}
 

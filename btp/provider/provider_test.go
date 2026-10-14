@@ -344,6 +344,7 @@ func TestConcurrentSessionRequestOptions(t *testing.T) {
 		wantOptions     int
 	}{
 		{customUserAgent: "crossplane", wantOptions: 1},
+		{customUserAgent: "crossplane/v2.1.0", wantOptions: 1},
 		{customUserAgent: "another-agent", wantOptions: 0},
 		{customUserAgent: "Crossplane", wantOptions: 0},
 	}
