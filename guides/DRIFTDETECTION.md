@@ -14,6 +14,9 @@ A drift can only be detected if the resources on SAP BTP have either been *creat
 
 Consequently a drift will only show up for changes in the resource configuration as defined by the corresponding Terraform resource or deletion of resources that have been created by Terraform.
 
+> [!NOTE]
+> Drift detection requires read access to the resource on SAP BTP. For the `btp_*_role_collection_assignment` resources this changed with provider version 1.26.0: `terraform plan` now reads the current role collection assignments from the target subaccount, directory, or global account. The user running Terraform therefore needs a read-capable role collection in that scope (e.g. `Subaccount Viewer`, which includes the `User and Role Auditor` role). Global account level role collections do not grant read access inside subaccounts. If the user lacks this authorization, `terraform plan` and `terraform apply` fail with an authorization error (e.g. HTTP 401/403).
+
 ## Resource Overview
 
 From a technical perspective the drift detection requires the ability to compare the current state of the resources on SAP BTP with the Terraform state. This is achieved by the Terraform provider for SAP BTP by querying the platform APIs for the current state of the resources. Unfortunately, not all resources on SAP BTP support this i.e., the query of the current state of the resource on the platform is either not supported by the platform APIs at all or it does not return the full set of parameters.
@@ -27,12 +30,12 @@ The following overview list des resources and their support for drift detection 
 | btp_directory_entitlement                    | Yes                     | -                                                                                                                                         |
 | btp_directory_role                           | Yes                     | -                                                                                                                                         |
 | btp_directory_role_collection                | Yes                     | -                                                                                                                                         |
-| btp_directory_role_collection_assignment     | Yes                     | -                                                                                                                                         |
+| btp_directory_role_collection_assignment     | Yes                     | Since v1.26.0. The executing user needs read access to users and role collections in the target directory.                                |
 | btp_globalaccount_api_credential             | No                      | -                                                                                                                                         |
 | btp_globalaccount_resource_provider          | Yes                     | -                                                                                                                                         |
 | btp_globalaccount_role                       | Yes                     | -                                                                                                                                         |
 | btp_globalaccount_role_collection            | Yes                     | -                                                                                                                                         |
-| btp_globalaccount_role_collection_assignment | Yes                     | -                                                                                                                                         |
+| btp_globalaccount_role_collection_assignment | Yes                     | Since v1.26.0. The executing user needs read access to users and role collections in the global account.                                  |
 | btp_globalaccount_security_settings          | Yes                     | -                                                                                                                                         |
 | btp_globalaccount_trust_configuration        | Yes                     | -                                                                                                                                         |
 | btp_subaccount                               | Yes                     | -                                                                                                                                         |
@@ -42,7 +45,7 @@ The following overview list des resources and their support for drift detection 
 | btp_subaccount_environment_instance          | Yes                     | -                                                                                                                                         |
 | btp_subaccount_role                          | Yes                     | -                                                                                                                                         |
 | btp_subaccount_role_collection               | Yes                     | -                                                                                                                                         |
-| btp_subaccount_role_collection_assignment    | Yes                     | -                                                                                                                                         |                       
+| btp_subaccount_role_collection_assignment    | Yes                     | Since v1.26.0. The executing user needs read access to users and role collections in the target subaccount (e.g. Subaccount Viewer).      |
 | btp_subaccount_security_settings             | Yes                     | -                                                                                                                                         |
 | btp_subaccount_service_binding               | Yes                     | -                                                                                                                                         |
 | btp_subaccount_service_broker                | Yes                      | -                                                                                                                                         |

@@ -56,7 +56,9 @@ func (rs *directoryRoleCollectionAssignmentResource) Schema(_ context.Context, _
 		MarkdownDescription: `Assigns a user to a role collection on a directory level.
 
 __Tip:__
-You must be assigned to the admin role of the global account or the directory.`,
+You must be assigned to the admin role collection of the global account or the directory to create or delete assignments.
+
+Since provider version 1.26.0 drift detection reads the current assignments directly from the directory. The user running Terraform therefore additionally needs read access to users and role collections in the directory. Without it, terraform plan and terraform apply fail with an authorization error.`,
 		Attributes: map[string]schema.Attribute{
 			"directory_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the directory.",
