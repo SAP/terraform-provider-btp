@@ -54,7 +54,9 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Schema(_ context.Contex
 		MarkdownDescription: `Assigns a user or a group to a role collection on global account level.
 
 __Tip:__
-You must be assigned to the admin role of the global account.`,
+You must be assigned to the admin role collection of the global account to create or delete assignments.
+
+Since provider version 1.26.0 drift detection reads the current assignments directly from the global account. The user running Terraform therefore additionally needs read access to users and role collections in the global account. Without it, terraform plan and terraform apply fail with an authorization error.`,
 		Attributes: map[string]schema.Attribute{
 			"role_collection_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the role collection.",
