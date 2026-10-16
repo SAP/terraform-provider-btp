@@ -19,6 +19,7 @@ import (
 	"path"
 	"regexp"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -50,6 +51,197 @@ func TestV2Client_New(t *testing.T) {
 
 		assert.Equal(t, fakeURL, uut.serverURL)
 	})
+}
+
+func TestV2Client_ServerVerboseEnvironment(t *testing.T) {
+	t.Setenv(envBTPServerVerbose, "true")
+
+	fakeURL, _ := url.Parse("https://my.cli.server.local")
+	uut := NewV2Client(fakeURL)
+
+	assert.True(t, uut.serverVerbose)
+}
+
+func TestV2Client_LogServerResponse(t *testing.T) {
+	ctx := context.WithValue(context.Background(), v2ContextKey(HeaderCorrelationID), "correlation-id")
+	errorBody := `{"error":"complete error response","details":["first","second"]}`
+	response := &http.Response{
+		StatusCode: http.StatusForbidden,
+		Header: http.Header{
+			HeaderCLIBackendStatus: []string{"401"},
+			HeaderCLIServerMessage: []string{"session authorization failed"},
+			HeaderCLISessionId:     []string{"must-not-be-logged"},
+		},
+		Body: io.NopCloser(strings.NewReader(errorBody)),
+	}
+
+	t.Run("disabled", func(t *testing.T) {
+		called := false
+		uut := NewV2Client(nil)
+		uut.serverVerbose = false
+		uut.verboseLogger = func(context.Context, serverVerboseEvent) {
+			called = true
+		}
+
+		uut.logServerResponse(ctx, response)
+
+		assert.False(t, called)
+	})
+
+	t.Run("enabled", func(t *testing.T) {
+		var event serverVerboseEvent
+		uut := NewV2Client(nil)
+		uut.serverVerbose = true
+		uut.verboseLogger = func(_ context.Context, received serverVerboseEvent) {
+			event = received
+		}
+		uut.sessionEstablishedAt.Store(time.Now().Add(-2 * time.Minute).UnixNano())
+
+		uut.logServerResponse(ctx, response)
+
+		assert.Equal(t, "correlation-id", event.CorrelationID)
+		assert.Equal(t, http.StatusForbidden, event.OuterHTTPStatus)
+		assert.Equal(t, "401", event.BackendStatus)
+		assert.Equal(t, "session authorization failed", event.ServerMessage)
+		responseBody, err := io.ReadAll(response.Body)
+		assert.NoError(t, err)
+		assert.Equal(t, errorBody, string(responseBody), "logging must not consume the response body")
+		elapsed, err := time.ParseDuration(event.ElapsedSinceLogin)
+		assert.NoError(t, err)
+		assert.InDelta(t, (2 * time.Minute).Seconds(), elapsed.Seconds(), 0.1)
+	})
+
+	t.Run("backend error in successful outer response", func(t *testing.T) {
+		backendErrorBody := `{"error":"backend error"}`
+		response := &http.Response{
+			StatusCode: http.StatusOK,
+			Header: http.Header{
+				HeaderCLIBackendStatus: []string{"500"},
+			},
+			Body: io.NopCloser(strings.NewReader(backendErrorBody)),
+		}
+
+		uut := NewV2Client(nil)
+		uut.serverVerbose = true
+		uut.verboseLogger = func(context.Context, serverVerboseEvent) {}
+
+		uut.logServerResponse(ctx, response)
+
+		responseBody, err := io.ReadAll(response.Body)
+		assert.NoError(t, err)
+		assert.Equal(t, backendErrorBody, string(responseBody), "logging must not consume backend error bodies")
+	})
+
+	t.Run("successful response body is not logged", func(t *testing.T) {
+		response := &http.Response{
+			StatusCode: http.StatusOK,
+			Header: http.Header{
+				HeaderCLIBackendStatus: []string{"200"},
+			},
+			Body: io.NopCloser(strings.NewReader(`{"secret":"value"}`)),
+		}
+
+		uut := NewV2Client(nil)
+		uut.serverVerbose = true
+		uut.verboseLogger = func(context.Context, serverVerboseEvent) {}
+
+		uut.logServerResponse(ctx, response)
+
+		responseBody, err := io.ReadAll(response.Body)
+		assert.NoError(t, err)
+		assert.Equal(t, "{\"secret\":\"value\"}", string(responseBody), "logging must not consume successful response bodies")
+	})
+}
+
+func TestV2Client_SessionRequestPolicies(t *testing.T) {
+	tests := []struct {
+		name                   string
+		options                []V2ClientOption
+		wantConcurrentRequests bool
+	}{
+		{
+			name: "default serializes session requests",
+		},
+		{
+			name:                   "concurrent option permits concurrent session requests",
+			options:                []V2ClientOption{WithConcurrentSessionRequests()},
+			wantConcurrentRequests: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			firstRequestMayComplete := make(chan struct{})
+			requestReachedServer := make(chan struct{}, 2)
+			requestHeaders := make(chan http.Header, 2)
+			var requestCount atomic.Int32
+
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				requestHeaders <- r.Header.Clone()
+				requestNumber := requestCount.Add(1)
+				requestReachedServer <- struct{}{}
+				if requestNumber == 1 {
+					<-firstRequestMayComplete
+				}
+				w.Header().Set(HeaderCLIBackendStatus, "200")
+				_, _ = w.Write([]byte("{}"))
+			}))
+			defer server.Close()
+
+			serverURL, err := url.Parse(server.URL)
+			assert.NoError(t, err)
+			client := NewV2ClientWithHttpClient(server.Client(), serverURL, &RetryConfig{Enabled: false}, tt.options...)
+			assert.Equal(t, tt.wantConcurrentRequests, client.allowConcurrentSessionRequests)
+			client.session.Store(&Session{
+				GlobalAccountSubdomain: "global-account",
+				SessionId:              "session-id",
+				IdentityProvider:       "custom-idp",
+			})
+
+			var requests sync.WaitGroup
+			requestErrors := make(chan error, 2)
+			requests.Add(2)
+			for range 2 {
+				go func() {
+					defer requests.Done()
+					_, err := client.Execute(context.Background(), NewGetRequest("test", map[string]string{}))
+					requestErrors <- err
+				}()
+			}
+
+			select {
+			case <-requestReachedServer:
+			case <-time.After(time.Second):
+				t.Fatal("first request did not reach the server")
+			}
+
+			if tt.wantConcurrentRequests {
+				select {
+				case <-requestReachedServer:
+				case <-time.After(time.Second):
+					t.Fatal("second concurrent request did not reach the server")
+				}
+			} else {
+				select {
+				case <-requestReachedServer:
+					t.Fatal("second request reached the server before the first completed")
+				case <-time.After(100 * time.Millisecond):
+				}
+			}
+
+			close(firstRequestMayComplete)
+			requests.Wait()
+			for range 2 {
+				assert.NoError(t, <-requestErrors)
+			}
+			for range 2 {
+				headers := <-requestHeaders
+				assert.Equal(t, "session-id", headers.Get(HeaderCLISessionId))
+				assert.Equal(t, "global-account", headers.Get(HeaderCLISubdomain))
+				assert.Equal(t, "custom-idp", headers.Get(HeaderCLICustomIDP))
+			}
+		})
+	}
 }
 
 func TestV2Client_ProtocolVersion(t *testing.T) {
@@ -293,7 +485,7 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 
 	t.Run("happy path", func(t *testing.T) {
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-		uut.session = &Session{}
+		uut.session.Store(&Session{})
 		uut.newCorrelationID = func() string {
 			return "fake-correlation-id"
 		}
@@ -310,12 +502,12 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 				Issuer: "accounts.sap.com",
 				Email:  "john.doe@test.com",
 			},
-		}, uut.session)
+		}, uut.session.Load())
 	})
 
 	t.Run("happy path - with custom idp", func(t *testing.T) {
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-		uut.session = &Session{}
+		uut.session.Store(&Session{})
 		uut.newCorrelationID = func() string {
 			return "fake-correlation-id"
 		}
@@ -333,7 +525,7 @@ func TestV2Client_BrowserLogin(t *testing.T) {
 				Issuer: "customidp.accounts.ondemand.com",
 				Email:  "john.doe@test.com",
 			},
-		}, uut.session)
+		}, uut.session.Load())
 	})
 }
 
@@ -451,8 +643,10 @@ func TestV2Client_Execute(t *testing.T) {
 		assert.Equal(t, 201, res.StatusCode)
 		assert.Equal(t, "backend/mediatype", res.ContentType)
 	})
-	t.Run("custom idp: request header `X-CPCLI-CustomIdp` must be set", func(t *testing.T) {
+	t.Run("session headers must be set", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "session-id", r.Header.Get(HeaderCLISessionId))
+			assert.Equal(t, "globalaccount-subdomain", r.Header.Get(HeaderCLISubdomain))
 			assert.Equal(t, "my.custom.idp", r.Header.Get(HeaderCLICustomIDP))
 			w.Header().Set(HeaderCLIBackendStatus, fmt.Sprintf("%d", 201))
 			w.Header().Set(HeaderCLIBackendMediaType, "backend/mediatype")
@@ -462,14 +656,15 @@ func TestV2Client_Execute(t *testing.T) {
 
 		srvUrl, _ := url.Parse(srv.URL)
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-		uut.session = &Session{
+		uut.session.Store(&Session{
 			GlobalAccountSubdomain: "globalaccount-subdomain",
+			SessionId:              "session-id",
 			IdentityProvider:       "my.custom.idp",
 			LoggedInUser: &v2LoggedInUser{
 				Email:  "john.doe@int.test",
 				Issuer: "customidp.accounts.ondemand.com",
 			},
-		}
+		})
 
 		cmdRes, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
@@ -487,14 +682,14 @@ func TestV2Client_Execute(t *testing.T) {
 
 		srvUrl, _ := url.Parse(srv.URL)
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-		uut.session = &Session{
+		uut.session.Store(&Session{
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			IdentityProvider:       "my.custom.idp",
 			LoggedInUser: &v2LoggedInUser{
 				Email:  "john.doe@int.test",
 				Issuer: "customidp.accounts.ondemand.com",
 			},
-		}
+		})
 
 		cmdRes, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
@@ -512,14 +707,14 @@ func TestV2Client_Execute(t *testing.T) {
 
 		srvUrl, _ := url.Parse(srv.URL)
 		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-		uut.session = &Session{
+		uut.session.Store(&Session{
 			GlobalAccountSubdomain: "globalaccount-subdomain",
 			IdentityProvider:       "my.custom.idp",
 			LoggedInUser: &v2LoggedInUser{
 				Email:  "john.doe@int.test",
 				Issuer: "customidp.accounts.ondemand.com",
 			},
-		}
+		})
 
 		cmdRes, err := uut.Execute(context.TODO(), NewGetRequest("subaccount/role", map[string]string{}))
 
@@ -591,7 +786,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 	srvUrl, _ := url.Parse(srv.URL)
 	uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
 	uut.UserAgent = "Terraform/x.x.x terraform-plugin-btp/y.y.y"
-	uut.session = config.initSession
+	uut.session.Store(config.initSession)
 	uut.newCorrelationID = func() string {
 		return "fake-correlation-id"
 	}
@@ -605,7 +800,7 @@ func simulateV2Call(t *testing.T, config v2SimulationConfig) {
 		}
 	}
 
-	assert.Equal(t, config.expectClientSession, uut.session)
+	assert.Equal(t, config.expectClientSession, uut.session.Load())
 }
 
 func assertV2DefaultHeader(t *testing.T, r *http.Request, expectedMethod string) {
@@ -631,7 +826,7 @@ func TestV2Client_GetLoggedInUser(t *testing.T) {
 		}
 
 		uut := NewV2Client(nil)
-		uut.session = &Session{LoggedInUser: testUser}
+		uut.session.Store(&Session{LoggedInUser: testUser})
 
 		assert.Equal(t, testUser, uut.GetLoggedInUser())
 	})
@@ -645,7 +840,7 @@ func TestV2Client_GetGlobalAccountSubdomain(t *testing.T) {
 	})
 	t.Run("someone logged in", func(t *testing.T) {
 		uut := NewV2Client(nil)
-		uut.session = &Session{GlobalAccountSubdomain: "my-subdomain"}
+		uut.session.Store(&Session{GlobalAccountSubdomain: "my-subdomain"})
 
 		assert.Equal(t, "my-subdomain", uut.GetGlobalAccountSubdomain())
 	})

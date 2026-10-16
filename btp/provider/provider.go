@@ -36,6 +36,15 @@ const btpCliSessionFlow = "btpCliSessionFlow"
 const errorMessagePostfixWithEnv = "If either is already set, ensure the value is not empty."
 const errorMessagePostfixWithoutEnv = "If it is already set, ensure the value is not empty."
 
+func concurrentSessionRequestOptions(customUserAgent string) []btpcli.V2ClientOption {
+	if !strings.HasPrefix(customUserAgent, "crossplane") {
+		return nil
+	}
+
+	// Crossplane needs concurrent requests for compatibility with its reconciliation flow.
+	return []btpcli.V2ClientOption{btpcli.WithConcurrentSessionRequests()}
+}
+
 func New() provider.Provider {
 	return NewWithClient(http.DefaultClient)
 }
@@ -182,10 +191,11 @@ func (p *btpcliProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	client := btpcli.NewClientFacade(btpcli.NewV2ClientWithHttpClient(p.httpClient, u, nil))
-	btpUserAgent := os.Getenv("BTP_APPEND_USER_AGENT")
+	btpUserAgent := strings.TrimSpace(os.Getenv("BTP_APPEND_USER_AGENT"))
+	clientOptions := concurrentSessionRequestOptions(btpUserAgent)
+	client := btpcli.NewClientFacade(btpcli.NewV2ClientWithHttpClient(p.httpClient, u, nil, clientOptions...))
 
-	if len(strings.TrimSpace(btpUserAgent)) == 0 {
+	if len(btpUserAgent) == 0 {
 		client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s", req.TerraformVersion, version.ProviderVersion)
 	} else {
 		client.UserAgent = fmt.Sprintf("Terraform/%s terraform-provider-btp/%s custom-user-agent/%s", req.TerraformVersion, version.ProviderVersion, btpUserAgent)

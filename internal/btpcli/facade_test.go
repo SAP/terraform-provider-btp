@@ -20,7 +20,7 @@ func prepareClientFacadeForTest(handleFn http.HandlerFunc) (*ClientFacade, *http
 	srvUrl, _ := url.Parse(srv.URL)
 
 	apiClient := NewV2ClientWithHttpClient(srv.Client(), srvUrl, nil)
-	apiClient.session = &Session{GlobalAccountSubdomain: "795b53bb-a3f0-4769-adf0-26173282a975"}
+	apiClient.session.Store(&Session{GlobalAccountSubdomain: "795b53bb-a3f0-4769-adf0-26173282a975"})
 	return NewClientFacade(apiClient), srv
 }
 

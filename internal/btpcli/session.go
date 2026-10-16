@@ -1,8 +1,6 @@
 package btpcli
 
-import (
-	"sync"
-)
+import "sync"
 
 type v2LoggedInUser struct {
 	Email  string
@@ -15,5 +13,6 @@ type Session struct {
 	IdentityProvider       string
 	LoggedInUser           *v2LoggedInUser
 
+	// Mutex serializes requests that use this immutable session.
 	sync.Mutex
 }
