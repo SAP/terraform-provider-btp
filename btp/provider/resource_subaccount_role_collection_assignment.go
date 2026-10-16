@@ -55,7 +55,9 @@ func (rs *subaccountRoleCollectionAssignmentResource) Schema(_ context.Context, 
 		MarkdownDescription: `Assigns a user to a role collection on a subaccount level.
 
 __Tip:__
-You must be assigned to the admin role of the subaccount.`,
+You must be assigned to the admin role collection of the subaccount (e.g. Subaccount Administrator) to create or delete assignments.
+
+Since provider version 1.26.0 drift detection reads the current assignments directly from the subaccount. The user running Terraform therefore additionally needs read access to users and role collections in the subaccount (e.g. the Subaccount Viewer role collection, which includes the User and Role Auditor role). Global account level role collections do not grant this access. Without it, terraform plan and terraform apply fail with an authorization error.`,
 		Attributes: map[string]schema.Attribute{
 			"subaccount_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the subaccount.",
