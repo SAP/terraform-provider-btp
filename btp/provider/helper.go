@@ -38,6 +38,33 @@ func samlOriginMatches(apiOrigin, samlEntityId, stateOrigin string) bool {
 	return strings.HasPrefix(strings.ToLower(u.Hostname()), strings.ToLower(stateOrigin)+".")
 }
 
+// samlEntityIdMatchesTrust reports whether the SAML entity ID of an attribute assignment
+// belongs to the identity provider of a trust configuration. The trust configuration
+// returns the host without a scheme (e.g. "myidp.accounts.ondemand.com"), while the
+// assignment carries a URL (e.g. "https://myidp.accounts.ondemand.com"), so the hosts are compared.
+func samlEntityIdMatchesTrust(samlEntityId, trustIdentityProvider string) bool {
+	if samlEntityId == "" || trustIdentityProvider == "" {
+		return false
+	}
+	if samlEntityId == trustIdentityProvider {
+		return true
+	}
+	entityHost := hostOf(samlEntityId)
+	return entityHost != "" && strings.EqualFold(entityHost, hostOf(trustIdentityProvider))
+}
+
+// hostOf returns the host name of a URL or of a bare host name.
+func hostOf(s string) string {
+	if !strings.Contains(s, "://") {
+		s = "https://" + s
+	}
+	u, err := url.Parse(s)
+	if err != nil {
+		return ""
+	}
+	return u.Hostname()
+}
+
 func stringNullIfEmpty(val string) types.String {
 	if len(val) == 0 {
 		return types.StringNull()
