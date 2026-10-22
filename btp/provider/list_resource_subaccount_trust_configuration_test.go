@@ -113,6 +113,10 @@ func TestSubaccountTrustConfigurationListResource(t *testing.T) {
 									Path:       tfjsonpath.New("available_for_user_logon"),
 									KnownValue: knownvalue.Bool(true),
 								},
+								{
+									Path:       tfjsonpath.New("subaccount_id"),
+									KnownValue: knownvalue.StringExact(subaccountID),
+								},
 							},
 						),
 					},
