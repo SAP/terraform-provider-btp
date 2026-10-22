@@ -124,3 +124,59 @@ func TestSamlOriginMatches(t *testing.T) {
 		})
 	}
 }
+
+func TestSamlEntityIdMatchesTrust(t *testing.T) {
+	tests := []struct {
+		name                  string
+		samlEntityId          string
+		trustIdentityProvider string
+		want                  bool
+	}{
+		{
+			name:                  "entity ID URL matches trust host without scheme",
+			samlEntityId:          "https://myidp.accounts.ondemand.com",
+			trustIdentityProvider: "myidp.accounts.ondemand.com",
+			want:                  true,
+		},
+		{
+			name:                  "identical values",
+			samlEntityId:          "https://myidp.accounts.ondemand.com",
+			trustIdentityProvider: "https://myidp.accounts.ondemand.com",
+			want:                  true,
+		},
+		{
+			name:                  "host comparison ignores case",
+			samlEntityId:          "https://MyIdp.accounts.ondemand.com",
+			trustIdentityProvider: "myidp.accounts.ondemand.com",
+			want:                  true,
+		},
+		{
+			name:                  "different tenant",
+			samlEntityId:          "https://otheridp.accounts.ondemand.com",
+			trustIdentityProvider: "myidp.accounts.ondemand.com",
+			want:                  false,
+		},
+		{
+			name:                  "empty trust identity provider",
+			samlEntityId:          "https://myidp.accounts.ondemand.com",
+			trustIdentityProvider: "",
+			want:                  false,
+		},
+		{
+			name:                  "empty entity ID",
+			samlEntityId:          "",
+			trustIdentityProvider: "myidp.accounts.ondemand.com",
+			want:                  false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := samlEntityIdMatchesTrust(tt.samlEntityId, tt.trustIdentityProvider)
+			if got != tt.want {
+				t.Errorf("samlEntityIdMatchesTrust(%q, %q) = %v, want %v",
+					tt.samlEntityId, tt.trustIdentityProvider, got, tt.want)
+			}
+		})
+	}
+}
