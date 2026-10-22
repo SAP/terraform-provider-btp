@@ -42,7 +42,7 @@ func TestSubaccountTrustConfigurationListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_trust_configuration.trust_configuration_list", 3),
+						querycheck.ExpectLength("btp_subaccount_trust_configuration.trust_configuration_list", 5),
 
 						querycheck.ExpectIdentity(
 							"btp_subaccount_trust_configuration.trust_configuration_list",
@@ -63,7 +63,7 @@ func TestSubaccountTrustConfigurationListResource(t *testing.T) {
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_trust_configuration.trust_configuration_list", 3),
+						querycheck.ExpectLength("btp_subaccount_trust_configuration.trust_configuration_list", 5),
 
 						// Verify full resource data is populated
 						querycheck.ExpectResourceKnownValues(

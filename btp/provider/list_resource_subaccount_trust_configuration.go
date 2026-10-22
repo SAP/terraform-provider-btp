@@ -108,6 +108,7 @@ func (r *subaccountTrustConfigurationListResource) List(
 
 			if req.IncludeResource {
 				resTrustConfig, diags := subaccountTrustConfigurationFromValue(ctx, trustConfig)
+				resTrustConfig.SubaccountId = filter.SubaccountId
 
 				result.Diagnostics.Append(diags...)
 
