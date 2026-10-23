@@ -287,7 +287,7 @@ func subaccountRoleCollectionAssignmentSAMLEntries(
 func (r subaccountRoleCollectionAssignmentOriginResolver) resolveSAMLOrigin(assignment xsuaa_authz.SamlAttrAssignment) (string, bool, error) {
 	if r.filterOrigin != "" {
 		matchesOrigin := samlOriginMatches(assignment.IdentityProvider, assignment.SamlEntityId, r.filterOrigin) ||
-			(r.expectedSAMLEntityID != "" && assignment.SamlEntityId == r.expectedSAMLEntityID)
+			(r.expectedSAMLEntityID != "" && identityProviderHost(assignment.SamlEntityId) == identityProviderHost(r.expectedSAMLEntityID))
 		return r.filterOrigin, matchesOrigin, nil
 	}
 

@@ -11,15 +11,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/querycheck"
-	"github.com/hashicorp/terraform-plugin-testing/querycheck/queryfilter"
-	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 func TestSubaccountRoleCollectionAssignmentListResource(t *testing.T) {
 	t.Parallel()
 
-	subaccountID := "ba268910-81e6-4ac1-9016-cae7ed196889"
+	subaccountID := "fc26cc61-ac5e-4c7d-9747-725f32a8994e"
 
 	t.Run("happy path", func(t *testing.T) {
 		t.Parallel()
@@ -36,62 +34,89 @@ func TestSubaccountRoleCollectionAssignmentListResource(t *testing.T) {
 				{
 					Query: true,
 					Config: hclProviderFor(user) + listSubaccountRoleCollectionAssignmentQueryConfig(
-						"subaccount_role_collection_list",
+						"subaccount_role_collection_assignment_list",
 						"btp",
 						subaccountID,
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_role_collection.subaccount_role_collection_list", 7),
+						querycheck.ExpectLength("btp_subaccount_role_collection_assignment.subaccount_role_collection_assignment_list", 26),
+					},
+				},
+				{
+					Query: true,
+					Config: hclProviderFor(user) + listSubaccountRoleCollectionAssignmentQueryConfigWithRoleCollectionName(
+						"subaccount_role_collection_assignment_list2",
+						"btp",
+						subaccountID,
+						"Subaccount Administrator",
+					),
 
-						querycheck.ExpectIdentity(
-							"btp_subaccount_role_collection.subaccount_role_collection_list",
+					QueryResultChecks: []querycheck.QueryResultCheck{
+						querycheck.ExpectLength("btp_subaccount_role_collection_assignment.subaccount_role_collection_assignment_list2", 8),
+					},
+				},
+				{
+					Query: true,
+					Config: hclProviderFor(user) + listSubaccountRoleCollectionAssignmentQueryConfigWithOrigin(
+						"subaccount_role_collection_assignment_list3",
+						"btp",
+						subaccountID,
+						"iasprovidertestblr-platform",
+					),
+
+					QueryResultChecks: []querycheck.QueryResultCheck{
+						querycheck.ExpectLength("btp_subaccount_role_collection_assignment.subaccount_role_collection_assignment_list3", 14),
+					},
+				},
+				{
+					Query: true,
+					Config: hclProviderFor(user) + listSubaccountRoleCollectionAssignmentQueryConfigWithRoleCollectionNameAndOrigin(
+						"subaccount_role_collection_assignment_list4",
+						"btp",
+						subaccountID,
+						"test-role-collection-attribute",
+						"iasprovidertestblr-platform",
+					),
+
+					QueryResultChecks: []querycheck.QueryResultCheck{
+						querycheck.ExpectLength("btp_subaccount_role_collection_assignment.subaccount_role_collection_assignment_list4", 1),
+
+						querycheck.ExpectIdentity("btp_subaccount_role_collection_assignment.subaccount_role_collection_assignment_list4",
 							map[string]knownvalue.Check{
-								"name":          knownvalue.StringExact("Subaccount Administrator"),
-								"subaccount_id": knownvalue.StringExact("ba268910-81e6-4ac1-9016-cae7ed196889"),
+								"role_collection_name": knownvalue.StringExact("test-role-collection-attribute"),
+								"subaccount_id":        knownvalue.StringExact("fc26cc61-ac5e-4c7d-9747-725f32a8994e"),
+								"user_name":            knownvalue.Null(),
+								"group_name":           knownvalue.Null(),
+								"attribute_name":       knownvalue.StringExact("test1"),
+								"attribute_value":      knownvalue.StringExact("value1"),
+								"origin":               knownvalue.StringExact("iasprovidertestblr-platform"),
 							},
 						),
 					},
 				},
 				{
-					// List Query with include_resource = true
 					Query: true,
-					Config: hclProviderFor(user) + listSubaccountRoleCollectionAssignmentQueryConfigWithIncludeResource(
-						"subaccount_role_collection_list",
+					Config: hclProviderFor(user) + listSubaccountRoleCollectionAssignmentQueryConfigWithRoleCollectionNameAndOrigin(
+						"subaccount_role_collection_assignment_list5",
 						"btp",
 						subaccountID,
+						"test-role-collection-group",
+						"iasproviderdevblr",
 					),
 
 					QueryResultChecks: []querycheck.QueryResultCheck{
-						querycheck.ExpectLength("btp_subaccount_role_collection.subaccount_role_collection_list", 7),
+						querycheck.ExpectLength("btp_subaccount_role_collection_assignment.subaccount_role_collection_assignment_list5", 1),
 
-						querycheck.ExpectResourceKnownValues(
-							"btp_subaccount_role_collection.subaccount_role_collection_list",
-							queryfilter.ByResourceIdentity(map[string]knownvalue.Check{
-								"name":          knownvalue.StringExact("Subaccount Administrator"),
-								"subaccount_id": knownvalue.StringExact("ba268910-81e6-4ac1-9016-cae7ed196889"),
-							}),
-							[]querycheck.KnownValueCheck{
-								{
-									Path:       tfjsonpath.New("description"),
-									KnownValue: knownvalue.StringExact("Administrative access to the subaccount"),
-								},
-								{
-									Path:       tfjsonpath.New("name"),
-									KnownValue: knownvalue.StringExact("Subaccount Administrator"),
-								},
-								{
-									Path:       tfjsonpath.New("id"),
-									KnownValue: knownvalue.StringRegexp(regexp.MustCompile(`.+,Subaccount Administrator`)),
-								},
-								{
-									Path:       tfjsonpath.New("subaccount_id"),
-									KnownValue: knownvalue.StringExact("ba268910-81e6-4ac1-9016-cae7ed196889"),
-								},
-								{
-									Path:       tfjsonpath.New("roles"),
-									KnownValue: knownvalue.ListSizeExact(9),
-								},
+						querycheck.ExpectIdentity("btp_subaccount_role_collection_assignment.subaccount_role_collection_assignment_list5",
+							map[string]knownvalue.Check{
+								"role_collection_name": knownvalue.StringExact("test-role-collection-group"),
+								"subaccount_id":        knownvalue.StringExact("fc26cc61-ac5e-4c7d-9747-725f32a8994e"),
+								"user_name":            knownvalue.Null(),
+								"group_name":           knownvalue.StringExact("test-group"),
+								"attribute_name":       knownvalue.Null(),
+								"attribute_value":      knownvalue.Null(),
+								"origin":               knownvalue.StringExact("iasproviderdevblr"),
 							},
 						),
 					},
@@ -146,7 +171,7 @@ func TestSubaccountRoleCollectionAssignmentListResource(t *testing.T) {
 
 func listSubaccountRoleCollectionAssignmentQueryConfig(label, providerName, subaccountID string) string {
 	return fmt.Sprintf(`
-list "btp_subaccount_role_collection" "%s" {
+list "btp_subaccount_role_collection_assignment" "%s" {
   provider = "%s"
   config {
     subaccount_id = "%s"
@@ -154,13 +179,36 @@ list "btp_subaccount_role_collection" "%s" {
 }`, label, providerName, subaccountID)
 }
 
-func listSubaccountRoleCollectionAssignmentQueryConfigWithIncludeResource(label, providerName, subaccountID string) string {
+func listSubaccountRoleCollectionAssignmentQueryConfigWithRoleCollectionName(label, providerName, subaccountID, roleCollectionName string) string {
 	return fmt.Sprintf(`
-list "btp_subaccount_role_collection" "%s" {
+list "btp_subaccount_role_collection_assignment" "%s" {
   provider = "%s"
-  include_resource = true
   config {
     subaccount_id = "%s"
+    role_collection_name = "%s"
   }
-}`, label, providerName, subaccountID)
+}`, label, providerName, subaccountID, roleCollectionName)
+}
+
+func listSubaccountRoleCollectionAssignmentQueryConfigWithOrigin(label, providerName, subaccountID, origin string) string {
+	return fmt.Sprintf(`
+list "btp_subaccount_role_collection_assignment" "%s" {
+  provider = "%s"
+  config {
+    subaccount_id = "%s"
+    origin = "%s"
+  }
+}`, label, providerName, subaccountID, origin)
+}
+
+func listSubaccountRoleCollectionAssignmentQueryConfigWithRoleCollectionNameAndOrigin(label, providerName, subaccountID, roleCollectionName, origin string) string {
+	return fmt.Sprintf(`
+list "btp_subaccount_role_collection_assignment" "%s" {
+  provider = "%s"
+  config {
+    subaccount_id = "%s"
+    role_collection_name = "%s"
+    origin = "%s"
+  }
+}`, label, providerName, subaccountID, roleCollectionName, origin)
 }
