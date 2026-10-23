@@ -124,3 +124,38 @@ func TestSamlOriginMatches(t *testing.T) {
 		})
 	}
 }
+
+func TestSamlAssignmentOriginMatches(t *testing.T) {
+	tests := []struct {
+		name          string
+		apiOrigin     string
+		samlEntityID  string
+		stateOrigin   string
+		trustEntityID string
+		want          bool
+	}{
+		{
+			name:          "trust entity hostname matches despite scheme",
+			apiOrigin:     "iasprovidertestblr.accounts400.ondemand.com (platform users)",
+			samlEntityID:  "https://iasprovidertestblr.accounts400.ondemand.com",
+			stateOrigin:   "iasprovidertestblr-platform",
+			trustEntityID: "iasprovidertestblr.accounts400.ondemand.com",
+			want:          true,
+		},
+		{
+			name:          "different trust entity hostname does not match",
+			samlEntityID:  "https://iasprovidertestblr.accounts400.ondemand.com",
+			stateOrigin:   "iasprovidertestblr-platform",
+			trustEntityID: "other.accounts400.ondemand.com",
+			want:          false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := samlAssignmentOriginMatches(tt.apiOrigin, tt.samlEntityID, tt.stateOrigin, tt.trustEntityID); got != tt.want {
+				t.Errorf("samlAssignmentOriginMatches() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
