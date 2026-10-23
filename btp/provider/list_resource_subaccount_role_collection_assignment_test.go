@@ -155,7 +155,7 @@ func TestSubaccountRoleCollectionAssignmentListResource(t *testing.T) {
 
 	t.Run("error path - configure", func(t *testing.T) {
 		t.Parallel()
-		r := NewSubaccountRoleCollectionListResource().(list.ListResourceWithConfigure)
+		r := NewSubaccountRoleCollectionAssignmentListResource().(list.ListResourceWithConfigure)
 		resp := &res.ConfigureResponse{}
 		req := res.ConfigureRequest{
 			ProviderData: struct{}{}, // Wrong type
@@ -211,4 +211,43 @@ list "btp_subaccount_role_collection_assignment" "%s" {
     origin = "%s"
   }
 }`, label, providerName, subaccountID, roleCollectionName, origin)
+}
+
+func subaccountRoleCollectionAssignmentQueryImportConfig(subaccountID string) string {
+	return fmt.Sprintf(`
+resource "btp_subaccount_role_collection_assignment" "attribute_assignment" {
+  subaccount_id       = "%s"
+  role_collection_name = "test-role-collection-attribute"
+  attribute_name      = "test1"
+  attribute_value     = "value1"
+  origin              = "iasprovidertestblr-platform"
+}
+
+import {
+  to = btp_subaccount_role_collection_assignment.attribute_assignment
+  identity = {
+    subaccount_id        = "%s"
+    role_collection_name = "test-role-collection-attribute"
+    attribute_name       = "test1"
+    attribute_value      = "value1"
+    origin               = "iasprovidertestblr-platform"
+  }
+}
+
+resource "btp_subaccount_role_collection_assignment" "group_assignment" {
+  subaccount_id       = "%s"
+  role_collection_name = "test-role-collection-group"
+  group_name          = "test-group"
+  origin              = "iasproviderdevblr"
+}
+
+import {
+  to = btp_subaccount_role_collection_assignment.group_assignment
+  identity = {
+    subaccount_id        = "%s"
+    role_collection_name = "test-role-collection-group"
+    group_name           = "test-group"
+    origin               = "iasproviderdevblr"
+  }
+}`, subaccountID, subaccountID, subaccountID, subaccountID)
 }

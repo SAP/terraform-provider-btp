@@ -3,8 +3,6 @@ package provider
 import (
 	"context"
 	"fmt"
-	"net/url"
-	"strings"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_authz"
@@ -286,8 +284,7 @@ func subaccountRoleCollectionAssignmentSAMLEntries(
 
 func (r subaccountRoleCollectionAssignmentOriginResolver) resolveSAMLOrigin(assignment xsuaa_authz.SamlAttrAssignment) (string, bool, error) {
 	if r.filterOrigin != "" {
-		matchesOrigin := samlOriginMatches(assignment.IdentityProvider, assignment.SamlEntityId, r.filterOrigin) ||
-			(r.expectedSAMLEntityID != "" && identityProviderHost(assignment.SamlEntityId) == identityProviderHost(r.expectedSAMLEntityID))
+		matchesOrigin := samlAssignmentOriginMatches(assignment.IdentityProvider, assignment.SamlEntityId, r.filterOrigin, r.expectedSAMLEntityID)
 		return r.filterOrigin, matchesOrigin, nil
 	}
 
@@ -300,7 +297,7 @@ func (r subaccountRoleCollectionAssignmentOriginResolver) resolveSAMLOrigin(assi
 
 	candidates := make(map[string]struct{})
 	for _, trustConfiguration := range r.trustConfigurations {
-		if samlOriginMatches(assignment.IdentityProvider, assignment.SamlEntityId, trustConfiguration.OriginKey) ||
+		if samlAssignmentOriginMatches(assignment.IdentityProvider, assignment.SamlEntityId, trustConfiguration.OriginKey, trustConfiguration.IdentityProvider) ||
 			samlEntityMatchesTrust(assignment.SamlEntityId, trustConfiguration) {
 			candidates[trustConfiguration.OriginKey] = struct{}{}
 		}
@@ -324,24 +321,6 @@ func samlEntityMatchesTrust(samlEntityID string, trustConfiguration xsuaa_trust.
 	}
 	return samlHost == identityProviderHost(trustConfiguration.IdentityProvider) ||
 		samlHost == identityProviderHost(trustConfiguration.Domain)
-}
-
-func identityProviderHost(value string) string {
-	value = strings.TrimSpace(value)
-	if value == "" {
-		return ""
-	}
-
-	parsedURL, err := url.Parse(value)
-	if err == nil && parsedURL.Hostname() != "" {
-		return strings.ToLower(strings.TrimSuffix(parsedURL.Hostname(), "."))
-	}
-
-	parsedURL, err = url.Parse("https://" + value)
-	if err != nil {
-		return ""
-	}
-	return strings.ToLower(strings.TrimSuffix(parsedURL.Hostname(), "."))
 }
 
 func setSubaccountRoleCollectionAssignmentListIdentity(

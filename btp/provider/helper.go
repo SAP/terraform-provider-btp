@@ -38,6 +38,39 @@ func samlOriginMatches(apiOrigin, samlEntityId, stateOrigin string) bool {
 	return strings.HasPrefix(strings.ToLower(u.Hostname()), strings.ToLower(stateOrigin)+".")
 }
 
+// samlAssignmentOriginMatches reports whether a SAML assignment belongs to an
+// origin. In addition to the assignment display name and origin-key prefix,
+// compare the assignment entity ID with the entity ID from the matching trust
+// configuration. The APIs may return one with a scheme and the other as a
+// bare hostname.
+func samlAssignmentOriginMatches(apiOrigin, samlEntityID, stateOrigin, trustEntityID string) bool {
+	return samlOriginMatches(apiOrigin, samlEntityID, stateOrigin) ||
+		(trustEntityID != "" && samlEntityIDsMatch(samlEntityID, trustEntityID))
+}
+
+func samlEntityIDsMatch(first, second string) bool {
+	firstHost := identityProviderHost(first)
+	return firstHost != "" && firstHost == identityProviderHost(second)
+}
+
+func identityProviderHost(value string) string {
+	value = strings.TrimSpace(value)
+	if value == "" {
+		return ""
+	}
+
+	parsedURL, err := url.Parse(value)
+	if err == nil && parsedURL.Hostname() != "" {
+		return strings.ToLower(strings.TrimSuffix(parsedURL.Hostname(), "."))
+	}
+
+	parsedURL, err = url.Parse("https://" + value)
+	if err != nil {
+		return ""
+	}
+	return strings.ToLower(strings.TrimSuffix(parsedURL.Hostname(), "."))
+}
+
 func stringNullIfEmpty(val string) types.String {
 	if len(val) == 0 {
 		return types.StringNull()
