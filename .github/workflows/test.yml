@@ -18,7 +18,7 @@ permissions:
   contents: read
 
 env:
-  LATEST_TF_VERSION: 1.16.*
+  LATEST_TF_VERSION: 1.17.*
 
 jobs:
 
@@ -177,10 +177,11 @@ jobs:
         # '1.11.*' end of security support 20 Aug 2025
         # '1.12.*' end of security support 19 Nov 2025
         # '1.13.*' end of security support 29 Apr 2026
+        # '1.14.*' end of security support 26 Aug 2026
         terraform:
-          - "1.14.*" # EOL 26 Aug 2026
-          - "1.15.*"
+          - "1.15.*" 
           - "1.16.*"
+          - "1.17.*"
     steps:
       - uses: actions/checkout@v7
         if: needs.compute-test-filter.outputs.run_provider == 'true'
