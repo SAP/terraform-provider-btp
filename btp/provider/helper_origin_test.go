@@ -1,7 +1,11 @@
 package provider
 
 import (
+	"errors"
 	"testing"
+
+	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_trust"
 )
 
 func TestOriginMatches(t *testing.T) {
@@ -176,6 +180,60 @@ func TestSamlAssignmentOriginMatches(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := samlAssignmentOriginMatches(tt.apiOrigin, tt.samlEntityID, tt.stateOrigin, tt.trustEntityID); got != tt.want {
 				t.Errorf("samlAssignmentOriginMatches() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTrustEntityID(t *testing.T) {
+	trustConfig := xsuaa_trust.TrustConfigurationResponseObject{IdentityProvider: "myidp.accounts.ondemand.com"}
+	lookupErr := errors.New("lookup failed")
+
+	tests := []struct {
+		name        string
+		trustConfig xsuaa_trust.TrustConfigurationResponseObject
+		rawRes      btpcli.CommandResponse
+		err         error
+		want        string
+		wantErr     bool
+	}{
+		{
+			name:        "trust found",
+			trustConfig: trustConfig,
+			rawRes:      btpcli.CommandResponse{StatusCode: 200},
+			want:        "myidp.accounts.ondemand.com",
+		},
+		{
+			name:   "missing trust is not an error",
+			rawRes: btpcli.CommandResponse{StatusCode: 404},
+			err:    lookupErr,
+		},
+		{
+			name:   "missing read permission is not an error",
+			rawRes: btpcli.CommandResponse{StatusCode: 403},
+			err:    lookupErr,
+		},
+		{
+			name:    "server error is returned",
+			rawRes:  btpcli.CommandResponse{StatusCode: 500},
+			err:     lookupErr,
+			wantErr: true,
+		},
+		{
+			name:    "error without response is returned",
+			err:     lookupErr,
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := trustEntityID(tt.trustConfig, tt.rawRes, tt.err)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("trustEntityID() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if got != tt.want {
+				t.Errorf("trustEntityID() = %q, want %q", got, tt.want)
 			}
 		})
 	}
