@@ -242,7 +242,7 @@ func (rs *directoryRoleCollectionAssignmentResource) Read(ctx context.Context, r
 
 	for _, am := range cliRes.SamlAttributeAssignment {
 		if !state.Groupname.IsNull() {
-			if am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && (samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) || samlEntityIdMatchesTrust(am.SamlEntityId, expectedSamlEntityId)) {
+			if am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && samlAssignmentOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString(), expectedSamlEntityId) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
 					state.Id = types.StringValue(fmt.Sprintf("%s,%s,group:%s,%s", state.DirectoryId.ValueString(), state.RoleCollectionName.ValueString(), state.Groupname.ValueString(), state.Origin.ValueString()))
 				}
@@ -258,7 +258,7 @@ func (rs *directoryRoleCollectionAssignmentResource) Read(ctx context.Context, r
 				return
 			}
 		} else {
-			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && (samlOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString()) || samlEntityIdMatchesTrust(am.SamlEntityId, expectedSamlEntityId)) {
+			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && samlAssignmentOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString(), expectedSamlEntityId) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
 					state.Id = types.StringValue(fmt.Sprintf("%s,%s,attribute:%s/%s,%s", state.DirectoryId.ValueString(), state.RoleCollectionName.ValueString(), state.AttributeName.ValueString(), state.AttributeValue.ValueString(), state.Origin.ValueString()))
 				}

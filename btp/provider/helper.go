@@ -38,31 +38,37 @@ func samlOriginMatches(apiOrigin, samlEntityId, stateOrigin string) bool {
 	return strings.HasPrefix(strings.ToLower(u.Hostname()), strings.ToLower(stateOrigin)+".")
 }
 
-// samlEntityIdMatchesTrust reports whether the SAML entity ID of an attribute assignment
-// belongs to the identity provider of a trust configuration. The trust configuration
-// returns the host without a scheme (e.g. "myidp.accounts.ondemand.com"), while the
-// assignment carries a URL (e.g. "https://myidp.accounts.ondemand.com"), so the hosts are compared.
-func samlEntityIdMatchesTrust(samlEntityId, trustIdentityProvider string) bool {
-	if samlEntityId == "" || trustIdentityProvider == "" {
-		return false
-	}
-	if samlEntityId == trustIdentityProvider {
-		return true
-	}
-	entityHost := hostOf(samlEntityId)
-	return entityHost != "" && strings.EqualFold(entityHost, hostOf(trustIdentityProvider))
+// samlAssignmentOriginMatches reports whether a SAML assignment belongs to an
+// origin. In addition to the assignment display name and origin-key prefix,
+// compare the assignment entity ID with the entity ID from the matching trust
+// configuration. The APIs may return one with a scheme and the other as a
+// bare hostname.
+func samlAssignmentOriginMatches(apiOrigin, samlEntityID, stateOrigin, trustEntityID string) bool {
+	return samlOriginMatches(apiOrigin, samlEntityID, stateOrigin) ||
+		(trustEntityID != "" && samlEntityIDsMatch(samlEntityID, trustEntityID))
 }
 
-// hostOf returns the host name of a URL or of a bare host name.
-func hostOf(s string) string {
-	if !strings.Contains(s, "://") {
-		s = "https://" + s
+func samlEntityIDsMatch(first, second string) bool {
+	firstHost := identityProviderHost(first)
+	return firstHost != "" && firstHost == identityProviderHost(second)
+}
+
+func identityProviderHost(value string) string {
+	value = strings.TrimSpace(value)
+	if value == "" {
+		return ""
 	}
-	u, err := url.Parse(s)
+
+	parsedURL, err := url.Parse(value)
+	if err == nil && parsedURL.Hostname() != "" {
+		return strings.ToLower(strings.TrimSuffix(parsedURL.Hostname(), "."))
+	}
+
+	parsedURL, err = url.Parse("https://" + value)
 	if err != nil {
 		return ""
 	}
-	return u.Hostname()
+	return strings.ToLower(strings.TrimSuffix(parsedURL.Hostname(), "."))
 }
 
 func stringNullIfEmpty(val string) types.String {

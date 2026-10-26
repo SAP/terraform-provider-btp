@@ -125,57 +125,57 @@ func TestSamlOriginMatches(t *testing.T) {
 	}
 }
 
-func TestSamlEntityIdMatchesTrust(t *testing.T) {
+func TestSamlAssignmentOriginMatches(t *testing.T) {
 	tests := []struct {
-		name                  string
-		samlEntityId          string
-		trustIdentityProvider string
-		want                  bool
+		name          string
+		apiOrigin     string
+		samlEntityID  string
+		stateOrigin   string
+		trustEntityID string
+		want          bool
 	}{
 		{
-			name:                  "entity ID URL matches trust host without scheme",
-			samlEntityId:          "https://myidp.accounts.ondemand.com",
-			trustIdentityProvider: "myidp.accounts.ondemand.com",
-			want:                  true,
+			name:          "trust entity hostname matches despite scheme",
+			apiOrigin:     "iasprovidertestblr.accounts400.ondemand.com (platform users)",
+			samlEntityID:  "https://iasprovidertestblr.accounts400.ondemand.com",
+			stateOrigin:   "iasprovidertestblr-platform",
+			trustEntityID: "iasprovidertestblr.accounts400.ondemand.com",
+			want:          true,
 		},
 		{
-			name:                  "identical values",
-			samlEntityId:          "https://myidp.accounts.ondemand.com",
-			trustIdentityProvider: "https://myidp.accounts.ondemand.com",
-			want:                  true,
+			name:          "sap.custom matches trust entity hostname without identity provider",
+			samlEntityID:  "https://myidp.accounts.ondemand.com",
+			stateOrigin:   "sap.custom",
+			trustEntityID: "myidp.accounts.ondemand.com",
+			want:          true,
 		},
 		{
-			name:                  "host comparison ignores case",
-			samlEntityId:          "https://MyIdp.accounts.ondemand.com",
-			trustIdentityProvider: "myidp.accounts.ondemand.com",
-			want:                  true,
+			name:          "different trust entity hostname does not match",
+			samlEntityID:  "https://iasprovidertestblr.accounts400.ondemand.com",
+			stateOrigin:   "iasprovidertestblr-platform",
+			trustEntityID: "other.accounts400.ondemand.com",
+			want:          false,
 		},
 		{
-			name:                  "different tenant",
-			samlEntityId:          "https://otheridp.accounts.ondemand.com",
-			trustIdentityProvider: "myidp.accounts.ondemand.com",
-			want:                  false,
+			name:          "empty trust entity ID does not match",
+			samlEntityID:  "https://myidp.accounts.ondemand.com",
+			stateOrigin:   "sap.custom",
+			trustEntityID: "",
+			want:          false,
 		},
 		{
-			name:                  "empty trust identity provider",
-			samlEntityId:          "https://myidp.accounts.ondemand.com",
-			trustIdentityProvider: "",
-			want:                  false,
-		},
-		{
-			name:                  "empty entity ID",
-			samlEntityId:          "",
-			trustIdentityProvider: "myidp.accounts.ondemand.com",
-			want:                  false,
+			name:          "empty SAML entity ID does not match",
+			samlEntityID:  "",
+			stateOrigin:   "sap.custom",
+			trustEntityID: "myidp.accounts.ondemand.com",
+			want:          false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := samlEntityIdMatchesTrust(tt.samlEntityId, tt.trustIdentityProvider)
-			if got != tt.want {
-				t.Errorf("samlEntityIdMatchesTrust(%q, %q) = %v, want %v",
-					tt.samlEntityId, tt.trustIdentityProvider, got, tt.want)
+			if got := samlAssignmentOriginMatches(tt.apiOrigin, tt.samlEntityID, tt.stateOrigin, tt.trustEntityID); got != tt.want {
+				t.Errorf("samlAssignmentOriginMatches() = %v, want %v", got, tt.want)
 			}
 		})
 	}
