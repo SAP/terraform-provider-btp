@@ -12,7 +12,7 @@ import (
 
 	"github.com/SAP/terraform-provider-btp/btp/provider"
 )
-
+// Entry point for the SAP BTP Terraform Provider
 func main() {
 	var debug bool
 
