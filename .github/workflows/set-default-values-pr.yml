@@ -13,17 +13,6 @@ permissions:
   pull-requests: write
 
 jobs:
-  skip-fork:
-    name: Skipped (Fork PR)
-    if: github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip message
-        run: |
-          echo "Contributor is pushing from a fork. Skipping automated PR setup"
-          echo "(project assignment, assignee, milestone, labels) — these require secrets"
-          echo "that are not available for pull requests from forks."
-
   set-default-values:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
