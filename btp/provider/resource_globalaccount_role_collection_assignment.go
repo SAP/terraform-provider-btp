@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -17,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_authz"
 )
 
 func newGlobalaccountRoleCollectionAssignmentResource() resource.Resource {
@@ -214,18 +216,31 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Read(ctx context.Contex
 		return
 	}
 
+	matches := func(am xsuaa_authz.SamlAttrAssignment, expectedSamlEntityId string) bool {
+		if !state.Groupname.IsNull() {
+			return am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && samlAssignmentOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString(), expectedSamlEntityId)
+		}
+		return am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && samlAssignmentOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString(), expectedSamlEntityId)
+	}
+
 	// Resolve the SAML entity ID for the configured origin key via the trust configuration.
 	// The samlAttributeAssignment response only carries idpDisplayName (a human label), which
 	// may differ from the origin key for custom IDPs. Comparing against the entity ID from the
 	// trust config is the reliable fallback for those cases.
+	// The lookup is only needed if no assignment matches the origin directly. A failed
+	// lookup is reported as an error. Otherwise the assignment would be dropped from the state.
 	var expectedSamlEntityId string
-	if trustConfig, _, trustErr := rs.cli.Security.Trust.GetByGlobalAccount(ctx, state.Origin.ValueString()); trustErr == nil {
-		expectedSamlEntityId = trustConfig.IdentityProvider
+	if !slices.ContainsFunc(cliRes.SamlAttributeAssignment, func(am xsuaa_authz.SamlAttrAssignment) bool { return matches(am, "") }) {
+		expectedSamlEntityId, err = trustEntityID(rs.cli.Security.Trust.GetByGlobalAccount(ctx, state.Origin.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("API Error Reading Resource Role Collection Assignment (Global Account)", fmt.Sprintf("%s", err))
+			return
+		}
 	}
 
 	for _, am := range cliRes.SamlAttributeAssignment {
 		if !state.Groupname.IsNull() {
-			if am.AttributeName == "Groups" && am.AttributeValue == state.Groupname.ValueString() && samlAssignmentOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString(), expectedSamlEntityId) {
+			if matches(am, expectedSamlEntityId) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
 					state.Id = types.StringValue(fmt.Sprintf("%s,group:%s,%s", state.RoleCollectionName.ValueString(), state.Groupname.ValueString(), state.Origin.ValueString()))
 				}
@@ -240,7 +255,7 @@ func (rs *globalaccountRoleCollectionAssignmentResource) Read(ctx context.Contex
 				return
 			}
 		} else {
-			if am.AttributeName == state.AttributeName.ValueString() && am.AttributeValue == state.AttributeValue.ValueString() && samlAssignmentOriginMatches(am.IdentityProvider, am.SamlEntityId, state.Origin.ValueString(), expectedSamlEntityId) {
+			if matches(am, expectedSamlEntityId) {
 				if state.Id.IsNull() || state.Id.IsUnknown() {
 					state.Id = types.StringValue(fmt.Sprintf("%s,attribute:%s/%s,%s", state.RoleCollectionName.ValueString(), state.AttributeName.ValueString(), state.AttributeValue.ValueString(), state.Origin.ValueString()))
 				}

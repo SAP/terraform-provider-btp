@@ -148,11 +148,15 @@ func (r *subaccountRoleCollectionAssignmentListResource) originResolver(
 	resolver := subaccountRoleCollectionAssignmentOriginResolver{filterOrigin: filter.Origin.ValueString()}
 
 	if resolver.filterOrigin != "" {
-		// Match the managed resource's Read behavior: failure to resolve the trust
-		// configuration leaves the direct origin and entity-ID matching fallbacks.
-		if trustConfiguration, _, err := r.client.Security.Trust.GetBySubaccount(ctx, filter.SubaccountID.ValueString(), resolver.filterOrigin); err == nil {
-			resolver.expectedSAMLEntityID = trustConfiguration.IdentityProvider
+		// Match the managed resource's Read behavior. Without a readable trust
+		// configuration only the direct origin match applies. A failed lookup is reported.
+		expectedSAMLEntityID, err := trustEntityID(r.client.Security.Trust.GetBySubaccount(ctx, filter.SubaccountID.ValueString(), resolver.filterOrigin))
+		if err != nil {
+			var diags diag.Diagnostics
+			diags.AddError("API Error Reading Resource Role Collection Assignment (Subaccount)", fmt.Sprintf("%s", err))
+			return resolver, diags
 		}
+		resolver.expectedSAMLEntityID = expectedSAMLEntityID
 		return resolver, nil
 	}
 

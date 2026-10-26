@@ -3,12 +3,14 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strings"
 	"time"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/saas_manager_service"
+	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/xsuaa_trust"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -69,6 +71,20 @@ func identityProviderHost(value string) string {
 		return ""
 	}
 	return strings.ToLower(strings.TrimSuffix(parsedURL.Hostname(), "."))
+}
+
+// trustEntityID returns the identity provider of a trust configuration lookup.
+// A missing trust (404) or missing read permission (403) yields an empty value.
+// The caller then falls back to the direct origin match. Any other error is
+// returned, so that a failed lookup does not drop a SAML assignment from the state.
+func trustEntityID(trustConfig xsuaa_trust.TrustConfigurationResponseObject, rawRes btpcli.CommandResponse, err error) (string, error) {
+	if err != nil {
+		if rawRes.StatusCode == http.StatusNotFound || rawRes.StatusCode == http.StatusForbidden {
+			return "", nil
+		}
+		return "", fmt.Errorf("failed to read the trust configuration of the origin: %w", err)
+	}
+	return trustConfig.IdentityProvider, nil
 }
 
 func stringNullIfEmpty(val string) types.String {
