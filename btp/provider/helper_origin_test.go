@@ -143,10 +143,31 @@ func TestSamlAssignmentOriginMatches(t *testing.T) {
 			want:          true,
 		},
 		{
+			name:          "sap.custom matches trust entity hostname without identity provider",
+			samlEntityID:  "https://myidp.accounts.ondemand.com",
+			stateOrigin:   "sap.custom",
+			trustEntityID: "myidp.accounts.ondemand.com",
+			want:          true,
+		},
+		{
 			name:          "different trust entity hostname does not match",
 			samlEntityID:  "https://iasprovidertestblr.accounts400.ondemand.com",
 			stateOrigin:   "iasprovidertestblr-platform",
 			trustEntityID: "other.accounts400.ondemand.com",
+			want:          false,
+		},
+		{
+			name:          "empty trust entity ID does not match",
+			samlEntityID:  "https://myidp.accounts.ondemand.com",
+			stateOrigin:   "sap.custom",
+			trustEntityID: "",
+			want:          false,
+		},
+		{
+			name:          "empty SAML entity ID does not match",
+			samlEntityID:  "",
+			stateOrigin:   "sap.custom",
+			trustEntityID: "myidp.accounts.ondemand.com",
 			want:          false,
 		},
 	}
