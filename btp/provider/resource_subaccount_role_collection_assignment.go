@@ -233,8 +233,11 @@ func (rs *subaccountRoleCollectionAssignmentResource) Read(ctx context.Context, 
 	// may differ from the origin key for custom IDPs. Comparing against the entity ID from the
 	// trust config is the reliable fallback for those cases.
 	var expectedSamlEntityId string
-	if trustConfig, _, trustErr := rs.cli.Security.Trust.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Origin.ValueString()); trustErr == nil {
+	if trustConfig, trustRes, trustErr := rs.cli.Security.Trust.GetBySubaccount(ctx, state.SubaccountId.ValueString(), state.Origin.ValueString()); trustErr == nil {
 		expectedSamlEntityId = trustConfig.IdentityProvider
+	} else if trustRes.StatusCode != 404 {
+		resp.Diagnostics.AddError("API Error Reading Resource Role Collection Assignment (Subaccount)", fmt.Sprintf("%s", trustErr))
+		return
 	}
 
 	for _, am := range cliRes.SamlAttributeAssignment {

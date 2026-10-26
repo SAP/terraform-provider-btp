@@ -236,8 +236,11 @@ func (rs *directoryRoleCollectionAssignmentResource) Read(ctx context.Context, r
 	// Resolve the SAML entity ID for the configured origin key to handle cases where
 	// idpDisplayName differs from the origin key for custom IDPs.
 	var expectedSamlEntityId string
-	if trustConfig, _, trustErr := rs.cli.Security.Trust.GetByGlobalAccount(ctx, state.Origin.ValueString()); trustErr == nil {
+	if trustConfig, trustRes, trustErr := rs.cli.Security.Trust.GetByGlobalAccount(ctx, state.Origin.ValueString()); trustErr == nil {
 		expectedSamlEntityId = trustConfig.IdentityProvider
+	} else if trustRes.StatusCode != 404 {
+		resp.Diagnostics.AddError("API Error Reading Resource Role Collection Assignment (Directory)", fmt.Sprintf("%s", trustErr))
+		return
 	}
 
 	for _, am := range cliRes.SamlAttributeAssignment {
