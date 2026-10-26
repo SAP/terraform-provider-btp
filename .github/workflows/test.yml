@@ -328,6 +328,7 @@ jobs:
     if: |
       always() &&
       (github.event.pull_request.draft == false || github.event_name != 'pull_request') &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
       needs.merge-coverage.result == 'success' &&
       needs.merge-coverage.outputs.coverage_produced == 'true'
     name: SonarCloud
@@ -347,3 +348,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # ── SonarCloud fork-skip notification ───────────────────────────────────────
+  sonarcloud-skip-fork:
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name != github.repository
+    name: SonarCloud (Skipped - Fork PR)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip message
+        run: |
+          echo "Contributor is pushing from a fork. SonarCloud analysis requires"
+          echo "the SONAR_TOKEN secret, which is not available for pull requests from forks."
+          echo "Skipping SonarCloud scan."
