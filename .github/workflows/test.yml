@@ -328,6 +328,7 @@ jobs:
     if: |
       always() &&
       (github.event.pull_request.draft == false || github.event_name != 'pull_request') &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
       needs.merge-coverage.result == 'success' &&
       needs.merge-coverage.outputs.coverage_produced == 'true'
     name: SonarCloud

@@ -14,8 +14,9 @@ permissions:
 
 jobs:
   set-default-values:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    environment: 
+    environment:
       name: btp
     steps:
       - name: Add PR to default project
