@@ -1,6 +1,7 @@
 package btpcli
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"crypto/rsa"
@@ -24,6 +25,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-log/tflogtest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -720,6 +722,157 @@ func TestV2Client_Execute(t *testing.T) {
 
 		assert.EqualError(t, err, "the backend responded with an unknown error: 500")
 		assert.Equal(t, 500, cmdRes.StatusCode)
+	})
+}
+
+func TestV2Client_Execute_Tracing(t *testing.T) {
+	t.Parallel()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set(HeaderCLIBackendStatus, "200")
+		_, _ = fmt.Fprintf(w, "{}")
+	}))
+	defer srv.Close()
+
+	srvUrl, _ := url.Parse(srv.URL)
+
+	newTracingClient := func() (*v2Client, *bytes.Buffer) {
+		var logSink bytes.Buffer
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, &RetryConfig{Enabled: false})
+		uut.session.Store(&Session{GlobalAccountSubdomain: "my-global-account"})
+		uut.newCorrelationID = func() string { return "test-correlation-id" }
+		return uut, &logSink
+	}
+
+	findLogEntry := func(t *testing.T, logSink *bytes.Buffer, msg string) map[string]any {
+		t.Helper()
+		entries, err := tflogtest.MultilineJSONDecode(logSink)
+		assert.NoError(t, err)
+		for _, entry := range entries {
+			if entry["@message"] == msg {
+				return entry
+			}
+		}
+		return nil
+	}
+
+	t.Run("logs command metadata at DEBUG level", func(t *testing.T) {
+		uut, logSink := newTracingClient()
+		ctx := tflogtest.RootLogger(context.Background(), logSink)
+
+		_, err := uut.Execute(ctx, NewGetRequest("subaccount/role", map[string]string{}))
+		assert.NoError(t, err)
+
+		entry := findLogEntry(t, logSink, "Executing BTP CLI command")
+		if assert.NotNil(t, entry, "expected DEBUG log entry 'Executing BTP CLI command' not found") {
+			assert.Equal(t, "subaccount/role", entry["btp_command"])
+			assert.Equal(t, string(ActionGet), entry["btp_action"])
+			assert.Equal(t, "test-correlation-id", entry["btp_correlation_id"])
+			assert.Equal(t, "my-global-account", entry["btp_global_account"])
+		}
+	})
+
+	t.Run("logs subaccount ID at DEBUG level when present in args", func(t *testing.T) {
+		uut, logSink := newTracingClient()
+		ctx := tflogtest.RootLogger(context.Background(), logSink)
+
+		_, err := uut.Execute(ctx, NewGetRequest("subaccount/role", map[string]string{
+			"subaccount": "my-subaccount-id",
+		}))
+		assert.NoError(t, err)
+
+		entry := findLogEntry(t, logSink, "Executing BTP CLI command")
+		if assert.NotNil(t, entry, "expected DEBUG log entry 'Executing BTP CLI command' not found") {
+			assert.Equal(t, "my-subaccount-id", entry["btp_subaccount_id"])
+			assert.Nil(t, entry["btp_directory_id"])
+		}
+	})
+
+	t.Run("logs directory ID at DEBUG level when directoryID key present in args", func(t *testing.T) {
+		uut, logSink := newTracingClient()
+		ctx := tflogtest.RootLogger(context.Background(), logSink)
+
+		_, err := uut.Execute(ctx, NewGetRequest("accounts/directory", map[string]string{
+			"directoryID": "my-directory-id",
+		}))
+		assert.NoError(t, err)
+
+		entry := findLogEntry(t, logSink, "Executing BTP CLI command")
+		if assert.NotNil(t, entry, "expected DEBUG log entry 'Executing BTP CLI command' not found") {
+			assert.Equal(t, "my-directory-id", entry["btp_directory_id"])
+			assert.Nil(t, entry["btp_subaccount_id"])
+		}
+	})
+
+	t.Run("logs directory ID at DEBUG level when directory key present in args", func(t *testing.T) {
+		uut, logSink := newTracingClient()
+		ctx := tflogtest.RootLogger(context.Background(), logSink)
+
+		_, err := uut.Execute(ctx, NewGetRequest("accounts/entitlement", map[string]string{
+			"directory": "my-directory-id",
+		}))
+		assert.NoError(t, err)
+
+		entry := findLogEntry(t, logSink, "Executing BTP CLI command")
+		if assert.NotNil(t, entry, "expected DEBUG log entry 'Executing BTP CLI command' not found") {
+			assert.Equal(t, "my-directory-id", entry["btp_directory_id"])
+		}
+	})
+
+	t.Run("does not log subaccount or directory ID when not present in args", func(t *testing.T) {
+		uut, logSink := newTracingClient()
+		ctx := tflogtest.RootLogger(context.Background(), logSink)
+
+		_, err := uut.Execute(ctx, NewGetRequest("accounts/global-account", map[string]string{}))
+		assert.NoError(t, err)
+
+		entry := findLogEntry(t, logSink, "Executing BTP CLI command")
+		if assert.NotNil(t, entry, "expected DEBUG log entry 'Executing BTP CLI command' not found") {
+			assert.Nil(t, entry["btp_subaccount_id"])
+			assert.Nil(t, entry["btp_directory_id"])
+		}
+	})
+}
+
+func TestV2Client_DoRequest_Tracing(t *testing.T) {
+	t.Parallel()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set(HeaderCLIBackendStatus, "200")
+		_, _ = fmt.Fprintf(w, "{}")
+	}))
+	defer srv.Close()
+
+	srvUrl, _ := url.Parse(srv.URL)
+
+	t.Run("logs HTTP request details at TRACE level", func(t *testing.T) {
+		var logSink bytes.Buffer
+		ctx := tflogtest.RootLogger(context.Background(), &logSink)
+
+		uut := NewV2ClientWithHttpClient(srv.Client(), srvUrl, &RetryConfig{Enabled: false})
+		uut.session.Store(&Session{GlobalAccountSubdomain: "my-global-account"})
+		uut.newCorrelationID = func() string { return "test-correlation-id" }
+
+		_, err := uut.Execute(ctx, NewGetRequest("subaccount/role", map[string]string{}))
+		assert.NoError(t, err)
+
+		entries, err := tflogtest.MultilineJSONDecode(&logSink)
+		assert.NoError(t, err)
+
+		var traceEntry map[string]any
+		for _, entry := range entries {
+			if entry["@message"] == "Sending BTP CLI HTTP request" {
+				traceEntry = entry
+				break
+			}
+		}
+
+		if assert.NotNil(t, traceEntry, "expected TRACE log entry 'Sending BTP CLI HTTP request' not found") {
+			assert.Equal(t, "POST", traceEntry["http_method"])
+			assert.Contains(t, traceEntry["http_url"], "command/")
+			assert.Equal(t, "test-correlation-id", traceEntry["btp_correlation_id"])
+			assert.Equal(t, "my-global-account", traceEntry["btp_global_account"])
+		}
 	})
 }
 

@@ -283,6 +283,13 @@ func (v2 *v2Client) doRequest(ctx context.Context, method string, endpoint strin
 
 	fullQualifiedEndpointURL := v2.serverURL.ResolveReference(endpointURL)
 
+	tflog.Trace(ctx, "Sending BTP CLI HTTP request", map[string]any{
+		"http_method":        method,
+		"http_url":           fullQualifiedEndpointURL.String(),
+		"btp_correlation_id": func() string { v, _ := ctx.Value(v2ContextKey(HeaderCorrelationID)).(string); return v }(),
+		"btp_global_account": v2.GetGlobalAccountSubdomain(),
+	})
+
 	req, err := http.NewRequestWithContext(ctx, method, fullQualifiedEndpointURL.String(), &bodyContent)
 	if err != nil {
 		return nil, err
@@ -648,6 +655,25 @@ func (v2 *v2Client) BtpCliSessionLogin(ctx context.Context, loginReq *BtpCliSess
 // Execute executes a command
 func (v2 *v2Client) Execute(ctx context.Context, cmdReq *CommandRequest, options ...CommandOptions) (cmdRes CommandResponse, err error) {
 	ctx = v2.initTrace(ctx)
+
+	correlationID, _ := ctx.Value(v2ContextKey(HeaderCorrelationID)).(string)
+	logFields := map[string]any{
+		"btp_command":        cmdReq.Command,
+		"btp_action":         string(cmdReq.Action),
+		"btp_correlation_id": correlationID,
+		"btp_global_account": v2.GetGlobalAccountSubdomain(),
+	}
+	if args, ok := cmdReq.Args.(map[string]string); ok {
+		if v := args["subaccount"]; v != "" {
+			logFields["btp_subaccount_id"] = v
+		}
+		if dirID := args["directoryID"]; dirID != "" {
+			logFields["btp_directory_id"] = dirID
+		} else if dirID = args["directory"]; dirID != "" {
+			logFields["btp_directory_id"] = dirID
+		}
+	}
+	tflog.Debug(ctx, "Executing BTP CLI command", logFields)
 
 	wrappedArgs := struct {
 		ParamValues any `json:"paramValues"`
