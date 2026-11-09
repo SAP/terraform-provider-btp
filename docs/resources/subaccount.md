@@ -59,7 +59,7 @@ resource "btp_subaccount" "my_project_on_azure" {
 - `description` (String) A description of the subaccount for customer-facing UIs.
 - `labels` (Map of Set of String) The set of words or phrases assigned to the subaccount.
 - `parent_id` (String) The ID of the subaccount’s parent entity. If the subaccount is located directly in the global account (not in a directory), then this is the ID of the global account.
-- `skip_auto_entitlement` (Boolean) Specifies if the subaccount creation excludes the auto-assignment of base entitlements, allowing quicker setup with potentially reduced resource consumption. When not set or set to 'false' the standard auto-assigned plans are included.
+- `skip_auto_entitlement` (Boolean) Controls whether automatic assignment of base entitlements is skipped during subaccount creation. When omitted or set to `false`, the standard auto-assigned plans are included. Changing between `true` and either `false` or an omitted value requires deletion and recreation of the subaccount. Changing between omitted and `false` updates Terraform state only.
 - `usage` (String) Shows whether the subaccount is used for production purposes. This flag can help your cloud operator to take appropriate action when handling incidents that are related to mission-critical accounts in production systems. Do not apply for subaccounts that are used for nonproduction purposes, such as development, testing, and demos. Applying this setting this does not modify the subaccount. Possible values are: 
 
   | value | description | 
@@ -140,6 +140,22 @@ Force deletion is available only if the force deletion of subaccounts is enabled
 
 Be aware, that the subaccount is removed from the Terraform state file when the subaccount is in the state of a pending deletion. This means that the subaccount will not be tracked by Terraform anymore. If you want to track the subaccount again, you can import the subaccount again after it has been restored.
 
+## Skip Auto Entitlement
+
+The `skip_auto_entitlement` attribute affects subaccount creation only. Setting it to `true` skips automatic assignment of base entitlements. Omitting it or setting it to `false` includes the standard auto-assigned plans.
+
+For an existing subaccount, Terraform handles changes as follows:
+
+| Change | Behavior |
+|---|---|
+| Omitted → `false`, or `false` → omitted | Updates Terraform state only; existing entitlements are unchanged |
+| Omitted or `false` → `true` | Requires replacement |
+| `true` → `false` or omitted | Requires replacement |
+
+“Omitted” also includes an explicit `null` value. If the new value is unknown during planning, the provider conservatively marks the subaccount for replacement.
+
+**Replacement deletes and recreates the subaccount and can affect its resources and data.** Terraform identifies the replacement during planning. Review `terraform plan` before applying changes, including when removing this attribute from your configuration. See [Pending Deletion](#pending-deletion) for deletion behavior.
+
 ## Restriction
 
 ### Move of Subaccounts
@@ -150,4 +166,4 @@ For further details please refer to [Limitation - Move of Subaccounts](https://g
 
 ### Import of Subaccounts
 
-In general, the resource supports import of existing subaccounts. However, there is one restriction that applies to the import of a subaccount i.e., the attribute `skip_auto_entitlement`. This attribute cannot be imported as this information is not available on the subaccount. Hence, every import will set this attribute to `null`. There is also no option to update the attribute as the API does not support an update of the attribute.
+Import sets `skip_auto_entitlement` to `null` because the API does not expose its original value. After import, leaving the attribute omitted or setting it to `false` does not require replacement because of this attribute. Setting it to `false` records that value in Terraform state without changing existing entitlements. Setting it to `true` requires replacement.

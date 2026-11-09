@@ -119,10 +119,23 @@ __Further documentation:__
 				},
 			},
 			"skip_auto_entitlement": schema.BoolAttribute{
-				MarkdownDescription: "Specifies if the subaccount creation excludes the auto-assignment of base entitlements, allowing quicker setup with potentially reduced resource consumption. When not set or set to 'false' the standard auto-assigned plans are included.",
+				MarkdownDescription: "Controls whether automatic assignment of base entitlements is skipped during subaccount creation. When omitted or set to `false`, the standard auto-assigned plans are included. Changing between `true` and either `false` or an omitted value requires deletion and recreation of the subaccount. Changing between omitted and `false` updates Terraform state only.",
 				Optional:            true,
 				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
+					boolplanmodifier.RequiresReplaceIf(
+						func(_ context.Context, req planmodifier.BoolRequest, resp *boolplanmodifier.RequiresReplaceIfFuncResponse) {
+							// Retain conservative replacement behavior for unknown values.
+							if req.StateValue.IsUnknown() || req.PlanValue.IsUnknown() {
+								resp.RequiresReplace = true
+								return
+							}
+
+							// Unset and false both enable auto-entitlement at creation.
+							resp.RequiresReplace = req.StateValue.ValueBool() != req.PlanValue.ValueBool()
+						},
+						"Changing between true and false or unset requires replacement.",
+						"Changing between true and false or unset requires replacement.",
+					),
 				},
 			},
 			"id": schema.StringAttribute{
@@ -400,6 +413,8 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
+	plannedSkipAutoEntitlement := plan.SkipAutoEntitlement
+
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 
@@ -458,10 +473,8 @@ func (rs *subaccountResource) Update(ctx context.Context, req resource.UpdateReq
 
 	plan, diags = subaccountValueFrom(ctx, updatedRes.(cis.SubaccountResponseObject))
 
-	if !state.SkipAutoEntitlement.IsUnknown() {
-		// The value was explicitly set in the state, so we keep it
-		plan.SkipAutoEntitlement = state.SkipAutoEntitlement
-	}
+	// The API does not return this creation-only flag. Preserve the planned value, including null.
+	plan.SkipAutoEntitlement = plannedSkipAutoEntitlement
 
 	resp.Diagnostics.Append(diags...)
 
