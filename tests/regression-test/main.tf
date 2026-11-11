@@ -263,6 +263,15 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   })
 }
 
+###
+# subaccount subscriptions
+###
+
+resource "btp_subaccount_subscription" "sas_sa_services_static_feature_flags" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  app_name      = "feature-flags-dashboard"
+  plan_name     = "dashboard"
+}
 
 ###
 # subaccount service instances
@@ -337,4 +346,43 @@ resource "btp_subaccount_service_binding" "binding_sa_services_static_malware_sc
   subaccount_id       = btp_subaccount.sa_services_static.id
   service_instance_id = btp_subaccount_service_instance.ssi_sa_services_static_malware_scanner_default.id
   name                = "test-service-binding-malware-scanner"
+}
+
+###
+# subaccount destinations
+###
+
+# subaccount destination with service instance
+resource "btp_subaccount_destination_generic" "http_dest" {
+  subaccount_id       = btp_subaccount.sa_services_static.id
+  service_instance_id = btp_subaccount_service_instance.ssi_sa_services_destination.id
+  destination_configuration = jsonencode({
+    "Name"           = "destination-with-service-instance"
+    "Type"           = "HTTP"
+    "ProxyType"      = "Internet"
+    "URL"            = "https://myservice.example.com"
+    "Authentication" = "NoAuthentication"
+    "Description"    = "trial destination of basic usecase with service instance"
+  })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
+}
+
+# subaccount destination without service instance and with additional variables for authentication
+resource "btp_subaccount_destination_generic" "http_dest_with_destination_configuration_authentication" {
+  subaccount_id = btp_subaccount.sa_services_static.id
+  destination_configuration = jsonencode({
+    "Name"            = "destination-with-authentication"
+    "Type"            = "HTTP"
+    "clientId"        = "abc"
+    "tokenServiceURL" = "https://myservice.example.com"
+    "ProxyType"       = "Internet"
+    "URL"             = "https://myservice.example.com"
+    "Authentication"  = "OAuth2ClientCredentials"
+    "Description"     = "trial destination of basic usecase with additional variables "
+  })
+  depends_on = [
+    btp_subaccount_role_collection_assignment.srca_sa_services_static_destination_creator
+  ]
 }
