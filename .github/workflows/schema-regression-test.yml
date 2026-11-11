@@ -166,7 +166,7 @@ jobs:
         run: |
           rm -rf ${{ env.PATH_TO_TFSCRIPT }}/.terraform
           rm -rf ${{ env.PATH_TO_TFSCRIPT }}/.terraform.lock.hcl
-          cp ${{ env.DEV_OVERRIDE }} ~/.terraformrc
+          rm -f ~/.terraformrc
 
       - name: Terraform Init with stable provider
         if: always()
