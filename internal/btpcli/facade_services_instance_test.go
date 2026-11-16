@@ -383,9 +383,10 @@ func TestServicesInstanceFacade_CreateVisibility(t *testing.T) {
 							t.FailNow()
 						}
 						status = tt.getStatuses[min(len(getTimes)-1, len(tt.getStatuses)-1)]
-						if status == http.StatusNotFound {
+						switch status {
+						case http.StatusNotFound:
 							body = `{"error":"NotFound"}`
-						} else if status == http.StatusForbidden {
+						case http.StatusForbidden:
 							body = `{"error":"Forbidden"}`
 						}
 					default:
