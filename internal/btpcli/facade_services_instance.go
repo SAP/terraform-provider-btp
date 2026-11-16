@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"reflect"
+	"time"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/servicemanager"
 	"github.com/SAP/terraform-provider-btp/internal/tfutils"
@@ -12,6 +14,12 @@ import (
 
 const labelRemoveOp = "remove"
 const labelAddOp = "add"
+
+const (
+	serviceInstanceVisibilityTimeout      = 15 * time.Second
+	serviceInstanceVisibilityInitialDelay = time.Second
+	serviceInstanceVisibilityMaxDelay     = 5 * time.Second
+)
 
 func newServicesInstanceFacade(cliClient *v2Client) servicesInstanceFacade {
 	return servicesInstanceFacade{cliClient: cliClient}
@@ -114,10 +122,60 @@ func (f servicesInstanceFacade) Create(ctx context.Context, args *ServiceInstanc
 	if cmdRes.StatusCode != 202 && err == nil {
 		return serviceInstanceResponseObject, cmdRes, err
 	} else if cmdRes.StatusCode == 202 && err == nil {
-		return f.GetById(ctx, args.Subaccount, serviceInstanceResponseObject.Id)
+		if serviceInstanceResponseObject.Id == "" {
+			return serviceInstanceResponseObject, cmdRes, fmt.Errorf("service instance creation was accepted, but the response did not contain an instance ID")
+		}
+		return f.getAfterCreate(ctx, args.Subaccount, serviceInstanceResponseObject.Id)
 	} else {
 		// Error case as default
 		return servicemanager.ServiceInstanceResponseObject{}, cmdRes, err
+	}
+}
+
+// getAfterCreate waits for an accepted instance to become readable. Provisioning
+// completion is handled separately by the resource waiter.
+func (f servicesInstanceFacade) getAfterCreate(ctx context.Context, subaccountId, instanceId string) (servicemanager.ServiceInstanceResponseObject, CommandResponse, error) {
+	ctx, cancel := context.WithTimeout(ctx, serviceInstanceVisibilityTimeout)
+	defer cancel()
+
+	var instance servicemanager.ServiceInstanceResponseObject
+	var response CommandResponse
+	var lastErr error
+	delay := serviceInstanceVisibilityInitialDelay
+
+	waitError := func() error {
+		err := fmt.Errorf("creation of service instance %q was accepted, but waiting for it to become readable ended: %w", instanceId, ctx.Err())
+		if lastErr != nil {
+			return fmt.Errorf("%w; last GET error: %v", err, lastErr)
+		}
+		return err
+	}
+
+	for {
+		if ctx.Err() != nil {
+			return instance, response, waitError()
+		}
+
+		var cr CommandResponse
+		instance, cr, lastErr = f.GetById(ctx, subaccountId, instanceId)
+		if cr.StatusCode != 0 {
+			response = cr
+		}
+		if ctx.Err() != nil {
+			return instance, response, waitError()
+		}
+		if lastErr == nil || cr.StatusCode != http.StatusNotFound {
+			return instance, cr, lastErr
+		}
+
+		timer := time.NewTimer(delay)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return instance, response, waitError()
+		case <-timer.C:
+		}
+		delay = min(2*delay, serviceInstanceVisibilityMaxDelay)
 	}
 }
 
