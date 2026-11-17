@@ -2,8 +2,14 @@ package btpcli
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"strconv"
 	"testing"
+	"testing/synctest"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -236,6 +242,205 @@ func TestServicesInstanceFacade_Create(t *testing.T) {
 			assert.Equal(t, 200, res.StatusCode)
 		}
 	})
+}
+
+func TestServicesInstanceFacade_CreateVisibility(t *testing.T) {
+	const instanceID = "created-instance"
+	const subaccountID = "subaccount"
+	tests := []struct {
+		name            string
+		createStatus    int
+		createBody      string
+		getStatuses     []int
+		cancelOnMissing bool
+		blockGet        bool
+		parentTimeout   time.Duration
+		wantStatus      int
+		wantError       error
+		wantMessage     string
+		wantGetTimes    []time.Duration
+		wantElapsed     time.Duration
+	}{
+		{
+			name:        "immediately readable",
+			getStatuses: []int{200}, wantStatus: 200,
+			wantGetTimes: []time.Duration{0},
+		},
+		{
+			name:        "not found twice then readable",
+			getStatuses: []int{404, 404, 200}, wantStatus: 200,
+			wantGetTimes: []time.Duration{0, time.Second, 3 * time.Second},
+			wantElapsed:  3 * time.Second,
+		},
+		{
+			name:        "persistent not found reaches visibility deadline",
+			getStatuses: []int{404}, wantStatus: 404,
+			wantError: context.DeadlineExceeded, wantMessage: "last GET error: NotFound",
+			wantGetTimes: []time.Duration{
+				0, time.Second, 3 * time.Second, 7 * time.Second,
+				12 * time.Second,
+			},
+			wantElapsed: 15 * time.Second,
+		},
+		{
+			name:        "cancellation interrupts backoff",
+			getStatuses: []int{404}, cancelOnMissing: true, wantStatus: 404,
+			wantError: context.Canceled, wantMessage: "last GET error: NotFound",
+			wantGetTimes: []time.Duration{0}, wantElapsed: 500 * time.Millisecond,
+		},
+		{
+			name:        "earlier caller deadline interrupts backoff",
+			getStatuses: []int{404}, parentTimeout: 500 * time.Millisecond, wantStatus: 404,
+			wantError: context.DeadlineExceeded, wantMessage: "last GET error: NotFound",
+			wantGetTimes: []time.Duration{0}, wantElapsed: 500 * time.Millisecond,
+		},
+		{
+			name:     "cancellation interrupts GET",
+			blockGet: true, cancelOnMissing: true,
+			wantError:    context.Canceled,
+			wantGetTimes: []time.Duration{0}, wantElapsed: 500 * time.Millisecond,
+		},
+		{
+			name:     "visibility deadline interrupts GET",
+			blockGet: true, wantError: context.DeadlineExceeded,
+			wantGetTimes: []time.Duration{0}, wantElapsed: 15 * time.Second,
+		},
+		{
+			name:        "other backend errors are returned immediately",
+			getStatuses: []int{403}, wantStatus: 403, wantMessage: "Forbidden",
+			wantGetTimes: []time.Duration{0},
+		},
+		{
+			name:       "accepted response without ID",
+			createBody: "{}", wantStatus: 202, wantMessage: "did not contain an instance ID",
+		},
+		{
+			name:         "synchronous creation does not fetch",
+			createStatus: 201, wantStatus: 201,
+		},
+		{
+			name:         "failed creation does not fetch",
+			createStatus: 400, createBody: `{"error":"BadRequest"}`,
+			wantStatus: 400, wantMessage: "BadRequest",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			synctest.Test(t, func(t *testing.T) {
+				ctx, cancel := context.WithCancel(context.Background())
+				defer cancel()
+				if tt.parentTimeout != 0 {
+					var cancelDeadline context.CancelFunc
+					ctx, cancelDeadline = context.WithTimeout(ctx, tt.parentTimeout)
+					defer cancelDeadline()
+				}
+				start := time.Now()
+				var createCalls, parameterCalls int
+				var getTimes []time.Duration
+				transport := serviceInstanceVisibilityTransport(func(r *http.Request) (*http.Response, error) {
+					status := http.StatusOK
+					body := `{"id":"created-instance"}`
+					switch Action(r.URL.RawQuery) {
+					case ActionCreate:
+						createCalls++
+						assertCall(t, r, "services/instance", ActionCreate, map[string]string{
+							"name": "instance", "subaccount": subaccountID, "plan": "plan",
+						})
+						status = tt.createStatus
+						if status == 0 {
+							status = http.StatusAccepted
+						}
+						if tt.createBody != "" {
+							body = tt.createBody
+						}
+					case ActionGet:
+						var payload struct {
+							ParamValues map[string]string
+						}
+						if !assert.NoError(t, json.NewDecoder(r.Body).Decode(&payload)) {
+							t.FailNow()
+						}
+						assert.Equal(t, instanceID, payload.ParamValues["id"])
+						assert.Equal(t, subaccountID, payload.ParamValues["subaccount"])
+						if payload.ParamValues["parameters"] == "true" {
+							parameterCalls++
+							body = `{"data":{"key":"value"}}`
+							break
+						}
+						getTimes = append(getTimes, time.Since(start))
+						if tt.cancelOnMissing {
+							go func() {
+								time.Sleep(500 * time.Millisecond)
+								cancel()
+							}()
+						}
+						if tt.blockGet {
+							<-r.Context().Done()
+							return nil, r.Context().Err()
+						}
+						if !assert.NotEmpty(t, tt.getStatuses, "unexpected GET") {
+							t.FailNow()
+						}
+						status = tt.getStatuses[min(len(getTimes)-1, len(tt.getStatuses)-1)]
+						switch status {
+						case http.StatusNotFound:
+							body = `{"error":"NotFound"}`
+						case http.StatusForbidden:
+							body = `{"error":"Forbidden"}`
+						}
+					default:
+						t.Fatalf("unexpected action: %s", r.URL.RawQuery)
+					}
+					w := httptest.NewRecorder()
+					w.Header().Set(HeaderCLIBackendStatus, strconv.Itoa(status))
+					w.WriteHeader(http.StatusOK)
+					_, err := w.WriteString(body)
+					assert.NoError(t, err)
+					return w.Result(), nil
+				})
+				serverURL, err := url.Parse("https://cli.example.test")
+				if !assert.NoError(t, err) {
+					t.FailNow()
+				}
+				client := NewV2ClientWithHttpClient(&http.Client{Transport: transport}, serverURL, &RetryConfig{Enabled: false})
+				facade := newServicesInstanceFacade(client)
+				instance, cr, err := facade.Create(ctx, &ServiceInstanceCreateInput{
+					Name: "instance", Subaccount: subaccountID, ServicePlanId: "plan",
+				})
+				if tt.wantError != nil {
+					assert.ErrorIs(t, err, tt.wantError)
+					assert.ErrorContains(t, err, instanceID)
+					assert.ErrorContains(t, err, "was accepted")
+				}
+				if tt.wantMessage != "" {
+					assert.ErrorContains(t, err, tt.wantMessage)
+				}
+				if tt.wantError == nil && tt.wantMessage == "" {
+					assert.NoError(t, err)
+					assert.Equal(t, instanceID, instance.Id)
+				}
+				assert.Equal(t, tt.wantStatus, cr.StatusCode)
+				assert.Equal(t, 1, createCalls)
+				assert.Equal(t, tt.wantGetTimes, getTimes)
+				assert.Equal(t, tt.wantElapsed, time.Since(start))
+				if err == nil && len(getTimes) > 0 {
+					assert.Equal(t, 1, parameterCalls)
+					assert.JSONEq(t, `{"key":"value"}`, instance.Parameters)
+				} else {
+					assert.Zero(t, parameterCalls)
+				}
+			})
+		})
+	}
+}
+
+// serviceInstanceVisibilityTransport keeps requests in memory so synctest can
+// advance the retry clock without network I/O or recorded fixtures.
+type serviceInstanceVisibilityTransport func(*http.Request) (*http.Response, error)
+
+func (f serviceInstanceVisibilityTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	return f(r)
 }
 
 func TestServicesInstanceFacade_Delete(t *testing.T) {
