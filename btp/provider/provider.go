@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -79,8 +80,14 @@ func (p *btpcliProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 		MarkdownDescription: `The Terraform provider for SAP BTP enables you to automate the provisioning, management, and configuration of resources on [SAP Business Technology Platform](https://account.hana.ondemand.com/). By leveraging this provider, you can simplify and streamline the deployment and maintenance of BTP services and applications.`,
 		Attributes: map[string]schema.Attribute{
 			"cli_server_url": schema.StringAttribute{
-				MarkdownDescription: "The URL of the BTP CLI server (e.g. `https://cli.btp.cloud.sap`).",
-				Optional:            true, // TODO validate URL
+				MarkdownDescription: "The URL of the BTP CLI server (e.g. `https://cli.btp.cloud.sap`). Must use HTTPS.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.RegexMatches(
+						regexp.MustCompile(`^https://`),
+						"must use the https scheme to protect credentials in transit",
+					),
+				},
 			},
 			"globalaccount": schema.StringAttribute{
 				MarkdownDescription: "The subdomain of the global account in which you want to manage resources. To be found in the cockpit, in the global account view.",
