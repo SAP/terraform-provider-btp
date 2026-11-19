@@ -39,7 +39,7 @@ func TestDataSourceSubaccountRoleCollectionBases(t *testing.T) {
 
 	t.Run("error path - cli server returns 404", func(t *testing.T) {
 		t.Parallel()
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		srv := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") || strings.Contains(r.URL.Path, "accounts/global") {
 				w.Header().Set("Content-Type", "application/json")
 				_, _ = fmt.Fprintf(w, `{"proxyType": "none", "isLicensed": true}`)
