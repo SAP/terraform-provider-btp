@@ -13,7 +13,6 @@ func TestValidateKymaKubeconfigURLSyntax_Allowed(t *testing.T) {
 		"https://any-host.example.com/kubeconfig/ABC",
 	}
 	for _, u := range allowed {
-		u := u
 		t.Run(u, func(t *testing.T) {
 			t.Parallel()
 			if err := validateKymaKubeconfigURLSyntax(u); err != nil {
@@ -32,7 +31,6 @@ func TestValidateKymaKubeconfigURLSyntax_BlockedScheme(t *testing.T) {
 		"",
 	}
 	for _, u := range blocked {
-		u := u
 		t.Run(u, func(t *testing.T) {
 			t.Parallel()
 			if err := validateKymaKubeconfigURLSyntax(u); err == nil {
@@ -52,7 +50,6 @@ func TestDenyPrivateIPs(t *testing.T) {
 		"169.254.169.254", // cloud metadata (AWS/GCP/Azure)
 	}
 	for _, ip := range blocked {
-		ip := ip
 		t.Run(ip, func(t *testing.T) {
 			t.Parallel()
 			if err := denyPrivateIPs(ip); err == nil {

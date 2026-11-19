@@ -163,11 +163,11 @@ func (ds *globalaccountAppsDataSource) Read(ctx context.Context, req datasource.
 
 	data.Values = []globalAccountAppsValue{}
 	for _, app := range cliRes {
-		appVal := globalAccountAppsValue{}
+		appVal := globalAccountAppsValue{
 
-		appVal.Id = types.StringValue(app.Appid)
+			Id: types.StringValue(app.Appid),
 
-		appVal.Description = types.StringValue(app.Description)
+			Description: types.StringValue(app.Description)}
 
 		if app.MasterAppId == nil {
 			appVal.MasterAppId = types.StringNull()
