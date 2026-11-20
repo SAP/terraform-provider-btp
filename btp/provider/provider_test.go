@@ -465,12 +465,9 @@ data "btp_whoami" "me" {}`,
 		})
 	})
 	t.Run("error path - invalid client server url", func(t *testing.T) {
-		rec, _ := setupVCR(t, "fixtures/provider.error_cli_server_url")
-		defer stopQuietly(rec)
-
 		testingResource.Test(t, testingResource.TestCase{
 			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			ProtoV6ProviderFactories: getProviders(nil),
 			Steps: []testingResource.TestStep{
 				{
 					Config: `
@@ -481,7 +478,45 @@ data "btp_whoami" "me" {}`,
 						password       = "password"
 					}
 					data "btp_whoami" "me" {}`,
-					ExpectError: regexp.MustCompile(`unableToCreateClient`),
+					ExpectError: regexp.MustCompile(`must use the https scheme`),
+				},
+			},
+		})
+	})
+	t.Run("error path - http scheme rejected for cli_server_url", func(t *testing.T) {
+		testingResource.Test(t, testingResource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []testingResource.TestStep{
+				{
+					Config: `
+provider "btp" {
+	cli_server_url = "http://cli.btp.cloud.sap"
+	globalaccount  = "ga"
+	username       = "username"
+	password       = "password"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`must use the https scheme`),
+				},
+			},
+		})
+	})
+	t.Run("error path - non-http scheme rejected for cli_server_url", func(t *testing.T) {
+		testingResource.Test(t, testingResource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []testingResource.TestStep{
+				{
+					Config: `
+provider "btp" {
+	cli_server_url = "ftp://cli.btp.cloud.sap"
+	globalaccount  = "ga"
+	username       = "username"
+	password       = "password"
+}
+data "btp_whoami" "me" {}`,
+					ExpectError: regexp.MustCompile(`must use the https scheme`),
 				},
 			},
 		})

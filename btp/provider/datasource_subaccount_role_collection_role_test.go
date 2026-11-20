@@ -88,7 +88,7 @@ data "btp_subaccount_role_collection_role" "uut" {
 	})
 	t.Run("error path - cli server returns error", func(t *testing.T) {
 		t.Parallel()
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		srv := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/login/") {
 				_, _ = fmt.Fprintf(w, "{}")
 				return

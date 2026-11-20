@@ -173,11 +173,11 @@ func (ds *directoryAppsDataSource) Read(ctx context.Context, req datasource.Read
 
 	data.Values = []directoryAppsValue{}
 	for _, app := range cliRes {
-		appVal := directoryAppsValue{}
+		appVal := directoryAppsValue{
 
-		appVal.Id = types.StringValue(app.Appid)
+			Id: types.StringValue(app.Appid),
 
-		appVal.Description = types.StringValue(app.Description)
+			Description: types.StringValue(app.Description)}
 
 		if app.MasterAppId == nil {
 			appVal.MasterAppId = types.StringNull()
