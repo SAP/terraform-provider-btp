@@ -29,7 +29,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5
         with:
           go-version-file: "go.mod"
           cache: false
@@ -51,7 +51,7 @@ jobs:
         with:
           terraform_version: ${{ env.LATEST_TF_VERSION }}
           terraform_wrapper: false
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
           go-version-file: "go.mod"
           cache: true
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v6.2.0
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v6.2.0
         with:
           go-version-file: "go.mod"
           cache: false
@@ -185,7 +185,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         if: needs.compute-test-filter.outputs.run_provider == 'true'
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5
         if: needs.compute-test-filter.outputs.run_provider == 'true'
         with:
           go-version-file: "go.mod"
@@ -266,7 +266,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         if: needs.compute-test-filter.outputs.run_internal == 'true'
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5
         if: needs.compute-test-filter.outputs.run_internal == 'true'
         with:
           go-version-file: "go.mod"
@@ -296,7 +296,7 @@ jobs:
       coverage_produced: ${{ steps.merge.outputs.coverage_produced }}
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5
         with:
           go-version-file: "go.mod"
           cache: false
