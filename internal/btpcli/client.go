@@ -164,7 +164,7 @@ func NewV2ClientWithHttpClient(client *http.Client, serverURL *url.URL, retryCfg
 	retryClient.HTTPClient = client
 	serverVerbose, _ := strconv.ParseBool(strings.TrimSpace(os.Getenv(envBTPServerVerbose)))
 	v2Client := &v2Client{
-		httpClient:    injectBTPCLITransport(retryClient.StandardClient()),
+		httpClient:    injectBTPCLITransport(retryClient.StandardClient(), serverURL),
 		serverURL:     serverURL,
 		serverVerbose: serverVerbose,
 		verboseLogger: func(ctx context.Context, event serverVerboseEvent) {
@@ -635,6 +635,12 @@ func (v2 *v2Client) BtpCliSessionLogin(ctx context.Context, loginReq *BtpCliSess
 		return nil, fmt.Errorf("no active BTP CLI session found (source: %s); please run 'btp login' first", res.Source)
 	}
 
+	// Bind the imported session to its recorded origin: refuse to attach a session
+	// that was minted for a different server (CWE-346 / CWE-287).
+	if err := v2.verifySessionServerOrigin(res.Config.ServerURL); err != nil {
+		return nil, err
+	}
+
 	v2.storeSession(&Session{
 		GlobalAccountSubdomain: loginReq.GlobalAccountSubdomain,
 		IdentityProvider:       loginReq.IdentityProvider,
@@ -650,6 +656,33 @@ func (v2 *v2Client) BtpCliSessionLogin(ctx context.Context, loginReq *BtpCliSess
 		Issuer: res.Config.Authentication.Issuer,
 	}, nil
 
+}
+
+// verifySessionServerOrigin checks that sessionServerURL (from the BTP CLI config) refers to the
+// same origin as the provider's configured server. An empty sessionServerURL is treated as the
+// default BTP server. Returns an error when the origins differ.
+func (v2 *v2Client) verifySessionServerOrigin(sessionServerURL string) error {
+	if sessionServerURL == "" {
+		sessionServerURL = DefaultServerURL
+	}
+
+	sessionURL, err := url.Parse(sessionServerURL)
+	if err != nil {
+		return fmt.Errorf("parse BTP CLI session server URL %q: %w", sessionServerURL, err)
+	}
+
+	if v2.serverURL == nil {
+		return nil
+	}
+
+	if !sameOrigin(v2.serverURL, sessionURL) {
+		return fmt.Errorf(
+			"BTP CLI session origin mismatch: session was established against %q but the provider is configured for %q; run 'btp login' against the correct server or update the cli_server_url provider attribute",
+			sessionServerURL, v2.serverURL.String(),
+		)
+	}
+
+	return nil
 }
 
 // Execute executes a command
