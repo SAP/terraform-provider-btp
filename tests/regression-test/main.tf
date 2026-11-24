@@ -257,7 +257,7 @@ resource "btp_subaccount_environment_instance" "cloudfoundry" {
   environment_type = "cloudfoundry"
   service_name     = "cloudfoundry"
   plan_name        = "standard"
-  landscape_label  = "cf-${var.region}-001"
+  landscape_label  = var.landscape_label
   parameters = jsonencode({
     instance_name = "regression-test-cf"
   })
