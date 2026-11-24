@@ -20,7 +20,7 @@ jobs:
       name: btp
     steps:
       - name: Add PR to default project
-        uses: actions/add-to-project@v2.0.1
+        uses: actions/add-to-project@f2c1f1fa649a891be84948ea89b5dfba1526ef05 # v2.0.1
         with:
           project-url: https://github.com/orgs/SAP/projects/72
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
@@ -38,7 +38,7 @@ jobs:
            -f "assignees[]=${{github.actor}}"
 
       - name: Add next milestone
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const milestones = await github.rest.issues.listMilestones({
@@ -58,7 +58,7 @@ jobs:
 
       - name: Set default labels
         if: ${{ github.actor != 'dependabot[bot]' }}
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           TITLE: ${{ github.event.pull_request.title }}
         with:

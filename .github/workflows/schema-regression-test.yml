@@ -36,11 +36,11 @@ jobs:
     steps:
       - name: Check out Git repository
         id: checkout_repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Terraform
         id: setup_terraform
-        uses: hashicorp/setup-terraform@v4
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_wrapper: false
           terraform_version: latest
@@ -126,7 +126,7 @@ jobs:
           exit 1
 
       - name: Setup Go
-        uses: actions/setup-go@v7.0.0
+        uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
           go-version-file: "go.mod"
           cache: false
@@ -222,7 +222,7 @@ jobs:
 
       - name: State deviation - find existing issue for deviation
         id: find_deviation_issue
-        uses: micalevisk/last-issue-action@v2
+        uses: micalevisk/last-issue-action@044e1cb7e9a4dde20e22969cb67818bfca0797be # v2.0.0
         if: ${{ steps.execute_deviation_check.outcome == 'failure' }}
         with:
           state: open
@@ -231,7 +231,7 @@ jobs:
             automated issue
 
       - name: State deviation - create or update issue
-        uses: peter-evans/create-issue-from-file@v6
+        uses: peter-evans/create-issue-from-file@fca9117c27cdc29c6c4db3b86c48e4115a786710 # v6.0.0
         if: ${{ steps.execute_deviation_check.outcome == 'failure' }}
         with:
           title: Regression Test Failed - State deviation found
@@ -249,7 +249,7 @@ jobs:
 
       - name: State deviation - Set run to failed
         if: ${{ steps.execute_deviation_check.outcome == 'failure' }}
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             core.setFailed('A state deviation was detected!')
