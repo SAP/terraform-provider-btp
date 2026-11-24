@@ -19,6 +19,11 @@ variable "region" {
 #   type        = string
 # }
 
+variable "landscape_label" {
+  type        = string
+  description = "The label of the landscape where the project account shall be created in."
+}
+
 variable "subaccount_subdomain_extension" {
   type        = string
   description = "Subaccount subdomains are required to be unique across landscapes. Define a custom extension to avoid subdomain collision if operating multiple integration Global Accounts in the same landscape."
