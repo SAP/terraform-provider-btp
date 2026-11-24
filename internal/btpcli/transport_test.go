@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -88,7 +89,10 @@ func TestBTPCLITransport(t *testing.T) {
 			}))
 			defer srv.Close()
 
-			client := injectBTPCLITransport(srv.Client())
+			srvURL, err := url.Parse(srv.URL)
+			assert.NoError(t, err)
+
+			client := injectBTPCLITransport(srv.Client(), srvURL)
 
 			req, err := http.NewRequest(http.MethodGet, srv.URL+"/path-0", nil)
 
@@ -100,4 +104,80 @@ func TestBTPCLITransport(t *testing.T) {
 			assert.Equal(t, test.returnStatus, res.StatusCode)
 		})
 	}
+}
+
+// TestBTPCLITransport_CrossOriginRedirect verifies that sensitive BTP credential headers are NOT
+// forwarded when a redirect points to a different origin (CVE / HASI2026375-4790).
+func TestBTPCLITransport_CrossOriginRedirect(t *testing.T) {
+	sensitiveHeaders := []struct{ key, value string }{
+		{HeaderIDToken, "super-secret-id-token"},
+		{HeaderCLISubdomain, "my-global-account"},
+	}
+
+	for _, hdr := range sensitiveHeaders {
+		t.Run("cross-origin redirect must not forward "+hdr.key, func(t *testing.T) {
+			// attackerServer records whether it received the sensitive header.
+			headerReceived := false
+			attackerSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.Header.Get(hdr.key) != "" {
+					headerReceived = true
+				}
+				w.WriteHeader(http.StatusOK)
+			}))
+			defer attackerSrv.Close()
+
+			// btpSrv responds with the sensitive header and then redirects to attackerSrv.
+			btpSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set(hdr.key, hdr.value)
+				http.RedirectHandler(attackerSrv.URL+"/steal", http.StatusTemporaryRedirect).ServeHTTP(w, r)
+			}))
+			defer btpSrv.Close()
+
+			btpURL, err := url.Parse(btpSrv.URL)
+			assert.NoError(t, err)
+
+			// Use btpSrv's client so TLS (if any) is handled; redirects to attackerSrv are cross-origin.
+			client := injectBTPCLITransport(btpSrv.Client(), btpURL)
+
+			req, err := http.NewRequest(http.MethodGet, btpSrv.URL+"/start", nil)
+			assert.NoError(t, err)
+
+			res, err := client.Do(req)
+			assert.NoError(t, err)
+			assert.Equal(t, http.StatusOK, res.StatusCode)
+
+			assert.False(t, headerReceived, "header %q must NOT be forwarded to a cross-origin redirect target", hdr.key)
+		})
+	}
+}
+
+// TestBTPCLITransport_NilServerURL verifies that when no serverURL is configured, sensitive headers
+// are withheld (safe default).
+func TestBTPCLITransport_NilServerURL(t *testing.T) {
+	headerReceived := false
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get(HeaderIDToken) != "" || r.Header.Get(HeaderCLISubdomain) != "" {
+			headerReceived = true
+		}
+		// First call: set headers and redirect; second call: respond OK.
+		if r.URL.Path == "/start" {
+			w.Header().Set(HeaderIDToken, "token-val")
+			w.Header().Set(HeaderCLISubdomain, "ga-val")
+			http.RedirectHandler("/end", http.StatusTemporaryRedirect).ServeHTTP(w, r)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer srv.Close()
+
+	client := injectBTPCLITransport(srv.Client(), nil)
+
+	req, err := http.NewRequest(http.MethodGet, srv.URL+"/start", nil)
+	assert.NoError(t, err)
+
+	res, err := client.Do(req)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, res.StatusCode)
+
+	assert.False(t, headerReceived, "headers must NOT be forwarded when serverURL is nil")
 }

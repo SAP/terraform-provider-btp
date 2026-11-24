@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"path"
 	"regexp"
 	"strings"
@@ -1088,4 +1089,97 @@ func TestV2Client_RetryLogic(t *testing.T) {
 	elapsedSec := elapsed.Seconds()
 	assert.GreaterOrEqual(t, elapsedSec, 1.0, "should wait at least 1s due to Retry-After header")
 	assert.Less(t, elapsedSec, 5.0, "should not take more than 5s even with retries")
+}
+
+func TestV2Client_VerifySessionServerOrigin(t *testing.T) {
+	t.Parallel()
+
+	btpDefault, _ := url.Parse(DefaultServerURL)
+	customURL, _ := url.Parse("https://custom.cli.server.internal")
+
+	tests := []struct {
+		description      string
+		clientServerURL  *url.URL
+		sessionServerURL string
+		wantErr          bool
+	}{
+		{
+			description:      "same origin - both default",
+			clientServerURL:  btpDefault,
+			sessionServerURL: DefaultServerURL,
+			wantErr:          false,
+		},
+		{
+			description:      "same origin - both custom",
+			clientServerURL:  customURL,
+			sessionServerURL: "https://custom.cli.server.internal",
+			wantErr:          false,
+		},
+		{
+			description:      "empty session URL treated as default - matches configured default",
+			clientServerURL:  btpDefault,
+			sessionServerURL: "",
+			wantErr:          false,
+		},
+		{
+			description:      "empty session URL treated as default - mismatches custom server",
+			clientServerURL:  customURL,
+			sessionServerURL: "",
+			wantErr:          true,
+		},
+		{
+			description:      "origin mismatch - session on default, provider on custom",
+			clientServerURL:  customURL,
+			sessionServerURL: DefaultServerURL,
+			wantErr:          true,
+		},
+		{
+			description:      "origin mismatch - session on custom, provider on default",
+			clientServerURL:  btpDefault,
+			sessionServerURL: "https://custom.cli.server.internal",
+			wantErr:          true,
+		},
+		{
+			description:      "scheme mismatch is treated as different origin",
+			clientServerURL:  btpDefault,
+			sessionServerURL: "http://cli.btp.cloud.sap",
+			wantErr:          true,
+		},
+		{
+			description:      "nil client server URL - no check performed",
+			clientServerURL:  nil,
+			sessionServerURL: "https://something.else.example.com",
+			wantErr:          false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.description, func(t *testing.T) {
+			t.Parallel()
+			uut := NewV2Client(test.clientServerURL)
+			err := uut.verifySessionServerOrigin(test.sessionServerURL)
+			if test.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestV2Client_BtpCliSessionLogin_NoSession(t *testing.T) {
+	t.Parallel()
+
+	// An empty config dir produces no session, triggering the "no active session" error path
+	// before the server-URL check is ever reached.
+	configDir := t.TempDir()
+	configJSON := fmt.Sprintf(`{"ServerURL":%q,"Settings":{"login.securestore":"false"}}`, DefaultServerURL)
+	if err := os.WriteFile(configDir+"/config.json", []byte(configJSON), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	serverURL, _ := url.Parse(DefaultServerURL)
+	uut := NewV2Client(serverURL)
+	_, err := uut.BtpCliSessionLogin(context.Background(), NewBtpCliSessionLoginRequest("my-ga", configDir, ""))
+	assert.ErrorContains(t, err, "no active BTP CLI session found")
 }
