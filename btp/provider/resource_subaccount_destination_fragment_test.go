@@ -73,6 +73,7 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 							"subaccount_id":       knownvalue.StringRegexp(regexpValidUUID),
 							"name":                knownvalue.StringExact("integration-test-fragment"),
 							"service_instance_id": knownvalue.Null(),
+							"extension_landscape": knownvalue.Null(),
 						}),
 					},
 				},
@@ -140,6 +141,7 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 							"subaccount_id":       knownvalue.StringRegexp(regexpValidUUID),
 							"name":                knownvalue.StringExact("integration-test-fragment-with-service-instance"),
 							"service_instance_id": knownvalue.StringRegexp(regexpValidUUID),
+							"extension_landscape": knownvalue.Null(),
 						}),
 					},
 				},
@@ -205,7 +207,7 @@ func hclResourceSubaccountDestinationFragment(resourceName string, subaccountNam
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination_fragment" "%s" {
 		subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
-		name = "%s"	
+		name = "%s"
     }`, resourceName, subaccountName, fragmentName)
 }
 
@@ -216,7 +218,7 @@ data "btp_subaccount_service_instance" "fragment_instance" {
   subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
   name          = "%s"
 }
-resource "btp_subaccount_destination_fragment" "%s" {	
+resource "btp_subaccount_destination_fragment" "%s" {
 subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 name = "%s"
 service_instance_id = data.btp_subaccount_service_instance.fragment_instance.id
