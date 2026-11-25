@@ -50,6 +50,7 @@ func TestSubaccountDestinationFragmentListResource(t *testing.T) {
 								"name":                knownvalue.StringExact("test_destination_fragment"),
 								"subaccount_id":       knownvalue.StringExact(subaccountID),
 								"service_instance_id": knownvalue.Null(),
+								"extension_landscape": knownvalue.Null(),
 							},
 						),
 					},
@@ -73,6 +74,7 @@ func TestSubaccountDestinationFragmentListResource(t *testing.T) {
 								"name":                knownvalue.StringExact("test_destination_fragment"),
 								"subaccount_id":       knownvalue.StringExact(subaccountID),
 								"service_instance_id": knownvalue.Null(),
+								"extension_landscape": knownvalue.Null(),
 							}),
 							[]querycheck.KnownValueCheck{
 								{

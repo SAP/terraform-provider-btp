@@ -50,6 +50,7 @@ func TestSubaccountDestinationGenericListResource(t *testing.T) {
 								"name":                knownvalue.StringExact("destination-resource"),
 								"subaccount_id":       knownvalue.StringExact(subaccountID),
 								"service_instance_id": knownvalue.Null(),
+								"extension_landscape": knownvalue.Null(),
 							},
 						),
 					},
@@ -73,6 +74,7 @@ func TestSubaccountDestinationGenericListResource(t *testing.T) {
 								"name":                knownvalue.StringExact("destination-resource"),
 								"subaccount_id":       knownvalue.StringExact(subaccountID),
 								"service_instance_id": knownvalue.Null(),
+								"extension_landscape": knownvalue.Null(),
 							}),
 							[]querycheck.KnownValueCheck{
 								{
