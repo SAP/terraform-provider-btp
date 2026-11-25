@@ -5,8 +5,10 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -22,6 +24,7 @@ type subaccountDestinationsGenericDataSourceConfig struct {
 	/* INPUT */
 	SubaccountID      types.String `tfsdk:"subaccount_id"`
 	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
 	/* OUTPUT */
 	Values []subaccountDestinationGenericType `tfsdk:"values"`
 }
@@ -61,6 +64,13 @@ Connectivity and Destination Administrator`,
 				MarkdownDescription: "The service instance that becomes part of the path used to access the destination of the subaccount.",
 				Optional:            true,
 			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
+			},
 			"values": schema.ListNestedAttribute{
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -88,6 +98,10 @@ Connectivity and Destination Administrator`,
 							MarkdownDescription: "The service instance that becomes part of the path used to access the destination of the subaccount.",
 							Computed:            true,
 						},
+						"extension_landscape": schema.StringAttribute{
+							MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+							Computed:            true,
+						},
 						"destination_configuration": schema.StringAttribute{
 							MarkdownDescription: "The configuration parameters for the destination.",
 							Computed:            true,
@@ -112,14 +126,14 @@ func (ds *subaccountDestinationsGenericDataSource) Read(ctx context.Context, req
 		return
 	}
 
-	cliRes, _, err := ds.cli.Connectivity.Destination.ListBySubaccount(ctx, data.SubaccountID.ValueString(), data.ServiceInstanceID.ValueString())
+	cliRes, _, err := ds.cli.Connectivity.Destination.ListBySubaccount(ctx, data.SubaccountID.ValueString(), data.ServiceInstanceID.ValueString(), data.ExtensionLandscape.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading destinations", fmt.Sprintf("%s", err))
 		return
 	}
 
 	for _, destination := range cliRes {
-		result, diags := destinationGenericDatasourceValueFrom(destination, data.SubaccountID, data.ServiceInstanceID)
+		result, diags := destinationGenericDatasourceValueFrom(destination, data.SubaccountID, data.ServiceInstanceID, data.ExtensionLandscape)
 		resp.Diagnostics.Append(diags...)
 
 		data.Values = append(data.Values, result)

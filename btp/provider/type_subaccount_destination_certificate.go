@@ -15,6 +15,7 @@ import (
 type subaccountDestinationCertificatesType struct {
 	SubaccountId                types.String `tfsdk:"subaccount_id"`
 	ServiceInstanceId           types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape          types.String `tfsdk:"extension_landscape"`
 	SubaccountCertificates      types.List   `tfsdk:"subaccount_level_certificates"`
 	ServiceInstanceCertificates types.List   `tfsdk:"service_instance_level_certificates"`
 }
@@ -28,17 +29,19 @@ type subaccountDestinationCertificatesDataSourceType struct {
 
 // Used for the certificate data source
 type subaccountDestinationCertificateDataSourceType struct {
-	SubaccountId      types.String `tfsdk:"subaccount_id"`
-	ServiceInstanceId types.String `tfsdk:"service_instance_id"`
-	CertificateName   types.String `tfsdk:"certificate_name"`
-	Nodes             types.List   `tfsdk:"certificate_nodes"`
-	Creation          types.Object `tfsdk:"certification_creation_details"`
+	SubaccountId       types.String `tfsdk:"subaccount_id"`
+	ServiceInstanceId  types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
+	CertificateName    types.String `tfsdk:"certificate_name"`
+	Nodes              types.List   `tfsdk:"certificate_nodes"`
+	Creation           types.Object `tfsdk:"certification_creation_details"`
 }
 
 // Used for the certificate resource
 type subaccountDestinationCertificateResourceType struct {
 	SubaccountId       types.String `tfsdk:"subaccount_id"`
 	ServiceInstanceId  types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
 	CertificateContent types.String `tfsdk:"certificate_content"`
 	CertificateName    types.String `tfsdk:"certificate_name"`
 	Nodes              types.List   `tfsdk:"certificate_nodes"`

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
@@ -27,9 +28,10 @@ func newSubaccountDestinationGenericResource() resource.Resource {
 }
 
 type subaccountDestinationGenericIdentityModel struct {
-	SubaccountID      types.String `tfsdk:"subaccount_id"`
-	Name              types.String `tfsdk:"name"`
-	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
+	SubaccountID       types.String `tfsdk:"subaccount_id"`
+	Name               types.String `tfsdk:"name"`
+	ServiceInstanceID  types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
 }
 
 type subaccountDestinationGenericResource struct {
@@ -104,6 +106,13 @@ __Notes:__
 			"service_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The service instance that becomes part of the path used to access the destination of the subaccount.",
 				Optional:            true,
+			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
 			},
 			"destination_configuration": schema.StringAttribute{
 				MarkdownDescription: "The configuration parameters for the destination.",
@@ -191,6 +200,9 @@ func (rs *subaccountDestinationGenericResource) IdentitySchema(_ context.Context
 			"service_instance_id": identityschema.StringAttribute{
 				OptionalForImport: true,
 			},
+			"extension_landscape": identityschema.StringAttribute{
+				OptionalForImport: true,
+			},
 		},
 	}
 }
@@ -204,13 +216,13 @@ func (rs *subaccountDestinationGenericResource) Read(ctx context.Context, req re
 	}
 	planDestinationConfiguration := data.DestinationConfiguration
 
-	cliRes, rawRes, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
+	cliRes, rawRes, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString(), data.ExtensionLandscape.ValueString())
 	if err != nil {
 		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Destination Generic (Subaccount)")
 		return
 	}
 
-	data, diags = destinationGenericResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID, data.Name.ValueString())
+	data, diags = destinationGenericResourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID, data.ExtensionLandscape, data.Name.ValueString())
 	resp.Diagnostics.Append(diags...)
 
 	if !planDestinationConfiguration.IsNull() &&
@@ -230,9 +242,10 @@ func (rs *subaccountDestinationGenericResource) Read(ctx context.Context, req re
 	diags = req.Identity.Get(ctx, &identity)
 	if diags.HasError() {
 		identity = subaccountDestinationGenericIdentityModel{
-			SubaccountID:      data.SubaccountID,
-			Name:              data.Name,
-			ServiceInstanceID: data.ServiceInstanceID,
+			SubaccountID:       data.SubaccountID,
+			Name:               data.Name,
+			ServiceInstanceID:  data.ServiceInstanceID,
+			ExtensionLandscape: data.ExtensionLandscape,
 		}
 	}
 
@@ -259,19 +272,19 @@ func (rs *subaccountDestinationGenericResource) Create(ctx context.Context, req 
 		resp.Diagnostics.AddError("Invalid destination configuration:", fmt.Sprintf("%s", err))
 		return
 	}
-	_, _, err = rs.cli.Connectivity.Destination.CreateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString())
+	_, _, err = rs.cli.Connectivity.Destination.CreateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString(), plan.ExtensionLandscape.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Destination", fmt.Sprintf("%s", err))
 		return
 	}
 
-	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), name, plan.ServiceInstanceID.ValueString())
+	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), name, plan.ServiceInstanceID.ValueString(), plan.ExtensionLandscape.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
 		return
 	}
 
-	state, diags := destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
+	state, diags := destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, plan.ExtensionLandscape, name)
 	resp.Diagnostics.Append(diags...)
 
 	state.DestinationConfiguration = planDestinationConfiguration
@@ -283,9 +296,10 @@ func (rs *subaccountDestinationGenericResource) Create(ctx context.Context, req 
 	resp.Diagnostics.Append(diags...)
 
 	identity := subaccountDestinationGenericIdentityModel{
-		SubaccountID:      state.SubaccountID,
-		Name:              types.StringValue(name),
-		ServiceInstanceID: state.ServiceInstanceID,
+		SubaccountID:       state.SubaccountID,
+		Name:               types.StringValue(name),
+		ServiceInstanceID:  state.ServiceInstanceID,
+		ExtensionLandscape: state.ExtensionLandscape,
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
@@ -311,19 +325,19 @@ func (rs *subaccountDestinationGenericResource) Update(ctx context.Context, req 
 		resp.Diagnostics.AddError("Error Validation of Url for Resource Destination", fmt.Sprintf("%s", err))
 		return
 	}
-	_, _, err = rs.cli.Connectivity.Destination.UpdateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString())
+	_, _, err = rs.cli.Connectivity.Destination.UpdateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString(), plan.ExtensionLandscape.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Destination", fmt.Sprintf("%s", err))
 		return
 	}
 
-	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), name, plan.ServiceInstanceID.ValueString())
+	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), name, plan.ServiceInstanceID.ValueString(), plan.ExtensionLandscape.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
 		return
 	}
 
-	state, diags := destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, name)
+	state, diags := destinationGenericResourceValueFrom(cliRes, plan.SubaccountID, plan.ServiceInstanceID, plan.ExtensionLandscape, name)
 	resp.Diagnostics.Append(diags...)
 
 	state.DestinationConfiguration = planDestinationConfiguration
@@ -337,9 +351,10 @@ func (rs *subaccountDestinationGenericResource) Update(ctx context.Context, req 
 	// WORKAROUND for OpenTofu compatibility
 	// see https://github.com/SAP/terraform-provider-btp/issues/1383
 	identity := subaccountDestinationGenericIdentityModel{
-		SubaccountID:      state.SubaccountID,
-		Name:              types.StringValue(name),
-		ServiceInstanceID: state.ServiceInstanceID,
+		SubaccountID:       state.SubaccountID,
+		Name:               types.StringValue(name),
+		ServiceInstanceID:  state.ServiceInstanceID,
+		ExtensionLandscape: state.ExtensionLandscape,
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
@@ -361,7 +376,7 @@ func (rs *subaccountDestinationGenericResource) Delete(ctx context.Context, req 
 		return
 	}
 
-	_, _, err = rs.cli.Connectivity.Destination.DeleteBySubaccount(ctx, state.SubaccountID.ValueString(), name, state.ServiceInstanceID.ValueString())
+	_, _, err = rs.cli.Connectivity.Destination.DeleteBySubaccount(ctx, state.SubaccountID.ValueString(), name, state.ServiceInstanceID.ValueString(), state.ExtensionLandscape.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Destination", fmt.Sprintf("%s", err))
 		return
@@ -386,6 +401,7 @@ func (rs *subaccountDestinationGenericResource) ImportState(ctx context.Context,
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), types.StringNull())...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("extension_landscape"), types.StringNull())...)
 
 			return
 
@@ -401,6 +417,27 @@ func (rs *subaccountDestinationGenericResource) ImportState(ctx context.Context,
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), idParts[2])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("extension_landscape"), types.StringNull())...)
+
+			return
+
+		case 4:
+			if idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
+				resp.Diagnostics.AddError(
+					ErrUnexpectedImportIdentifier,
+					fmt.Sprintf("Expected import identifier with format: subaccount_id, name, service_instance_id, extension_landscape. Got: %q", req.ID),
+				)
+				return
+			}
+
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), idParts[2])...)
+			extensionLandscape := types.StringNull()
+			if idParts[3] != "" {
+				extensionLandscape = types.StringValue(idParts[3])
+			}
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("extension_landscape"), extensionLandscape)...)
 
 			return
 
@@ -408,7 +445,7 @@ func (rs *subaccountDestinationGenericResource) ImportState(ctx context.Context,
 			resp.Diagnostics.AddError(
 				ErrUnexpectedImportIdentifier,
 				fmt.Sprintf(
-					"Expected one of:\n  - subaccount_id,name\n  - subaccount_id,name,service_instance_id\nGot: %q",
+					"Expected one of:\n  - subaccount_id,name\n  - subaccount_id,name,service_instance_id\n  - subaccount_id,name,service_instance_id,extension_landscape\nGot: %q",
 					req.ID,
 				),
 			)
@@ -426,4 +463,5 @@ func (rs *subaccountDestinationGenericResource) ImportState(ctx context.Context,
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), identity.SubaccountID)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), identity.Name)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), identity.ServiceInstanceID)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("extension_landscape"), identity.ExtensionLandscape)...)
 }

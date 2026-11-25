@@ -5,8 +5,10 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
@@ -56,6 +58,13 @@ Connectivity and Destination Administrator`,
 				MarkdownDescription: "The service instance that becomes part of the path used to access the destination of the subaccount.",
 				Optional:            true,
 			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
+			},
 			"creation_time": schema.StringAttribute{
 				MarkdownDescription: "The date and time when the resource was created.",
 				Computed:            true,
@@ -88,13 +97,13 @@ func (ds *subaccountDestinationGenericDataSource) Read(ctx context.Context, req 
 		return
 	}
 
-	cliRes, _, err := ds.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
+	cliRes, _, err := ds.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString(), data.ExtensionLandscape.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading destination", fmt.Sprintf("%s", err))
 		return
 	}
 
-	data, diags = destinationGenericDatasourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID)
+	data, diags = destinationGenericDatasourceValueFrom(cliRes, data.SubaccountID, data.ServiceInstanceID, data.ExtensionLandscape)
 	resp.Diagnostics.Append(diags...)
 
 	diags = resp.State.Set(ctx, &data)

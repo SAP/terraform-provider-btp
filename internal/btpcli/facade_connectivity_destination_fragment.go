@@ -29,12 +29,16 @@ func (f *connectivityDestinationFragmentFacade) GetBySubaccount(ctx context.Cont
 	}))
 }
 
-func (f *connectivityDestinationFragmentFacade) GetByServiceInstance(ctx context.Context, subaccountID string, name string, serviceInstanceID string) (connectivity.DestinationFragment, CommandResponse, error) {
-	return doExecute[connectivity.DestinationFragment](f.cliClient, ctx, NewGetRequest(f.getCommand(), map[string]string{
+func (f *connectivityDestinationFragmentFacade) GetByServiceInstance(ctx context.Context, subaccountID string, name string, serviceInstanceID string, region string) (connectivity.DestinationFragment, CommandResponse, error) {
+	params := map[string]string{
 		"name":            name,
 		"subaccount":      subaccountID,
 		"serviceInstance": serviceInstanceID,
-	}))
+	}
+	if len(region) > 0 {
+		params["region"] = region
+	}
+	return doExecute[connectivity.DestinationFragment](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
 }
 
 func (f *connectivityDestinationFragmentFacade) ListBySubaccount(ctx context.Context, subaccountID string) ([]connectivity.DestinationFragment, CommandResponse, error) {
@@ -43,11 +47,15 @@ func (f *connectivityDestinationFragmentFacade) ListBySubaccount(ctx context.Con
 	}))
 }
 
-func (f *connectivityDestinationFragmentFacade) ListByServiceInstance(ctx context.Context, subaccountID string, serviceInstanceID string) ([]connectivity.DestinationFragment, CommandResponse, error) {
-	return doExecute[[]connectivity.DestinationFragment](f.cliClient, ctx, NewListRequest(f.getCommand(), map[string]string{
+func (f *connectivityDestinationFragmentFacade) ListByServiceInstance(ctx context.Context, subaccountID string, serviceInstanceID string, region string) ([]connectivity.DestinationFragment, CommandResponse, error) {
+	params := map[string]string{
 		"subaccount":      subaccountID,
 		"serviceInstance": serviceInstanceID,
-	}))
+	}
+	if len(region) > 0 {
+		params["region"] = region
+	}
+	return doExecute[[]connectivity.DestinationFragment](f.cliClient, ctx, NewListRequest(f.getCommand(), params))
 }
 
 func (f *connectivityDestinationFragmentFacade) CreateBySubaccount(ctx context.Context, subaccountID string, content map[string]string) (connectivity.DestinationFragment, CommandResponse, error) {
@@ -64,7 +72,7 @@ func (f *connectivityDestinationFragmentFacade) CreateBySubaccount(ctx context.C
 	return doExecute[connectivity.DestinationFragment](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 }
 
-func (f *connectivityDestinationFragmentFacade) CreateByServiceInstance(ctx context.Context, subaccountID string, serviceInstanceID string, content map[string]string) (connectivity.DestinationFragment, CommandResponse, error) {
+func (f *connectivityDestinationFragmentFacade) CreateByServiceInstance(ctx context.Context, subaccountID string, serviceInstanceID string, content map[string]string, region string) (connectivity.DestinationFragment, CommandResponse, error) {
 	jsonBytes, err := json.Marshal(content)
 	if err != nil {
 		return connectivity.DestinationFragment{}, CommandResponse{}, fmt.Errorf(errMarshalFragmentContent, err)
@@ -74,6 +82,9 @@ func (f *connectivityDestinationFragmentFacade) CreateByServiceInstance(ctx cont
 		"subaccount":      subaccountID,
 		"serviceInstance": serviceInstanceID,
 		"content":         string(jsonBytes),
+	}
+	if len(region) > 0 {
+		params["region"] = region
 	}
 
 	return doExecute[connectivity.DestinationFragment](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
@@ -93,7 +104,7 @@ func (f *connectivityDestinationFragmentFacade) UpdateBySubaccount(ctx context.C
 	return doExecute[connectivity.DestinationFragment](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
 }
 
-func (f *connectivityDestinationFragmentFacade) UpdateByServiceInstance(ctx context.Context, subaccountID string, serviceInstanceID string, content map[string]string) (connectivity.DestinationFragment, CommandResponse, error) {
+func (f *connectivityDestinationFragmentFacade) UpdateByServiceInstance(ctx context.Context, subaccountID string, serviceInstanceID string, content map[string]string, region string) (connectivity.DestinationFragment, CommandResponse, error) {
 	jsonBytes, err := json.Marshal(content)
 	if err != nil {
 		return connectivity.DestinationFragment{}, CommandResponse{}, fmt.Errorf(errMarshalFragmentContent, err)
@@ -103,6 +114,9 @@ func (f *connectivityDestinationFragmentFacade) UpdateByServiceInstance(ctx cont
 		"subaccount":      subaccountID,
 		"serviceInstance": serviceInstanceID,
 		"content":         string(jsonBytes),
+	}
+	if len(region) > 0 {
+		params["region"] = region
 	}
 
 	return doExecute[connectivity.DestinationFragment](f.cliClient, ctx, NewUpdateRequest(f.getCommand(), params))
@@ -115,10 +129,14 @@ func (f *connectivityDestinationFragmentFacade) DeleteBySubaccount(ctx context.C
 	}))
 }
 
-func (f *connectivityDestinationFragmentFacade) DeleteByServiceInstance(ctx context.Context, subaccountID string, name string, serviceInstanceID string) (connectivity.DestinationFragment, CommandResponse, error) {
-	return doExecute[connectivity.DestinationFragment](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), map[string]string{
+func (f *connectivityDestinationFragmentFacade) DeleteByServiceInstance(ctx context.Context, subaccountID string, name string, serviceInstanceID string, region string) (connectivity.DestinationFragment, CommandResponse, error) {
+	params := map[string]string{
 		"subaccount":      subaccountID,
 		"name":            name,
 		"serviceInstance": serviceInstanceID,
-	}))
+	}
+	if len(region) > 0 {
+		params["region"] = region
+	}
+	return doExecute[connectivity.DestinationFragment](f.cliClient, ctx, NewDeleteRequest(f.getCommand(), params))
 }

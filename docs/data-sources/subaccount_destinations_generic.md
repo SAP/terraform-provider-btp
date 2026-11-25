@@ -46,6 +46,7 @@ data "btp_subaccount_destinations_generic" "dest_by_subaccount_and_service_insta
 
 ### Optional
 
+- `extension_landscape` (String) The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.
 - `service_instance_id` (String) The service instance that becomes part of the path used to access the destination of the subaccount.
 
 ### Read-Only
@@ -60,6 +61,7 @@ Read-Only:
 - `creation_time` (String) The date and time when the resource was created.
 - `destination_configuration` (String) The configuration parameters for the destination.
 - `etag` (String) The etag for the destination resource
+- `extension_landscape` (String) The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.
 - `modification_time` (String) The date and time when the resource was modified.
 - `name` (String) The descriptive name of the destination for subaccount
 - `service_instance_id` (String) The service instance that becomes part of the path used to access the destination of the subaccount.

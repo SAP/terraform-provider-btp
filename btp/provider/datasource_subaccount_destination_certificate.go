@@ -5,8 +5,11 @@ import (
 	"fmt"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 func newSubaccountDestinationCertificateDataSource() datasource.DataSource {
@@ -47,6 +50,13 @@ __Further Information:__
 			"service_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The ID of the service instance associated with this certificate.",
 				Optional:            true,
+			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
 			},
 			"certificate_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the certificate with a valid certificate extension. Supported certificate types include .pem, .p12, .jks and .pfx",
@@ -148,6 +158,7 @@ func (ds *subaccountDestinationCertificateDataSource) Read(ctx context.Context, 
 	cliRes, _, err := ds.cli.Connectivity.DestinationCertificate.Get(ctx, &btpcli.DestinationCertificateGetInput{
 		SubaccountId:      data.SubaccountId.ValueString(),
 		ServiceInstanceId: data.ServiceInstanceId.ValueString(),
+		Region:            data.ExtensionLandscape.ValueString(),
 		CertificateName:   data.CertificateName.ValueString(),
 	})
 
@@ -163,11 +174,12 @@ func (ds *subaccountDestinationCertificateDataSource) Read(ctx context.Context, 
 	}
 
 	state := subaccountDestinationCertificateDataSourceType{
-		SubaccountId:      data.SubaccountId,
-		ServiceInstanceId: data.ServiceInstanceId,
-		CertificateName:   dataRes.CertificateName,
-		Nodes:             dataRes.Nodes,
-		Creation:          dataRes.Creation,
+		SubaccountId:       data.SubaccountId,
+		ServiceInstanceId:  data.ServiceInstanceId,
+		ExtensionLandscape: data.ExtensionLandscape,
+		CertificateName:    dataRes.CertificateName,
+		Nodes:              dataRes.Nodes,
+		Creation:           dataRes.Creation,
 	}
 
 	diags = resp.State.Set(ctx, &state)

@@ -405,6 +405,24 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("error path - extension_landscape without service_instance_id", func(t *testing.T) {
+		t.Parallel()
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config: `resource "btp_subaccount_destination_generic" "res7" {
+						subaccount_id             = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+						extension_landscape       = "cf-us10-001"
+						destination_configuration = jsonencode({ Name = "my-destination" })
+					}`,
+					ExpectError: regexp.MustCompile(`Attribute "service_instance_id" must be specified when\s+"extension_landscape"\s+is specified`),
+				},
+			},
+		})
+	})
 }
 func hclResourceDestinationGeneric(resourceName string, subaccountName string, destinationConfig map[string]string) string {
 

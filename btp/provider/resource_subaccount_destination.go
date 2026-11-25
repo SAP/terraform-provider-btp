@@ -185,7 +185,7 @@ func (rs *subaccountDestinationResource) Read(ctx context.Context, req resource.
 	}
 	planAdditionalConfiguration := data.AdditionalConfiguration
 
-	cliRes, rawRes, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
+	cliRes, rawRes, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString(), "")
 	if err != nil {
 		handleReadErrors(ctx, rawRes, cliRes, resp, err, "Resource Destination (Subaccount)")
 		return
@@ -232,13 +232,13 @@ func (rs *subaccountDestinationResource) Create(ctx context.Context, req resourc
 		return
 	}
 
-	_, _, err = rs.cli.Connectivity.Destination.CreateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString())
+	_, _, err = rs.cli.Connectivity.Destination.CreateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString(), "")
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Creating Resource Destination", fmt.Sprintf("%s", err))
 		return
 	}
 
-	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString())
+	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString(), "")
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
 		return
@@ -283,13 +283,13 @@ func (rs *subaccountDestinationResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	_, _, err = rs.cli.Connectivity.Destination.UpdateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString())
+	_, _, err = rs.cli.Connectivity.Destination.UpdateBySubaccount(ctx, plan.SubaccountID.ValueString(), destinationData, plan.ServiceInstanceID.ValueString(), "")
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Updating Resource Destination", fmt.Sprintf("%s", err))
 		return
 	}
 
-	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString())
+	cliRes, _, err := rs.cli.Connectivity.Destination.GetBySubaccount(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString(), "")
 	if err != nil {
 		resp.Diagnostics.AddError(ErrApiReadingDestination, fmt.Sprintf("%s", err))
 		return
@@ -330,7 +330,7 @@ func (rs *subaccountDestinationResource) Delete(ctx context.Context, req resourc
 		return
 	}
 
-	_, _, err := rs.cli.Connectivity.Destination.DeleteBySubaccount(ctx, state.SubaccountID.ValueString(), state.Name.ValueString(), state.ServiceInstanceID.ValueString())
+	_, _, err := rs.cli.Connectivity.Destination.DeleteBySubaccount(ctx, state.SubaccountID.ValueString(), state.Name.ValueString(), state.ServiceInstanceID.ValueString(), "")
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Deleting Resource Destination", fmt.Sprintf("%s", err))
 		return

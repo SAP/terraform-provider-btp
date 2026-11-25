@@ -61,6 +61,7 @@ data "btp_subaccount_destination_fragment" "dest_fragment_by_subaccount_and_serv
 
 ### Optional
 
+- `extension_landscape` (String) The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.
 - `service_instance_id` (String) The ID of the service instance associated with the destination fragment.
 
 ### Read-Only

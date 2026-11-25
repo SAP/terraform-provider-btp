@@ -36,6 +36,7 @@ func TestConnectivityDestinationFragmentFacade_GetByServiceInstance(t *testing.T
 	subaccountId := "sub-123"
 	serviceInstanceId := "inst-001"
 	frag := "frag1"
+	region := "cf-us10-001"
 
 	var srvCalled bool
 	uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -45,11 +46,12 @@ func TestConnectivityDestinationFragmentFacade_GetByServiceInstance(t *testing.T
 			"name":            frag,
 			"subaccount":      subaccountId,
 			"serviceInstance": serviceInstanceId,
+			"region":          region,
 		})
 	}))
 	defer srv.Close()
 
-	_, res, err := uut.Connectivity.DestinationFragment.GetByServiceInstance(context.TODO(), subaccountId, frag, serviceInstanceId)
+	_, res, err := uut.Connectivity.DestinationFragment.GetByServiceInstance(context.TODO(), subaccountId, frag, serviceInstanceId, region)
 
 	if assert.True(t, srvCalled) && assert.NoError(t, err) {
 		assert.Equal(t, 200, res.StatusCode)
@@ -81,6 +83,7 @@ func TestConnectivityDestinationFragmentFacade_ListByServiceInstance(t *testing.
 	command := "connectivity/destination-fragment"
 	subaccountId := "sub-123"
 	serviceInstanceId := "inst-001"
+	region := "cf-us10-001"
 
 	var srvCalled bool
 	uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -89,11 +92,12 @@ func TestConnectivityDestinationFragmentFacade_ListByServiceInstance(t *testing.
 		assertCall(t, r, command, ActionList, map[string]string{
 			"subaccount":      subaccountId,
 			"serviceInstance": serviceInstanceId,
+			"region":          region,
 		})
 	}))
 	defer srv.Close()
 
-	_, res, err := uut.Connectivity.DestinationFragment.ListByServiceInstance(context.TODO(), subaccountId, serviceInstanceId)
+	_, res, err := uut.Connectivity.DestinationFragment.ListByServiceInstance(context.TODO(), subaccountId, serviceInstanceId, region)
 
 	if assert.True(t, srvCalled) && assert.NoError(t, err) {
 		assert.Equal(t, 200, res.StatusCode)
@@ -130,6 +134,7 @@ func TestConnectivityDestinationFragmentFacade_CreateByServiceInstance(t *testin
 	instId := "inst-001"
 	content := map[string]string{"foo": "bar"}
 	expectedJSON := `{"foo":"bar"}`
+	region := "cf-us10-001"
 
 	var srvCalled bool
 	uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -139,11 +144,12 @@ func TestConnectivityDestinationFragmentFacade_CreateByServiceInstance(t *testin
 			"subaccount":      subId,
 			"serviceInstance": instId,
 			"content":         expectedJSON,
+			"region":          region,
 		})
 	}))
 	defer srv.Close()
 
-	_, res, err := uut.Connectivity.DestinationFragment.CreateByServiceInstance(context.TODO(), subId, instId, content)
+	_, res, err := uut.Connectivity.DestinationFragment.CreateByServiceInstance(context.TODO(), subId, instId, content, region)
 
 	if assert.True(t, srvCalled) && assert.NoError(t, err) {
 		assert.Equal(t, 200, res.StatusCode)
@@ -180,6 +186,7 @@ func TestConnectivityDestinationFragmentFacade_UpdateByServiceInstance(t *testin
 	instId := "inst-001"
 	content := map[string]string{"a": "b"}
 	expectedJSON := `{"a":"b"}`
+	region := "cf-us10-001"
 
 	var srvCalled bool
 	uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -189,11 +196,12 @@ func TestConnectivityDestinationFragmentFacade_UpdateByServiceInstance(t *testin
 			"subaccount":      subId,
 			"serviceInstance": instId,
 			"content":         expectedJSON,
+			"region":          region,
 		})
 	}))
 	defer srv.Close()
 
-	_, res, err := uut.Connectivity.DestinationFragment.UpdateByServiceInstance(context.TODO(), subId, instId, content)
+	_, res, err := uut.Connectivity.DestinationFragment.UpdateByServiceInstance(context.TODO(), subId, instId, content, region)
 
 	if assert.True(t, srvCalled) && assert.NoError(t, err) {
 		assert.Equal(t, 200, res.StatusCode)
@@ -228,6 +236,7 @@ func TestConnectivityDestinationFragmentFacade_DeleteByServiceInstance(t *testin
 	subId := "sub-123"
 	instId := "inst-001"
 	name := "frag1"
+	region := "cf-us10-001"
 
 	var srvCalled bool
 	uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -237,11 +246,12 @@ func TestConnectivityDestinationFragmentFacade_DeleteByServiceInstance(t *testin
 			"subaccount":      subId,
 			"name":            name,
 			"serviceInstance": instId,
+			"region":          region,
 		})
 	}))
 	defer srv.Close()
 
-	_, res, err := uut.Connectivity.DestinationFragment.DeleteByServiceInstance(context.TODO(), subId, name, instId)
+	_, res, err := uut.Connectivity.DestinationFragment.DeleteByServiceInstance(context.TODO(), subId, name, instId, region)
 
 	if assert.True(t, srvCalled) && assert.NoError(t, err) {
 		assert.Equal(t, 200, res.StatusCode)
