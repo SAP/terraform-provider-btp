@@ -1,0 +1,24 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{tffile .ExampleFile}}
+{{- end }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Destinations assigned to Service Instances on Cloud Foundry Extension Landscapes
+
+In case you want to read destinations assigned to service instances on a Cloud Foundry **extension landscape**, you must provide the attribute `extension_landscape`.
+
+You can retrieve the value of the extension landscape e.g., via the attribute `landscape_label` of the resource `btp_subaccount_environment_instance` or via the same attribute of the data source `btp_subaccount_environment_instance`.

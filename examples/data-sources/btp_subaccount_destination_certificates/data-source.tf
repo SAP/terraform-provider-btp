@@ -8,3 +8,10 @@ data "btp_subaccount_destination_certificates" "all_by_service_instance" {
   subaccount_id       = "6aa64c2f-38c1-12a3-b2e8-cf9fea769b7f"
   service_instance_id = "bc8a216f-1184-12a3-b4b4-17cfe2828965"
 }
+
+# Read destination certificates by subaccount, service instance and extension landscape
+data "btp_subaccount_destination_certificates" "all_by_service_instance_on_cf_ext" {
+  subaccount_id       = "6aa64c2f-38c1-12a3-b2e8-cf9fea769b7f"
+  service_instance_id = "ac8a216f-1184-12a3-b4b4-17cfe2828965"
+  extension_landscape = "cf-eu12-001"
+}
