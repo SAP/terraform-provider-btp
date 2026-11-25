@@ -14,6 +14,53 @@ import (
 
 func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 	t.Parallel()
+
+	t.Run("happy path HTTP destination with service instance in extension landscape", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http_with_service_instance_in_extension_landscape")
+		defer stopQuietly(rec)
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+				tfversion.SkipBelow(tfversion.Version1_12_0),
+			},
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclResourceDestinationGenericWithServiceInstanceExtensionLandscape("res1", "integration-test-destination", map[string]string{
+						"ProxyType":      "Internet",
+						"URL":            "https://myservice.example.com",
+						"Authentication": "NoAuthentication",
+						"Description":    "trial destination of basic usecase",
+						"Name":           "res1",
+						"Type":           "HTTP",
+					}),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("btp_subaccount_destination_generic.res1", "extension_landscape", "cf-eu12-001"),
+						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res1", "service_instance_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res1", "subaccount_id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res1", "creation_time", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("btp_subaccount_destination_generic.res1", "modification_time", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("btp_subaccount_destination_generic.res1", "destination_configuration", "{\"Authentication\":\"NoAuthentication\",\"Description\":\"trial destination of basic usecase\",\"Name\":\"res1\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice.example.com\"}"),
+					),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectIdentity("btp_subaccount_destination_generic.res1", map[string]knownvalue.Check{
+							"subaccount_id":       knownvalue.StringRegexp(regexpValidUUID),
+							"name":                knownvalue.StringExact("res1"),
+							"service_instance_id": knownvalue.StringRegexp(regexpValidUUID),
+							"extension_landscape": knownvalue.StringExact("cf-eu12-001"),
+						}),
+					},
+				},
+				{
+					ResourceName:    "btp_subaccount_destination_generic.res1",
+					ImportState:     true,
+					ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				},
+			},
+		})
+	})
+
 	t.Run("happy path HTTP destination with service instance", func(t *testing.T) {
 		t.Parallel()
 		rec, user := setupVCR(t, "fixtures/resource_subaccount_destination_generic_http_with_service_instance")
@@ -46,6 +93,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 							"subaccount_id":       knownvalue.StringRegexp(regexpValidUUID),
 							"name":                knownvalue.StringExact("res1"),
 							"service_instance_id": knownvalue.StringRegexp(regexpValidUUID),
+							"extension_landscape": knownvalue.Null(),
 						}),
 					},
 				},
@@ -85,6 +133,7 @@ func TestResourceSubaccountDestinationGeneric(t *testing.T) {
 							"subaccount_id":       knownvalue.StringRegexp(regexpValidUUID),
 							"name":                knownvalue.StringExact("res2"),
 							"service_instance_id": knownvalue.Null(),
+							"extension_landscape": knownvalue.Null(),
 						}),
 					},
 				},
@@ -560,6 +609,31 @@ func hclResourceDestinationGenericRFC(resourceName string, subaccountName string
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination_generic" "%s" {
 	subaccount_id     = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+	%s
+}`
+
+	return fmt.Sprintf(template, resourceName, subaccountName, configBlock)
+}
+
+func hclResourceDestinationGenericWithServiceInstanceExtensionLandscape(resourceName string, subaccountName string, destinationConfig map[string]string) string {
+
+	var configBlock string
+	if len(destinationConfig) > 0 {
+		var configBuilder strings.Builder
+		for k, v := range destinationConfig {
+			fmt.Fprintf(&configBuilder, "		%s = \"%s\"\n", k, v)
+		}
+
+		configBlock = fmt.Sprintf(`destination_configuration = jsonencode({
+%s  	})`, configBuilder.String())
+	}
+
+	template := `
+	data "btp_subaccounts" "all" {}
+	resource "btp_subaccount_destination_generic" "%s" {
+	subaccount_id     = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+	service_instance_id = "abc1774c-5ce1-46c6-b7c2-55dfce70ad9a"
+	extension_landscape = "cf-eu12-001"
 	%s
 }`
 
