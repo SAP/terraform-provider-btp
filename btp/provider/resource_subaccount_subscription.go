@@ -9,6 +9,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -53,7 +54,6 @@ func (rs *subaccountSubscriptionResource) Configure(_ context.Context, req resou
 func (rs *subaccountSubscriptionResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: `Subscribes a subaccount to a multitenant application.
-Custom or partner-developed applications are currently not supported.
 
 __Tip:__
 You must be assigned to the admin role of the subaccount.`,
@@ -73,8 +73,11 @@ You must be assigned to the admin role of the subaccount.`,
 				},
 			},
 			"plan_name": schema.StringAttribute{
-				MarkdownDescription: "The plan name of the application to which the consumer has subscribed.",
-				Required:            true,
+				MarkdownDescription: "The plan name of the application to which the consumer has subscribed. Optional for subscriptions to applications hosted in the same (sub)account, where no plan applies.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"parameters": schema.StringAttribute{
 				MarkdownDescription: "The parameters of the subscription as a valid JSON object.",
@@ -216,7 +219,7 @@ func (rs *subaccountSubscriptionResource) IdentitySchema(_ context.Context, _ re
 				RequiredForImport: true,
 			},
 			"plan_name": identityschema.StringAttribute{
-				RequiredForImport: true,
+				OptionalForImport: true,
 			},
 		},
 	}
@@ -451,18 +454,16 @@ func (rs *subaccountSubscriptionResource) ImportState(ctx context.Context, req r
 	if req.ID != "" {
 		idParts := strings.Split(req.ID, ",")
 
-		if len(idParts) != 3 || idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
-			resp.Diagnostics.AddError(
-				"Unexpected Import Identifier",
-				fmt.Sprintf("Expected import identifier with format: subaccount,app_name,plan_name. Got: %q", req.ID),
-			)
+		if (len(idParts) != 2 && len(idParts) != 3) || idParts[0] == "" || idParts[1] == "" || (len(idParts) == 3 && idParts[2] == "") {
+			resp.Diagnostics.AddError("Unexpected Import Identifier",
+				fmt.Sprintf("Expected import identifier with format: subaccount,app_name[,plan_name]. Got: %q", req.ID))
 			return
 		}
-
 		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("app_name"), idParts[1])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
-		return
+		if len(idParts) == 3 {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("plan_name"), idParts[2])...)
+		}
 	}
 
 	var identityData SubaccountSubscriptionResourceIdentityModel

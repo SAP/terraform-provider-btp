@@ -1,0 +1,24 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{tffile .ExampleFile}}
+{{- end }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Optional Plan Name
+
+Starting with release 1.29.0, `plan_name` is optional. This accommodates applications that have no plan assigned, such as custom multitenant extension (MTX) applications.
+
+For all other subscriptions, `plan_name` is still required to correctly identify and manage the subscription. Note that the provider cannot validate at plan time whether an application has a plan assigned — users are responsible for omitting `plan_name` only when appropriate.
