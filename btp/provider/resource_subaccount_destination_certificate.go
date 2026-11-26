@@ -88,6 +88,7 @@ __Further Information:__
 					stringplanmodifier.RequiresReplace(),
 				},
 				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
 					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
 				},
 			},
