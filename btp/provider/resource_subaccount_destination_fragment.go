@@ -109,6 +109,9 @@ __Notes:__
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"extension_landscape": schema.StringAttribute{
 				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
@@ -116,6 +119,9 @@ __Notes:__
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"fragment_content": schema.MapAttribute{

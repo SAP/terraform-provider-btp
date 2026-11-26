@@ -138,6 +138,9 @@ __Notes:__
 			"service_instance_id": schema.StringAttribute{
 				MarkdownDescription: "The service instance that becomes part of the path used to access the destination of the subaccount.",
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "The description of the destination.",
