@@ -22,8 +22,8 @@ func newSubaccountDestinationsGenericDataSource() datasource.DataSource {
 
 type subaccountDestinationsGenericDataSourceConfig struct {
 	/* INPUT */
-	SubaccountID      types.String `tfsdk:"subaccount_id"`
-	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
+	SubaccountID       types.String `tfsdk:"subaccount_id"`
+	ServiceInstanceID  types.String `tfsdk:"service_instance_id"`
 	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
 	/* OUTPUT */
 	Values []subaccountDestinationGenericType `tfsdk:"values"`
