@@ -25,6 +25,7 @@ type subaccountDestinationGenericResourceType struct {
 	Name                     types.String         `tfsdk:"name"`
 	ModificationTime         types.String         `tfsdk:"modification_time"`
 	ServiceInstanceID        types.String         `tfsdk:"service_instance_id"`
+	ExtensionLandscape       types.String         `tfsdk:"extension_landscape"`
 	DestinationConfiguration jsontypes.Normalized `tfsdk:"destination_configuration"`
 }
 
@@ -35,6 +36,7 @@ type subaccountDestinationGenericType struct {
 	ModificationTime         types.String         `tfsdk:"modification_time"`
 	Name                     types.String         `tfsdk:"name"`
 	ServiceInstanceID        types.String         `tfsdk:"service_instance_id"`
+	ExtensionLandscape       types.String         `tfsdk:"extension_landscape"`
 	DestinationConfiguration jsontypes.Normalized `tfsdk:"destination_configuration"`
 }
 
@@ -69,7 +71,7 @@ func BuildDestinationGenericConfigurationJSON(destination subaccountDestinationG
 	return string(jsonBytes), name, nil
 }
 
-func destinationGenericResourceValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String, name string) (subaccountDestinationGenericResourceType, diag.Diagnostics) {
+func destinationGenericResourceValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String, extensionLandscape types.String, name string) (subaccountDestinationGenericResourceType, diag.Diagnostics) {
 	creationTimeString, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
 	if err != nil {
 		diagnostics := diag.Diagnostics{
@@ -106,6 +108,11 @@ func destinationGenericResourceValueFrom(value connectivity.DestinationResponse,
 	} else {
 		destination.ServiceInstanceID = serviceInstanceID
 	}
+	if extensionLandscape.ValueString() == "" {
+		destination.ExtensionLandscape = types.StringNull()
+	} else {
+		destination.ExtensionLandscape = extensionLandscape
+	}
 
 	destinationJSON, err := json.Marshal(tmp)
 	if err != nil {
@@ -121,7 +128,7 @@ func destinationGenericResourceValueFrom(value connectivity.DestinationResponse,
 	return destination, diagnostics
 }
 
-func destinationGenericDatasourceValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String) (subaccountDestinationGenericType, diag.Diagnostics) {
+func destinationGenericDatasourceValueFrom(value connectivity.DestinationResponse, subaccountID types.String, serviceInstanceID types.String, extensionLandscape types.String) (subaccountDestinationGenericType, diag.Diagnostics) {
 
 	creationTimeString, err := strconv.ParseInt(value.SystemMetadata.CreationTime, 10, 64)
 	if err != nil {
@@ -170,6 +177,11 @@ func destinationGenericDatasourceValueFrom(value connectivity.DestinationRespons
 		destination.ServiceInstanceID = types.StringNull()
 	} else {
 		destination.ServiceInstanceID = serviceInstanceID
+	}
+	if extensionLandscape.ValueString() == "" {
+		destination.ExtensionLandscape = types.StringNull()
+	} else {
+		destination.ExtensionLandscape = extensionLandscape
 	}
 
 	destinationJSON, err := json.Marshal(tmp)

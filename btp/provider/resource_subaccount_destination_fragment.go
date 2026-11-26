@@ -28,18 +28,20 @@ func newSubaccountDestinationFragmentResource() resource.Resource {
 
 type subaccountDestinationFragmentResourceConfig struct {
 	// INPUT
-	SubaccountID      types.String `tfsdk:"subaccount_id"`
-	Name              types.String `tfsdk:"name"`
-	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
+	SubaccountID       types.String `tfsdk:"subaccount_id"`
+	Name               types.String `tfsdk:"name"`
+	ServiceInstanceID  types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
 	// OUTPUT
 	ID                  types.String `tfsdk:"id"` // required by hashicorps terraform plugin testing framework for imports
 	DestinationFragment types.Map    `tfsdk:"fragment_content"`
 }
 
 type subaccountDestinationFragmentIdentityModel struct {
-	SubaccountID      types.String `tfsdk:"subaccount_id"`
-	Name              types.String `tfsdk:"name"`
-	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
+	SubaccountID       types.String `tfsdk:"subaccount_id"`
+	Name               types.String `tfsdk:"name"`
+	ServiceInstanceID  types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
 }
 
 type subaccountDestinationFragmentResource struct {
@@ -107,6 +109,20 @@ __Notes:__
 				Validators: []validator.String{
 					uuidvalidator.ValidUUID(),
 				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"fragment_content": schema.MapAttribute{
 				MarkdownDescription: "The content of the destination fragment.",
@@ -127,6 +143,9 @@ func (rs *subaccountDestinationFragmentResource) IdentitySchema(_ context.Contex
 				RequiredForImport: true,
 			},
 			"service_instance_id": identityschema.StringAttribute{
+				OptionalForImport: true,
+			},
+			"extension_landscape": identityschema.StringAttribute{
 				OptionalForImport: true,
 			},
 		},
@@ -162,9 +181,10 @@ func (rs *subaccountDestinationFragmentResource) Read(ctx context.Context, req r
 	resp.Diagnostics.Append(diags...)
 
 	identity := subaccountDestinationFragmentIdentityModel{
-		SubaccountID:      data.SubaccountID,
-		Name:              data.Name,
-		ServiceInstanceID: data.ServiceInstanceID,
+		SubaccountID:       data.SubaccountID,
+		Name:               data.Name,
+		ServiceInstanceID:  data.ServiceInstanceID,
+		ExtensionLandscape: data.ExtensionLandscape,
 	}
 	diags = resp.Identity.Set(ctx, identity)
 	resp.Diagnostics.Append(diags...)
@@ -212,9 +232,10 @@ func (rs *subaccountDestinationFragmentResource) Create(ctx context.Context, req
 	resp.Diagnostics.Append(diags...)
 
 	identity := subaccountDestinationFragmentIdentityModel{
-		SubaccountID:      plan.SubaccountID,
-		Name:              plan.Name,
-		ServiceInstanceID: plan.ServiceInstanceID,
+		SubaccountID:       plan.SubaccountID,
+		Name:               plan.Name,
+		ServiceInstanceID:  plan.ServiceInstanceID,
+		ExtensionLandscape: plan.ExtensionLandscape,
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
@@ -265,9 +286,10 @@ func (rs *subaccountDestinationFragmentResource) Update(ctx context.Context, req
 	// WORKAROUND for OpenTofu compatibility
 	// see https://github.com/SAP/terraform-provider-btp/issues/1383
 	identity := subaccountDestinationFragmentIdentityModel{
-		SubaccountID:      plan.SubaccountID,
-		Name:              plan.Name,
-		ServiceInstanceID: plan.ServiceInstanceID,
+		SubaccountID:       plan.SubaccountID,
+		Name:               plan.Name,
+		ServiceInstanceID:  plan.ServiceInstanceID,
+		ExtensionLandscape: plan.ExtensionLandscape,
 	}
 
 	diags = resp.Identity.Set(ctx, identity)
@@ -286,7 +308,7 @@ func (rs *subaccountDestinationFragmentResource) Delete(ctx context.Context, req
 	hasServiceInstance := !state.ServiceInstanceID.IsNull() && !state.ServiceInstanceID.IsUnknown() && state.ServiceInstanceID.ValueString() != ""
 
 	if hasServiceInstance {
-		_, _, err := rs.cli.Connectivity.DestinationFragment.DeleteByServiceInstance(ctx, state.SubaccountID.ValueString(), state.Name.ValueString(), state.ServiceInstanceID.ValueString())
+		_, _, err := rs.cli.Connectivity.DestinationFragment.DeleteByServiceInstance(ctx, state.SubaccountID.ValueString(), state.Name.ValueString(), state.ServiceInstanceID.ValueString(), state.ExtensionLandscape.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Deleting Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
 			return
@@ -318,6 +340,7 @@ func (rs *subaccountDestinationFragmentResource) ImportState(ctx context.Context
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), types.StringNull())...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("extension_landscape"), types.StringNull())...)
 
 			return
 
@@ -333,6 +356,27 @@ func (rs *subaccountDestinationFragmentResource) ImportState(ctx context.Context
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), idParts[2])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("extension_landscape"), types.StringNull())...)
+
+			return
+
+		case 4:
+			if idParts[0] == "" || idParts[1] == "" || idParts[2] == "" {
+				resp.Diagnostics.AddError(
+					"Unexpected Import Identifier",
+					fmt.Sprintf("Expected import identifier with format: subaccount_id, name, service_instance_id, extension_landscape. Got: %q", req.ID),
+				)
+				return
+			}
+
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), idParts[0])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), idParts[1])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), idParts[2])...)
+			extensionLandscape := types.StringNull()
+			if idParts[3] != "" {
+				extensionLandscape = types.StringValue(idParts[3])
+			}
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("extension_landscape"), extensionLandscape)...)
 
 			return
 
@@ -340,7 +384,7 @@ func (rs *subaccountDestinationFragmentResource) ImportState(ctx context.Context
 			resp.Diagnostics.AddError(
 				"Unexpected Import Identifier",
 				fmt.Sprintf(
-					"Expected one of:\n  - subaccount_id,name\n  - subaccount_id,name,service_instance_id\nGot: %q",
+					"Expected one of:\n  - subaccount_id,name\n  - subaccount_id,name,service_instance_id\n  - subaccount_id,name,service_instance_id,extension_landscape\nGot: %q",
 					req.ID,
 				),
 			)
@@ -358,6 +402,7 @@ func (rs *subaccountDestinationFragmentResource) ImportState(ctx context.Context
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("subaccount_id"), identity.SubaccountID)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), identity.Name)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("service_instance_id"), identity.ServiceInstanceID)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("extension_landscape"), identity.ExtensionLandscape)...)
 }
 
 func extractFragmentContent(plan subaccountDestinationFragmentResourceConfig) (map[string]string, diag.Diagnostics) {
@@ -382,7 +427,7 @@ func buildPayload(name string, rawContent map[string]string) map[string]string {
 
 func (rs *subaccountDestinationFragmentResource) createFragment(ctx context.Context, plan subaccountDestinationFragmentResourceConfig, payload map[string]string, hasServiceInstance bool, respDiags diag.Diagnostics) error {
 	if hasServiceInstance {
-		_, _, err := rs.cli.Connectivity.DestinationFragment.CreateByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.ServiceInstanceID.ValueString(), payload)
+		_, _, err := rs.cli.Connectivity.DestinationFragment.CreateByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.ServiceInstanceID.ValueString(), payload, plan.ExtensionLandscape.ValueString())
 		if err != nil {
 			respDiags.AddError("API Error Creating Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
 		}
@@ -399,7 +444,7 @@ func (rs *subaccountDestinationFragmentResource) createFragment(ctx context.Cont
 
 func (rs *subaccountDestinationFragmentResource) updateFragment(ctx context.Context, plan subaccountDestinationFragmentResourceConfig, payload map[string]string, hasServiceInstance bool, respDiags diag.Diagnostics) error {
 	if hasServiceInstance {
-		_, _, err := rs.cli.Connectivity.DestinationFragment.UpdateByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.ServiceInstanceID.ValueString(), payload)
+		_, _, err := rs.cli.Connectivity.DestinationFragment.UpdateByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.ServiceInstanceID.ValueString(), payload, plan.ExtensionLandscape.ValueString())
 		if err != nil {
 			respDiags.AddError("API Error Updating Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
 		}
@@ -416,7 +461,7 @@ func (rs *subaccountDestinationFragmentResource) updateFragment(ctx context.Cont
 
 func (rs *subaccountDestinationFragmentResource) readFragment(ctx context.Context, plan subaccountDestinationFragmentResourceConfig, hasServiceInstance bool, respDiags diag.Diagnostics) (connectivity.DestinationFragment, error) {
 	if hasServiceInstance {
-		destinationFragmentDetails, _, err := rs.cli.Connectivity.DestinationFragment.GetByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString())
+		destinationFragmentDetails, _, err := rs.cli.Connectivity.DestinationFragment.GetByServiceInstance(ctx, plan.SubaccountID.ValueString(), plan.Name.ValueString(), plan.ServiceInstanceID.ValueString(), plan.ExtensionLandscape.ValueString())
 		if err != nil {
 			respDiags.AddError("API Error Reading Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
 			return connectivity.DestinationFragment{}, err

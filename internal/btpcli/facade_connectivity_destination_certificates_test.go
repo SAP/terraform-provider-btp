@@ -17,6 +17,7 @@ var (
 	command      = "connectivity/destination-certificate"
 	subaccountId = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	instanceId   = "bc8a216f-1184-49dc-b4b4-17cfe2828965"
+	region       = "cf-us10-001"
 	fileName     = "test.p12"
 	fileContent  = "test-content"
 )
@@ -32,6 +33,7 @@ func TestConnectivityDestinationCertificateFacade_Create(t *testing.T) {
 				assertCall(t, r, command, ActionCreate, map[string]string{
 					"subaccount":      subaccountId,
 					"serviceInstance": instanceId,
+					"region":          region,
 					"file":            fmt.Sprintf("{\"filename\":\"%s\",\"value\":\"%s\"}", fileName, fileContent),
 				})
 			}
@@ -40,6 +42,7 @@ func TestConnectivityDestinationCertificateFacade_Create(t *testing.T) {
 				assertCall(t, r, command, ActionGet, map[string]string{
 					"subaccount":      subaccountId,
 					"serviceInstance": instanceId,
+					"region":          region,
 					"certName":        fileName,
 				})
 			}
@@ -50,6 +53,7 @@ func TestConnectivityDestinationCertificateFacade_Create(t *testing.T) {
 		_, res, err := uut.Connectivity.DestinationCertificate.Create(context.TODO(), &DestinationCertificateCreateInput{
 			SubaccountId:      subaccountId,
 			ServiceInstanceId: instanceId,
+			Region:            region,
 			Certificate: FileInput{
 				Filename:           fileName,
 				CertificateContent: fileContent,
@@ -72,6 +76,7 @@ func TestConnectivityDestinationCertificateFacade_Get(t *testing.T) {
 			assertCall(t, r, command, ActionGet, map[string]string{
 				"subaccount":      subaccountId,
 				"serviceInstance": instanceId,
+				"region":          region,
 				"certName":        fileName,
 			})
 
@@ -81,6 +86,7 @@ func TestConnectivityDestinationCertificateFacade_Get(t *testing.T) {
 		_, res, err := uut.Connectivity.DestinationCertificate.Get(context.TODO(), &DestinationCertificateGetInput{
 			SubaccountId:      subaccountId,
 			ServiceInstanceId: instanceId,
+			Region:            region,
 			CertificateName:   fileName,
 		})
 
@@ -100,6 +106,7 @@ func TestConnectivityDestinationCertificateFacade_Delete(t *testing.T) {
 			assertCall(t, r, command, ActionDelete, map[string]string{
 				"subaccount":      subaccountId,
 				"serviceInstance": instanceId,
+				"region":          region,
 				"certName":        fileName,
 			})
 
@@ -109,6 +116,7 @@ func TestConnectivityDestinationCertificateFacade_Delete(t *testing.T) {
 		res, err := uut.Connectivity.DestinationCertificate.Delete(context.TODO(), &DestinationCertificateGetInput{
 			SubaccountId:      subaccountId,
 			ServiceInstanceId: instanceId,
+			Region:            region,
 			CertificateName:   fileName,
 		})
 
@@ -143,11 +151,12 @@ func TestConnectivityDestinationCertificateFacade_List(t *testing.T) {
 					"subaccount": subaccountId,
 					"namesOnly":  "false",
 				})
-			} else if len(payload.ParamValues) == 3 {
+			} else if len(payload.ParamValues) == 4 {
 
 				assertCall(t, r, command, ActionList, map[string]string{
 					"subaccount":      subaccountId,
 					"serviceInstance": instanceId,
+					"region":          region,
 					"namesOnly":       "false",
 				})
 			}
@@ -155,7 +164,7 @@ func TestConnectivityDestinationCertificateFacade_List(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.DestinationCertificate.List(context.TODO(), subaccountId, instanceId)
+		_, res, err := uut.Connectivity.DestinationCertificate.List(context.TODO(), subaccountId, instanceId, region)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 0, res.StatusCode)

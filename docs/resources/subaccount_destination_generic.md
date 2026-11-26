@@ -49,6 +49,22 @@ resource "btp_subaccount_destination_generic" "http_dest" {
   })
 }
 
+#subaccount destination without auth on extension landscape
+resource "btp_subaccount_destination_generic" "http_dest_on_cf_ext" {
+  subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  service_instance_id = "7bb64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  extension_landscape = "cf-eu12-001"
+  destination_configuration = jsonencode({
+    "Name"           = "project"
+    "Type"           = "HTTP"
+    "ProxyType"      = "Internet"
+    "URL"            = "https://myservice.example.com"
+    "Authentication" = "NoAuthentication"
+    "Description"    = "trial destination of basic usecase with service instance"
+
+  })
+}
+
 #subaccount destination creation without service instance and without labels (additional configuration).
 resource "btp_subaccount_destination_generic" "destination" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
@@ -169,6 +185,7 @@ resource "btp_subaccount_destination_generic" "http_dest_cc" {
 
 ### Optional
 
+- `extension_landscape` (String) The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.
 - `service_instance_id` (String) The service instance that becomes part of the path used to access the destination of the subaccount.
 
 ### Read-Only
@@ -263,3 +280,9 @@ In general, the resource supports import of existing destinations. However, ther
 - The Terraform feature of [configuration generation](https://developer.hashicorp.com/terraform/language/import/generating-configuration) as this does not support the import of attributes marked as sensitive. Due to the design of the resource this results in an incomplete configuration as the attribute `destination_configuration` is marked as sensitive to prevent the exposure of credentials. Hence, the generated configuration will not include this attribute and you need to manually add it to your configuration.
 - The recommended way to retrieve the values for the attribute `destination_configuration` for an import is to use the ["Export Destinations"](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/export-destinations) functionality and choose `JSON` as format. You should then use the values of the exported file should then be used as value for the attribute `destination_configuration` in your Terraform configuration.
 - The import of configurations that contain credentials or passwords inside of the attribute `destination_configuration` will always result in an *import* and *change* of the resource as the underlying API does not return any credentials or password data for security reasons.
+
+## Assigning a Destination to Service Instances on Cloud Foundry Extension Landscapes
+
+In case you want to assign a destination to service instances on a Cloud Foundry **extension landscape**, you must provide the attribute `extension_landscape`.
+
+You can retrieve the value of the extension landscape e.g., via the attribute `landscape_label` of the resource `btp_subaccount_environment_instance` or via the same attribute of the data source `btp_subaccount_environment_instance`.

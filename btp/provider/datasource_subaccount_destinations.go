@@ -151,7 +151,7 @@ func (ds *subaccountDestinationsDataSource) Read(ctx context.Context, req dataso
 	}
 
 	if data.NamesOnly.ValueBool() {
-		cliRes, _, err := ds.cli.Connectivity.Destination.ListNamesBySubaccount(ctx, data.SubaccountID.ValueString(), data.ServiceInstanceID.ValueString())
+		cliRes, _, err := ds.cli.Connectivity.Destination.ListNamesBySubaccount(ctx, data.SubaccountID.ValueString(), data.ServiceInstanceID.ValueString(), "")
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Reading destinations", fmt.Sprintf("%s", err))
 			return
@@ -167,7 +167,7 @@ func (ds *subaccountDestinationsDataSource) Read(ctx context.Context, req dataso
 		diags = resp.State.Set(ctx, &data)
 		resp.Diagnostics.Append(diags...)
 	} else {
-		cliRes, _, err := ds.cli.Connectivity.Destination.ListBySubaccount(ctx, data.SubaccountID.ValueString(), data.ServiceInstanceID.ValueString())
+		cliRes, _, err := ds.cli.Connectivity.Destination.ListBySubaccount(ctx, data.SubaccountID.ValueString(), data.ServiceInstanceID.ValueString(), "")
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Reading destinations", fmt.Sprintf("%s", err))
 			return

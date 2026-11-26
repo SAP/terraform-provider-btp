@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/list/schema"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -20,8 +22,9 @@ type subaccountDestinationGenericListResource struct {
 }
 
 type subaccountDestinationGenericListResourceFilter struct {
-	SubaccountID      types.String `tfsdk:"subaccount_id"`
-	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
+	SubaccountID       types.String `tfsdk:"subaccount_id"`
+	ServiceInstanceID  types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
 }
 
 func NewSubaccountDestinationGenericListResource() list.ListResource {
@@ -69,6 +72,13 @@ func (r *subaccountDestinationGenericListResource) ListResourceConfigSchema(
 				MarkdownDescription: "The ID of the service instance.",
 				Optional:            true,
 			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
+			},
 		},
 	}
 }
@@ -88,7 +98,7 @@ func (r *subaccountDestinationGenericListResource) List(
 		return
 	}
 
-	cliRes, _, err := r.client.Connectivity.Destination.ListBySubaccount(ctx, filter.SubaccountID.ValueString(), filter.ServiceInstanceID.ValueString())
+	cliRes, _, err := r.client.Connectivity.Destination.ListBySubaccount(ctx, filter.SubaccountID.ValueString(), filter.ServiceInstanceID.ValueString(), filter.ExtensionLandscape.ValueString())
 	if err != nil {
 		var diags diag.Diagnostics
 		diags.AddError(
@@ -110,9 +120,10 @@ func (r *subaccountDestinationGenericListResource) List(
 			result.Identity.SetAttribute(ctx, path.Root("subaccount_id"), filter.SubaccountID)
 			result.Identity.SetAttribute(ctx, path.Root("name"), types.StringValue(destination.DestinationConfiguration["Name"]))
 			result.Identity.SetAttribute(ctx, path.Root("service_instance_id"), filter.ServiceInstanceID)
+			result.Identity.SetAttribute(ctx, path.Root("extension_landscape"), filter.ExtensionLandscape)
 
 			if req.IncludeResource {
-				resDestination, diags := destinationGenericResourceValueFrom(destination, filter.SubaccountID, filter.ServiceInstanceID, destination.DestinationConfiguration["Name"])
+				resDestination, diags := destinationGenericResourceValueFrom(destination, filter.SubaccountID, filter.ServiceInstanceID, filter.ExtensionLandscape, destination.DestinationConfiguration["Name"])
 
 				result.Diagnostics.Append(diags...)
 

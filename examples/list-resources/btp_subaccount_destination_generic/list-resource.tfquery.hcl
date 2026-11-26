@@ -28,7 +28,7 @@ list "btp_subaccount_destination_generic" "with_resource" {
   provider         = btp
   include_resource = true
   config {
-    # Required  
+    # Required
     subaccount_id = "<subaccount_id>"
   }
 }
@@ -45,5 +45,23 @@ list "btp_subaccount_destination_generic" "by_service_instance" {
 
     # Optional
     service_instance_id = "<service_instance_id>"
+  }
+}
+
+
+# List block to discover all destinations for given subaccount and service instance id on a CF extension landscape
+# Returns only the resource identities by default.
+list "btp_subaccount_destination_generic" "by_service_instance_on_cf_ext" {
+  provider = btp
+
+  config {
+    # Required
+    subaccount_id = "<subaccount_id>"
+
+    # Optional
+    service_instance_id = "<service_instance_id>"
+
+    # Optional
+    extension_landscape = "<CF extension landscape label>"
   }
 }

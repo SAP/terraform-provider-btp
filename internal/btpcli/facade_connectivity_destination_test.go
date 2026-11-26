@@ -27,7 +27,7 @@ func TestConnectivityDestinationFacade_Get(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.GetBySubaccount(context.TODO(), subaccountId, name, "")
+		_, res, err := uut.Connectivity.Destination.GetBySubaccount(context.TODO(), subaccountId, name, "", "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -38,6 +38,7 @@ func TestConnectivityDestinationFacade_Get(t *testing.T) {
 		var srvCalled bool
 
 		serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+		region := "cf-us10-001"
 
 		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			srvCalled = true
@@ -46,11 +47,12 @@ func TestConnectivityDestinationFacade_Get(t *testing.T) {
 				"name":            name,
 				"subaccount":      subaccountId,
 				"serviceInstance": serviceInstance,
+				"region":          region,
 			})
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.GetBySubaccount(context.TODO(), subaccountId, name, serviceInstance)
+		_, res, err := uut.Connectivity.Destination.GetBySubaccount(context.TODO(), subaccountId, name, serviceInstance, region)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -75,7 +77,7 @@ func TestConnectivityDestinationFacade_List(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.ListBySubaccount(context.TODO(), subaccountId, "")
+		_, res, err := uut.Connectivity.Destination.ListBySubaccount(context.TODO(), subaccountId, "", "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -86,6 +88,7 @@ func TestConnectivityDestinationFacade_List(t *testing.T) {
 		var srvCalled bool
 
 		serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+		region := "cf-us10-001"
 
 		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			srvCalled = true
@@ -94,11 +97,12 @@ func TestConnectivityDestinationFacade_List(t *testing.T) {
 				"namesOnly":       false,
 				"subaccount":      subaccountId,
 				"serviceInstance": serviceInstance,
+				"region":          region,
 			})
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.ListBySubaccount(context.TODO(), subaccountId, serviceInstance)
+		_, res, err := uut.Connectivity.Destination.ListBySubaccount(context.TODO(), subaccountId, serviceInstance, region)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -123,7 +127,7 @@ func TestConnectivityDestinationFacade_ListNames(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.ListNamesBySubaccount(context.TODO(), subaccountId, "")
+		_, res, err := uut.Connectivity.Destination.ListNamesBySubaccount(context.TODO(), subaccountId, "", "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -134,6 +138,7 @@ func TestConnectivityDestinationFacade_ListNames(t *testing.T) {
 		var srvCalled bool
 
 		serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+		region := "cf-us10-001"
 
 		uut, srv := prepareClientFacadeForTest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			srvCalled = true
@@ -142,11 +147,12 @@ func TestConnectivityDestinationFacade_ListNames(t *testing.T) {
 				"namesOnly":       true,
 				"subaccount":      subaccountId,
 				"serviceInstance": serviceInstance,
+				"region":          region,
 			})
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.ListNamesBySubaccount(context.TODO(), subaccountId, serviceInstance)
+		_, res, err := uut.Connectivity.Destination.ListNamesBySubaccount(context.TODO(), subaccountId, serviceInstance, region)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -159,6 +165,7 @@ func TestConnectivityDestinationFacade_Create(t *testing.T) {
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	jsonarg := `{"Name":"destTest","Type":"HTTP","ProxyType":"Internet","URL":"https://myservice.example.com","Authentication":"NoAuthentication","Description":"Resource","Abc":"good"}`
 	serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	region := "cf-us10-001"
 
 	t.Run("constructs params correctly without serviceInstance", func(t *testing.T) {
 		var srvCalled bool
@@ -173,7 +180,7 @@ func TestConnectivityDestinationFacade_Create(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.CreateBySubaccount(context.TODO(), subaccountId, jsonarg, "")
+		_, res, err := uut.Connectivity.Destination.CreateBySubaccount(context.TODO(), subaccountId, jsonarg, "", "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -190,11 +197,12 @@ func TestConnectivityDestinationFacade_Create(t *testing.T) {
 				"destinationConfiguration": jsonarg,
 				"subaccount":               subaccountId,
 				"serviceInstance":          serviceInstance,
+				"region":                   region,
 			})
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.CreateBySubaccount(context.TODO(), subaccountId, jsonarg, serviceInstance)
+		_, res, err := uut.Connectivity.Destination.CreateBySubaccount(context.TODO(), subaccountId, jsonarg, serviceInstance, region)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -208,6 +216,7 @@ func TestConnectivityDestinationFacade_Update(t *testing.T) {
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	jsonarg := `{"Name":"destTest","Type":"HTTP","ProxyType":"Internet","URL":"https://myservice.example.com","Authentication":"NoAuthentication","Description":"Resource update","Abc":"good"}`
 	serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	region := "cf-us10-001"
 
 	t.Run("constructs params correctly without serviceInstance", func(t *testing.T) {
 		var srvCalled bool
@@ -222,7 +231,7 @@ func TestConnectivityDestinationFacade_Update(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.UpdateBySubaccount(context.TODO(), subaccountId, jsonarg, "")
+		_, res, err := uut.Connectivity.Destination.UpdateBySubaccount(context.TODO(), subaccountId, jsonarg, "", "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -239,11 +248,12 @@ func TestConnectivityDestinationFacade_Update(t *testing.T) {
 				"destinationConfiguration": jsonarg,
 				"subaccount":               subaccountId,
 				"serviceInstance":          serviceInstance,
+				"region":                   region,
 			})
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.UpdateBySubaccount(context.TODO(), subaccountId, jsonarg, serviceInstance)
+		_, res, err := uut.Connectivity.Destination.UpdateBySubaccount(context.TODO(), subaccountId, jsonarg, serviceInstance, region)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -257,6 +267,7 @@ func TestConnectivityDestinationFacade_Delete(t *testing.T) {
 	subaccountId := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
 	name := "destTest"
 	serviceInstance := "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+	region := "cf-us10-001"
 
 	t.Run("constructs params correctly without serviceInstance", func(t *testing.T) {
 		var srvCalled bool
@@ -271,7 +282,7 @@ func TestConnectivityDestinationFacade_Delete(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.DeleteBySubaccount(context.TODO(), subaccountId, name, "")
+		_, res, err := uut.Connectivity.Destination.DeleteBySubaccount(context.TODO(), subaccountId, name, "", "")
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)
@@ -288,11 +299,12 @@ func TestConnectivityDestinationFacade_Delete(t *testing.T) {
 				"name":            name,
 				"subaccount":      subaccountId,
 				"serviceInstance": serviceInstance,
+				"region":          region,
 			})
 		}))
 		defer srv.Close()
 
-		_, res, err := uut.Connectivity.Destination.DeleteBySubaccount(context.TODO(), subaccountId, name, serviceInstance)
+		_, res, err := uut.Connectivity.Destination.DeleteBySubaccount(context.TODO(), subaccountId, name, serviceInstance, region)
 
 		if assert.True(t, srvCalled) && assert.NoError(t, err) {
 			assert.Equal(t, 200, res.StatusCode)

@@ -109,7 +109,7 @@ func (ds *subaccountDestinationDataSource) Read(ctx context.Context, req datasou
 		return
 	}
 
-	cliRes, _, err := ds.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
+	cliRes, _, err := ds.cli.Connectivity.Destination.GetBySubaccount(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString(), "")
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading destination", fmt.Sprintf("%s", err))
 		return

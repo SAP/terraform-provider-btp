@@ -5,9 +5,12 @@ import (
 	"fmt"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -172,6 +175,13 @@ __Further Information:__
 				MarkdownDescription: "The ID of the service instance associated with this certificate.",
 				Optional:            true,
 			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
+			},
 			"subaccount_level_certificates": schema.ListNestedAttribute{
 				MarkdownDescription: "The list of destination certificates.",
 				Computed:            true,
@@ -200,7 +210,7 @@ func (ds *subaccountDestinationCertificatesDataSource) Read(ctx context.Context,
 		return
 	}
 
-	cliRes, _, err := ds.cli.Connectivity.DestinationCertificate.List(ctx, data.SubaccountId.ValueString(), data.ServiceInstanceId.ValueString())
+	cliRes, _, err := ds.cli.Connectivity.DestinationCertificate.List(ctx, data.SubaccountId.ValueString(), data.ServiceInstanceId.ValueString(), data.ExtensionLandscape.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("API Error Reading Destination Certificates", fmt.Sprintf("%s", err))
 		return
@@ -214,6 +224,7 @@ func (ds *subaccountDestinationCertificatesDataSource) Read(ctx context.Context,
 
 	dataRes.SubaccountId = data.SubaccountId
 	dataRes.ServiceInstanceId = data.ServiceInstanceId
+	dataRes.ExtensionLandscape = data.ExtensionLandscape
 
 	diags = resp.State.Set(ctx, &dataRes)
 	resp.Diagnostics.Append(diags...)

@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -21,9 +22,10 @@ func newSubaccountDestinationFragmentDataSource() datasource.DataSource {
 
 type subaccountDestinationFragmentType struct {
 	/* INPUT */
-	SubaccountID      types.String `tfsdk:"subaccount_id"`
-	Name              types.String `tfsdk:"name"`
-	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
+	SubaccountID       types.String `tfsdk:"subaccount_id"`
+	Name               types.String `tfsdk:"name"`
+	ServiceInstanceID  types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
 	/* OUTPUT */
 	ID                  types.String `tfsdk:"id"`
 	DestinationFragment types.Map    `tfsdk:"fragment_content"`
@@ -90,6 +92,13 @@ __Notes:__
 					stringvalidator.RegexMatches(uuidvalidator.UuidRegexp, "value must be a valid UUID"),
 				},
 			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
+			},
 			"fragment_content": schema.MapAttribute{
 				MarkdownDescription: "The content of the destination fragment.",
 				ElementType:         types.StringType,
@@ -113,7 +122,7 @@ func (ds *subaccountDestinationFragmentDataSource) Read(ctx context.Context, req
 	var err error
 
 	if hasServiceInstance {
-		destinationFragmentDetails, _, err = ds.cli.Connectivity.DestinationFragment.GetByServiceInstance(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString())
+		destinationFragmentDetails, _, err = ds.cli.Connectivity.DestinationFragment.GetByServiceInstance(ctx, data.SubaccountID.ValueString(), data.Name.ValueString(), data.ServiceInstanceID.ValueString(), data.ExtensionLandscape.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Reading Destination Fragment at Service Instance Level", fmt.Sprintf("%s", err))
 			return

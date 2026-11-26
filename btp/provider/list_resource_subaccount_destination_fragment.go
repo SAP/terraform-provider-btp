@@ -6,11 +6,13 @@ import (
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
 	"github.com/SAP/terraform-provider-btp/internal/btpcli/types/connectivity"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/list/schema"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -21,8 +23,9 @@ type subaccountDestinationFragmentListResource struct {
 }
 
 type subaccountDestinationFragmentListResourceFilter struct {
-	SubaccountID      types.String `tfsdk:"subaccount_id"`
-	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
+	SubaccountID       types.String `tfsdk:"subaccount_id"`
+	ServiceInstanceID  types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
 }
 
 func NewSubaccountDestinationFragmentListResource() list.ListResource {
@@ -70,6 +73,13 @@ func (r *subaccountDestinationFragmentListResource) ListResourceConfigSchema(
 				MarkdownDescription: "The ID of the service instance.",
 				Optional:            true,
 			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
+			},
 		},
 	}
 }
@@ -93,7 +103,7 @@ func (r *subaccountDestinationFragmentListResource) List(
 	hasServiceInstance := !filter.ServiceInstanceID.IsNull() && !filter.ServiceInstanceID.IsUnknown() && filter.ServiceInstanceID.ValueString() != ""
 
 	if hasServiceInstance {
-		cliRes, _, err = r.client.Connectivity.DestinationFragment.ListByServiceInstance(ctx, filter.SubaccountID.ValueString(), filter.ServiceInstanceID.ValueString())
+		cliRes, _, err = r.client.Connectivity.DestinationFragment.ListByServiceInstance(ctx, filter.SubaccountID.ValueString(), filter.ServiceInstanceID.ValueString(), filter.ExtensionLandscape.ValueString())
 	} else {
 		cliRes, _, err = r.client.Connectivity.DestinationFragment.ListBySubaccount(ctx, filter.SubaccountID.ValueString())
 	}
@@ -121,6 +131,7 @@ func (r *subaccountDestinationFragmentListResource) List(
 			result.Identity.SetAttribute(ctx, path.Root("subaccount_id"), filter.SubaccountID)
 			result.Identity.SetAttribute(ctx, path.Root("name"), types.StringValue(name))
 			result.Identity.SetAttribute(ctx, path.Root("service_instance_id"), filter.ServiceInstanceID)
+			result.Identity.SetAttribute(ctx, path.Root("extension_landscape"), filter.ExtensionLandscape)
 
 			if req.IncludeResource {
 				delete(fragment.Content, "FragmentName")
@@ -132,6 +143,7 @@ func (r *subaccountDestinationFragmentListResource) List(
 					SubaccountID:        filter.SubaccountID,
 					Name:                types.StringValue(name),
 					ServiceInstanceID:   filter.ServiceInstanceID,
+					ExtensionLandscape:  filter.ExtensionLandscape,
 					ID:                  types.StringValue(fmt.Sprintf("%s,%s,%s", filter.SubaccountID.ValueString(), name, filter.ServiceInstanceID.ValueString())),
 					DestinationFragment: contentValue,
 				}

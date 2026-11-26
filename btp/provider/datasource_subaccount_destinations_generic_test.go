@@ -47,6 +47,25 @@ func TestDataSourceSubaccountDestinationsGeneric(t *testing.T) {
 		})
 	})
 
+	t.Run("happy path with service instance on extension landscape", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destinations_generic_with_service_instance_ext_landscape")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclDatasourceDestinationsGenericSIExtension("uut", "integration-test-destination"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttr("data.btp_subaccount_destinations_generic.uut", "values.#", "1"),
+					),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - subaccount not provided", func(t *testing.T) {
 		t.Parallel()
 		resource.Test(t, resource.TestCase{
@@ -83,4 +102,15 @@ func hclDatasourceDestinationsGenericSI(datasourceName string, subaccountName st
 	service_instance_id = data.btp_subaccount_service_instance.dest.id
 	}`
 	return fmt.Sprintf(template, subaccountName, serviceInstanceName, datasourceName, subaccountName)
+}
+
+func hclDatasourceDestinationsGenericSIExtension(datasourceName string, subaccountName string) string {
+	template := `
+	data "btp_subaccounts" "all" {}
+	data "btp_subaccount_destinations_generic" "%s" {
+	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+	service_instance_id = "abc1774c-5ce1-46c6-b7c2-55dfce70ad9a"
+	extension_landscape = "cf-eu12-001"
+	}`
+	return fmt.Sprintf(template, datasourceName, subaccountName)
 }

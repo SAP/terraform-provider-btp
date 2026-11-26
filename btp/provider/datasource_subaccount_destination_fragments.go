@@ -4,8 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/SAP/terraform-provider-btp/internal/btpcli"
@@ -18,8 +21,9 @@ func newSubaccountDestinationFragmentsDataSource() datasource.DataSource {
 
 type subaccountDestinationFragmentsType struct {
 	/* INPUT */
-	SubaccountID      types.String `tfsdk:"subaccount_id"`
-	ServiceInstanceID types.String `tfsdk:"service_instance_id"`
+	SubaccountID       types.String `tfsdk:"subaccount_id"`
+	ServiceInstanceID  types.String `tfsdk:"service_instance_id"`
+	ExtensionLandscape types.String `tfsdk:"extension_landscape"`
 	/* OUTPUT */
 	ID     types.String                               `tfsdk:"id"`
 	Values []subaccountDestinationFragmentContentType `tfsdk:"values"`
@@ -80,6 +84,13 @@ __Notes:__
 				Optional:            true,
 				Computed:            true,
 			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
+				},
+			},
 			"values": schema.ListNestedAttribute{
 				MarkdownDescription: "The list of destination fragments.",
 				Computed:            true,
@@ -111,7 +122,7 @@ func (ds *subaccountDestinationFragmentsDataSource) Read(ctx context.Context, re
 	var err error
 
 	if hasServiceInstance {
-		destinationFragmentsDetails, _, err = ds.cli.Connectivity.DestinationFragment.ListByServiceInstance(ctx, data.SubaccountID.ValueString(), data.ServiceInstanceID.ValueString())
+		destinationFragmentsDetails, _, err = ds.cli.Connectivity.DestinationFragment.ListByServiceInstance(ctx, data.SubaccountID.ValueString(), data.ServiceInstanceID.ValueString(), data.ExtensionLandscape.ValueString())
 		if err != nil {
 			resp.Diagnostics.AddError("API Error Reading Destination Fragments at Service Instance Level", fmt.Sprintf("%s", err))
 			return

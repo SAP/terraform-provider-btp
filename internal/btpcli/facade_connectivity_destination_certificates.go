@@ -22,6 +22,7 @@ func (f *connectivityDestinationCertificatesFacade) getCommand() string {
 type DestinationCertificateCreateInput struct {
 	SubaccountId      string    `btpcli:"subaccount"`
 	ServiceInstanceId string    `btpcli:"serviceInstance,omitempty"`
+	Region            string    `btpcli:"region,omitempty"`
 	Certificate       FileInput `btpcli:"file"`
 }
 
@@ -33,6 +34,7 @@ type FileInput struct {
 type DestinationCertificateGetInput struct {
 	SubaccountId      string `btpcli:"subaccount"`
 	ServiceInstanceId string `btpcli:"serviceInstance,omitempty"`
+	Region            string `btpcli:"region,omitempty"`
 	CertificateName   string `btpcli:"certName"`
 }
 
@@ -56,6 +58,9 @@ func (f *connectivityDestinationCertificatesFacade) Create(ctx context.Context, 
 	if len(args.ServiceInstanceId) > 0 {
 		params["serviceInstance"] = args.ServiceInstanceId
 	}
+	if len(args.Region) > 0 {
+		params["region"] = args.Region
+	}
 
 	_, res, err := doExecute[any](f.cliClient, ctx, NewCreateRequest(f.getCommand(), params))
 
@@ -66,6 +71,7 @@ func (f *connectivityDestinationCertificatesFacade) Create(ctx context.Context, 
 	return f.Get(ctx, &DestinationCertificateGetInput{
 		SubaccountId:      args.SubaccountId,
 		ServiceInstanceId: args.ServiceInstanceId,
+		Region:            args.Region,
 		CertificateName:   args.Certificate.Filename,
 	})
 }
@@ -80,6 +86,9 @@ func (f *connectivityDestinationCertificatesFacade) Get(ctx context.Context, arg
 	if len(args.ServiceInstanceId) > 0 {
 		params["serviceInstance"] = args.ServiceInstanceId
 	}
+	if len(args.Region) > 0 {
+		params["region"] = args.Region
+	}
 
 	return doExecute[destinations.DestinationCertificateResponseObject](f.cliClient, ctx, NewGetRequest(f.getCommand(), params))
 }
@@ -93,11 +102,14 @@ func (f *connectivityDestinationCertificatesFacade) Delete(ctx context.Context, 
 	if len(args.ServiceInstanceId) > 0 {
 		params["serviceInstance"] = args.ServiceInstanceId
 	}
+	if len(args.Region) > 0 {
+		params["region"] = args.Region
+	}
 
 	return f.cliClient.Execute(ctx, NewDeleteRequest(f.getCommand(), params))
 }
 
-func (f *connectivityDestinationCertificatesFacade) List(ctx context.Context, subaccountId string, serviceInstanceId string) (map[string][]destinations.DestinationCertificateResponseObject, CommandResponse, error) {
+func (f *connectivityDestinationCertificatesFacade) List(ctx context.Context, subaccountId string, serviceInstanceId string, region string) (map[string][]destinations.DestinationCertificateResponseObject, CommandResponse, error) {
 
 	res := map[string][]destinations.DestinationCertificateResponseObject{}
 
@@ -115,6 +127,9 @@ func (f *connectivityDestinationCertificatesFacade) List(ctx context.Context, su
 
 	if len(serviceInstanceId) > 0 {
 		params["serviceInstance"] = serviceInstanceId
+		if len(region) > 0 {
+			params["region"] = region
+		}
 
 		serviceInstanceCerts, _, err := doExecute[[]destinations.DestinationCertificateResponseObject](f.cliClient, ctx, NewListRequest(f.getCommand(), params))
 		if err != nil {

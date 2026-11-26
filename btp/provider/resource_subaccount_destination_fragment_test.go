@@ -73,6 +73,7 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 							"subaccount_id":       knownvalue.StringRegexp(regexpValidUUID),
 							"name":                knownvalue.StringExact("integration-test-fragment"),
 							"service_instance_id": knownvalue.Null(),
+							"extension_landscape": knownvalue.Null(),
 						}),
 					},
 				},
@@ -140,6 +141,7 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 							"subaccount_id":       knownvalue.StringRegexp(regexpValidUUID),
 							"name":                knownvalue.StringExact("integration-test-fragment-with-service-instance"),
 							"service_instance_id": knownvalue.StringRegexp(regexpValidUUID),
+							"extension_landscape": knownvalue.Null(),
 						}),
 					},
 				},
@@ -180,6 +182,24 @@ func TestResourceSubaccountDestinationFragment(t *testing.T) {
 		})
 	})
 
+	t.Run("error path - extension_landscape without service_instance_id", func(t *testing.T) {
+		t.Parallel()
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(nil),
+			Steps: []resource.TestStep{
+				{
+					Config: `resource "btp_subaccount_destination_fragment" "uut" {
+						subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+						name                = "my-fragment"
+						extension_landscape = "cf-us10-001"
+					}`,
+					ExpectError: regexp.MustCompile(`Attribute "service_instance_id" must be specified when\s+"extension_landscape"\s+is specified`),
+				},
+			},
+		})
+	})
+
 }
 
 func hclResourceSubaccountDestinationFragment(resourceName string, subaccountName, fragmentName string) string {
@@ -187,7 +207,7 @@ func hclResourceSubaccountDestinationFragment(resourceName string, subaccountNam
 	data "btp_subaccounts" "all" {}
 	resource "btp_subaccount_destination_fragment" "%s" {
 		subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
-		name = "%s"	
+		name = "%s"
     }`, resourceName, subaccountName, fragmentName)
 }
 
@@ -198,7 +218,7 @@ data "btp_subaccount_service_instance" "fragment_instance" {
   subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
   name          = "%s"
 }
-resource "btp_subaccount_destination_fragment" "%s" {	
+resource "btp_subaccount_destination_fragment" "%s" {
 subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
 name = "%s"
 service_instance_id = data.btp_subaccount_service_instance.fragment_instance.id

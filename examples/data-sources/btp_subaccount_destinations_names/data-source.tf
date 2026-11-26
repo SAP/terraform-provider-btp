@@ -9,3 +9,10 @@ data "btp_subaccount_destinations_names" "dest_by_subaccount_and_service_instanc
   subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
   service_instance_id = "5aa54c2f-47a1-49a9-b2e8-cf9fea769b7f"
 }
+
+# Read all destination for a given subaccount, service instance and extension landscape
+data "btp_subaccount_destinations_names" "dest_by_subaccount_and_service_instance_on_cf_ext" {
+  subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  service_instance_id = "5aa54c2f-47a1-49a9-b2e8-cf9fea769b7f"
+  extension_landscape = "cf-eu12-001"
+}

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
@@ -13,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
@@ -76,6 +79,17 @@ __Further Information:__
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"extension_landscape": schema.StringAttribute{
+				MarkdownDescription: "The label of the extension landscape of the targeted service instance. Specify this parameter only when the service instance resides on a Cloud Foundry extension landscape. You can obtain the landscape label from the Cloud Foundry environment instance information of the subaccount, for example via the commands for the 'accounts/environment-instance' object.",
+				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+					stringvalidator.AlsoRequires(path.MatchRoot("service_instance_id")),
 				},
 			},
 			"certificate_nodes": schema.ListNestedAttribute{
@@ -229,6 +243,7 @@ func (rs *subaccountDestinationCertificateResource) Read(ctx context.Context, re
 	cliRes, _, err := rs.cli.Connectivity.DestinationCertificate.Get(ctx, &btpcli.DestinationCertificateGetInput{
 		SubaccountId:      data.SubaccountId.ValueString(),
 		ServiceInstanceId: data.ServiceInstanceId.ValueString(),
+		Region:            data.ExtensionLandscape.ValueString(),
 		CertificateName:   data.CertificateName.ValueString(),
 	})
 	if err != nil {
@@ -244,6 +259,7 @@ func (rs *subaccountDestinationCertificateResource) Read(ctx context.Context, re
 
 	state.SubaccountId = data.SubaccountId
 	state.ServiceInstanceId = data.ServiceInstanceId
+	state.ExtensionLandscape = data.ExtensionLandscape
 	state.CertificateContent = data.CertificateContent
 
 	diags = resp.State.Set(ctx, &state)
@@ -264,6 +280,7 @@ func (rs *subaccountDestinationCertificateResource) Create(ctx context.Context, 
 	cliRes, _, err := rs.cli.Connectivity.DestinationCertificate.Create(ctx, &btpcli.DestinationCertificateCreateInput{
 		SubaccountId:      plan.SubaccountId.ValueString(),
 		ServiceInstanceId: plan.ServiceInstanceId.ValueString(),
+		Region:            plan.ExtensionLandscape.ValueString(),
 		Certificate: btpcli.FileInput{
 			Filename:           plan.CertificateName.ValueString(),
 			CertificateContent: plan.CertificateContent.ValueString(),
@@ -283,6 +300,7 @@ func (rs *subaccountDestinationCertificateResource) Create(ctx context.Context, 
 
 	state.SubaccountId = plan.SubaccountId
 	state.ServiceInstanceId = plan.ServiceInstanceId
+	state.ExtensionLandscape = plan.ExtensionLandscape
 	state.CertificateContent = plan.CertificateContent
 
 	diags = resp.State.Set(ctx, &state)
@@ -307,6 +325,7 @@ func (rs *subaccountDestinationCertificateResource) Delete(ctx context.Context, 
 	_, err := rs.cli.Connectivity.DestinationCertificate.Delete(ctx, &btpcli.DestinationCertificateGetInput{
 		SubaccountId:      data.SubaccountId.ValueString(),
 		ServiceInstanceId: data.ServiceInstanceId.ValueString(),
+		Region:            data.ExtensionLandscape.ValueString(),
 		CertificateName:   data.CertificateName.ValueString(),
 	})
 
@@ -487,7 +506,7 @@ func (rs *subaccountDestinationCertificateResource) UpgradeState(ctx context.Con
 				},
 			},
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
-				var priorStateData subaccountDestinationCertificateResourceType
+				var priorStateData subaccountDestinationCertificateResourceTypeV0
 
 				resp.Diagnostics.Append(req.State.Get(ctx, &priorStateData)...)
 
@@ -555,10 +574,10 @@ func (rs *subaccountDestinationCertificateResource) UpgradeState(ctx context.Con
 					CertificateName:    priorStateData.CertificateName,
 					CertificateContent: priorStateData.CertificateContent,
 					ServiceInstanceId:  priorStateData.ServiceInstanceId,
+					ExtensionLandscape: types.StringNull(),
 					Nodes:              priorStateData.Nodes,
 					Creation:           creation,
 				}
-				// No additional fields to upgrade for subaccountDestinationCertificateResourceType
 				resp.Diagnostics.Append(resp.State.Set(ctx, upgradedStateData)...)
 			},
 		},

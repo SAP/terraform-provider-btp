@@ -53,6 +53,30 @@ func TestDataSourceSubaccountDestinationGeneric(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("happy path with service instance on extension landscape", func(t *testing.T) {
+		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/datasource_subaccount_destination_generic_with_service_instance_on_cf_ext")
+		defer stopQuietly(rec)
+
+		resource.Test(t, resource.TestCase{
+			IsUnitTest:               true,
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
+			Steps: []resource.TestStep{
+				{
+					Config: hclProviderFor(user) + hclDatasourceDestinationGenericSIExtension("uut", "test-destination-on-cf-ext-landscape", "integration-test-destination"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("data.btp_subaccount_destination_generic.uut", "creation_time", regexpValidRFC3999Format),
+						resource.TestMatchResourceAttr("data.btp_subaccount_destination_generic.uut", "modification_time", regexpValidRFC3999Format),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_generic.uut", "name", "test-destination-on-cf-ext-landscape"),
+						resource.TestMatchResourceAttr("data.btp_subaccount_destination_generic.uut", "service_instance_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("data.btp_subaccount_destination_generic.uut", "destination_configuration", "{\"Authentication\":\"NoAuthentication\",\"Description\":\"Test destination on CF extension landscape\",\"ProxyType\":\"Internet\",\"Type\":\"HTTP\",\"URL\":\"https://myservice2.example.com\"}"),
+					),
+				},
+			},
+		})
+	})
+
 	t.Run("error path - name not provided", func(t *testing.T) {
 		t.Parallel()
 		resource.Test(t, resource.TestCase{
@@ -120,4 +144,16 @@ func hclDatasourceDestinationGenericSI(datasourceName string, name string, subac
 	service_instance_id = data.btp_subaccount_service_instance.dest.id
 	}`
 	return fmt.Sprintf(template, subaccountName, serviceInstanceName, datasourceName, name, subaccountName)
+}
+
+func hclDatasourceDestinationGenericSIExtension(datasourceName string, name string, subaccountName string) string {
+	template := `
+	data "btp_subaccounts" "all" {}
+	data "btp_subaccount_destination_generic" "%s" {
+	name = "%s"
+	subaccount_id = [for sa in data.btp_subaccounts.all.values : sa.id if sa.name == "%s"][0]
+	service_instance_id = "abc1774c-5ce1-46c6-b7c2-55dfce70ad9a"
+	extension_landscape = "cf-eu12-001"
+	}`
+	return fmt.Sprintf(template, datasourceName, name, subaccountName)
 }

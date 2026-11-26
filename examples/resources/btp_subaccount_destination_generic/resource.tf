@@ -13,6 +13,22 @@ resource "btp_subaccount_destination_generic" "http_dest" {
   })
 }
 
+#subaccount destination without auth on extension landscape
+resource "btp_subaccount_destination_generic" "http_dest_on_cf_ext" {
+  subaccount_id       = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  service_instance_id = "7bb64c2f-38c1-49a9-b2e8-cf9fea769b7f"
+  extension_landscape = "cf-eu12-001"
+  destination_configuration = jsonencode({
+    "Name"           = "project"
+    "Type"           = "HTTP"
+    "ProxyType"      = "Internet"
+    "URL"            = "https://myservice.example.com"
+    "Authentication" = "NoAuthentication"
+    "Description"    = "trial destination of basic usecase with service instance"
+
+  })
+}
+
 #subaccount destination creation without service instance and without labels (additional configuration).
 resource "btp_subaccount_destination_generic" "destination" {
   subaccount_id = "6aa64c2f-38c1-49a9-b2e8-cf9fea769b7f"
