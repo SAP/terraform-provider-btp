@@ -505,7 +505,7 @@ func (rs *subaccountDestinationCertificateResource) UpgradeState(ctx context.Con
 				},
 			},
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
-				var priorStateData subaccountDestinationCertificateResourceType
+				var priorStateData subaccountDestinationCertificateResourceTypeV0
 
 				resp.Diagnostics.Append(req.State.Get(ctx, &priorStateData)...)
 
@@ -573,10 +573,10 @@ func (rs *subaccountDestinationCertificateResource) UpgradeState(ctx context.Con
 					CertificateName:    priorStateData.CertificateName,
 					CertificateContent: priorStateData.CertificateContent,
 					ServiceInstanceId:  priorStateData.ServiceInstanceId,
+					ExtensionLandscape: types.StringNull(),
 					Nodes:              priorStateData.Nodes,
 					Creation:           creation,
 				}
-				// No additional fields to upgrade for subaccountDestinationCertificateResourceType
 				resp.Diagnostics.Append(resp.State.Set(ctx, upgradedStateData)...)
 			},
 		},

@@ -61,6 +61,16 @@ type DestinationCertificateNodeType struct {
 	Certificate types.String `tfsdk:"certificate"`
 }
 
+// v0 resource type: no extension_landscape field
+type subaccountDestinationCertificateResourceTypeV0 struct {
+	SubaccountId       types.String `tfsdk:"subaccount_id"`
+	ServiceInstanceId  types.String `tfsdk:"service_instance_id"`
+	CertificateContent types.String `tfsdk:"certificate_content"`
+	CertificateName    types.String `tfsdk:"certificate_name"`
+	Nodes              types.List   `tfsdk:"certificate_nodes"`
+	Creation           types.Object `tfsdk:"certification_creation_details"`
+}
+
 type DestinationCertificateCreationTypeV0 struct {
 	GenerationMethod  types.String `tfsdk:"generation_method"`
 	CommonName        types.String `tfsdk:"common_name"`
