@@ -227,15 +227,24 @@ func TestResourceSubaccountSubscription(t *testing.T) {
 		})
 	})
 
-	t.Run("error path - service plan ID", func(t *testing.T) {
+	t.Run("happy path - subscription without plan_name", func(t *testing.T) {
 		t.Parallel()
+		rec, user := setupVCR(t, "fixtures/resource_subaccount_subscription.no_plan")
+		defer stopQuietly(rec)
+
 		resource.Test(t, resource.TestCase{
 			IsUnitTest:               true,
-			ProtoV6ProviderFactories: getProviders(nil),
+			ProtoV6ProviderFactories: getProviders(rec.GetDefaultClient()),
 			Steps: []resource.TestStep{
 				{
-					Config:      hclResourceSubaccountSubscriptionNoPlan("uut", "00000000-0000-0000-0000-000000000000", "auditlog-viewer"),
-					ExpectError: regexp.MustCompile(`The argument "plan_name" is required, but no definition was found`),
+					Config: hclProviderFor(user) + hclResourceSubaccountSubscriptionNoPlan("uut", "integration-test-services-static", "auditlog-viewer"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "id", regexpValidUUID),
+						resource.TestMatchResourceAttr("btp_subaccount_subscription.uut", "subaccount_id", regexpValidUUID),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "app_name", "auditlog-viewer"),
+						resource.TestCheckNoResourceAttr("btp_subaccount_subscription.uut", "plan_name"),
+						resource.TestCheckResourceAttr("btp_subaccount_subscription.uut", "state", "SUBSCRIBED"),
+					),
 				},
 			},
 		})

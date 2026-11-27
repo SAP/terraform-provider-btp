@@ -53,7 +53,7 @@ You must be assigned to the admin or viewer role of the subaccount.`,
 			},
 			"plan_name": schema.StringAttribute{
 				MarkdownDescription: "The plan name of the application to which the consumer has subscribed.",
-				Required:            true, // TODO optional
+				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},

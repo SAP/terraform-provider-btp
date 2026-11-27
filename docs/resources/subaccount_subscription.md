@@ -3,7 +3,6 @@ page_title: "btp_subaccount_subscription Resource - terraform-provider-btp"
 subcategory: ""
 description: |-
   Subscribes a subaccount to a multitenant application.
-  Custom or partner-developed applications are currently not supported.
   Tip:
   You must be assigned to the admin role of the subaccount.
 ---
@@ -11,7 +10,6 @@ description: |-
 # btp_subaccount_subscription (Resource)
 
 Subscribes a subaccount to a multitenant application.
-Custom or partner-developed applications are currently not supported.
 
 __Tip:__
 You must be assigned to the admin role of the subaccount.
@@ -45,12 +43,12 @@ resource "btp_subaccount_subscription" "workzone" {
 ### Required
 
 - `app_name` (String) The unique registration name of the deployed multitenant application as defined by the app developer.
-- `plan_name` (String) The plan name of the application to which the consumer has subscribed.
 - `subaccount_id` (String) The ID of the subaccount.
 
 ### Optional
 
 - `parameters` (String) The parameters of the subscription as a valid JSON object.
+- `plan_name` (String) The plan name of the application to which the consumer has subscribed. Optional for subscriptions to applications hosted in the same (sub)account, where no plan applies.
 - `timeouts` (Attributes) (see [below for nested schema](#nestedatt--timeouts))
 
 ### Read-Only
@@ -115,3 +113,9 @@ import {
   }
 }
 ```
+
+## Optional Plan Name
+
+Starting with release 1.29.0, `plan_name` is optional. This accommodates applications that have no plan assigned, such as custom multitenant extension (MTX) applications.
+
+For all other subscriptions, `plan_name` is still required to correctly identify and manage the subscription. Note that the provider cannot validate at plan time whether an application has a plan assigned — users are responsible for omitting `plan_name` only when appropriate.
